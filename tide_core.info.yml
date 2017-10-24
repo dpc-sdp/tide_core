@@ -1,6 +1,7 @@
-name: Core
+name: Tide Core
 description: 'Provides core components required by other features.'
 type: module
+package: Tide
 version: 8.x-0.1
 core: 8.x
 dependencies:
