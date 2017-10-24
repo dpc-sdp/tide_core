@@ -1,4 +1,4 @@
-name: Tide Core
+name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
