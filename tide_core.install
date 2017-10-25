@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Installation functions for Tide Core.
+ */
+
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
+
+/**
+ * Implements hook_install().
+ */
+function tide_core_install() {
+  tide_core_update_8001();
+}
+
+/**
+ * Create Topic default terms.
+ */
+function tide_core_update_8001() {
+  /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+  $module_installer = \Drupal::service('module_installer');
+  $module_installer->install(['taxonomy']);
+
+  // Ensure the Topic vocabulary exist.
+  $vid = 'topic';
+  if (!Vocabulary::load($vid)) {
+    Vocabulary::create([
+      'vid' => $vid,
+      'name' => 'Topic',
+      'description' => 'Use topic to group content into categories.',
+    ])->save();
+  }
+
+  // Create default terms [SDPD8-114].
+  $terms = [
+    'Arts',
+    'Business',
+    'Education',
+  ];
+  foreach ($terms as $term) {
+    Term::create([
+      'name' => $term,
+      'vid' => $vid,
+      'parent' => [],
+    ])->save();
+  }
+}
