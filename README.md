@@ -1,5 +1,5 @@
 # Tide Core
-Core functionality of [Tide](https://github.com/dpc-sdp/tide) distribution
+Core functionality of [Tide](https://github.com/dpc-sdp/tide) distribution.
 
 [![CircleCI](https://circleci.com/gh/dpc-sdp/tide_core.svg?style=shield&circle-token=2d051b5aeceb6d0e8ddccf0d1b84b9027b36cafa)](https://circleci.com/gh/dpc-sdp/tide_core)
 
