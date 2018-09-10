@@ -76,8 +76,4 @@ type_settings:
         - published
       to: published
       weight: -7
-  entity_types:
-    node:
-      - landing_page
-      - news
-      - page
+  entity_types: {  }
