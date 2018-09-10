@@ -1,0 +1,83 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - content_moderation
+id: editorial
+label: Editorial
+type: content_moderation
+type_settings:
+  states:
+    archived:
+      label: Archived
+      weight: -7
+      published: false
+      default_revision: true
+    draft:
+      label: Draft
+      published: false
+      default_revision: false
+      weight: -10
+    needs_review:
+      published: false
+      default_revision: false
+      label: 'Needs Review'
+      weight: -9
+    published:
+      label: Published
+      published: true
+      default_revision: true
+      weight: -8
+  transitions:
+    archive:
+      label: Archive
+      from:
+        - published
+      to: archived
+      weight: -6
+    archived_draft:
+      label: 'Restore to Draft'
+      from:
+        - archived
+      to: draft
+      weight: -5
+    archived_published:
+      label: Restore
+      from:
+        - archived
+      to: published
+      weight: -4
+    create_new_draft:
+      label: 'Create New Draft'
+      from:
+        - draft
+        - published
+      to: draft
+      weight: -10
+    needs_review:
+      label: 'Needs Review'
+      from:
+        - draft
+      to: needs_review
+      weight: -9
+    needs_review_draft:
+      label: 'Send back to Draft'
+      from:
+        - needs_review
+      to: draft
+      weight: -8
+    publish:
+      label: Publish
+      to: published
+      weight: 1
+      from:
+        - draft
+        - needs_review
+        - published
+      to: published
+      weight: -7
+  entity_types:
+    node:
+      - landing_page
+      - news
+      - page
