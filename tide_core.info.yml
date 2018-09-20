@@ -106,6 +106,8 @@ config_devel:
     - wysiwyg_template.wysiwyg_template.blockquote
     - wysiwyg_template.wysiwyg_template.primary_button
     - wysiwyg_template.wysiwyg_template.secondary_button
+    - field.storage.block_content.field_tags
+    - field.storage.block_content.field_topic
     - field.storage.node.scheduled_archiving
     - field.storage.node.scheduled_publishing
     - field.storage.scheduled_update.field_moderation_state_archived
