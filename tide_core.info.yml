@@ -88,7 +88,9 @@ config_devel:
     - field.storage.node.field_tags
     - field.storage.node.field_topic
     - field.storage.node.field_whats_next
+    - field.storage.paragraph.field_paragraph_cta
     - field.storage.paragraph.field_paragraph_link
+    - field.storage.paragraph.field_paragraph_media
     - field.storage.paragraph.field_paragraph_summary
     - filter.format.admin_text
     - filter.format.rich_text
