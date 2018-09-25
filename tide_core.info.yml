@@ -15,6 +15,7 @@ dependencies:
   - drupal:block_content
   - drupal:content_moderation
   - drupal:ckeditor
+  - drupal:datetime_range
   - drupal:dynamic_page_cache
   - drupal:entity_embed
   - drupal:filter
