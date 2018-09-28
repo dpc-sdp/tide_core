@@ -90,6 +90,7 @@ config_devel:
     - field.storage.node.field_topic
     - field.storage.node.field_whats_next
     - field.storage.paragraph.field_paragraph_cta
+    - field.storage.node.field_landing_page_contact
     - field.storage.paragraph.field_paragraph_link
     - field.storage.paragraph.field_paragraph_media
     - field.storage.paragraph.field_paragraph_summary
