@@ -53,6 +53,7 @@ dependencies:
   - password_strength:password_strength
   - pathauto:pathauto
   - redirect:redirect
+  - role_delegation:role_delegation
   - scheduled_updates:scheduled_updates
   - content_moderation_scheduled_updates:content_moderation_scheduled_updates
   - simple_sitemap:simple_sitemap
