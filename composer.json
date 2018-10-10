@@ -35,6 +35,7 @@
         "drupal/pathauto": "^1.2",
         "drupal/paragraphs": "1.2",
         "drupal/redirect": "^1.2",
+        "drupal/role_delegation": "^1.0-alpha1",
         "drupal/scheduled_updates": "^1.0@alpha",
         "drupal/content_moderation_scheduled_updates": "^1.0",
         "drupal/seckit": "^1.0@alpha",
@@ -140,6 +141,11 @@
                 "Entities with title longer than 50 characters - https://www.drupal.org/project/events_log_track/issues/2930817": "https://www.drupal.org/files/issues/increase-character-length-2930817-2.patch",
                 "Event logs for change in workflows - https://www.drupal.org/project/events_log_track/issues/2974170": "https://www.drupal.org/files/issues/2018-06-26/events_log_track-add-workflows-2974170-7.patch",
                 "Add handlers for file and media entities - https://www.drupal.org/project/events_log_track/issues/2959769": "https://www.drupal.org/files/issues/2018-06-26/events-log-track_add-file-media-2959769-9.patch"
+            },
+            "drupal/role_delegation": {
+                "Allow to delegate roles on user creation - https://www.drupal.org/files/issues/role-delegation-user-forms-2811851-27.patch",
+                "Lock down assignable permissions in the VBO action - https://www.drupal.org/files/issues/2018-04-29/2862360-Lock-down-assignable-permissions-in-the-VBO-action-15.patch",
+                "Remove from custom packages group - https://www.drupal.org/files/issues/remove-from-custom-packages-group-2931209-2.patch"
             },
             "drupal/smart_trim": {
                 "Additional options checkbox do not appear to save - https://www.drupal.org/project/smart_trim/issues/2941492": "https://www.drupal.org/files/issues/2018-05-04/2941492-4.patch"
