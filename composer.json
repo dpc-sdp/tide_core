@@ -144,7 +144,7 @@
             },
             "drupal/role_delegation": {
                 "Allow to delegate roles on user creation - https://www.drupal.org/project/role_delegation/issues/2811851": "https://www.drupal.org/files/issues/role-delegation-user-forms-2811851-27.patch",
-                "Lock down assignable permissions in the VBO action - https://www.drupal.org/project/role_delegation/issues/2862360": "https://www.drupal.org/files/issues/2018-04-29/2862360-Lock-down-assignable-permissions-in-the-VBO-action-15.patch"
+                "Lock down assignable permissions in the VBO action - https://www.drupal.org/project/role_delegation/issues/2862360": "https://www.drupal.org/files/issues/2018-04-29/2862360-Lock-down-assignable-permissions-in-the-VBO-action-15.patch",
                 "Add entity operation for roles - https://www.drupal.org/project/role_delegation/issues/2892771": "https://www.drupal.org/files/issues/add_entity_operation-2892771-2.patch"
             },
             "drupal/smart_trim": {
