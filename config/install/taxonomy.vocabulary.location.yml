@@ -1,0 +1,9 @@
+uuid: f90685ed-ed6e-4bb1-a7ce-bcc9ba0da78f
+langcode: en
+status: true
+dependencies: {  }
+name: Location
+vid: location
+description: 'Used for grouping of related content by location.'
+hierarchy: 0
+weight: 0
