@@ -81,6 +81,7 @@ config_devel:
     - field.field.paragraph.related_links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_summary
     - field.storage.node.field_featured_image
+    - field.storage.node.field_landing_page_intro_text
     - field.storage.node.field_metatags
     - field.storage.node.field_related_links
     - field.storage.node.field_show_related_content
