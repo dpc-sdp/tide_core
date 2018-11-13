@@ -16,6 +16,7 @@
         "drupal/core": "8.5.6",
         "drupal/diff": "^1.0@RC",
         "drupal/editor_advanced_link": "^1.4",
+        "drupal/entity_browser": "^1.4",
         "drupal/entity_embed": "1.0.0-beta2",
         "drupal/environment_indicator": "^3.2",
         "drupal/events_log_track": "^1.1",
