@@ -1,0 +1,56 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.grant.field_audience
+    - field.field.node.grant.field_featured_image
+    - field.field.node.grant.field_landing_page_contact
+    - field.field.node.grant.field_landing_page_intro_text
+    - field.field.node.grant.field_landing_page_show_contact
+    - field.field.node.grant.field_landing_page_summary
+    - field.field.node.grant.field_node_dates
+    - field.field.node.grant.field_node_department
+    - field.field.node.grant.field_node_documents
+    - field.field.node.grant.field_node_fundinglevel
+    - field.field.node.grant.field_node_guidelines
+    - field.field.node.grant.field_node_overview
+    - field.field.node.grant.field_node_primary_site
+    - field.field.node.grant.field_node_site
+    - field.field.node.grant.field_node_timeline
+    - field.field.node.grant.field_show_social_sharing
+    - field.field.node.grant.field_tags
+    - field.field.node.grant.field_topic
+    - node.type.grant
+  module:
+    - user
+id: node.grant.teaser
+targetEntityType: node
+bundle: grant
+mode: teaser
+content:
+  links:
+    weight: 100
+    region: content
+hidden:
+  field_audience: true
+  field_featured_image: true
+  field_landing_page_contact: true
+  field_landing_page_intro_text: true
+  field_landing_page_show_contact: true
+  field_landing_page_summary: true
+  field_node_dates: true
+  field_node_department: true
+  field_node_documents: true
+  field_node_fundinglevel: true
+  field_node_guidelines: true
+  field_node_on_going: true
+  field_node_overview: true
+  field_node_primary_site: true
+  field_node_site: true
+  field_node_timeline: true
+  field_show_social_sharing: true
+  field_tags: true
+  field_topic: true
+  scheduled_archiving: true
+  scheduled_publishing: true
