@@ -12,7 +12,6 @@ Feature: Check that Timelines paragraphs.
 
     When I go to "admin/structure/paragraphs_type/timelines/fields"
     Then I should see "Timeline"
-    And I should see "Title"
 
     When I go to "admin/structure/paragraphs_type/timeline/fields"
     Then I should see the text "field_paragraph_body" in the "Body" row
