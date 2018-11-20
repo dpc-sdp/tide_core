@@ -1,8 +1,6 @@
 langcode: en
 status: true
 dependencies: {  }
-_core:
-  default_config_hash: 9CTj9y3vkni20y24sSvR8ye8ZQWmE98rAKyBLJyx9Sk
 id: document
 label: Document
 description: 'Use local documents for reusable media.'

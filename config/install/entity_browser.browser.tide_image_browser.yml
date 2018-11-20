@@ -7,8 +7,6 @@ dependencies:
   module:
     - entity_browser_entity_form
     - views
-_core:
-  default_config_hash: b8wnEVwsxRbTWwvKLmlnVGmhSL1R_poNEKncEMRIbOw
 name: tide_image_browser
 label: 'Image browser'
 display: modal

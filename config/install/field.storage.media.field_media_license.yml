@@ -4,8 +4,6 @@ dependencies:
   module:
     - media
     - options
-_core:
-  default_config_hash: KxL9N_D_oARYj4n34EsWiL2s_tEZN2vXnPA-6BPgIq0
 id: media.field_media_license
 field_name: field_media_license
 entity_type: media

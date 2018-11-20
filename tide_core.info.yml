@@ -16,7 +16,7 @@ dependencies:
   - drupal:content_moderation
   - drupal:ckeditor
   - drupal:datetime_range
-
+  - drupal:dynamic_page_cache
   - drupal:entity_embed
   - drupal:filter
   - drupal:media
@@ -74,8 +74,12 @@ config_devel:
   install:
     - core.entity_form_display.paragraph.links.default
     - core.entity_form_display.paragraph.related_links.default
+    - core.entity_form_display.paragraph.timeline.default
+    - core.entity_form_display.paragraph.timelines.default
     - core.entity_view_display.paragraph.links.default
     - core.entity_view_display.paragraph.related_links.default
+    - core.entity_view_display.paragraph.timeline.default
+    - core.entity_view_display.paragraph.timelines.default
     - core.entity_view_mode.node.card
     - core.entity_view_mode.node.featured_card
     - entity_browser.browser.tide_image_browser
@@ -83,6 +87,15 @@ config_devel:
     - field.field.paragraph.links.field_paragraph_summary
     - field.field.paragraph.related_links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_summary
+    - field.field.paragraph.timeline.field_paragraph_body
+    - field.field.paragraph.timeline.field_paragraph_cta_text
+    - field.field.paragraph.timeline.field_paragraph_date_range
+    - field.field.paragraph.timeline.field_paragraph_cta_text
+    - field.field.paragraph.timeline.field_paragraph_link
+    - field.field.paragraph.timeline.field_paragraph_media
+    - field.field.paragraph.timeline.field_paragraph_title
+    - field.field.paragraph.timelines.field_paragraph_title
+    - field.field.paragraph.timelines.field_timeline
     - field.storage.media.field_media_department
     - field.storage.media.field_media_license
     - field.storage.node.field_featured_image
@@ -104,6 +117,7 @@ config_devel:
     - field.storage.paragraph.field_paragraph_media
     - field.storage.paragraph.field_paragraph_summary
     - field.storage.paragraph.field_paragraph_title
+    - field.storage.paragraph.field_timeline
     - filter.format.admin_text
     - filter.format.rich_text
     - image.style.thumbnail
@@ -112,6 +126,8 @@ config_devel:
     - media.type.document
     - paragraphs.paragraphs_type.links
     - paragraphs.paragraphs_type.related_links
+    - paragraphs.paragraphs_type.timeline
+    - paragraphs.paragraphs_type.timelines
     - pathauto.pattern.content_title
     - taxonomy.vocabulary.tags
     - taxonomy.vocabulary.topic
