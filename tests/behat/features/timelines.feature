@@ -14,8 +14,8 @@ Feature: Check that Timelines paragraphs.
     Then I should see "Timeline"
 
     When I go to "admin/structure/paragraphs_type/timeline/fields"
-    Then I should see the text "field_paragraph_body" in the "Body" row
-    And I should see the text "field_paragraph_title" in the "Title" row
+    Then I should see "field_paragraph_body"
+    And I should see "field_paragraph_title"
     And I should see the text "field_paragraph_date_range" in the "Date" row
     And I should see the text "field_paragraph_media" in the "Feature image" row
     And I should see the text "field_paragraph_cta_text" in the "Text" row
