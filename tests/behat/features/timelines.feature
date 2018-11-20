@@ -11,11 +11,11 @@ Feature: Check that Timelines paragraphs.
     And I should see the text "Timelines" in the "timelines" row
 
     When I go to "admin/structure/paragraphs_type/timelines/fields"
-    Then I should see the text "field_timeline" in the "Timeline" row
-    And I should see the text "field_paragraph_title" in the "Title" row
+    Then I should see the text "Timeline"
+    And I should see the text "Title"
 
     When I go to "admin/structure/paragraphs_type/timeline/fields"
-    Then I should see the text "field_paragraph_body" in the "Body" row
+    Then I should see the text "Body" in the "field_paragraph_body" row
     And I should see the text "field_paragraph_title" in the "Title" row
     And I should see the text "field_paragraph_date_range" in the "Date" row
     And I should see the text "field_paragraph_media" in the "Feature image" row
