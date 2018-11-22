@@ -2,30 +2,22 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.timeline.field_paragraph_body
     - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_date_range
     - field.field.paragraph.timeline.field_paragraph_link
     - field.field.paragraph.timeline.field_paragraph_media
+    - field.field.paragraph.timeline.field_paragraph_summary
     - field.field.paragraph.timeline.field_paragraph_title
     - paragraphs.paragraphs_type.timeline
   module:
     - datetime_range
     - link
     - media
-    - text
 id: paragraph.timeline.default
 targetEntityType: paragraph
 bundle: timeline
 mode: default
 content:
-  field_paragraph_body:
-    weight: 5
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: text_default
-    region: content
   field_paragraph_cta_text:
     weight: 2
     label: above
@@ -64,6 +56,13 @@ content:
       image_link: ''
     third_party_settings: {  }
     type: media_thumbnail
+    region: content
+  field_paragraph_summary:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
     region: content
   field_paragraph_title:
     weight: 0

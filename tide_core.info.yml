@@ -87,7 +87,7 @@ config_devel:
     - field.field.paragraph.links.field_paragraph_summary
     - field.field.paragraph.related_links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_summary
-    - field.field.paragraph.timeline.field_paragraph_body
+    - field.field.paragraph.timeline.field_paragraph_summary
     - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_date_range
     - field.field.paragraph.timeline.field_paragraph_cta_text
@@ -109,7 +109,6 @@ config_devel:
     - field.storage.node.field_tags
     - field.storage.node.field_topic
     - field.storage.node.field_whats_next
-    - field.storage.paragraph.field_paragraph_body
     - field.storage.paragraph.field_paragraph_cta
     - field.storage.paragraph.field_paragraph_cta_text
     - field.storage.node.field_landing_page_contact
