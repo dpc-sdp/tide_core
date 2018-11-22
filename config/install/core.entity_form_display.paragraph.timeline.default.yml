@@ -2,16 +2,19 @@ langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.tide_image_browser
     - field.field.paragraph.timeline.field_paragraph_body
     - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_date_range
     - field.field.paragraph.timeline.field_paragraph_link
     - field.field.paragraph.timeline.field_paragraph_media
+    - field.field.paragraph.timeline.field_paragraph_summary
     - field.field.paragraph.timeline.field_paragraph_title
     - paragraphs.paragraphs_type.timeline
   module:
     - content_moderation
     - datetime_range
+    - entity_browser
     - link
     - text
 id: paragraph.timeline.default
@@ -80,5 +83,6 @@ content:
     third_party_settings: {  }
 hidden:
   created: true
+  field_paragraph_summary: true
   status: true
   uid: true
