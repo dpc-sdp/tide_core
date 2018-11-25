@@ -170,3 +170,5 @@ config_devel:
     - pathauto.settings
     - system.action.pathauto_update_alias_node
     - system.action.pathauto_update_alias_user
+    - jsonapi_extras.jsonapi_resource_config.paragraph--timeline
+    - jsonapi_extras.jsonapi_resource_config.paragraph--timelines
