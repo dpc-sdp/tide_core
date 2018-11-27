@@ -4,7 +4,6 @@ dependencies:
   config:
     - entity_browser.browser.tide_image_browser
     - field.field.paragraph.timeline.field_paragraph_body
-    - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_date_range
     - field.field.paragraph.timeline.field_paragraph_link
     - field.field.paragraph.timeline.field_paragraph_media
@@ -29,14 +28,6 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
-    region: content
-  field_paragraph_cta_text:
-    weight: 3
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
     region: content
   field_paragraph_date_range:
     weight: 2
