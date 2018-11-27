@@ -88,7 +88,6 @@ config_devel:
     - field.field.paragraph.related_links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_summary
     - field.field.paragraph.timeline.field_paragraph_body
-    - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_date_range
     - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_link
