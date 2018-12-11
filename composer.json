@@ -13,9 +13,10 @@
         "drupal/config_split": "^1.3",
         "drupal/config_ignore": "^2.1",
         "drupal/config_update": "^1.4",
-        "drupal/core": "^8.5.5",
+        "drupal/core": "8.5.6",
         "drupal/diff": "^1.0@RC",
         "drupal/editor_advanced_link": "^1.4",
+        "drupal/entity_browser": "^1.4",
         "drupal/entity_embed": "1.0.0-beta2",
         "drupal/environment_indicator": "^3.2",
         "drupal/events_log_track": "^1.1",
@@ -33,8 +34,9 @@
         "drupal/password_policy": "dev-3.x",
         "drupal/password_strength": "^2.0",
         "drupal/pathauto": "^1.2",
-        "drupal/paragraphs": "1.2",
+        "drupal/paragraphs": "^1.2",
         "drupal/redirect": "^1.2",
+        "drupal/role_delegation": "^1.0-alpha1",
         "drupal/scheduled_updates": "^1.0@alpha",
         "drupal/content_moderation_scheduled_updates": "^1.0",
         "drupal/seckit": "^1.0@alpha",
@@ -113,9 +115,6 @@
         "enable-patching": true,
         "composer-exit-on-patch-failure": true,
         "patches": {
-            "drupal/better_exposed_filters": {
-                "Add core/drupal as dependency to better_exposed_filters asset libraries - https://www.drupal.org/node/2902742": "https://www.drupal.org/files/issues/add_core_drupal_as-2902742-2.patch"
-            },
             "drupal/entity_embed": {
                 "2832504 - Send the CKEditor instance ID to the embed.preview route": "https://www.drupal.org/files/issues/2832504-2.patch"
             },
@@ -140,6 +139,10 @@
                 "Entities with title longer than 50 characters - https://www.drupal.org/project/events_log_track/issues/2930817": "https://www.drupal.org/files/issues/increase-character-length-2930817-2.patch",
                 "Event logs for change in workflows - https://www.drupal.org/project/events_log_track/issues/2974170": "https://www.drupal.org/files/issues/2018-06-26/events_log_track-add-workflows-2974170-7.patch",
                 "Add handlers for file and media entities - https://www.drupal.org/project/events_log_track/issues/2959769": "https://www.drupal.org/files/issues/2018-06-26/events-log-track_add-file-media-2959769-9.patch"
+            },
+            "drupal/role_delegation": {
+                "Allow to delegate roles on user creation - https://www.drupal.org/project/role_delegation/issues/2811851": "https://www.drupal.org/files/issues/role-delegation-user-forms-2811851-27.patch",
+                "Lock down assignable permissions in the VBO action - https://www.drupal.org/project/role_delegation/issues/2862360": "https://www.drupal.org/files/issues/2018-04-29/2862360-Lock-down-assignable-permissions-in-the-VBO-action-15.patch"
             },
             "drupal/smart_trim": {
                 "Additional options checkbox do not appear to save - https://www.drupal.org/project/smart_trim/issues/2941492": "https://www.drupal.org/files/issues/2018-05-04/2941492-4.patch"
