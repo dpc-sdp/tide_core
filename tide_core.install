@@ -193,7 +193,7 @@ function tide_core_update_8003() {
 }
 
 /**
- * Enable Pathauto with default config.
+ * Import ClamAV default config.
  */
 function tide_core_update_8004() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
