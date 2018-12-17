@@ -8,6 +8,7 @@ dependencies:
   - allowed_formats:allowed_formats
   - better_exposed_filters:better_exposed_filters
   - ckeditor_iframe:ckeditor_iframe
+  - clamav:clamav
   - config_split:config_split
   - config_update:config_update
   - diff:diff
@@ -151,6 +152,7 @@ config_devel:
     - scheduled_update.field_moderation_state_archived
     - views.view.tide_media_browser
   optional:
+    - clamav.settings
     - core.entity_form_display.media.file.default
     - core.entity_form_display.media.image.default
     - core.entity_view_display.media.file.default
