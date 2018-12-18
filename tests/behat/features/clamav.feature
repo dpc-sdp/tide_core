@@ -9,4 +9,5 @@ Feature: ClamAV Anti-virus
     When I go to "media/add/testmedia"
     And I attach the file "clamtest.txt" to "files[field_media_file_test_0]"
     And I wait for AJAX to finish
+    And I save screenshot
     Then I should see the error message "The specified file clamtest.txt could not be uploaded."
