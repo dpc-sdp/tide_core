@@ -6,6 +6,7 @@
  */
 
 use Drupal\DrupalExtension\Context\DrupalContext;
+use IntegratedExperts\BehatSteps\D8\WatchdogTrait;
 use IntegratedExperts\BehatSteps\FieldTrait;
 use IntegratedExperts\BehatSteps\LinkTrait;
 use IntegratedExperts\BehatSteps\PathTrait;
@@ -29,5 +30,6 @@ class FeatureContext extends DrupalContext {
   use TaxonomyTrait;
   use ResponseTrait;
   use TideCommonTrait;
+  use WatchdogTrait;
 
 }
