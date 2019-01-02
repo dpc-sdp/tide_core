@@ -1401,9 +1401,9 @@ display:
       tags:
         - 'config:field.storage.media.field_media_department'
         - 'config:field.storage.media.field_media_license'
-  entity_browser_1:
+  embedded_video_browser:
     display_plugin: entity_browser
-    id: entity_browser_1
+    id: embedded_video_browser
     display_title: 'Embedded Video browser'
     position: 2
     display_options:
