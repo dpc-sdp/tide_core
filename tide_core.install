@@ -191,3 +191,12 @@ function tide_core_update_8003() {
   $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
   _tide_import_single_config('pathauto.pattern.content_title', $config_location);
 }
+
+/**
+ * Import ClamAV default config.
+ */
+function tide_core_update_8004() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  _tide_import_single_config('clamav.settings', $config_location);
+}
