@@ -140,7 +140,8 @@
                 "Events Log Track breaks Entity Browser #5 - https://www.drupal.org/project/events_log_track/issues/2934036": "https://www.drupal.org/files/issues/2018-04-19/2934036-check_empty_submit-5.patch",
                 "Entities with title longer than 50 characters - https://www.drupal.org/project/events_log_track/issues/2930817": "https://www.drupal.org/files/issues/increase-character-length-2930817-2.patch",
                 "Event logs for change in workflows - https://www.drupal.org/project/events_log_track/issues/2974170": "https://www.drupal.org/files/issues/2018-06-26/events_log_track-add-workflows-2974170-7.patch",
-                "Add handlers for file and media entities - https://www.drupal.org/project/events_log_track/issues/2959769": "https://www.drupal.org/files/issues/2018-06-26/events-log-track_add-file-media-2959769-9.patch"
+                "Add handlers for file and media entities - https://www.drupal.org/project/events_log_track/issues/2959769": "https://www.drupal.org/files/issues/2018-06-26/events-log-track_add-file-media-2959769-9.patch",
+                "Skip password logging during failed authentication attempt.": "https://gist.githubusercontent.com/barbun/d9b6d9864d6a9e2e65a36f061ebcc242/raw/3e91bdea333b78c3f740451e65eaf96f8fb2453c/event-log-track-auth_skipPasswordLogging.patch"
             },
             "drupal/role_delegation": {
                 "Allow to delegate roles on user creation - https://www.drupal.org/project/role_delegation/issues/2811851": "https://www.drupal.org/files/issues/role-delegation-user-forms-2811851-27.patch",
