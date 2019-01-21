@@ -6,7 +6,6 @@ dependencies:
     - field.storage.media.field_media_license
     - image.style.thumbnail
     - media.type.document
-    - media.type.embedded_video
     - media.type.image
   module:
     - better_exposed_filters
