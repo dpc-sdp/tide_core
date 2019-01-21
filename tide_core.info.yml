@@ -131,6 +131,7 @@ config_devel:
     - paragraphs.paragraphs_type.timeline
     - paragraphs.paragraphs_type.timelines
     - pathauto.pattern.content_title
+    - prlp.settings
     - taxonomy.vocabulary.tags
     - taxonomy.vocabulary.topic
     - user.role.administrator
