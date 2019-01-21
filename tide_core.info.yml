@@ -25,6 +25,7 @@ dependencies:
   - drupal:options
   - drupal:path
   - drupal:page_cache
+  - drupal:prlp
   - drupal:taxonomy
   - drupal:text
   - drupal:user
