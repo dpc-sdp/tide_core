@@ -25,7 +25,6 @@ dependencies:
   - drupal:options
   - drupal:path
   - drupal:page_cache
-  - drupal:prlp
   - drupal:taxonomy
   - drupal:text
   - drupal:user
@@ -131,7 +130,6 @@ config_devel:
     - paragraphs.paragraphs_type.timeline
     - paragraphs.paragraphs_type.timelines
     - pathauto.pattern.content_title
-    - prlp.settings
     - taxonomy.vocabulary.tags
     - taxonomy.vocabulary.topic
     - user.role.administrator
@@ -155,6 +153,7 @@ config_devel:
     - views.view.tide_media_browser
   optional:
     - clamav.settings
+    - prlp.settings
     - core.entity_form_display.media.file.default
     - core.entity_form_display.media.image.default
     - core.entity_view_display.media.file.default
