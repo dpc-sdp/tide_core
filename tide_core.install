@@ -191,3 +191,24 @@ function tide_core_update_8003() {
   $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
   _tide_import_single_config('pathauto.pattern.content_title', $config_location);
 }
+
+/**
+ * Import ClamAV default config.
+ */
+function tide_core_update_8004() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  _tide_import_single_config('clamav.settings', $config_location);
+}
+
+/**
+ * Enable PRLP with default config.
+ */
+function tide_core_update_8005() {
+  /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+  $module_installer = \Drupal::service('module_installer');
+  $module_installer->install(['prlp']);
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  _tide_import_single_config('prlp.settings', $config_location);
+}

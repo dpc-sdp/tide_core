@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: contact_us
+label: 'Contact Us'
+icon_uuid: null
+description: 'Paragraph type to allow the Contact component.'
+behavior_plugins: {  }

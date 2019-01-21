@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - options
+id: media.field_media_license
+field_name: field_media_license
+entity_type: media
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: cc4
+      label: 'Creative Commons Attribution 4.0'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
