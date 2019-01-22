@@ -11,7 +11,3 @@ Tide is a Drupal 8 distribution focused on delivering an API first, headless Dru
 - Permissions for site administration
 - Theme components discovery mechanism (if required)
 - Vocabulary Topic Term
-
-# Caveats
-
-Tide Core is on the alpha release, use with caution. APIs are likely to change before the stable version, that there will be breaking changes and that we're not supporting it for external production sites at the moment.
