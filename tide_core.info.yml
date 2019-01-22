@@ -153,6 +153,7 @@ config_devel:
     - views.view.tide_media_browser
   optional:
     - clamav.settings
+    - prlp.settings
     - core.entity_form_display.media.file.default
     - core.entity_form_display.media.image.default
     - core.entity_view_display.media.file.default
