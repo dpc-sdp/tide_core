@@ -63,15 +63,18 @@ settings:
             - ShowBlocks
             - Source
             - TemplateSelector
+            - Iframe
             - tide_media
   plugins:
+    stylescombo:
+      styles: "p.wysiwyg-callout|Callout\r\nol.wysiwyg-callout|Callout (Ordered list)\r\nul.wysiwyg-callout|Callout (Unordered list)"
     drupallink:
       linkit_enabled: true
       linkit_profile: content
-    stylescombo:
-      styles: "p.wysiwyg-callout|Callout\r\nol.wysiwyg-callout|Callout (Ordered list)\r\nul.wysiwyg-callout|Callout (Unordered list)"
     language:
       language_list: un
+    tokenbrowser:
+      token_types: {  }
 image_upload:
   status: true
   scheme: public
