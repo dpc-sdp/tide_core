@@ -15,7 +15,7 @@
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
         "drupal/content_moderation_scheduled_updates": "^1.0",
-        "drupal/core": "8.5.6",
+        "drupal/core": "^8.5",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/entity_browser": "^1.6",
