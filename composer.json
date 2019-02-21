@@ -82,7 +82,7 @@
                 "Unable to install if media is not yet installed - https://www.drupal.org/project/media_entity_audio/issues/2984336": "https://www.drupal.org/files/issues/2018-07-07/requirements-not-met-if-no-media-2984336-4.patch"
             },
             "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2018-07-15/metatag_2945817_28.patch"
+                "Support json api - https://www.drupal.org/project/metatag/issues/2945817#comment-12932008": "https://www.drupal.org/files/issues/2019-01-18/computed_field_2945817_61.patch"
             },
             "drupal/token": {
                 "Node preview button generates useless menu link - https://www.drupal.org/node/2823731#comment-11905884": "https://www.drupal.org/files/issues/token_node_preview_menu_link-2823731-4.patch",
