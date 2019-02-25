@@ -26,7 +26,7 @@ function tide_core_drush_command() {
 /**
  * Execute scheduled_updates cron.
  */
-function drush_tide_core_scheduled_updates_cron($index_id = NULL) {
+function drush_tide_core_scheduled_updates_cron() {
 
   try {
     \Drupal::moduleHandler()->invoke('scheduled_updates', 'cron');
