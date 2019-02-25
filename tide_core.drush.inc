@@ -6,10 +6,9 @@
  */
 
 /**
-* Implements hook_drush_command().
-*/
-function tide_core_drush_command()
-{
+ * Implements hook_drush_command().
+ */
+function tide_core_drush_command() {
   $items = [];
 
   $items['tide-core-scheduled-updates-cron'] = [
@@ -23,7 +22,6 @@ function tide_core_drush_command()
 
   return $items;
 }
-
 
 /**
  * Execute scheduled_updates cron.
