@@ -31,3 +31,16 @@ Feature: Access permissions
       | editor             | admin/people          | 404      |
       | approver           | admin/people          | 404      |
       | previewer          | admin/people          | 404      |
+
+  @api
+  Scenario: Site Admin role has access to assign roles.
+    Given I am logged in as a user with the "Site Admin" role
+    When I go to "admin/people"
+    Then I should see text matching "Add the Site Admin role to the selected user(s)"
+    And I should see text matching "Add the Previewer role to the selected user(s)"
+    And I should see text matching "Add the Editor role to the selected user(s)"
+    And I should see text matching "Add the Approver role to the selected user(s)"
+    And I should see text matching "Remove the Site Admin role to the selected user(s)"
+    And I should see text matching "Remove the Previewer role to the selected user(s)"
+    And I should see text matching "Remove the Editor role to the selected user(s)"
+    And I should see text matching "Remove the Approver role to the selected user(s)"
