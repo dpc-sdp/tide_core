@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Drush file to define custom drush command redirect-import.
+ */
 
+/**
+ * Implements hook_drush_command().
+ */
 function tide_core_drush_command() {
     $items = array();
 
@@ -16,7 +23,9 @@ function tide_core_drush_command() {
 
 };
 
-
+/**
+ * Get the node id of the page to redirect to.
+ */
 function get_node_id($to) {
     if ((substr($to, 0, 4) == 'http')) {
         return $to;
@@ -29,6 +38,9 @@ function get_node_id($to) {
     return $to;
 }
 
+/**
+ * Creates a redirect entity and handles setting attributes and saving redirect entry to the DB.
+ */
 function add_redirects($from, $to) {
     if ($from != '' && $to != '') {
         $redirectrepo = redirect_repository();
@@ -57,6 +69,9 @@ function add_redirects($from, $to) {
     }
 }
 
+/**
+ * Verify that the provided CSV file is valid, parse it and return the results as an associative array.
+ */
 function csv_parse($filepath) {
 
     $result = array();
@@ -66,7 +81,6 @@ function csv_parse($filepath) {
         return false;
     }
 
-    // Read in each line in the CSV file and convert to associative array
     while (($line = fgets($file_handle)) !== false) {
         $line = explode(',', $line);
 
@@ -82,6 +96,9 @@ function csv_parse($filepath) {
     return $result;
 };
 
+/**
+ * Verify that the provided JSON file is valid and return the result.
+ */
 function json_parse($filepath) {
 
     $result = file_get_contents($filepath);
@@ -97,6 +114,9 @@ function json_parse($filepath) {
 
 };
 
+/**
+ * Verify that the provided PHP file is valid, the $redirects variable is defined and is an associative array.
+ */
 function php_parse($filepath) {
 
     include $filepath;
@@ -115,6 +135,9 @@ function php_parse($filepath) {
     return $result;
 };
 
+/**
+ * Callback function for redirect-import, checks file type and calls helper functions.
+ */
 function drush_tide_core_redirect_import($filepath = '') {
 
     if ($filepath == '') {
