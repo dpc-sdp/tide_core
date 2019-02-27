@@ -5,7 +5,7 @@
  * Drush file to define custom drush command redirect-import.
  */
 
-use \Drupal\redirect\Entity\Redirect;
+use Drupal\redirect\Entity\Redirect;
 
 /**
  * Implements hook_drush_command().
