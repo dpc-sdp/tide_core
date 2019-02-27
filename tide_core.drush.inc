@@ -31,8 +31,7 @@ function tide_core_drush_command() {
  *   URI of redirected page to get the internal path of.
  *
  * @return string
- *  When an internal node id is found or if the URL is to an external site.
- *
+ *   When an internal node id is found or if the URL is to an external site.
  */
 function get_internal_path($to) {
   if ((substr($to, 0, 4) == 'http')) {
@@ -49,8 +48,10 @@ function get_internal_path($to) {
 /**
  * Uses redirect entity to save entry to DB.
  *
- * @param string $from, $to
- *  URI of page to redirect FROM and TO.
+ * @param string $from
+ *   URI of page to redirect FROM.
+ * @param string $to
+ *   URI of page to redirect TO.
  *
  * @return bool
  *   returns FALSE if input was invalid or a node id could not be found.
@@ -135,7 +136,6 @@ function sort_wildcard(array $redir_dict) {
  *
  * @return array
  *   Returns the associative array with CSV data.
- *
  */
 function csv_parse($filepath) {
 
@@ -216,8 +216,9 @@ function php_parse($filepath) {
 
 /**
  * Callback function for redirect-import.
+ *
  * @param string $filepath
- *  Path to input.
+ *   Path to input.
  *
  * @return bool
  *   Returns true if importing redirect data was successful.
