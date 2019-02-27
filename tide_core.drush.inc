@@ -5,6 +5,8 @@
  * Drush file to define custom drush command redirect-import.
  */
 
+use \Drupal\redirect\Entity\Redirect;
+
 /**
  * Implements hook_drush_command().
  */
@@ -51,7 +53,7 @@ function add_redirects($from, $to) {
     if ($vicgov || $wwwvicgov) {
       $to = 'site-4/';
     }
-    $redirect = \Drupal\redirect\Entity\Redirect::create();
+    $redirect = Redirect::create();
     $redirect->setLanguage('en');
     $redirect->setStatusCode(301);
     $queryStr = substr($from, 0, strpos($from, '?'));
@@ -126,7 +128,7 @@ function php_parse($filepath) {
 
   $result = $redirects;
 
-  //Check that the imported array is associative
+  // Check that the imported array is associative.
   if (!([] == $result) && !(array_keys($result) !== range(0, count($result) - 1))) {
     return FALSE;
   }
@@ -146,7 +148,6 @@ function drush_tide_core_redirect_import($filepath = '') {
   if (!file_exists($filepath)) {
     return drush_set_error('ERROR', dt('The file specified does not exist...'));
   }
-
 
   if (pathinfo($filepath, PATHINFO_EXTENSION) == 'json') {
     $redir_dict = json_parse($filepath);
@@ -185,4 +186,3 @@ function drush_tide_core_redirect_import($filepath = '') {
   return TRUE;
 
 };
-
