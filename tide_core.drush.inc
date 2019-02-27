@@ -28,13 +28,11 @@ function tide_core_drush_command() {
  * Get the node id of the page to redirect to.
  *
  * @param string $to
- *  URI of redirected page to get the internal path of.
+ *   URI of redirected page to get the internal path of.
  *
  * @return string
  *  When an internal node id is found or if the URL is to an external site.
  *
- * @return bool
- *  When an internal node id could not be found.
  */
 function get_internal_path($to) {
   if ((substr($to, 0, 4) == 'http')) {
@@ -51,17 +49,14 @@ function get_internal_path($to) {
 /**
  * Uses redirect entity to save entry to DB.
  *
- * @param string $from
- *  URI of page to redirect FROM
- *
- * @param string $to
- *  URI of page to redirect TO
+ * @param string $from, $to
+ *  URI of page to redirect FROM and TO.
  *
  * @return bool
- *  returns FALSE if input was invalid or a node id could not be found.
+ *   returns FALSE if input was invalid or a node id could not be found.
  *
  * @throws \Exception
- *  If saving to the DB fails.
+ *   If saving to the DB fails.
  */
 function add_redirects($from, $to) {
   if ($from != '' && $to != '') {
@@ -105,12 +100,12 @@ function add_redirects($from, $to) {
  * Puts wildcard entries before their specific entries in an array.
  *
  * @param array $redir_dict
- *  Associative array to sort.
+ *   Associative array to sort.
  *
  * @return array
- *  Returns the sorted array.
+ *   Returns the sorted array.
  */
-function sort_wildcard($redir_dict) {
+function sort_wildcard(array $redir_dict) {
 
   $redir_dict_sorted = $redir_dict;
   foreach ($redir_dict as $wildcard_key_old => $wildcard_key_new) {
@@ -136,13 +131,11 @@ function sort_wildcard($redir_dict) {
  * Verify and parse CSV file.
  *
  * @param string $filepath
- *  Path to CSV file.
+ *   Path to CSV file.
  *
  * @return array
- *  Returns the associative array with CSV data.
+ *   Returns the associative array with CSV data.
  *
- * @return bool
- *  Returns false if JSON array was invalid or inaccessible.
  */
 function csv_parse($filepath) {
 
@@ -174,13 +167,10 @@ function csv_parse($filepath) {
  * Verify that the provided JSON file is valid and return the result.
  *
  * @param string $filepath
- *  Path to JSON file.
+ *   Path to JSON file.
  *
  * @return array
- *  Returns the associative array with JSON data.
- *
- * @return bool
- *  Returns false if JSON array was invalid or inaccessible.
+ *   Returns the associative array with JSON data.
  */
 function json_parse($filepath) {
 
@@ -201,13 +191,10 @@ function json_parse($filepath) {
  * Verify and parse PHP.
  *
  * @param string $filepath
- *  Path to PHP file.
+ *   Path to PHP file.
  *
  * @return array
- *  Returns the associative array with CSV data.
- *
- * @return bool
- *  Returns false if PHP array was invalid or inaccessible.
+ *   Returns the associative array with CSV data.
  */
 function php_parse($filepath) {
 
@@ -233,16 +220,12 @@ function php_parse($filepath) {
  *  Path to input.
  *
  * @return bool
- *  Returns true if importing redirect data was successful.
+ *   Returns true if importing redirect data was successful.
  *
  * @throws \Exception
- *  Returns drush error if file reading fails.
+ *   Returns drush error if file reading fails.
  */
 function drush_tide_core_redirect_import($filepath = '') {
-
-  if (null) {
-    drush_print('hi');
-  }
 
   if ($filepath == '') {
     return drush_set_error('ERROR', dt('No input file specified...'));
