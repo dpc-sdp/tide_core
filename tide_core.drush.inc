@@ -71,6 +71,31 @@ function add_redirects($from, $to) {
 }
 
 /**
+ * Wildcards need to come first in the array.
+ */
+function sort_wildcard($redir_dict) {
+
+  $redir_dict_sorted = $redir_dict;
+  foreach ($redir_dict as $wildcard_key_old => $wildcard_key_new) {
+    if (preg_match('/\%$/', $wildcard_key_old)) {
+      foreach ($redir_dict as $no_wildcard_key_old => $no_wildcard_key_new) {
+        if (explode('%', $wildcard_key_old)[0] == explode('.', $no_wildcard_key_old)[0]) {
+          if (array_search($no_wildcard_key_old, array_keys($redir_dict)) < array_search($wildcard_key_old, array_keys($redir_dict))) {
+            unset($redir_dict_sorted[$no_wildcard_key_old]);
+            unset($redir_dict_sorted[$wildcard_key_old]);
+
+            $redir_dict_sorted[$wildcard_key_old] = $wildcard_key_new;
+            $redir_dict_sorted[$no_wildcard_key_old] = $no_wildcard_key_new;
+
+          }
+        }
+      }
+    }
+  }
+  return $redir_dict_sorted;
+}
+
+/**
  * Verify and parse CSV file.
  */
 function csv_parse($filepath) {
@@ -88,6 +113,8 @@ function csv_parse($filepath) {
     if (!$line || (count($line) < 2)) {
       return FALSE;
     }
+
+    $line[1] = explode(PHP_EOL, $line[1])[0];
 
     $result[$line[0]] = $line[1];
   }
@@ -173,6 +200,8 @@ function drush_tide_core_redirect_import($filepath = '') {
       return drush_set_error('DECODE ERROR', dt('Failed to process the specified PHP file...'));
     }
   }
+
+  $redir_dict = sort_wildcard($redir_dict);
 
   $total_processed = 0;
 
