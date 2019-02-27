@@ -14,7 +14,7 @@ function tide_core_drush_command() {
   $items = [];
 
   $items['redirect-import'] = [
-    'description' => "Imports a file and adds redirects to the redirect table",
+    'description' => 'Imports a file and adds redirects to the redirect table',
     'arguments' => [
       'filepath' => 'Path to CSV (comma-separated), JSON or PHP file containing old and new URLs for redirects',
     ],
@@ -26,8 +26,17 @@ function tide_core_drush_command() {
 
 /**
  * Get the node id of the page to redirect to.
+ *
+ * @param string $to
+ *  URI of redirected page to get the internal path of.
+ *
+ * @return string
+ *  When an internal node id is found or if the URL is to an external site.
+ *
+ * @return bool
+ *  When an internal node id could not be found.
  */
-function get_node_id($to) {
+function get_internal_path($to) {
   if ((substr($to, 0, 4) == 'http')) {
     return $to;
   }
@@ -36,17 +45,29 @@ function get_node_id($to) {
   if (preg_match('/node\/(\d+)/', $path, $matches)) {
     return 'node/' . $matches[1];
   }
-  return $to;
-}
+  return FALSE;
+};
 
 /**
  * Uses redirect entity to save entry to DB.
+ *
+ * @param string $from
+ *  URI of page to redirect FROM
+ *
+ * @param string $to
+ *  URI of page to redirect TO
+ *
+ * @return bool
+ *  returns FALSE if input was invalid or a node id could not be found.
+ *
+ * @throws \Exception
+ *  If saving to the DB fails.
  */
 function add_redirects($from, $to) {
   if ($from != '' && $to != '') {
     $redirectrepo = redirect_repository();
     if ($redirectrepo->findBySourcePath($from)) {
-      return;
+      return FALSE;
     }
     $vicgov = $to == 'https://vic.gov.au' || $to == 'http://vic.gov.au' || $to == 'vic.gov.au';
     $wwwvicgov = $to == 'https://www.vic.gov.au' || $to == 'http://www.vic.gov.au' || $to == 'www.vic.gov.au';
@@ -63,15 +84,31 @@ function add_redirects($from, $to) {
     else {
       $query = [];
     }
+
+    $to = get_internal_path($to);
+
+    if (!$to) {
+      return FALSE;
+    }
     $redirect->setSource($from, $query);
-    $redirect->setRedirect(get_node_id($to));
+    $redirect->setRedirect($to);
     $redirect->getRedirect();
     $redirect->save();
+
+    return TRUE;
   }
-}
+
+  return FALSE;
+};
 
 /**
- * Wildcards need to come first in the array.
+ * Puts wildcard entries before their specific entries in an array.
+ *
+ * @param array $redir_dict
+ *  Associative array to sort.
+ *
+ * @return array
+ *  Returns the sorted array.
  */
 function sort_wildcard($redir_dict) {
 
@@ -93,10 +130,19 @@ function sort_wildcard($redir_dict) {
     }
   }
   return $redir_dict_sorted;
-}
+};
 
 /**
  * Verify and parse CSV file.
+ *
+ * @param string $filepath
+ *  Path to CSV file.
+ *
+ * @return array
+ *  Returns the associative array with CSV data.
+ *
+ * @return bool
+ *  Returns false if JSON array was invalid or inaccessible.
  */
 function csv_parse($filepath) {
 
@@ -126,6 +172,15 @@ function csv_parse($filepath) {
 
 /**
  * Verify that the provided JSON file is valid and return the result.
+ *
+ * @param string $filepath
+ *  Path to JSON file.
+ *
+ * @return array
+ *  Returns the associative array with JSON data.
+ *
+ * @return bool
+ *  Returns false if JSON array was invalid or inaccessible.
  */
 function json_parse($filepath) {
 
@@ -144,6 +199,15 @@ function json_parse($filepath) {
 
 /**
  * Verify and parse PHP.
+ *
+ * @param string $filepath
+ *  Path to PHP file.
+ *
+ * @return array
+ *  Returns the associative array with CSV data.
+ *
+ * @return bool
+ *  Returns false if PHP array was invalid or inaccessible.
  */
 function php_parse($filepath) {
 
@@ -165,8 +229,20 @@ function php_parse($filepath) {
 
 /**
  * Callback function for redirect-import.
+ * @param string $filepath
+ *  Path to input.
+ *
+ * @return bool
+ *  Returns true if importing redirect data was successful.
+ *
+ * @throws \Exception
+ *  Returns drush error if file reading fails.
  */
 function drush_tide_core_redirect_import($filepath = '') {
+
+  if (null) {
+    drush_print('hi');
+  }
 
   if ($filepath == '') {
     return drush_set_error('ERROR', dt('No input file specified...'));
