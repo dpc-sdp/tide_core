@@ -40,7 +40,7 @@ function get_node_id($to) {
 }
 
 /**
- * Creates a redirect entity and handles setting attributes and saving redirect entry to the DB.
+ * Uses redirect entity to save entry to DB.
  */
 function add_redirects($from, $to) {
   if ($from != '' && $to != '') {
@@ -71,7 +71,7 @@ function add_redirects($from, $to) {
 }
 
 /**
- * Verify that the provided CSV file is valid, parse it and return the results as an associative array.
+ * Verify and parse CSV file.
  */
 function csv_parse($filepath) {
 
@@ -116,28 +116,28 @@ function json_parse($filepath) {
 };
 
 /**
- * Verify that the provided PHP file is valid, the $redirects variable is defined and is an associative array.
+ * Verify and parse PHP.
  */
 function php_parse($filepath) {
 
+  $redirects = [];
+
   include $filepath;
 
-  if (!isset($redirects)) {
+  if (count($redirects) == 0) {
     return FALSE;
   }
-
-  $result = $redirects;
 
   // Check that the imported array is associative.
-  if (!([] == $result) && !(array_keys($result) !== range(0, count($result) - 1))) {
+  if (!([] == $redirects) && !(array_keys($redirects) !== range(0, count($redirects) - 1))) {
     return FALSE;
   }
 
-  return $result;
+  return $redirects;
 };
 
 /**
- * Callback function for redirect-import, checks file type and calls helper functions.
+ * Callback function for redirect-import.
  */
 function drush_tide_core_redirect_import($filepath = '') {
 
