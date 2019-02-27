@@ -11,7 +11,6 @@
 function tide_core_drush_command() {
   $items = [];
 
-  // Define redirect-import
   $items['redirect-import'] = [
     'description' => "Imports a file and adds redirects to the redirect table",
     'arguments' => [
@@ -21,9 +20,7 @@ function tide_core_drush_command() {
 
   return $items;
 
-}
-
-;
+};
 
 /**
  * Get the node id of the page to redirect to.
@@ -41,8 +38,7 @@ function get_node_id($to) {
 }
 
 /**
- * Creates a redirect entity and handles setting attributes and saving redirect
- * entry to the DB.
+ * Creates a redirect entity and handles setting attributes and saving redirect entry to the DB.
  */
 function add_redirects($from, $to) {
   if ($from != '' && $to != '') {
@@ -73,8 +69,7 @@ function add_redirects($from, $to) {
 }
 
 /**
- * Verify that the provided CSV file is valid, parse it and return the results
- * as an associative array.
+ * Verify that the provided CSV file is valid, parse it and return the results as an associative array.
  */
 function csv_parse($filepath) {
 
@@ -98,9 +93,7 @@ function csv_parse($filepath) {
   fclose($file_handle);
 
   return $result;
-}
-
-;
+};
 
 /**
  * Verify that the provided JSON file is valid and return the result.
@@ -118,13 +111,10 @@ function json_parse($filepath) {
     return $result;
   }
 
-}
-
-;
+};
 
 /**
- * Verify that the provided PHP file is valid, the $redirects variable is
- * defined and is an associative array.
+ * Verify that the provided PHP file is valid, the $redirects variable is defined and is an associative array.
  */
 function php_parse($filepath) {
 
@@ -142,13 +132,10 @@ function php_parse($filepath) {
   }
 
   return $result;
-}
-
-;
+};
 
 /**
- * Callback function for redirect-import, checks file type and calls helper
- * functions.
+ * Callback function for redirect-import, checks file type and calls helper functions.
  */
 function drush_tide_core_redirect_import($filepath = '') {
 
@@ -197,7 +184,5 @@ function drush_tide_core_redirect_import($filepath = '') {
 
   return TRUE;
 
-}
-
-;
+};
 
