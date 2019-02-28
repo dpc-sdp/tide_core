@@ -17,6 +17,12 @@ function tide_core_drush_command() {
     'description' => 'Imports a file and adds redirects to the redirect table',
     'arguments' => [
       'filepath' => 'Path to CSV (comma-separated), JSON or PHP file containing old and new URLs for redirects',
+
+    ],
+    'options' => [
+      'home-url' => 'URL of the current domain being hosted by Drupal. (e.g vic.gov.au)',
+      'lang' => 'Language code of the page',
+      'status-code' => 'Status code to be returned by redirect module.',
     ],
   ];
 
@@ -34,6 +40,7 @@ function tide_core_drush_command() {
  *   When an internal node id is found or if the URL is to an external site.
  */
 function get_internal_path($to) {
+
   if ((substr($to, 0, 4) == 'http')) {
     return $to;
   }
@@ -50,8 +57,14 @@ function get_internal_path($to) {
  *
  * @param string $from
  *   URI of page to redirect FROM.
- * @param string $to
+ * @param string/array $to
  *   URI of page to redirect TO.
+ * @param string $home_url
+ *   URL of the current domain being hosted by Drupal. (e.g vic.gov.au)
+ * @param string $lang
+ *   Language code of page.
+ * @param int $status_code
+ *   Status code to return for redirect. Overridden if $to specifies code.
  *
  * @return bool
  *   returns FALSE if input was invalid or a node id could not be found.
@@ -59,20 +72,33 @@ function get_internal_path($to) {
  * @throws \Exception
  *   If saving to the DB fails.
  */
-function add_redirects($from, $to) {
+function add_redirects($from, $to, $home_url, $lang, $status_code) {
+
+  if (is_array($to)) {
+    $status_code = $to[1];
+    $to = $to[0];
+  }
+
+  $to = get_internal_path($to);
+
+  if (!$to) {
+    $to = '';
+  }
+
   if ($from != '' && $to != '') {
+
     $redirectrepo = redirect_repository();
     if ($redirectrepo->findBySourcePath($from)) {
       return FALSE;
     }
-    $vicgov = $to == 'https://vic.gov.au' || $to == 'http://vic.gov.au' || $to == 'vic.gov.au';
-    $wwwvicgov = $to == 'https://www.vic.gov.au' || $to == 'http://www.vic.gov.au' || $to == 'www.vic.gov.au';
+    $vicgov = $to == 'https://' . $home_url || $to == 'http://' . $home_url || $to == $home_url;
+    $wwwvicgov = $to == 'https://www.' . $home_url || $to == 'http://' . $home_url || $to == 'www.' . $home_url;
     if ($vicgov || $wwwvicgov) {
       $to = 'site-4/';
     }
     $redirect = Redirect::create();
-    $redirect->setLanguage('en');
-    $redirect->setStatusCode(301);
+    $redirect->setLanguage($lang);
+    $redirect->setStatusCode($status_code);
     $queryStr = substr($from, 0, strpos($from, '?'));
     if (!empty($queryStr)) {
       $query = explode('&', $queryStr);
@@ -81,11 +107,6 @@ function add_redirects($from, $to) {
       $query = [];
     }
 
-    $to = get_internal_path($to);
-
-    if (!$to) {
-      return FALSE;
-    }
     $redirect->setSource($from, $query);
     $redirect->setRedirect($to);
     $redirect->getRedirect();
@@ -153,7 +174,17 @@ function csv_parse($filepath) {
       return FALSE;
     }
 
-    $line[1] = explode(PHP_EOL, $line[1])[0];
+    // Strip out the EOL character at the end of a CSV entry.
+    if (count($line) == 3) {
+      $line[2] = explode(PHP_EOL, $line[2])[0];
+      $line[1] = [
+        $line[1],
+        $line[2]
+      ];
+    }
+    else {
+      $line[1] = explode(PHP_EOL, $line[1])[0];
+    }
 
     $result[$line[0]] = $line[1];
   }
@@ -176,7 +207,7 @@ function json_parse($filepath) {
 
   $result = file_get_contents($filepath);
 
-  $result = json_decode($result);
+  $result = json_decode($result, TRUE);
 
   if ($result == NULL) {
     return FALSE;
@@ -228,6 +259,11 @@ function php_parse($filepath) {
  */
 function drush_tide_core_redirect_import($filepath = '') {
 
+  $redir_dict = [];
+  $home_url = drush_get_option('home-url', 'vic.gov.au');
+  $lang = drush_get_option('lang', 'en');
+  $status_code = drush_get_option('status-code', 301);
+
   if ($filepath == '') {
     return drush_set_error('ERROR', dt('No input file specified...'));
   }
@@ -264,13 +300,25 @@ function drush_tide_core_redirect_import($filepath = '') {
   $redir_dict = sort_wildcard($redir_dict);
 
   $total_processed = 0;
+  $total_added = 0;
+  $total_ignored = 0;
+
+  drush_print(print_r($redir_dict, true));
 
   foreach ($redir_dict as $old_url => $new_url) {
-    add_redirects($old_url, $new_url);
+
+    if (add_redirects($old_url, $new_url, $home_url, $lang, $status_code)) {
+      $total_added++;
+    }
+    else {
+      $total_ignored++;
+    }
+
     $total_processed++;
   }
 
   drush_log('Processed ' . $total_processed . ' redirect entries.', 'success', NULL);
+  drush_log('Added: ' . $total_added . ' Ignored: ' . $total_ignored, 'success', NULL);
 
   return TRUE;
 
