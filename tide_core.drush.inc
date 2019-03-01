@@ -57,7 +57,7 @@ function get_internal_path($to) {
  *
  * @param string $from
  *   URI of page to redirect FROM.
- * @param string/array $to
+ * @param string $to
  *   URI of page to redirect TO.
  * @param string $home_url
  *   URL of the current domain being hosted by Drupal. (e.g vic.gov.au)
@@ -179,7 +179,7 @@ function csv_parse($filepath) {
       $line[2] = explode(PHP_EOL, $line[2])[0];
       $line[1] = [
         $line[1],
-        $line[2]
+        $line[2],
       ];
     }
     else {
@@ -303,7 +303,7 @@ function drush_tide_core_redirect_import($filepath = '') {
   $total_added = 0;
   $total_ignored = 0;
 
-  drush_print(print_r($redir_dict, true));
+  drush_print(print_r($redir_dict, TRUE));
 
   foreach ($redir_dict as $old_url => $new_url) {
 
