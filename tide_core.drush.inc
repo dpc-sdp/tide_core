@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drush file to define custom drush command redirect-import.
+ * Drush commands for Tide Core.
  */
 
 use Drupal\redirect\Entity\Redirect;
@@ -24,6 +24,15 @@ function tide_core_drush_command() {
       'lang' => 'Language code of the page',
       'status-code' => 'Status code to be returned by redirect module.',
     ],
+  ];
+   
+  $items['tide-core-scheduled-updates-cron'] = [
+    'description' => 'Execute scheduled_updates cron.',
+    'examples' => [
+      'drush tide-core-scheduled-updates-cron' => dt('Run scheduled updates cron.'),
+    ],
+    'arguments' => [],
+    'aliases' => ['tide-su-cron'],
   ];
 
   return $items;
@@ -323,3 +332,16 @@ function drush_tide_core_redirect_import($filepath = '') {
   return TRUE;
 
 };
+
+/**
+ * Execute scheduled_updates cron.
+ */
+function drush_tide_core_scheduled_updates_cron() {
+
+  try {
+    \Drupal::moduleHandler()->invoke('scheduled_updates', 'cron');
+  }
+  catch (ConsoleException $exception) {
+    drush_set_error($exception->getMessage());
+  }
+}
