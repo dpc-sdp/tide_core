@@ -25,7 +25,6 @@ function tide_core_drush_command() {
       'status-code' => 'Status code to be returned by redirect module.',
     ],
   ];
-   
   $items['tide-core-scheduled-updates-cron'] = [
     'description' => 'Execute scheduled_updates cron.',
     'examples' => [
