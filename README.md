@@ -1,5 +1,5 @@
 # Tide Core
-Page content type for [Tide](https://github.com/dpc-sdp/tide) distribution for [Drupal 8](https://github.com/dpc-sdp)
+Core functionality of [Tide](https://github.com/dpc-sdp/tide) distribution for [Drupal 8](https://github.com/dpc-sdp)
 
 Tide is a Drupal 8 distribution focused on delivering an API first, headless Drupal content administration site.
 
@@ -10,11 +10,16 @@ Tide is a Drupal 8 distribution focused on delivering an API first, headless Dru
 [![Pull Requests](https://img.shields.io/github/issues-pr/dpc-sdp/tide_page.svg)](https://github.com/dpc-sdp/tide_core/pulls)
 
 ## What is in this package
-- content type
-- fields
-- blocks
-- views
-- JSONAPI module integration
+- Roles
+- Permissions for site administration
+- Theme components discovery mechanism (if required)
+- Text formats
+- WYSIWYG configurations
+- Common fields shared accross content types
+- `Topic` Taxonomy Vocabulary
+- `Tags` Taxonomy Vocabulary
+- `Locations` Taxonomy Vocabulary
+- `Departments` Taxonomy Vocabulary
 
 ## Installation
 To install this package, add this custom repository to `repositories` section of
@@ -23,10 +28,10 @@ your `composer.json`:
 ```json
 {
   "repositories": {        
-      "dpc-sdp/tide_page": {
+      "dpc-sdp/tide_core": {
           "type": "vcs",
           "no-api": true,
-          "url": "https://github.com/dpc-sdp/tide_page.git"
+          "url": "https://github.com/dpc-sdp/tide_core.git"
       }
   }
 }
@@ -34,7 +39,7 @@ your `composer.json`:
 
 Require this package as any other Composer package:
 ```bash
-composer require dpc/tide_page 
+composer require dpc/tide_core 
 ``` 
 
 ## Support
@@ -55,8 +60,7 @@ To start local development stack:
  
 ## Related projects
 - [tide](https://github.com/dpc-sdp/tide)       
-- [tide_api](https://github.com/dpc-sdp/tide_api)         
-- [tide_core](https://github.com/dpc-sdp/tide_core)
+- [tide_api](https://github.com/dpc-sdp/tide_api)        
 - [tide_event](https://github.com/dpc-sdp/tide_event)
 - [tide_landing_page](https://github.com/dpc-sdp/tide_landing_page)
 - [tide_media](https://github.com/dpc-sdp/tide_media)     
