@@ -83,7 +83,6 @@ Feature: WYSIWYG toolbar configuration
     And I see Source inside of Toolbar
     And I see Templates inside of Toolbar
     And I should not see a "#cke_edit-body-0-value .cke_top .cke_button__wenzgmap" element
-    And I should not see a "#cke_edit-body-0-value .cke_top .cke_button__iframe" element
 
   @api @javascript
   Scenario: Admin Text format has expected WYSIWYG buttons

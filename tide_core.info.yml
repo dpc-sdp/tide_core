@@ -26,6 +26,7 @@ dependencies:
   - drupal:path
   - drupal:page_cache
   - drupal:taxonomy
+  - drupal:telephone
   - drupal:text
   - drupal:user
   - drupal:workflows
@@ -85,9 +86,7 @@ config_devel:
     - core.entity_view_mode.node.featured_card
     - entity_browser.browser.tide_image_browser
     - field.field.paragraph.links.field_paragraph_link
-    - field.field.paragraph.links.field_paragraph_summary
     - field.field.paragraph.related_links.field_paragraph_link
-    - field.field.paragraph.related_links.field_paragraph_summary
     - field.field.paragraph.timeline.field_paragraph_body
     - field.field.paragraph.timeline.field_paragraph_cta_text
     - field.field.paragraph.timeline.field_paragraph_date_range
@@ -101,6 +100,10 @@ config_devel:
     - field.storage.media.field_media_license
     - field.storage.node.field_featured_image
     - field.storage.node.field_metatags
+    - field.storage.node.field_node_author
+    - field.storage.node.field_node_email
+    - field.storage.node.field_node_link
+    - field.storage.node.field_node_phone
     - field.storage.node.field_related_links
     - field.storage.node.field_show_related_content
     - field.storage.node.field_show_social_sharing

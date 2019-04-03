@@ -3,11 +3,9 @@ status: true
 dependencies:
   config:
     - field.field.paragraph.links.field_paragraph_link
-    - field.field.paragraph.links.field_paragraph_summary
     - paragraphs.paragraphs_type.links
   module:
     - link
-    - text
 id: paragraph.links.default
 targetEntityType: paragraph
 bundle: links
@@ -24,12 +22,5 @@ content:
       target: ''
     third_party_settings: {  }
     type: link
-    region: content
-  field_paragraph_summary:
-    type: text_default
-    weight: 3
-    label: above
-    settings: {  }
-    third_party_settings: {  }
     region: content
 hidden: {  }

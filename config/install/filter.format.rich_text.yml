@@ -47,7 +47,7 @@ filters:
     status: true
     weight: -49
     settings:
-      allowed_html: '<a href hreflang title class id target rel data-entity-substitution data-entity-type data-entity-uuid> <em> <strong> <cite> <blockquote cite class> <code> <ul type class> <ol start type class> <li> <dl> <dt> <dd> <footer> <h2 id> <h3 id> <h4 id> <h5 id> <s> <span class> <sup> <sub> <img src alt data-entity-type data-entity-uuid data-align data-caption> <table> <caption> <tbody> <thead> <tfoot> <th> <td> <tr> <hr> <br> <pre> <drupal-entity data-* title alt><p class="wysiwyg-callout text-align-left text-align-center text-align-right text-align-justify quotation__quote"><div class>'
+      allowed_html: '<a href hreflang title class id target rel data-entity-substitution data-entity-type data-entity-uuid> <em> <strong> <cite> <blockquote cite class> <code> <ul type class> <ol start type class> <li> <dl> <dt> <dd> <footer> <h2 id> <h3 id> <h4 id> <h5 id> <s> <span class> <sup> <sub> <img src alt data-entity-type data-entity-uuid data-align data-caption> <table> <caption> <tbody> <thead> <tfoot> <th> <td> <tr> <hr> <br> <pre> <drupal-entity data-* title alt><p class="wysiwyg-callout text-align-left text-align-center text-align-right text-align-justify quotation__quote"><div class><iframe frameborder height scrolling src width>'
       filter_html_help: true
       filter_html_nofollow: false
   filter_autop:
@@ -80,7 +80,8 @@ filters:
     provider: token_filter
     status: true
     weight: -45
-    settings: {  }
+    settings:
+      replace_empty: '0'
   filter_wysiwyg_cleanup:
     id: filter_wysiwyg_cleanup
     provider: wysiwyg_template_core
