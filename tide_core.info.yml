@@ -76,28 +76,12 @@ config_devel:
   install:
     - core.entity_form_display.paragraph.links.default
     - core.entity_form_display.paragraph.related_links.default
-    - core.entity_form_display.paragraph.timeline.default
-    - core.entity_form_display.paragraph.timelines.default
     - core.entity_view_display.paragraph.links.default
     - core.entity_view_display.paragraph.related_links.default
-    - core.entity_view_display.paragraph.timeline.default
-    - core.entity_view_display.paragraph.timelines.default
     - core.entity_view_mode.node.card
     - core.entity_view_mode.node.featured_card
-    - entity_browser.browser.tide_image_browser
     - field.field.paragraph.links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_link
-    - field.field.paragraph.timeline.field_paragraph_body
-    - field.field.paragraph.timeline.field_paragraph_cta_text
-    - field.field.paragraph.timeline.field_paragraph_date_range
-    - field.field.paragraph.timeline.field_paragraph_cta_text
-    - field.field.paragraph.timeline.field_paragraph_link
-    - field.field.paragraph.timeline.field_paragraph_media
-    - field.field.paragraph.timeline.field_paragraph_title
-    - field.field.paragraph.timelines.field_paragraph_title
-    - field.field.paragraph.timelines.field_timeline
-    - field.storage.media.field_media_department
-    - field.storage.media.field_media_license
     - field.storage.node.field_featured_image
     - field.storage.node.field_metatags
     - field.storage.node.field_node_author
@@ -121,21 +105,18 @@ config_devel:
     - field.storage.paragraph.field_paragraph_media
     - field.storage.paragraph.field_paragraph_summary
     - field.storage.paragraph.field_paragraph_title
-    - field.storage.paragraph.field_timeline
     - filter.format.admin_text
     - filter.format.rich_text
     - image.style.thumbnail
     - linkit.linkit_profile.content
-    - media.type.image
-    - media.type.document
     - paragraphs.paragraphs_type.links
     - paragraphs.paragraphs_type.related_links
-    - paragraphs.paragraphs_type.timeline
-    - paragraphs.paragraphs_type.timelines
-    - pathauto.pattern.content_title
+    - taxonomy.vocabulary.audience
+    - taxonomy.vocabulary.department
+    - taxonomy.vocabulary.location
+    - taxonomy.vocabulary.sites
     - taxonomy.vocabulary.tags
     - taxonomy.vocabulary.topic
-    - user.role.administrator
     - user.role.approver
     - user.role.editor
     - user.role.previewer
@@ -153,19 +134,36 @@ config_devel:
     - scheduled_updates.scheduled_update_type.scheduled_publishing
     - scheduled_update.field_moderation_state_published
     - scheduled_update.field_moderation_state_archived
-    - views.view.tide_media_browser
   optional:
+    - block.block.seven_breadcrumbs
+    - block.block.seven_content
+    - block.block.seven_local_actions
+    - block.block.seven_login
+    - block.block.seven_messages
+    - block.block.seven_page_title
+    - block.block.seven_primary_local_tasks
+    - block.block.seven_secondary_local_tasks
     - clamav.settings
-    - prlp.settings
-    - core.entity_form_display.media.file.default
-    - core.entity_form_display.media.image.default
-    - core.entity_view_display.media.file.default
-    - core.entity_view_display.media.image.default
+    - core.entity_form_display.paragraph.timeline.default
+    - core.entity_form_display.paragraph.timelines.default
+    - core.entity_view_display.paragraph.timeline.default
+    - core.entity_view_display.paragraph.timelines.default
     - editor.editor.admin_text
     - editor.editor.rich_text
-    - field.field.media.file.field_media_file
-    - field.field.media.image.field_media_image
-    - field.storage.media.field_media_file
+    - field.field.paragraph.timeline.field_paragraph_body
+    - field.field.paragraph.timeline.field_paragraph_cta_text
+    - field.field.paragraph.timeline.field_paragraph_date_range
+    - field.field.paragraph.timeline.field_paragraph_cta_text
+    - field.field.paragraph.timeline.field_paragraph_link
+    - field.field.paragraph.timeline.field_paragraph_media
+    - field.field.paragraph.timeline.field_paragraph_summary
+    - field.field.paragraph.timeline.field_paragraph_title
+    - field.field.paragraph.timelines.field_paragraph_title
+    - field.field.paragraph.timelines.field_timeline
+    - field.storage.paragraph.field_timeline
+    - filter.format.plain_text
+    - jsonapi_extras.jsonapi_resource_config.paragraph--timeline
+    - jsonapi_extras.jsonapi_resource_config.paragraph--timelines
     - metatag.metatag_defaults.403
     - metatag.metatag_defaults.404
     - metatag.metatag_defaults.front
@@ -173,8 +171,12 @@ config_devel:
     - metatag.metatag_defaults.node
     - metatag.metatag_defaults.taxonomy_term
     - metatag.metatag_defaults.user
+    - paragraphs.paragraphs_type.timeline
+    - paragraphs.paragraphs_type.timelines
+    - pathauto.pattern.content_title
     - pathauto.settings
+    - prlp.settings
     - system.action.pathauto_update_alias_node
     - system.action.pathauto_update_alias_user
-    - jsonapi_extras.jsonapi_resource_config.paragraph--timeline
-    - jsonapi_extras.jsonapi_resource_config.paragraph--timelines
+    - user.role.administrator
+    - workflows.workflow.editorial

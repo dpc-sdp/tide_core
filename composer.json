@@ -3,6 +3,8 @@
     "description": "Core functionality for Tide Drupal 8 distribution",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "ckeditor/fakeobjects": "^4.5.11",
         "ckeditor/iframe": "^4.5.11",
@@ -15,7 +17,7 @@
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
         "drupal/content_moderation_scheduled_updates": "^1.0",
-        "drupal/core": "8.5.6",
+        "drupal/core": "8.6.12",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/entity_browser": "^1.6",
@@ -62,11 +64,8 @@
         "patches": {
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/node/2898875": "https://www.drupal.org/files/issues/2018-03-16/contextual_links_should-2898875-6.patch",
-                "No validation on text length for menu description when editing node - https://www.drupal.org/node/2852665#comment-12650295": "https://www.drupal.org/files/issues/2018-06-13/fatal_error_remove_menu_add_with_tests.patch",
-                "active-link.js throws JS error if query string parameter contains a single quote - https://www.drupal.org/node/2902769": "https://www.drupal.org/files/issues/active_link_js_throws-2902769-5_0.patch",
-                "getUuid() in class MenuLinkContent not returning any value - https://www.drupal.org/node/2737741": "https://www.drupal.org/files/issues/drupal-menulinkcontent-getuuid-return-missing-2737741-2.patch",
+                "active-link.js throws JS error if query string parameter contains a single quote - https://www.drupal.org/node/2902769": "https://www.drupal.org/files/issues/2018-10-25/active_link_js_throws-2902769-16.patch",
                 "RSS view with fields give wrong URL from path field - https://www.drupal.org/node/2673980#comment-12180229": "https://www.drupal.org/files/issues/rss_view_with_fields-2673980-28.patch",
-                "Installation profiles do not support project:module format for dependencies - https://www.drupal.org/node/2855026": "https://www.drupal.org/files/issues/2855026-30.patch",
                 "DateTimeIso8601::getDateTime() does not specify the storage timezone when constructing DrupalDateTime object - https://www.drupal.org/project/drupal/issues/3002164": "https://www.drupal.org/files/issues/2018-09-25/3002164-7.patch"
             },
             "drupal/entity_embed": {
@@ -82,7 +81,7 @@
                 "Unable to install if media is not yet installed - https://www.drupal.org/project/media_entity_audio/issues/2984336": "https://www.drupal.org/files/issues/2018-07-07/requirements-not-met-if-no-media-2984336-4.patch"
             },
             "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2018-07-15/metatag_2945817_28.patch"
+                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2019-01-18/computed_field_2945817_61.patch"
             },
             "drupal/token": {
                 "Node preview button generates useless menu link - https://www.drupal.org/node/2823731#comment-11905884": "https://www.drupal.org/files/issues/token_node_preview_menu_link-2823731-4.patch",
