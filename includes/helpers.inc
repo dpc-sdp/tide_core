@@ -20,8 +20,8 @@ use Drupal\Core\Config\StorageComparer;
  *   Configuration id.
  * @param array $locations
  *   Array of paths to lookup configuration files.
- * @param bool $override
- *   Boolean to flag if imported configuration should override existing.
+ * @param bool $prioritise_sync
+ *   Whether to prioritise the same config in CONFIG_SYNC.
  *
  * @return mixed
  *   Configuration value.
@@ -29,18 +29,17 @@ use Drupal\Core\Config\StorageComparer;
  * @throws \Exception
  *   If configuration file was not found in any specified location.
  */
-function _tide_read_config($id, array $locations = [], $override = FALSE) {
+function _tide_read_config($id, array $locations = [], $prioritise_sync = TRUE) {
   static $storages;
 
   global $config_directories;
-  // Check if configuration item was flagged to override the existing,
-  // which means that it should be processed first.
-  if ($override) {
-    // Append $config_directories to locations.
+
+  if (!$prioritise_sync) {
+    // CONFIG_SYNC has lower priority.
     array_push($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
   }
   else {
-    // Prepend $config_directories to locations.
+    // CONFIG_SYNC has top priority.
     array_unshift($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
   }
 
@@ -56,66 +55,6 @@ function _tide_read_config($id, array $locations = [], $override = FALSE) {
   }
 
   return $storages[$path]->read($id);
-}
-
-/**
- * Helper to delete configuration from provided locations.
- *
- * CONFIG_SYNC_DIRECTORY is prepended to the beginning of the locations list
- * to perform lookup in active configuration.
- *
- * @param string $id
- *   Configuration id.
- * @param array $locations
- *   Array of paths to lookup configuration files.
- * @param bool $file_system_delete
- *   Determine if config file should be deleted from config sync directory.
- *
- * @return bool
- *   Indicates success or failure of the function.
- *
- * @throws \Exception
- *   If configuration file was not deleted successfully.
- */
-function _tide_delete_config($id, array $locations = [], $file_system_delete = FALSE) {
-  static $storages;
-  global $config_directories;
-  $config_storage = \Drupal::service('config.storage');
-
-  // Delete configuration from storage.
-  if ($config_storage->exists($id)) {
-    $config_storage->delete($id);
-  }
-
-  if ($file_system_delete) {
-    array_unshift($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
-
-    foreach ($locations as $path) {
-      if (file_exists($path . DIRECTORY_SEPARATOR . $id . '.yml')) {
-        $storages[$path] = new FileStorage($path);
-        break;
-      }
-    }
-
-    if (!isset($storages[$path])) {
-      return FALSE;
-    }
-    else {
-      try {
-        // Delete configuration file from disk.
-        $file_storage = new FileStorage($path);
-        $file_storage->delete($id);
-        drush_print(t('Configuration for @conf_name has been deleted from active config storage.', [
-          '@conf_name' => $id,
-        ]), 4);
-      }
-      catch (\Exception $e) {
-        print $e->getMessage();
-      }
-    }
-  }
-
-  return TRUE;
 }
 
 /**
@@ -158,14 +97,13 @@ function _tide_reload_default_config($module) {
  *   Config name.
  * @param array $locations
  *   Array of Locations.
- * @param bool $override
- *   Boolean to flag if imported configuration should override existing.
+ * @param bool $prioritise_sync
+ *   Whether to prioritise the same config in CONFIG_SYNC.
  *
  * @throws \Exception
  */
-function _tide_import_single_config($config_name, array $locations = [], $override = FALSE) {
-  global $config_directories;
-  $config_data = _tide_read_config($config_name, $locations, $override);
+function _tide_import_single_config($config_name, array $locations = [], $prioritise_sync = TRUE) {
+  $config_data = _tide_read_config($config_name, $locations, $prioritise_sync);
 
   $config_storage = \Drupal::service('config.storage');
   $event_dispatcher = \Drupal::service('event_dispatcher');
@@ -176,7 +114,6 @@ function _tide_import_single_config($config_name, array $locations = [], $overri
   $module_installer = \Drupal::service('module_installer');
   $theme_handler = \Drupal::service('theme_handler');
   $string_translation = \Drupal::service('string_translation');
-  $config_factory = \Drupal::service('config.factory');
 
   \Drupal::config($config_name);
 
@@ -206,16 +143,6 @@ function _tide_import_single_config($config_name, array $locations = [], $overri
   try {
     $config_importer->import();
     \Drupal::cache('config')->delete($config_name);
-    // If configuration was set to override, then ensure it is written to active
-    // config.
-    if ($override) {
-      $file_storage = new FileStorage($config_directories[CONFIG_SYNC_DIRECTORY]);
-      $config_data = $config_factory->getEditable($config_name);
-      $file_storage->write($config_name, $config_data->get());
-      drush_print(t('Configuration for @conf_name has been imported to active config storage with overwrite flag.', [
-        '@conf_name' => $config_name,
-      ]), 4);
-    }
   }
   catch (Exception $exception) {
     foreach ($config_importer->getErrors() as $error) {

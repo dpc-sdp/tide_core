@@ -103,7 +103,7 @@
                 "Scheduled Updates does not work with Content Moderation - https://www.drupal.org/project/scheduled_updates/issues/2821916": "https://www.drupal.org/files/issues/scheduled_updates_does-2821916-7.patch"
             },
             "drupal/field_group": {
-                "Do not translate field group labels using interface translation. - https://www.drupal.org/project/field_group/issues/2846617": "https://www.drupal.org/files/issues/2018-05-10/2846617-16-use-config-translations-for-field-group.patch"
+                "Do not translate field group labels using interface translation. - https://www.drupal.org/project/field_group/issues/2846617": "https://www.drupal.org/files/issues/2019-04-18/field_group-use_config_translation-2846617-26.patch"
             }
         }
     }
