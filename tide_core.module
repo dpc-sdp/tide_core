@@ -5,8 +5,11 @@
  * Contains tide_core.module.
  */
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\views\ViewExecutable;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Implements hook_views_data_alter().
@@ -74,4 +77,27 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
       unset($form['scheduled_archiving']);
     }
   }
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function tide_core_entity_operation(EntityInterface $entity) {
+  // Add "Archived" operation link to entities.
+  $operations = [];
+  $workflow = Workflow::load('editorial');
+  if ($workflow) {
+    if ($workflow->getTypePlugin()
+      ->appliesToEntityTypeAndBundle($entity->getEntityTypeId(), $entity->bundle())) {
+      if ($entity->access('use ' . $workflow->id() . ' transition archived')) {
+        $operations['archive'] = [
+          'title' => t('Archive'),
+          'weight' => 100,
+          'url' => Url::fromRoute('tide_core.entity.archive_confirm', ['bundle' => $entity->getEntityTypeId(), 'entity_type_id' => $entity->id()]),
+        ];
+      }
+    }
+  }
+
+  return $operations;
 }

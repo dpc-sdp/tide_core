@@ -20,6 +20,8 @@ use Drupal\Core\Config\StorageComparer;
  *   Configuration id.
  * @param array $locations
  *   Array of paths to lookup configuration files.
+ * @param bool $prioritise_sync
+ *   Whether to prioritise the same config in CONFIG_SYNC.
  *
  * @return mixed
  *   Configuration value.
@@ -27,11 +29,19 @@ use Drupal\Core\Config\StorageComparer;
  * @throws \Exception
  *   If configuration file was not found in any specified location.
  */
-function _tide_read_config($id, array $locations = []) {
+function _tide_read_config($id, array $locations = [], $prioritise_sync = TRUE) {
   static $storages;
 
   global $config_directories;
-  array_unshift($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
+
+  if (!$prioritise_sync) {
+    // CONFIG_SYNC has lower priority.
+    array_push($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
+  }
+  else {
+    // CONFIG_SYNC has top priority.
+    array_unshift($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
+  }
 
   foreach ($locations as $path) {
     if (file_exists($path . DIRECTORY_SEPARATOR . $id . '.yml')) {
@@ -87,11 +97,13 @@ function _tide_reload_default_config($module) {
  *   Config name.
  * @param array $locations
  *   Array of Locations.
+ * @param bool $prioritise_sync
+ *   Whether to prioritise the same config in CONFIG_SYNC.
  *
  * @throws \Exception
  */
-function _tide_import_single_config($config_name, array $locations = []) {
-  $config_data = _tide_read_config($config_name, $locations);
+function _tide_import_single_config($config_name, array $locations = [], $prioritise_sync = TRUE) {
+  $config_data = _tide_read_config($config_name, $locations, $prioritise_sync);
 
   $config_storage = \Drupal::service('config.storage');
   $event_dispatcher = \Drupal::service('event_dispatcher');
@@ -107,6 +119,7 @@ function _tide_import_single_config($config_name, array $locations = []) {
 
   $source_storage = new StorageReplaceDataWrapper($config_storage);
   $source_storage->replaceData($config_name, $config_data);
+
   $storage_comparer = new StorageComparer(
     $source_storage,
     $config_storage,
