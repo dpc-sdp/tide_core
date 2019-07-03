@@ -102,7 +102,6 @@ config_devel:
     - field.storage.paragraph.field_paragraph_cta_text
     - field.storage.node.field_landing_page_contact
     - field.storage.paragraph.field_paragraph_link
-    - field.storage.paragraph.field_paragraph_media
     - field.storage.paragraph.field_paragraph_summary
     - field.storage.paragraph.field_paragraph_title
     - filter.format.admin_text
