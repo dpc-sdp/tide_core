@@ -9,6 +9,9 @@ use Drupal\filter\Entity\FilterFormat;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\views\Entity\View;
+use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Config\InstallStorage;
 
 /**
  * Implements hook_install().
@@ -223,5 +226,31 @@ function tide_core_update_8006() {
     if (count($wysiwyg_template->getNodeTypes()) > 0) {
       $wysiwyg_template->set('node_types', [])->save();
     }
+  }
+}
+
+/**
+ * Install media_content_summary and content_summary_page views yaml files.
+ */
+function tide_core_update_8007() {
+  if (Drupal::moduleHandler()->moduleExists('views')) {
+    $view_ids = [
+      'views.view.media_content_summary' => 'media_content_summary',
+      'views.view.content_summary_page' => 'content_summary_page',
+    ];
+    $views = View::loadMultiple($view_ids);
+    if (!$views) {
+      $module_handler = Drupal::moduleHandler();
+      $install_path = $module_handler->getModule('tide_core')->getPath() . '/' . InstallStorage::CONFIG_INSTALL_DIRECTORY;
+      $storage = new FileStorage($install_path);
+      foreach ($view_ids as $view_route => $view_id) {
+        Drupal::entityTypeManager()
+          ->getStorage('view')
+          ->create($storage->read($view_route))
+          ->save();
+      }
+      return t('The summary views has been created.');
+    }
+    return t("The summary view already exists and was not replaced.");
   }
 }
