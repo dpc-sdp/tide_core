@@ -1,0 +1,5 @@
+node.add_page:
+  route_name: node.add_page
+  title: 'Add content'
+  appears_on:
+    - view.content_summary_page.page_1
