@@ -7,8 +7,8 @@ dependencies:
     - media
     - image
     - user
-id: media
-label: Media
+id: media_content_summary
+label: 'Media content summary'
 module: views
 description: ''
 tag: ''
@@ -777,33 +777,6 @@ display:
   media_page_list:
     display_plugin: page
     id: media_page_list
-    display_title: Media
-    position: 1
-    display_options:
-      display_extenders: {  }
-      path: admin/content/media
-      menu:
-        type: tab
-        title: Media
-        description: ''
-        expanded: false
-        parent: ''
-        weight: 0
-        context: '0'
-        menu_name: main
-      display_description: ''
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - url.query_args
-        - user.permissions
-      tags: {  }
-  page_1:
-    display_plugin: page
-    id: page_1
     display_title: Media
     position: 1
     display_options:
