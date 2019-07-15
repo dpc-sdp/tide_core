@@ -225,3 +225,17 @@ function tide_core_update_8006() {
     }
   }
 }
+
+/**
+ * Delete all scheduled_update entities.
+ */
+function tide_core_update_8007() {
+  if (Drupal::moduleHandler()->moduleExists('scheduled_updates')) {
+    $scheduled_updates = Drupal::entityTypeManager()
+      ->getStorage('scheduled_update')
+      ->loadMultiple();
+    foreach ($scheduled_updates as $scheduled_update) {
+      $scheduled_update->delete();
+    }
+  }
+}
