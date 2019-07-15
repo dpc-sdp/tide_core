@@ -68,6 +68,8 @@ dependencies:
   - viewsreference:viewsreference
   - wysiwyg_template:wysiwyg_template
   - wysiwyg_template:wysiwyg_template_core
+  - drupal:scheduled_transitions
+  - drupal:dynamic_entity_reference
 themes:
   - seven
 config_devel:
