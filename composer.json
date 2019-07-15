@@ -97,6 +97,12 @@
             },
             "drupal/field_group": {
                 "Do not translate field group labels using interface translation. - https://www.drupal.org/project/field_group/issues/2846617": "https://www.drupal.org/files/issues/2019-04-18/field_group-use_config_translation-2846617-26.patch"
+            },
+            "drupal/scheduled_transitions": {
+                "Getting `500 Service unavailable` from Ajax call - https://www.drupal.org/project/scheduled_transitions/issues/3065984": "https://www.drupal.org/files/issues/2019-07-05/scheduled_transitions-getting_500_error-D8.6.16.patch"
+            },
+            "drupal/permissions_by_term": {
+                "scheduled_transitions module integration issue - https://www.drupal.org/project/permissions_by_term/issues/3065986#comment-13171384": "https://www.drupal.org/files/issues/2019-07-05/permissions_by_term-issue-3065986-D8.6.16.patch"
             }
         }
     }
