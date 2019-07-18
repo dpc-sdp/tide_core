@@ -1,6 +1,6 @@
 tide_core.content_summary_page:
   title: Content Summary
-  description: 'improved contents view page'
+  description: 'Content listing with additional filters for site, sub-site and workflow state.'
   route_name: view.content_summary_page.page_1
   parent: system.admin
   weight: 100
