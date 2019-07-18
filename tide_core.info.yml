@@ -102,7 +102,6 @@ config_devel:
     - field.storage.paragraph.field_paragraph_cta_text
     - field.storage.node.field_landing_page_contact
     - field.storage.paragraph.field_paragraph_link
-    - field.storage.paragraph.field_paragraph_media
     - field.storage.paragraph.field_paragraph_summary
     - field.storage.paragraph.field_paragraph_title
     - filter.format.admin_text
@@ -114,7 +113,6 @@ config_devel:
     - taxonomy.vocabulary.audience
     - taxonomy.vocabulary.department
     - taxonomy.vocabulary.location
-    - taxonomy.vocabulary.sites
     - taxonomy.vocabulary.tags
     - taxonomy.vocabulary.topic
     - user.role.approver
@@ -144,26 +142,9 @@ config_devel:
     - block.block.seven_primary_local_tasks
     - block.block.seven_secondary_local_tasks
     - clamav.settings
-    - core.entity_form_display.paragraph.timeline.default
-    - core.entity_form_display.paragraph.timelines.default
-    - core.entity_view_display.paragraph.timeline.default
-    - core.entity_view_display.paragraph.timelines.default
     - editor.editor.admin_text
     - editor.editor.rich_text
-    - field.field.paragraph.timeline.field_paragraph_body
-    - field.field.paragraph.timeline.field_paragraph_cta_text
-    - field.field.paragraph.timeline.field_paragraph_date_range
-    - field.field.paragraph.timeline.field_paragraph_cta_text
-    - field.field.paragraph.timeline.field_paragraph_link
-    - field.field.paragraph.timeline.field_paragraph_media
-    - field.field.paragraph.timeline.field_paragraph_summary
-    - field.field.paragraph.timeline.field_paragraph_title
-    - field.field.paragraph.timelines.field_paragraph_title
-    - field.field.paragraph.timelines.field_timeline
-    - field.storage.paragraph.field_timeline
     - filter.format.plain_text
-    - jsonapi_extras.jsonapi_resource_config.paragraph--timeline
-    - jsonapi_extras.jsonapi_resource_config.paragraph--timelines
     - metatag.metatag_defaults.403
     - metatag.metatag_defaults.404
     - metatag.metatag_defaults.front
@@ -179,4 +160,5 @@ config_devel:
     - system.action.pathauto_update_alias_node
     - system.action.pathauto_update_alias_user
     - user.role.administrator
+    - user.role.anonymous
     - workflows.workflow.editorial
