@@ -9,6 +9,7 @@ use Drupal\filter\Entity\FilterFormat;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\webform\Entity\Webform;
 
 /**
  * Implements hook_install().
@@ -48,13 +49,6 @@ function tide_core_install() {
 
   // Update default Editorial workflow of Content Moderation.
   _tide_core_update_editorial_workflow();
-
-  $functions = get_defined_functions();
-  foreach ($functions['user'] as $function) {
-    if (strpos($function, 'tide_core_update_') === 0) {
-      call_user_func($function);
-    }
-  }
 }
 
 /**
@@ -223,5 +217,43 @@ function tide_core_update_8006() {
     if (count($wysiwyg_template->getNodeTypes()) > 0) {
       $wysiwyg_template->set('node_types', [])->save();
     }
+  }
+}
+
+/**
+ * Set default access permission for anonymous to webforms.
+ */
+function tide_core_update_8007(&$sandbox) {
+  if (!isset($sandbox['total'])) {
+    if ($count = Drupal::entityQuery('webform')->count()->execute()) {
+      $sandbox['total'] = $count;
+      $sandbox['current'] = 0;
+      $sandbox['#finished'] = $count ? 0 : 1;
+    }
+    else {
+      return;
+    }
+  }
+  $batch = 10;
+  $webform_ids = Drupal::entityQuery('webform')
+    ->range($sandbox['current'], $batch)
+    ->execute();
+  foreach ($webform_ids as $webform_id) {
+    $webform = Webform::load($webform_id);
+    $access_rules = $webform->getAccessRules();
+    // $access_rules['configuration']['roles'] will never be NULL.
+    // checking if $access_rules['configuration']['roles'] empty or not.
+    if (empty($access_rules['configuration']['roles']) || !in_array('anonymous', $access_rules['configuration']['roles'])) {
+      $access_rules['configuration']['roles'][] = 'anonymous';
+      $webform->setAccessRules($access_rules);
+      $webform->save();
+    }
+    $sandbox['current']++;
+  }
+  if ($sandbox['total'] == 0) {
+    $sandbox['#finished'] = 1;
+  }
+  else {
+    $sandbox['#finished'] = ($sandbox['current'] / $sandbox['total']);
   }
 }
