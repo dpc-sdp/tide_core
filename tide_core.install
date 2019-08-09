@@ -6,6 +6,7 @@
  */
 
 use Drupal\filter\Entity\FilterFormat;
+use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
@@ -224,4 +225,39 @@ function tide_core_update_8006() {
       $wysiwyg_template->set('node_types', [])->save();
     }
   }
+}
+
+/**
+ * Create pathauto pattern for Taxonomy terms.
+ */
+function tide_core_update_8007() {
+  if (!PathautoPattern::load('taxonomy_term')) {
+    $pattern = PathautoPattern::create([
+      'id' => 'taxonomy_term',
+      'label' => 'Taxonomy term',
+      'type' => 'canonical_entities:taxonomy_term',
+      'pattern' => '[term:vocabulary:machine-name]/[term:name]',
+      'weight' => 0,
+    ]);
+    $pattern->save();
+  }
+
+  $batch = [
+    'title' => 'Bulk updating Term URL aliases',
+    'operations' => [
+      ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
+      [
+        'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
+        [
+          'canonical_entities:taxonomy_term',
+          'all',
+        ],
+      ],
+    ],
+    'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
+    'progressive' => FALSE,
+  ];
+
+  batch_set($batch);
+  batch_process();
 }
