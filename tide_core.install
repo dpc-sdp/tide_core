@@ -227,9 +227,27 @@ function tide_core_update_8006() {
 }
 
 /**
+ * Delete and uninstall all scheduled_update entities.
+ */
+function tide_core_update_8008() {
+  if (\Drupal::moduleHandler()->moduleExists('scheduled_updates')) {
+    $scheduled_updates = \Drupal::entityTypeManager()
+      ->getStorage('scheduled_update')
+      ->loadMultiple();
+    foreach ($scheduled_updates as $scheduled_update) {
+      $scheduled_update->delete();
+    }
+    \Drupal::service('module_installer')->uninstall([
+      'scheduled_updates',
+      'content_moderation_scheduled_updates',
+    ]);
+  }
+}
+
+/**
  * Change %uid token to %user in login redirect URL of PRLP settings.
  */
-function tide_core_update_8007() {
+function tide_core_update_8009() {
   // Issue https://www.drupal.org/project/prlp/issues/2785087 was fixed.
   $config = \Drupal::configFactory()->getEditable('prlp.settings');
   $login_destination = $config->get('login_destination');
