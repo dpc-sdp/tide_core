@@ -58,8 +58,6 @@ dependencies:
   - pathauto:pathauto
   - redirect:redirect
   - role_delegation:role_delegation
-  - scheduled_updates:scheduled_updates
-  - content_moderation_scheduled_updates:content_moderation_scheduled_updates
   - simple_sitemap:simple_sitemap
   - seckit:seckit
   - simple_sitemap:simple_sitemap
@@ -70,6 +68,8 @@ dependencies:
   - viewsreference:viewsreference
   - wysiwyg_template:wysiwyg_template
   - wysiwyg_template:wysiwyg_template_core
+  - scheduled_transitions:scheduled_transitions
+  - dynamic_entity_reference:dynamic_entity_reference
 themes:
   - seven
 config_devel:
@@ -124,14 +124,6 @@ config_devel:
     - wysiwyg_template.wysiwyg_template.secondary_button
     - field.storage.block_content.field_tags
     - field.storage.block_content.field_topic
-    - field.storage.node.scheduled_archiving
-    - field.storage.node.scheduled_publishing
-    - field.storage.scheduled_update.field_moderation_state_archived
-    - field.storage.scheduled_update.field_moderation_state_published
-    - scheduled_updates.scheduled_update_type.scheduled_archiving
-    - scheduled_updates.scheduled_update_type.scheduled_publishing
-    - scheduled_update.field_moderation_state_published
-    - scheduled_update.field_moderation_state_archived
   optional:
     - block.block.seven_breadcrumbs
     - block.block.seven_content

@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
@@ -38,45 +37,6 @@ function tide_core_views_query_substitutions(ViewExecutable $view) {
   return [
     '***VIEW_ANY_UNPUBLISHED_NODES***' => intval($account->hasPermission('view any unpublished content')),
   ];
-}
-
-/**
- * Implements hook_form_BASE_FORM_ID_alter().
- */
-function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $user = \Drupal::currentUser();
-  // Hide Schedule Publishing & Archiving containers from editors,
-  // because scheduled_updates module does not set it properly.
-  if (isset($form['scheduled_publishing'])) {
-    if (!$user->hasPermission('administer scheduled updates') &&
-      !$user->hasPermission('create scheduled_publishing scheduled updates') &&
-      !$user->hasPermission('edit scheduled_publishing scheduled updates')
-    ) {
-      $form['scheduled_publishing']['#access'] = FALSE;
-    }
-  }
-
-  if (isset($form['scheduled_archiving'])) {
-    if (!$user->hasPermission('administer scheduled updates') &&
-      !$user->hasPermission('create scheduled_archiving scheduled updates') &&
-      !$user->hasPermission('edit scheduled_archiving scheduled updates')
-    ) {
-      $form['scheduled_archiving']['#access'] = FALSE;
-    }
-  }
-
-  // Then move Scheduled Updates controls to the footer region.
-  if (isset($form['footer'])) {
-    if (isset($form['scheduled_publishing'])) {
-      $form['footer']['scheduled_publishing'] = $form['scheduled_publishing'];
-      unset($form['scheduled_publishing']);
-    }
-
-    if (isset($form['scheduled_archiving'])) {
-      $form['footer']['scheduled_archiving'] = $form['scheduled_archiving'];
-      unset($form['scheduled_archiving']);
-    }
-  }
 }
 
 /**
