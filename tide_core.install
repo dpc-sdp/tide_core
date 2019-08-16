@@ -6,6 +6,7 @@
  */
 
 use Drupal\filter\Entity\FilterFormat;
+use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
