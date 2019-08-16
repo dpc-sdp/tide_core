@@ -6,7 +6,6 @@
  */
 
 use Drupal\filter\Entity\FilterFormat;
-use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
@@ -228,44 +227,40 @@ function tide_core_update_8006() {
 }
 
 /**
- * Create pathauto pattern for Taxonomy terms.
+ * Delete and uninstall all scheduled_update entities.
  */
-function tide_core_update_8007() {
-  if (!PathautoPattern::load('taxonomy_term')) {
-    $pattern = PathautoPattern::create([
-      'id' => 'taxonomy_term',
-      'label' => 'Taxonomy term',
-      'type' => 'canonical_entities:taxonomy_term',
-      'pattern' => '[term:vocabulary:machine-name]/[term:name]',
-      'weight' => 0,
+function tide_core_update_8008() {
+  if (\Drupal::moduleHandler()->moduleExists('scheduled_updates')) {
+    $scheduled_updates = \Drupal::entityTypeManager()
+      ->getStorage('scheduled_update')
+      ->loadMultiple();
+    foreach ($scheduled_updates as $scheduled_update) {
+      $scheduled_update->delete();
+    }
+    \Drupal::service('module_installer')->uninstall([
+      'scheduled_updates',
+      'content_moderation_scheduled_updates',
     ]);
-    $pattern->save();
   }
+}
 
-  $batch = [
-    'title' => 'Bulk updating Term URL aliases',
-    'operations' => [
-      ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
-      [
-        'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
-        [
-          'canonical_entities:taxonomy_term',
-          'all',
-        ],
-      ],
-    ],
-    'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
-    'progressive' => FALSE,
-  ];
-
-  batch_set($batch);
-  batch_process();
+/**
+ * Change %uid token to %user in login redirect URL of PRLP settings.
+ */
+function tide_core_update_8009() {
+  // Issue https://www.drupal.org/project/prlp/issues/2785087 was fixed.
+  $config = \Drupal::configFactory()->getEditable('prlp.settings');
+  $login_destination = $config->get('login_destination');
+  if (!empty($login_destination) && strpos($login_destination, '%uid') !== FALSE) {
+    $login_destination = str_replace('%uid', '%user', $login_destination);
+    $config->set('login_destination', $login_destination)->save();
+  }
 }
 
 /**
  * Delete and uninstall all scheduled_update entities.
  */
-function tide_core_update_8008() {
+function tide_core_update_8010() {
   if (\Drupal::moduleHandler()->moduleExists('scheduled_updates')) {
     $scheduled_updates = \Drupal::entityTypeManager()
       ->getStorage('scheduled_update')
