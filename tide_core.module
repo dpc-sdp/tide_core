@@ -5,8 +5,12 @@
  * Contains tide_core.module.
  */
 
+use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
+use Drupal\tide_core\Form\TideCoreScheduledPublishingForm;
+use Drupal\tide_core\Form\Entity\TideCoreScheduledPublishingAddForm;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
 
@@ -60,4 +64,40 @@ function tide_core_entity_operation(EntityInterface $entity) {
   }
 
   return $operations;
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function tide_core_local_tasks_alter(&$local_tasks) {
+  if (isset($local_tasks['scheduled_transitions.tasks:node.scheduled_transitions'])) {
+    $local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'] = \t('Scheduled publishing');
+  }
+}
+
+/**
+ * Implements hook_menu_local_actions_alter().
+ */
+function tide_core_menu_local_actions_alter(&$local_actions) {
+  if (isset($local_actions['scheduled_transitions.actions:node.add_scheduled_transition'])) {
+    $local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'] = \t('Add Scheduled publishing');
+  }
+}
+
+/**
+ * Implements hook_entity_type_build().
+ */
+function tide_core_entity_type_build(array &$entity_types) {
+  if (\Drupal::moduleHandler()->moduleExists('scheduled_transitions')) {
+    foreach ($entity_types as $entityType) {
+      if (!$entityType->hasLinkTemplate('canonical') || !$entityType instanceof ContentEntityType) {
+        continue;
+      }
+      if ($entityType->id() === 'scheduled_transition') {
+        continue;
+      }
+      $entityType->setFormClass(ScheduledTransitionsRouteProvider::FORM_ADD, TideCoreScheduledPublishingAddForm::class);
+      $entityType->setFormClass(ScheduledTransitionsRouteProvider::FORM, TideCoreScheduledPublishingForm::class);
+    }
+  }
 }
