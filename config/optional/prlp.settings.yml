@@ -1,2 +1,2 @@
 password_required: true
-login_destination: user/%uid/edit
+login_destination: user/%user/edit
