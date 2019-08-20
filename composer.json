@@ -52,7 +52,9 @@
         "drupal/viewsreference": "^2.0-alpha4",
         "drupal/wysiwyg_template": "^2.0@beta",
         "drupal/dynamic_entity_reference": "^1.7",
-        "drupal/scheduled_transitions": "^1.0"
+        "drupal/scheduled_transitions": "^1.0",
+        "drupal/content_moderation_scheduled_updates": "^1.0",
+        "drupal/scheduled_updates": "^1.0-alpha7"
     },
     "repositories": {
         "drupal": {

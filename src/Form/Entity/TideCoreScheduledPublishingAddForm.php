@@ -166,6 +166,13 @@ class TideCoreScheduledPublishingAddForm extends ContentEntityForm {
       $toTransitions = $this->stateTransitionValidation
         ->getValidTransitions($entityRevision, $this->currentUser());
       foreach ($toTransitions as $toTransition) {
+        if (!in_array($toTransition->id(), [
+          'publish',
+          'archive',
+          'archived_published',
+        ])) {
+          continue;
+        }
         $stateOptions[$toTransition->to()->id()] = $toTransition->label();
       }
     }
