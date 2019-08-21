@@ -7,8 +7,10 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_views_data_alter().
@@ -58,6 +60,85 @@ function tide_core_entity_operation(EntityInterface $entity) {
       }
     }
   }
+  if (\Drupal::moduleHandler()->moduleExists('scheduled_transitions') && $entity->getEntityType()->hasLinkTemplate(ScheduledTransitionsRouteProvider::LINK_TEMPLATE_ADD)) {
+    $routeName = ScheduledTransitionsRouteProvider::getScheduledTransitionRouteName($entity->getEntityType());
+    $url = Url::fromRoute($routeName, [$entity->getEntityTypeId() => $entity->id()]);
+    $user = \Drupal::currentUser();
+    if (TRUE === $url->access($user)) {
+      $operations['scheduled_transitions'] = [
+        'title' => \t('Scheduled publishing'),
+        'url' => $url,
+        'weight' => 50,
+      ];
+    }
+  }
 
   return $operations;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $info = \Drupal::service('entity_type.bundle.info');
+  foreach ($info->getBundleInfo('node') as $bundle => $item) {
+    if ($form_id == 'node_' . $bundle . '_scheduled_transitions_add_form_form') {
+      if (isset($form['scheduled_transitions']['new_meta']['state']['#options'])) {
+        foreach ($form['scheduled_transitions']['new_meta']['state']['#options'] as $key => $option) {
+          if (!in_array($key, ['published', 'archived'])) {
+            unset($form['scheduled_transitions']['new_meta']['state']['#options'][$key]);
+          }
+        }
+      }
+      foreach (array_keys($form['actions']) as $action) {
+        if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+          $form['actions'][$action]['#value'] = \t('Schedule publishing');
+          $form['actions'][$action]['#submit'][] = '_tide_core_modified_publishing_adding_message';
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#title'] = \t('Are you sure you want to delete the scheduled publishing?');
+  foreach (array_keys($form['actions']) as $action) {
+    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+      $form['actions'][$action]['#submit'][] = '_tide_core_modified_publishing_delete_message';
+    }
+  }
+}
+
+/**
+ * Submit handler for altering publishing status message.
+ */
+function _tide_core_modified_publishing_adding_message(&$form, $form_state) {
+  $messenger = \Drupal::messenger();
+  $messenger->deleteByType('status');
+  $onDate = $form_state->getValue(['on']);
+  $messenger->addMessage(\t('Scheduled a publishing for @date', [
+    '@date' => \Drupal::service('date.formatter')
+      ->format($onDate->getTimestamp()),
+  ]));
+}
+
+/**
+ * Submit handler for altering deleting status message.
+ */
+function _tide_core_modified_publishing_delete_message(&$form, $form_state) {
+  $messenger = \Drupal::messenger();
+  $messenger->deleteByType('status');
+  $messenger->addMessage(\t('The scheduled publishing has been deleted.'), 'status');
+}
+
+/**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function tide_core_menu_links_discovered_alter(&$links) {
+  if (isset($links['entity.scheduled_transition.collection']['title'])) {
+    $links['entity.scheduled_transition.collection']['title'] = 'Scheduled publishing';
+  }
 }

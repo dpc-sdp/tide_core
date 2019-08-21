@@ -1,0 +1,4 @@
+tide_core.scheduled_publishing:
+  title: Scheduled publishing
+  route_name: entity.scheduled_transition.collection
+  base_route: system.admin_content
