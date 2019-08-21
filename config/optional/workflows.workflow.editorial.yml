@@ -32,6 +32,8 @@ type_settings:
     archive:
       label: Archive
       from:
+        - draft
+        - needs_review
         - published
       to: archived
       weight: -6
@@ -68,8 +70,6 @@ type_settings:
       weight: -8
     publish:
       label: Publish
-      to: published
-      weight: 1
       from:
         - draft
         - needs_review

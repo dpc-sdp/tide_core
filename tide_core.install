@@ -292,3 +292,13 @@ function tide_core_update_8009() {
   batch_set($batch);
   batch_process();
 }
+
+/**
+ * Enable scheduled_transitions module.
+ */
+function tide_core_update_8010() {
+  if (!\Drupal::moduleHandler()->moduleExists('scheduled_transitions')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['scheduled_transitions']);
+  }
+}

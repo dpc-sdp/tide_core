@@ -60,13 +60,13 @@ function tide_core_entity_operation(EntityInterface $entity) {
       }
     }
   }
-  if (\Drupal::moduleHandler()->moduleExists('scheduled_transitions') && $entity->getEntityType()->hasLinkTemplate(ScheduledTransitionsRouteProvider::LINK_TEMPLATE_ADD)) {
+  if ($entity->getEntityType()->hasLinkTemplate(ScheduledTransitionsRouteProvider::LINK_TEMPLATE_ADD)) {
     $routeName = ScheduledTransitionsRouteProvider::getScheduledTransitionRouteName($entity->getEntityType());
     $url = Url::fromRoute($routeName, [$entity->getEntityTypeId() => $entity->id()]);
     $user = \Drupal::currentUser();
     if (TRUE === $url->access($user)) {
       $operations['scheduled_transitions'] = [
-        'title' => t('Scheduled publishing'),
+        'title' => t('Scheduled updates'),
         'url' => $url,
         'weight' => 50,
       ];
@@ -84,7 +84,10 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
   foreach ($info->getBundleInfo('node') as $bundle => $item) {
     if ($form_id == 'node_' . $bundle . '_scheduled_transitions_add_form_form') {
       if (isset($form['scheduled_transitions']['new_meta']['state']['#options'])) {
-        foreach ($form['scheduled_transitions']['new_meta']['state']['#options'] as $key => $option) {
+        foreach ($form['scheduled_transitions']['new_meta']['state']['#options'] as $key => &$option) {
+          if ($option == 'Restore') {
+            $option = 'Published';
+          }
           if (!in_array($key, ['published', 'archived'])) {
             unset($form['scheduled_transitions']['new_meta']['state']['#options'][$key]);
           }
@@ -92,8 +95,8 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
       foreach (array_keys($form['actions']) as $action) {
         if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-          $form['actions'][$action]['#value'] = t('Schedule publishing');
-          $form['actions'][$action]['#submit'][] = '_tide_core_modified_publishing_adding_message';
+          $form['actions'][$action]['#value'] = t('Scheduled updates');
+          $form['actions'][$action]['#submit'][] = '_tide_core_modified_update_adding_message';
         }
       }
     }
@@ -104,22 +107,22 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
  * Implements hook_form_FORM_ID_alter().
  */
 function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $form['#title'] = t('Are you sure you want to delete the scheduled publishing?');
+  $form['#title'] = t('Are you sure you want to delete the Scheduled updates?');
   foreach (array_keys($form['actions']) as $action) {
     if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-      $form['actions'][$action]['#submit'][] = '_tide_core_modified_publishing_delete_message';
+      $form['actions'][$action]['#submit'][] = '_tide_core_modified_update_delete_message';
     }
   }
 }
 
 /**
- * Submit handler for altering publishing status message.
+ * Submit handler for altering updating status message.
  */
-function _tide_core_modified_publishing_adding_message(&$form, $form_state) {
+function _tide_core_modified_update_adding_message(&$form, $form_state) {
   $messenger = \Drupal::messenger();
   $messenger->deleteByType('status');
   $onDate = $form_state->getValue(['on']);
-  $messenger->addMessage(t('Scheduled a publishing for @date', [
+  $messenger->addMessage(t('Scheduled an update for @date', [
     '@date' => \Drupal::service('date.formatter')
       ->format($onDate->getTimestamp()),
   ]));
@@ -128,10 +131,10 @@ function _tide_core_modified_publishing_adding_message(&$form, $form_state) {
 /**
  * Submit handler for altering deleting status message.
  */
-function _tide_core_modified_publishing_delete_message(&$form, $form_state) {
+function _tide_core_modified_update_delete_message(&$form, $form_state) {
   $messenger = \Drupal::messenger();
   $messenger->deleteByType('status');
-  $messenger->addMessage(t('The scheduled publishing has been deleted.'), 'status');
+  $messenger->addMessage(t('The Scheduled update has been deleted.'), 'status');
 }
 
 /**
@@ -139,6 +142,24 @@ function _tide_core_modified_publishing_delete_message(&$form, $form_state) {
  */
 function tide_core_menu_links_discovered_alter(&$links) {
   if (isset($links['entity.scheduled_transition.collection']['title'])) {
-    $links['entity.scheduled_transition.collection']['title'] = 'Scheduled publishing';
+    $links['entity.scheduled_transition.collection']['title'] = 'Scheduled updates';
+  }
+}
+
+/**
+ * Implements hook_menu_local_actions_alter().
+ */
+function tide_core_menu_local_actions_alter(&$local_actions) {
+  if (isset($local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'])) {
+    $local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'] = 'Add Scheduled update';
+  }
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function tide_core_local_tasks_alter(&$local_tasks) {
+  if (isset($local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'])) {
+    $local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'] = 'Scheduled updates';
   }
 }
