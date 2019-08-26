@@ -10,6 +10,8 @@ use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
 
 /**
  * Implements hook_install().
@@ -232,16 +234,28 @@ function tide_core_update_8006() {
  */
 function tide_core_update_8007() {
   if (\Drupal::moduleHandler()->moduleExists('scheduled_updates')) {
+    // Delete content entities.
     $scheduled_updates = \Drupal::entityTypeManager()
       ->getStorage('scheduled_update')
       ->loadMultiple();
     foreach ($scheduled_updates as $scheduled_update) {
       $scheduled_update->delete();
     }
-    \Drupal::service('module_installer')->uninstall([
-      'scheduled_updates',
-      'content_moderation_scheduled_updates',
-    ]);
+    // Delete configs.
+    $scheduled_fields = ['scheduled_archiving', 'scheduled_publishing'];
+    foreach ($scheduled_fields as $scheduled_field) {
+      $field_storage = FieldStorageConfig::loadByName('node', $scheduled_field);
+      if (!empty($field_storage)) {
+        $bundles = $field_storage->getBundles();
+        foreach ($bundles as $bundle) {
+          $field = FieldConfig::loadByName('node', $bundle, $scheduled_field);
+          if (!empty($field)) {
+            $field->delete();
+          }
+        }
+        field_purge_batch(10);
+      }
+    }
   }
 }
 

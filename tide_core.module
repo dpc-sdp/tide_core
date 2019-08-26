@@ -144,6 +144,10 @@ function tide_core_menu_links_discovered_alter(&$links) {
   if (isset($links['entity.scheduled_transition.collection']['title'])) {
     $links['entity.scheduled_transition.collection']['title'] = 'Scheduled updates';
   }
+  // TODO: delete after scheduled_updates module fully uninstalled.
+  if (isset($links['entity.scheduled_update.collection'])) {
+    unset($links['entity.scheduled_update.collection']);
+  }
 }
 
 /**
@@ -161,5 +165,9 @@ function tide_core_menu_local_actions_alter(&$local_actions) {
 function tide_core_local_tasks_alter(&$local_tasks) {
   if (isset($local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'])) {
     $local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'] = 'Scheduled updates';
+  }
+  // TODO: delete after scheduled_updates module fully uninstalled.
+  if (isset($local_tasks['scheduled_update.admin'])) {
+    unset($local_tasks['scheduled_update.admin']);
   }
 }
