@@ -1,0 +1,4 @@
+tide_core.scheduled_update:
+  title: Scheduled updates
+  route_name: entity.scheduled_transition.collection
+  base_route: system.admin_content

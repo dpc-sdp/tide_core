@@ -1,0 +1,5 @@
+services:
+  tide_core.event_subscriber:
+    class: Drupal\tide_core\EventSubscriber\TideCoreRouteAlter
+    tags:
+      - { name: event_subscriber }
