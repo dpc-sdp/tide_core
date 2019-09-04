@@ -220,7 +220,7 @@ function tide_core_update_8005() {
  * Enable the blockquote template available to all Node types.
  */
 function tide_core_update_8006() {
-  if ($wysiwyg_template = Drupal::entityTypeManager()
+  if ($wysiwyg_template = \Drupal::entityTypeManager()
     ->getStorage('wysiwyg_template')
     ->load('blockquote')) {
     if (count($wysiwyg_template->getNodeTypes()) > 0) {
@@ -314,5 +314,17 @@ function tide_core_update_8010() {
   if (!\Drupal::moduleHandler()->moduleExists('scheduled_transitions')) {
     $module_installer = \Drupal::service('module_installer');
     $module_installer->install(['scheduled_transitions']);
+  }
+}
+
+/**
+ * Update og:image metatag for node.
+ */
+function tide_core_update_8011() {
+  $metatag = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.node');
+  $og_image = $metatag->get('tags.og_image');
+  if (!$og_image) {
+    $metatag->set('tags.og_image', '[node:field_featured_image:entity:field_media_image:entity:url]')
+      ->save();
   }
 }
