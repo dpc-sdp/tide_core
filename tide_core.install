@@ -12,6 +12,8 @@ use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
+use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_install().
@@ -326,5 +328,24 @@ function tide_core_update_8011() {
   if (!$og_image) {
     $metatag->set('tags.og_image', '[node:field_featured_image:entity:field_media_image:entity:url]')
       ->save();
+  }
+}
+
+/**
+ * Imports default permissions to approver and site_admin.
+ */
+function tide_core_update_8012() {
+  $roles = ['approver', 'site_admin'];
+  $node_types = \Drupal::entityTypeManager()
+    ->getStorage('node_type')
+    ->loadMultiple();
+  foreach ($roles as $role) {
+    $permissions = [];
+    foreach ($node_types as $type => $details) {
+      $permissions[] = ScheduledTransitionsPermissions::viewScheduledTransitionsPermission('node', $type);
+      $permissions[] = ScheduledTransitionsPermissions::addScheduledTransitionsPermission('node', $type);
+    }
+    $permissions[] = 'view all scheduled transitions';
+    user_role_grant_permissions(Role::load($role)->id(), $permissions);
   }
 }

@@ -8,6 +8,8 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
+use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
+use Drupal\user\Entity\Role;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
 use Drupal\Core\Form\FormStateInterface;
@@ -169,5 +171,21 @@ function tide_core_local_tasks_alter(&$local_tasks) {
   // TODO: delete after scheduled_updates module fully uninstalled.
   if (isset($local_tasks['scheduled_update.admin'])) {
     unset($local_tasks['scheduled_update.admin']);
+  }
+}
+
+/**
+ * Implements hook_entity_bundle_create().
+ */
+function tide_core_entity_bundle_create($entity_type_id, $bundle) {
+  if ($entity_type_id == 'node') {
+    $roles = ['approver', 'site_admin'];
+    foreach ($roles as $role) {
+      $permissions = [];
+      $permissions[] = ScheduledTransitionsPermissions::viewScheduledTransitionsPermission($entity_type_id, $bundle);
+      $permissions[] = ScheduledTransitionsPermissions::addScheduledTransitionsPermission($entity_type_id, $bundle);
+      $permissions[] = 'view all scheduled transitions';
+      user_role_grant_permissions(Role::load($role)->id(), $permissions);
+    }
   }
 }
