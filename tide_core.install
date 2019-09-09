@@ -349,3 +349,16 @@ function tide_core_update_8012() {
     user_role_grant_permissions(Role::load($role)->id(), $permissions);
   }
 }
+
+/**
+ * Fix permissions for Previewers.
+ */
+function tide_core_update_8013() {
+  $role = Role::load('previewer');
+  if ($role) {
+    $role->grantPermission('view all revisions');
+    $role->grantPermission('view any unpublished content');
+    $role->grantPermission('view latest version');
+    $role->save();
+  }
+}
