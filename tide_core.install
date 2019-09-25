@@ -362,3 +362,13 @@ function tide_core_update_8013() {
     $role->save();
   }
 }
+
+/**
+ * Enable link_field_autocomplete_filter module.
+ */
+function tide_core_update_8014() {
+  if (!\Drupal::moduleHandler()->moduleExists('link_field_autocomplete_filter')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['link_field_autocomplete_filter']);
+  }
+}
