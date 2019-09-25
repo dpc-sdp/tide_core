@@ -144,8 +144,6 @@ config_devel:
     - metatag.metatag_defaults.node
     - metatag.metatag_defaults.taxonomy_term
     - metatag.metatag_defaults.user
-    - paragraphs.paragraphs_type.timeline
-    - paragraphs.paragraphs_type.timelines
     - pathauto.pattern.content_title
     - pathauto.settings
     - prlp.settings
