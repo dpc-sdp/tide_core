@@ -48,7 +48,6 @@ function tide_core_drush_command() {
  *   When an internal node id is found or if the URL is to an external site.
  */
 function get_internal_path($to) {
-
   if ((substr($to, 0, 4) == 'http')) {
     return $to;
   }
@@ -81,7 +80,6 @@ function get_internal_path($to) {
  *   If saving to the DB fails.
  */
 function add_redirects($from, $to, $home_url, $lang, $status_code) {
-
   if (is_array($to)) {
     $status_code = $to[1];
     $to = $to[0];
@@ -136,7 +134,6 @@ function add_redirects($from, $to, $home_url, $lang, $status_code) {
  *   Returns the sorted array.
  */
 function sort_wildcard(array $redir_dict) {
-
   $redir_dict_sorted = $redir_dict;
   foreach ($redir_dict as $wildcard_key_old => $wildcard_key_new) {
     if (preg_match('/\%$/', $wildcard_key_old)) {
@@ -167,7 +164,6 @@ function sort_wildcard(array $redir_dict) {
  *   Returns the associative array with CSV data.
  */
 function csv_parse($filepath) {
-
   $result = [];
   $file_handle = fopen($filepath, 'r');
 
@@ -212,7 +208,6 @@ function csv_parse($filepath) {
  *   Returns the associative array with JSON data.
  */
 function json_parse($filepath) {
-
   $result = file_get_contents($filepath);
 
   $result = json_decode($result, TRUE);
@@ -236,7 +231,6 @@ function json_parse($filepath) {
  *   Returns the associative array with CSV data.
  */
 function php_parse($filepath) {
-
   $redirects = [];
 
   include $filepath;
@@ -266,7 +260,6 @@ function php_parse($filepath) {
  *   Returns drush error if file reading fails.
  */
 function drush_tide_core_redirect_import($filepath = '') {
-
   $redir_dict = [];
   $home_url = drush_get_option('home-url', 'vic.gov.au');
   $lang = drush_get_option('lang', 'en');
@@ -336,7 +329,6 @@ function drush_tide_core_redirect_import($filepath = '') {
  * Execute scheduled_updates cron.
  */
 function drush_tide_core_scheduled_updates_cron() {
-
   try {
     \Drupal::moduleHandler()->invoke('scheduled_updates', 'cron');
   }
