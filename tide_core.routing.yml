@@ -1,0 +1,7 @@
+tide_core.entity.archive_confirm:
+  path: '/admin/content/{bundle}/{entity_type_id}/archive'
+  defaults:
+    _form: '\Drupal\tide_core\Form\EntityArchiveForm'
+    _title: 'Confirm Archive'
+  requirements:
+    _custom_access: '\Drupal\tide_core\Form\EntityArchiveForm::access'

@@ -5,8 +5,14 @@
  * Contains tide_core.module.
  */
 
-use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Url;
+use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
+use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
+use Drupal\user\Entity\Role;
 use Drupal\views\ViewExecutable;
+use Drupal\workflows\Entity\Workflow;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_views_data_alter().
@@ -38,40 +44,148 @@ function tide_core_views_query_substitutions(ViewExecutable $view) {
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter().
+ * Implements hook_entity_operation().
  */
-function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $user = \Drupal::currentUser();
-  // Hide Schedule Publishing & Archiving containers from editors,
-  // because scheduled_updates module does not set it properly.
-  if (isset($form['scheduled_publishing'])) {
-    if (!$user->hasPermission('administer scheduled updates') &&
-      !$user->hasPermission('create scheduled_publishing scheduled updates') &&
-      !$user->hasPermission('edit scheduled_publishing scheduled updates')
-    ) {
-      $form['scheduled_publishing']['#access'] = FALSE;
+function tide_core_entity_operation(EntityInterface $entity) {
+  // Add "Archived" operation link to entities.
+  $operations = [];
+  $workflow = Workflow::load('editorial');
+  if ($workflow) {
+    if ($workflow->getTypePlugin()
+      ->appliesToEntityTypeAndBundle($entity->getEntityTypeId(), $entity->bundle())) {
+      if ($entity->access('use ' . $workflow->id() . ' transition archived')) {
+        $operations['archive'] = [
+          'title' => t('Archive'),
+          'weight' => 100,
+          'url' => Url::fromRoute('tide_core.entity.archive_confirm', ['bundle' => $entity->getEntityTypeId(), 'entity_type_id' => $entity->id()]),
+        ];
+      }
+    }
+  }
+  if ($entity->getEntityType()->hasLinkTemplate(ScheduledTransitionsRouteProvider::LINK_TEMPLATE_ADD)) {
+    $routeName = ScheduledTransitionsRouteProvider::getScheduledTransitionRouteName($entity->getEntityType());
+    $url = Url::fromRoute($routeName, [$entity->getEntityTypeId() => $entity->id()]);
+    $user = \Drupal::currentUser();
+    if (TRUE === $url->access($user)) {
+      $operations['scheduled_transitions'] = [
+        'title' => t('Scheduled updates'),
+        'url' => $url,
+        'weight' => 50,
+      ];
     }
   }
 
-  if (isset($form['scheduled_archiving'])) {
-    if (!$user->hasPermission('administer scheduled updates') &&
-      !$user->hasPermission('create scheduled_archiving scheduled updates') &&
-      !$user->hasPermission('edit scheduled_archiving scheduled updates')
-    ) {
-      $form['scheduled_archiving']['#access'] = FALSE;
+  return $operations;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $info = \Drupal::service('entity_type.bundle.info');
+  foreach ($info->getBundleInfo('node') as $bundle => $item) {
+    if ($form_id == 'node_' . $bundle . '_scheduled_transitions_add_form_form') {
+      if (isset($form['scheduled_transitions']['new_meta']['state']['#options'])) {
+        foreach ($form['scheduled_transitions']['new_meta']['state']['#options'] as $key => &$option) {
+          if ($option == 'Restore') {
+            $option = 'Published';
+          }
+          if (!in_array($key, ['published', 'archived'])) {
+            unset($form['scheduled_transitions']['new_meta']['state']['#options'][$key]);
+          }
+        }
+      }
+      foreach (array_keys($form['actions']) as $action) {
+        if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+          $form['actions'][$action]['#value'] = t('Scheduled updates');
+          $form['actions'][$action]['#submit'][] = '_tide_core_modified_update_adding_message';
+        }
+      }
     }
   }
+}
 
-  // Then move Scheduled Updates controls to the footer region.
-  if (isset($form['footer'])) {
-    if (isset($form['scheduled_publishing'])) {
-      $form['footer']['scheduled_publishing'] = $form['scheduled_publishing'];
-      unset($form['scheduled_publishing']);
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#title'] = t('Are you sure you want to delete the Scheduled updates?');
+  foreach (array_keys($form['actions']) as $action) {
+    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+      $form['actions'][$action]['#submit'][] = '_tide_core_modified_update_delete_message';
     }
+  }
+}
 
-    if (isset($form['scheduled_archiving'])) {
-      $form['footer']['scheduled_archiving'] = $form['scheduled_archiving'];
-      unset($form['scheduled_archiving']);
+/**
+ * Submit handler for altering updating status message.
+ */
+function _tide_core_modified_update_adding_message(&$form, $form_state) {
+  $messenger = \Drupal::messenger();
+  $messenger->deleteByType('status');
+  $onDate = $form_state->getValue(['on']);
+  $messenger->addMessage(t('Scheduled an update for @date', [
+    '@date' => \Drupal::service('date.formatter')
+      ->format($onDate->getTimestamp()),
+  ]));
+}
+
+/**
+ * Submit handler for altering deleting status message.
+ */
+function _tide_core_modified_update_delete_message(&$form, $form_state) {
+  $messenger = \Drupal::messenger();
+  $messenger->deleteByType('status');
+  $messenger->addMessage(t('The Scheduled update has been deleted.'), 'status');
+}
+
+/**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function tide_core_menu_links_discovered_alter(&$links) {
+  if (isset($links['entity.scheduled_transition.collection']['title'])) {
+    $links['entity.scheduled_transition.collection']['title'] = 'Scheduled updates';
+  }
+  // TODO: delete after scheduled_updates module fully uninstalled.
+  if (isset($links['entity.scheduled_update.collection'])) {
+    unset($links['entity.scheduled_update.collection']);
+  }
+}
+
+/**
+ * Implements hook_menu_local_actions_alter().
+ */
+function tide_core_menu_local_actions_alter(&$local_actions) {
+  if (isset($local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'])) {
+    $local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'] = 'Add Scheduled update';
+  }
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function tide_core_local_tasks_alter(&$local_tasks) {
+  if (isset($local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'])) {
+    $local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'] = 'Scheduled updates';
+  }
+  // TODO: delete after scheduled_updates module fully uninstalled.
+  if (isset($local_tasks['scheduled_update.admin'])) {
+    unset($local_tasks['scheduled_update.admin']);
+  }
+}
+
+/**
+ * Implements hook_entity_bundle_create().
+ */
+function tide_core_entity_bundle_create($entity_type_id, $bundle) {
+  if ($entity_type_id == 'node') {
+    $roles = ['approver', 'site_admin'];
+    foreach ($roles as $role) {
+      $permissions = [];
+      $permissions[] = ScheduledTransitionsPermissions::viewScheduledTransitionsPermission($entity_type_id, $bundle);
+      $permissions[] = ScheduledTransitionsPermissions::addScheduledTransitionsPermission($entity_type_id, $bundle);
+      $permissions[] = 'view all scheduled transitions';
+      user_role_grant_permissions(Role::load($role)->id(), $permissions);
     }
   }
 }

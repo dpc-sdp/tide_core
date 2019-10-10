@@ -8,7 +8,4 @@ body:
   value: "<blockquote class=\"quotation\">\r\n<p>Berios sim destrum facientota nis ex eost aut prae vendis explam aliquis dolorpo rrorem reptaep elenis net.</p>\r\n\r\n<footer><cite><span class=\"quotation__author\">Her Excellency the Honourable Linda Dessau AC</span><br />\r\n<span class=\"quotation__author-title\">Governor of Victoria</span> </cite></footer>\r\n</blockquote>\r\n"
   format: rich_text
 weight: null
-node_types:
-  - landing_page
-  - page
-  - test
+node_types: {  }
