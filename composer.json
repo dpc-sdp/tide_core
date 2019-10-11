@@ -76,9 +76,6 @@
             "drupal/entity_reference_revisions": {
                 "Allow entities to be generated if none exist - https://www.drupal.org/node/2910326": "https://www.drupal.org/files/issues/entity_reference_revisions-stop_checking_for_entities_before_generating_sample-2910326-2.patch"
             },
-            "drupal/maxlength": {
-                "Maxlength only for summary field - https://www.drupal.org/project/maxlength/issues/2798903": "https://www.drupal.org/files/issues/maxlength-limit_only_summary-2798903-2.patch"
-            },
             "drupal/media_entity_audio": {
                 "Unable to install if media is not yet installed - https://www.drupal.org/project/media_entity_audio/issues/2984336": "https://www.drupal.org/files/issues/2018-07-07/requirements-not-met-if-no-media-2984336-4.patch"
             },
