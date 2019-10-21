@@ -199,8 +199,13 @@ function tide_core_preprocess_status_messages(&$variables) {
     foreach ($variables['message_list']['error'] as &$error_message) {
       if ($error_message instanceof Markup) {
         $error_message = (string) $error_message->__toString();
-        if (strpos($error_message, 'Validation error on collapsed paragraph field_paragraph_link') !== FALSE) {
-          $error_message = t('A link in <i>Related links</i> field on this page is broken. Please update or remove the link and the page will save.');
+        // We want to ensure that the error message to be altered under
+        // node edit context.
+        preg_match('/entity:node\/(\d+)/', $error_message, $matches);
+        // Checking that the error message comes from field_paragraph_link based
+        // on a node context.
+        if (strpos($error_message, 'Validation error on collapsed paragraph field_paragraph_link') !== FALSE && (isset($matches[1]) && is_numeric($matches[1]))) {
+          $error_message = t('A link in <i>Related links</i> field on this page is broken. Please update or remove the link and retry.');
         }
       }
     }
