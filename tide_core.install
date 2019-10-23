@@ -372,3 +372,26 @@ function tide_core_update_8014() {
     $module_installer->install(['link_field_autocomplete_filter']);
   }
 }
+
+/**
+ * Config for Seckit module.
+ */
+function tide_core_update_8015() {
+  if (\Drupal::moduleHandler()->moduleExists('seckit')) {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('seckit.settings');
+
+    $csp = 'seckit_xss.csp';
+    $config->set($csp . '.checkbox', TRUE);
+    $config->set($csp . '.report-only', TRUE);
+    $config->set($csp . '.default-src', "'self'");
+    $config->set($csp . '.script-src', "'self' 'unsafe-inline' *.jsdelivr.net *.cloudflare.com *.rawgit.com");
+    $config->set($csp . '.img-src', "'self' data: *.rawgit.com *.githubusercontent.com *.youtube.com");
+    $config->set($csp . '.font-src', "'self' data:");
+    $config->set($csp . '.style-src', "'self' 'unsafe-inline' *.cloudflare.com");
+
+    $x_xss_option = 'seckit_xss.x_xss';
+    $config->set($x_xss_option . '.select', 3);
+    $config->save();
+  }
+}
