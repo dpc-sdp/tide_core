@@ -3,3 +3,8 @@ services:
     class: Drupal\tide_core\EventSubscriber\TideCoreRouteAlter
     tags:
       - { name: event_subscriber }
+  tide_core_fast404:
+    class: Drupal\tide_core\EventSubscriber\TideCoreFast404EventSubscriber
+    arguments: ['@request_stack']
+    tags:
+      - { name: event_subscriber }
