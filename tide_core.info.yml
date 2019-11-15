@@ -97,6 +97,7 @@ config_devel:
     - field.storage.node.field_featured_image
     - field.storage.node.field_metatags
     - field.storage.node.field_node_author
+    - field.storage.node.field_node_documents
     - field.storage.node.field_node_email
     - field.storage.node.field_node_link
     - field.storage.node.field_node_phone
