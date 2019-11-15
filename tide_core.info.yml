@@ -93,6 +93,7 @@ config_devel:
     - field.field.paragraph.accordion_content.field_paragraph_accordion_name
     - field.field.paragraph.links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_link
+    - field.storage.node.field_audience
     - field.storage.node.field_featured_image
     - field.storage.node.field_metatags
     - field.storage.node.field_node_author
