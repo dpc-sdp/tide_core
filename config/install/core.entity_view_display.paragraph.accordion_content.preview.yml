@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.accordion_content.field_paragraph_accordion_body
+    - field.field.paragraph.accordion_content.field_paragraph_accordion_name
+    - paragraphs.paragraphs_type.accordion_content
+id: paragraph.accordion_content.preview
+targetEntityType: paragraph
+bundle: accordion_content
+mode: preview
+content:
+  field_paragraph_accordion_name:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden:
+  field_paragraph_accordion_body: true

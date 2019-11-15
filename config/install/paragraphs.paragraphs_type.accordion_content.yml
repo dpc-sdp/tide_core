@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: accordion_content
+label: 'Accordion Content'
+icon_uuid: null
+description: ''
+behavior_plugins: {  }
