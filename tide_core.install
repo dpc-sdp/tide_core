@@ -372,3 +372,16 @@ function tide_core_update_8014() {
     $module_installer->install(['link_field_autocomplete_filter']);
   }
 }
+
+/**
+ * ClamAV configuration is updated to use central service.
+ */
+function tide_core_update_8015() {
+  if (\Drupal::moduleHandler()->moduleExists('clamav')) {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('clamav.settings');
+    $config->set('scan_mode', 0);
+    $config->set('mode_daemon_tcpip.hostname', 'clamav.sdp-central-clamav-master.svc.cluster.local');
+    $config->save();
+  }
+}
