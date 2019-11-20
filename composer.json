@@ -26,7 +26,7 @@
         "drupal/events_log_track": "^1.1",
         "drupal/fakeobjects": "^1.0",
         "drupal/fast_404": "^1.0-alpha4",
-        "drupal/field_group": "^3.0-beta1",
+        "drupal/field_group": "3.0.0-rc1",
         "drupal/google_analytics": "^2.3",
         "drupal/hotjar": "^1.2",
         "drupal/linkit": "5.0-beta9",
