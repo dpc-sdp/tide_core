@@ -1,0 +1,25 @@
+{
+    "name": "dpc-sdp/tide_workflow_notification",
+    "description": "Functionality to send notifications upon workflow state changes.",
+    "type": "drupal-module",
+    "license": "GPL-2.0+",
+    "version": "0.0.1",
+    "require": {
+        "dpc-sdp/tide_core": "@dev"
+    },
+    "repositories": {
+        "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    },
+    "extra": {
+        "patches": {
+            "drupal/scheduled_transitions": {
+                "The revision user is incorrect after CRON ran - https://www.drupal.org/project/scheduled_transitions/issues/3094322": "https://www.drupal.org/files/issues/2019-11-14/3094322_8.x-8.x-1.0-rc3-2.patch"
+            }
+        }
+    },
+    "minimum-stability": "alpha",
+    "prefer-stable": true
+}
