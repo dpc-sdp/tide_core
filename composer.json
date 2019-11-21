@@ -105,6 +105,9 @@
             },
             "drupal/permissions_by_term": {
                 "scheduled_transitions module integration issue - https://www.drupal.org/project/permissions_by_term/issues/3065986#comment-13171384": "https://www.drupal.org/files/issues/2019-07-05/permissions_by_term-issue-3065986-D8.6.16.patch"
+            },
+            "drupal/scheduled_transitions": {
+                "The revision user is incorrect after CRON ran - https://www.drupal.org/project/scheduled_transitions/issues/3094322": "https://www.drupal.org/files/issues/2019-11-14/3094322_8.x-8.x-1.0-rc3-2.patch"
             }
         }
     }
