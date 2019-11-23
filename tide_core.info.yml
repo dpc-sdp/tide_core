@@ -24,7 +24,6 @@ dependencies:
   - drupal:node
   - drupal:options
   - drupal:path
-  - drupal:page_cache
   - drupal:taxonomy
   - drupal:telephone
   - drupal:text

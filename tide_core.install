@@ -57,6 +57,10 @@ function tide_core_install() {
   $functions = get_defined_functions();
   foreach ($functions['user'] as $function) {
     if (strpos($function, 'tide_core_update_') === 0) {
+      // We don't want the tide_core_update_8015 to run during the CI.
+      if ($function == 'tide_core_update_8015') {
+        continue;
+      }
       call_user_func($function);
     }
   }
@@ -370,5 +374,18 @@ function tide_core_update_8014() {
   if (!\Drupal::moduleHandler()->moduleExists('link_field_autocomplete_filter')) {
     $module_installer = \Drupal::service('module_installer');
     $module_installer->install(['link_field_autocomplete_filter']);
+  }
+}
+
+/**
+ * ClamAV configuration is updated to use central service.
+ */
+function tide_core_update_8015() {
+  if (\Drupal::moduleHandler()->moduleExists('clamav')) {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('clamav.settings');
+    $config->set('scan_mode', 0);
+    $config->set('mode_daemon_tcpip.hostname', 'clamav.sdp-central-clamav-master.svc.cluster.local');
+    $config->save();
   }
 }
