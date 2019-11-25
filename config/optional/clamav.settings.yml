@@ -1,7 +1,7 @@
 enabled: true
 outage_action: 0
 overridden_schemes: {  }
-scan_mode: 0
+scan_mode: 1
 verbosity: 0
 mode_executable:
   executable_path: /usr/bin/clamscan

@@ -57,6 +57,10 @@ function tide_core_install() {
   $functions = get_defined_functions();
   foreach ($functions['user'] as $function) {
     if (strpos($function, 'tide_core_update_') === 0) {
+      // We don't want the tide_core_update_8015 to run during the CI.
+      if ($function == 'tide_core_update_8015') {
+        continue;
+      }
       call_user_func($function);
     }
   }
