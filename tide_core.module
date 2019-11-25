@@ -189,3 +189,16 @@ function tide_core_entity_bundle_create($entity_type_id, $bundle) {
     }
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function vicgovau_core_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // @todo It should implement libraries-override key under a custom theme, but we don't have custom theme.
+  // Just override content_moderation css library.
+  $form['#attached']['library'] = 'tide_core/content_moderation';
+  $form['revision_log']['#type'] = 'textarea';
+  $form['revision_log']['#title'] = t('Publishing instructions and comments');
+  $form['revision_log']['#description'] = t('All content will be published within 24 hours. State below if your content is embargoed or time critical.');
+  $form['new_state']['#title'] = t('Change status to');
+}
