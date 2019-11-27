@@ -142,12 +142,8 @@ function tide_workflow_notification_node_presave(NodeInterface $node) {
         $recipients = _tide_workflow_notification_get_node_approvers($node, $transition);
         break;
 
-      case 'draft_published':
-        $recipients = _tide_workflow_notification_get_node_approvers($node, $transition);
-        $recipients[$last_author->id()] = $last_author;
-        break;
-
       // Notify all Approvers and the last author.
+      case 'draft_published':
       case 'needs_review_published':
       case 'published_archived':
         $recipients = _tide_workflow_notification_get_node_approvers($node, $transition);
