@@ -1,4 +1,4 @@
-@tide
+@tide @skipped
 Feature: ClamAV Anti-virus
 
   Ensure that ClamAV is enabled.
