@@ -211,3 +211,14 @@ function tide_core_preprocess_status_messages(&$variables) {
     }
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'] = 'tide_core/content_moderation';
+  $form['revision_log']['#type'] = 'textarea';
+  $form['revision_log']['#title'] = t('Publishing instructions and comments');
+  $form['revision_log']['#description'] = t('All content will be published within 24 hours. State below if your content is embargoed or time critical.');
+  $form['new_state']['#title'] = t('Change status to');
+}
