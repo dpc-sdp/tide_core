@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function tide_workflow_notification_install() {
+  // Updates permission to user Roles.
+  $permissions = ['enter all revision log entry'];
+  foreach (['approver', 'editor'] as $role_name) {
+    user_role_grant_permissions($role_name, $permissions);
+  }
+}

@@ -1,0 +1,8 @@
+name: Tide Workflow Notification
+description: Functionality to send notifications upon workflow state changes.
+type: module
+package: Tide
+core: 8.x
+config_devel:
+  install: { }
+  optional: { }
