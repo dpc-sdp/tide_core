@@ -50,7 +50,7 @@
         "drupal/token_filter": "^1.1",
         "drupal/twig_field_value": "^1.1",
         "drupal/views_menu_children_filter": "^1.0-beta2",
-        "drupal/viewsreference": "2.0-alpha4",
+        "drupal/viewsreference": "2.0-alpha5",
         "drupal/wysiwyg_template": "^2.0@beta",
         "drupal/dynamic_entity_reference": "^1.7",
         "drupal/scheduled_transitions": "^1.0",
@@ -108,6 +108,9 @@
             },
             "drupal/scheduled_transitions": {
                 "The revision user is incorrect after CRON ran - https://www.drupal.org/project/scheduled_transitions/issues/3094322": "https://www.drupal.org/files/issues/2019-11-14/3094322_8.x-8.x-1.0-rc3-2.patch"
+            },
+            "drupal/viewsreference": {
+                "Updating from alpha4 to alpha5 via composer results in error - https://www.drupal.org/project/viewsreference/issues/3096956#comment-13370643": "https://www.drupal.org/files/issues/2019-11-28/3096956-17.Unmet-service-dependencies.patch"
             }
         }
     }
