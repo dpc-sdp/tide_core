@@ -7,7 +7,7 @@ mode_executable:
   executable_path: /usr/bin/clamscan
   executable_parameters: ''
 mode_daemon_tcpip:
-  hostname: localhost
+  hostname: clamav.sdp-central-clamav-master.svc.cluster.local
   port: 3310
 mode_daemon_unixsocket:
   unixsocket: /var/clamav/clamd
