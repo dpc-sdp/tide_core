@@ -16,7 +16,7 @@
         "drupal/config_ignore": "^2.1",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/core": "8.6.16",
+        "drupal/core": "8.7.9",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/entity_browser": "^1.6",
@@ -45,12 +45,12 @@
         "drupal/seckit": "^1.1",
         "drupal/simple_sitemap": "^2.12",
         "drupal/smart_trim": "^1.1",
-        "drupal/stage_file_proxy": "^1.0-alpha3",
+        "drupal/stage_file_proxy": "1.0-rc2",
         "drupal/token_conditions": "dev-1.x",
         "drupal/token_filter": "^1.1",
         "drupal/twig_field_value": "^1.1",
         "drupal/views_menu_children_filter": "^1.0-beta2",
-        "drupal/viewsreference": "^2.0-alpha4",
+        "drupal/viewsreference": "2.0-alpha5",
         "drupal/wysiwyg_template": "^2.0@beta",
         "drupal/dynamic_entity_reference": "^1.7",
         "drupal/scheduled_transitions": "^1.0",
@@ -69,10 +69,9 @@
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/node/2898875": "https://www.drupal.org/files/issues/2018-03-16/contextual_links_should-2898875-6.patch",
                 "RSS view with fields give wrong URL from path field - https://www.drupal.org/node/2673980#comment-12180229": "https://www.drupal.org/files/issues/rss_view_with_fields-2673980-28.patch",
-                "DateTimeIso8601::getDateTime() does not specify the storage timezone when constructing DrupalDateTime object - https://www.drupal.org/project/drupal/issues/3002164": "https://www.drupal.org/files/issues/2018-09-25/3002164-7.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
-                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693": "https://www.drupal.org/files/issues/2018-06-22/2791693-datetime-input-ui-29.patch",
-                "Unrecognised entity operation passed to Menu Link Content throws exceptions - https://www.drupal.org/project/drupal/issues/3016038": "https://www.drupal.org/files/issues/2019-03-03/3016038-menu-link-operation-8.patch"
+                "Unrecognised entity operation passed to Menu Link Content throws exceptions - https://www.drupal.org/project/drupal/issues/3016038": "https://www.drupal.org/files/issues/2019-03-03/3016038-menu-link-operation-8.patch",
+                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch"
             },
             "drupal/entity_reference_revisions": {
                 "Allow entities to be generated if none exist - https://www.drupal.org/node/2910326": "https://www.drupal.org/files/issues/entity_reference_revisions-stop_checking_for_entities_before_generating_sample-2910326-2.patch"
@@ -105,6 +104,12 @@
             },
             "drupal/permissions_by_term": {
                 "scheduled_transitions module integration issue - https://www.drupal.org/project/permissions_by_term/issues/3065986#comment-13171384": "https://www.drupal.org/files/issues/2019-07-05/permissions_by_term-issue-3065986-D8.6.16.patch"
+            },
+            "drupal/scheduled_transitions": {
+                "The revision user is incorrect after CRON ran - https://www.drupal.org/project/scheduled_transitions/issues/3094322": "https://www.drupal.org/files/issues/2019-11-14/3094322_8.x-8.x-1.0-rc3-2.patch"
+            },
+            "drupal/viewsreference": {
+                "Updating from alpha4 to alpha5 via composer results in error - https://www.drupal.org/project/viewsreference/issues/3096956#comment-13370643": "https://www.drupal.org/files/issues/2019-11-28/3096956-17.Unmet-service-dependencies.patch"
             }
         }
     }

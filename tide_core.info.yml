@@ -24,12 +24,12 @@ dependencies:
   - drupal:node
   - drupal:options
   - drupal:path
-  - drupal:page_cache
   - drupal:taxonomy
   - drupal:telephone
   - drupal:text
   - drupal:user
   - drupal:workflows
+  - drupal:hal
   - editor_advanced_link:editor_advanced_link
   - entity_browser:entity_browser
   - entity_browser:entity_browser_entity_form
