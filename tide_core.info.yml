@@ -74,6 +74,8 @@ themes:
   - seven
 config_devel:
   install:
+    - block_content.type.campaign
+    - block_content.type.campaign_with_video
     - core.entity_form_display.paragraph.accordion.default
     - core.entity_form_display.paragraph.accordion_content.default
     - core.entity_form_display.paragraph.links.default
@@ -95,6 +97,7 @@ config_devel:
     - field.field.paragraph.related_links.field_paragraph_link
     - field.storage.node.field_audience
     - field.storage.node.field_featured_image
+    - field.storage.node.field_landing_page_c_secondary
     - field.storage.node.field_landing_page_intro_text
     - field.storage.node.field_landing_page_nav_title
     - field.storage.node.field_metatags
