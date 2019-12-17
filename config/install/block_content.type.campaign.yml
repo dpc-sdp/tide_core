@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: campaign
-label: Campaign
-revision: 1
-description: 'Block type used for Campaigns on landing pages.'

@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: campaign_with_video
-label: 'Campaign with video'
-revision: 1
-description: 'Block type used for Campaigns on landing pages.'
