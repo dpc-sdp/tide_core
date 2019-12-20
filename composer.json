@@ -16,7 +16,7 @@
         "drupal/config_ignore": "^2.1",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/core": "8.7.9",
+        "drupal/core": "8.7.11",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/entity_browser": "^1.6",
@@ -56,7 +56,8 @@
         "drupal/scheduled_transitions": "^1.0",
         "drupal/content_moderation_scheduled_updates": "^1.0",
         "drupal/scheduled_updates": "^1.0-alpha7",
-        "drupal/link_field_autocomplete_filter": "^1.8"
+        "drupal/link_field_autocomplete_filter": "^1.8",
+        "drupal/queue_mail": "^1.0"
     },
     "repositories": {
         "drupal": {

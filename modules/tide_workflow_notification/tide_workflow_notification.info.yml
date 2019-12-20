@@ -3,6 +3,8 @@ description: Functionality to send notifications upon workflow state changes.
 type: module
 package: Tide
 core: 8.x
+dependencies:
+  - queue_mail:queue_mail
 config_devel:
   install: { }
   optional: { }

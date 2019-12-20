@@ -14,4 +14,15 @@ function tide_workflow_notification_install() {
   foreach (['approver', 'editor'] as $role_name) {
     user_role_grant_permissions($role_name, $permissions);
   }
+  // Enables queue_mail module and changes the config.
+  if (!\Drupal::moduleHandler()->moduleExists('queue_mail')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['queue_mail']);
+  }
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('queue_mail.settings');
+  $config->set('queue_mail_keys', 'tide_workflow_notification_*');
+  $config->set('threshold', '1');
+  $config->set('requeue_interval', '0');
+  $config->save();
 }
