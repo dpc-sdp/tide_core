@@ -5,11 +5,11 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      The status of the web content [node:title]([node:url]) has changed from Draft to Needs review.
+      The status of the web content [node:title] - [node:url] has changed from Draft to Needs review.
 
       Please review this content and check:
 
-      • it meets our standards and style guide(https://www.vic.gov.au/how-publish-content-vicgovau).
+      • it meets our standards and style guide https://www.vic.gov.au/how-publish-content-vicgovau
       • it is factually accurate
 
       If it does not meet standards, provide feedback to the Content editor [user:display-name] by return email and change the status back to Draft.
@@ -24,7 +24,7 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      [user:display-name] has reviewed your content and changed the status of [node:title]([node:url]) from Draft to Published.
+      [user:display-name] has reviewed your content and changed the status of [node:title] - [node:url] from Draft to Published.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
 
@@ -34,7 +34,7 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      [user:display-name] has reviewed your content and changed the status of [node:title]([node:url]) from Needs review back to Draft.
+      [user:display-name] has reviewed your content and changed the status of [node:title] - [node:url] from Needs review back to Draft.
       Read the Approvers' comments and make the requested changes to the content. Save your changes and set the status to Needs review and the approvers will be notified.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
@@ -45,7 +45,7 @@ notifications:
     message: |
       Hi, [workflow-notification:recipient:display-name],
 
-      [user:display-name] has reviewed your content and changed the status of [node:title]([node:url]) from Needs review to Published.
+      [user:display-name] has reviewed your content and changed the status of [node:title] - [node:url] from Needs review to Published.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
 
@@ -55,7 +55,7 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      The status of the web content [node:title]([node:url]) has changed from Published to Archived. This could be because:
+      The status of the web content [node:title] - [node:url] has changed from Published to Archived. This could be because:
       • your approver archived it
       • the content had a scheduled archive date
 
