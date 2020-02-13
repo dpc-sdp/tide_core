@@ -391,7 +391,7 @@ function tide_core_update_8015() {
 }
 
 /**
- * Fix permissions for approver, editor & site admin to access video entity browser.
+ * Fix permissions for to access video entity browser.
  */
 function tide_core_update_8016() {
   $role = Role::load('approver');
