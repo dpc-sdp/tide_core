@@ -389,3 +389,24 @@ function tide_core_update_8015() {
     $config->save();
   }
 }
+
+/**
+ * Fix permissions for to access video entity browser.
+ */
+function tide_core_update_8016() {
+  $role = Role::load('approver');
+  if ($role) {
+    $role->grantPermission('access tide_embedded_video_browser entity browser pages');
+    $role->save();
+  }
+  $role = Role::load('editor');
+  if ($role) {
+    $role->grantPermission('access tide_embedded_video_browser entity browser pages');
+    $role->save();
+  }
+  $role = Role::load('site_admin');
+  if ($role) {
+    $role->grantPermission('access tide_embedded_video_browser entity browser pages');
+    $role->save();
+  }
+}
