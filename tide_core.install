@@ -423,3 +423,12 @@ function tide_core_update_8017() {
   $module_installer = \Drupal::service('module_installer');
   $module_installer->uninstall($modules);
 }
+
+/**
+ * Update Scheduled Transitions View title.
+ */
+function tide_core_update_8018() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  _tide_import_single_config('views.view.scheduled_transitions', $config_location);
+}
