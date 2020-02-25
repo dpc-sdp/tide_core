@@ -428,7 +428,15 @@ function tide_core_update_8017() {
  * Update Scheduled Transitions View title.
  */
 function tide_core_update_8018() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
-  _tide_import_single_config('views.view.scheduled_transitions', $config_location);
+  $title_fields = [
+    'label',
+    'display.default.display_options.title',
+    'display.default.display_options.empty.area.content.value'
+  ];
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('views.view.scheduled_transitions');
+  foreach ($title_fields as $field) {
+    $config->set($field, 'Scheduled update list');
+  }
+  $config->save();
 }
