@@ -72,7 +72,8 @@
                 "RSS view with fields give wrong URL from path field - https://www.drupal.org/node/2673980#comment-12180229": "https://www.drupal.org/files/issues/rss_view_with_fields-2673980-28.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
                 "Unrecognised entity operation passed to Menu Link Content throws exceptions - https://www.drupal.org/project/drupal/issues/3016038": "https://www.drupal.org/files/issues/2019-03-03/3016038-menu-link-operation-8.patch",
-                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch"
+                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
+                "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485#comment-11004325": "https://www.drupal.org/files/issues/2693485-node-3.patch"
             },
             "drupal/entity_reference_revisions": {
                 "Allow entities to be generated if none exist - https://www.drupal.org/node/2910326": "https://www.drupal.org/files/issues/entity_reference_revisions-stop_checking_for_entities_before_generating_sample-2910326-2.patch"
