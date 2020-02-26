@@ -5,8 +5,6 @@ dependencies:
     - dynamic_entity_reference
     - scheduled_transitions
     - user
-_core:
-  default_config_hash: CRJ4wWdCQQzLovoZ1qzwF5h0wcg1wOuGxdyX8Ma75Fk
 id: scheduled_transitions
 label: 'Scheduled update list'
 module: views
