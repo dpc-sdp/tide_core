@@ -417,7 +417,7 @@ function tide_core_update_8016() {
 function tide_core_update_8017() {
   $modules = [
     'scheduled_updates',
-    'content_moderation_scheduled_updates'
+    'content_moderation_scheduled_updates',
   ];
 
   $module_installer = \Drupal::service('module_installer');
