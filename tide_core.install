@@ -449,13 +449,19 @@ function tide_core_update_8018() {
 function tide_core_update_8019() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('tide_workflow_notification.settings');
-  $notification_status = ['draft_needs_review', 'draft_published', 'needs_review_draft', 'needs_review_published', 'published_archived'];
+  $notification_status = [
+    'draft_needs_review',
+    'draft_published',
+    'needs_review_draft',
+    'needs_review_published',
+    'published_archived'
+  ];
   $current_string = ['([node:url])', '(https://www.vic.gov.au/how-publish-content-vicgovau).'];
   $replaced_string = [' - [node:url]', ' https://www.vic.gov.au/how-publish-content-vicgovau'];
   foreach ($notification_status as $status) {
     $updated_string = $config->get()['notifications'][$status]['message'];
     $updated_string = str_replace($current_string, $replaced_string, $updated_string);
-    $config->set('notifications.'.$status.'.message', $updated_string);
+    $config->set('notifications.' . $status . '.message', $updated_string);
     $config->save();
   }
 }
