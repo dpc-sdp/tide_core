@@ -454,7 +454,7 @@ function tide_core_update_8019() {
     'draft_published',
     'needs_review_draft',
     'needs_review_published',
-    'published_archived'
+    'published_archived',
   ];
   $current_string = ['([node:url])', '(https://www.vic.gov.au/how-publish-content-vicgovau).'];
   $replaced_string = [' - [node:url]', ' https://www.vic.gov.au/how-publish-content-vicgovau'];
