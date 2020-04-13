@@ -117,6 +117,7 @@ permissions:
   - 'update media'
   - 'use draft_draft transition'
   - 'use draft_needs_review transition'
+  - 'use editorial transition archive_pending'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition needs_review'
   - 'use editorial transition needs_review_draft'

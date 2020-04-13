@@ -60,3 +60,55 @@ notifications:
       • the content had a scheduled archive date
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  draft_archive_pending:
+    enabled: 1
+    subject: 'Archive of web content required: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of the web content [node:title] - [node:url] has changed from Draft to Archive pending.
+
+      Remember to remove all menu links and navigation links to the page as well.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  needs_review_archive_pending:
+    enabled: 1
+    subject: 'Archive of web content required: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of the web content [node:title] - [node:url] has changed from Needs Review to Archive pending.
+
+      Remember to remove all menu links and navigation links to the page as well.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  published_archive_pending:
+    enabled: 1
+    subject: 'Archive of web content required: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of the web content [node:title] - [node:url] has changed from Published to Archive pending.
+
+      Remember to remove all menu links and navigation links to the page as well.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  archive_pending_archived:
+    enabled: 1
+    subject: 'Your web content has been archived: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:
+      • your approver approved your request to archive it
+      • the content had a scheduled archive date
+
+      You should also ensure all menu links and navigation links to the page are removed.
+
+      When a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states

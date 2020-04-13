@@ -442,3 +442,93 @@ function tide_core_update_8018() {
   $config->set('display.default.display_options.empty.area.content.value', 'There are no scheduled updates yet.');
   $config->save();
 }
+
+/**
+ * Update workflow to add archive pending.
+ */
+function tide_core_update_8019() {
+  $config_factory = \Drupal::configFactory();
+
+  // Updating the workflow states & transitions.
+  $base_states = 'type_settings.states.';
+  $base_transitions = 'type_settings.transitions.';
+  $config = $config_factory->getEditable('workflows.workflow.editorial');
+
+  $from_fields = [
+    'archive.from',
+    'archived_draft.from',
+    'archived_published.from',
+  ];
+
+  foreach ($from_fields as $field) {
+    $form_value = [];
+    $form_value = $config->get($base_transitions . $field);
+    $form_value[] = 'archive_pending';
+    $config->set($base_transitions . $field, $form_value);
+  }
+
+  $config->set($base_states . 'archive_pending', [
+    'label' => 'Archive pending',
+    'published' => FALSE,
+    'default_revision' => FALSE,
+    'weight' => -6,
+  ]);
+
+  $config->set($base_transitions . 'archive_pending', [
+    'label' => 'Archive pending',
+    'from' => [
+      'draft',
+      'published',
+      'needs_review',
+    ],
+    'to' => 'archive_pending',
+    'weight' => -11,
+  ]);
+
+  $config->save();
+
+  // Updating the tide_workflow_notification with new values.
+  $notification_fields = [
+    'draft_archive_pending',
+    'needs_review_archive_pending',
+    'published_archive_pending',
+    'archive_pending_archived',
+  ];
+
+  $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
+
+  // Add new email templates.
+  foreach ($notification_fields as $field) {
+    $status = '';
+    if ($field == 'draft_archive_pending') {
+      $status = 'Draft';
+    }
+    if ($field == 'needs_review_archive_pending') {
+      $status = 'Needs Review';
+    }
+    if ($field == 'published_archive_pending') {
+      $status = 'Published';
+    }
+    $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+    $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+
+    $config_notification->set('notifications.' . $field, [
+      'enabled' => 1,
+      'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
+      'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
+    ]);
+  }
+  $config_notification->save();
+
+  // Add required permissions.
+  $role = Role::load('editor');
+  if ($role) {
+    $role->grantPermission('use editorial transition archive_pending');
+    $role->save();
+  }
+  $role = Role::load('site_admin');
+  if ($role) {
+    $role->grantPermission('use editorial transition archive_pending');
+    $role->save();
+  }
+}
