@@ -118,8 +118,20 @@ function _tide_core_update_editorial_workflow() {
           'published' => FALSE,
           'default_revision' => TRUE,
         ],
+        'archive_pending' => [
+          'label' => 'Archive pending',
+          'published' => FALSE,
+          'default_revision' => FALSE,
+          'weight' => -6,
+        ],
       ],
       'transitions' => [
+        'create_archive_pending' => [
+          'label' => 'Archive pending',
+          'from' => ['draft', 'published', 'needs_review'],
+          'to' => 'archive_pending',
+          'weight' => -11,
+        ],
         'create_new_draft' => [
           'label' => 'Create New Draft',
           'from' => ['draft', 'published'],
@@ -152,13 +164,13 @@ function _tide_core_update_editorial_workflow() {
         ],
         'archived_draft' => [
           'label' => 'Restore to Draft',
-          'from' => ['archived'],
+          'from' => ['archived', 'archive_pending'],
           'to' => 'draft',
           'weight' => -5,
         ],
         'archived_published' => [
           'label' => 'Restore',
-          'from' => ['archived'],
+          'from' => ['archived', 'archive_pending'],
           'to' => 'published',
           'weight' => -4,
         ],
