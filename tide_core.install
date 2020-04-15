@@ -410,3 +410,35 @@ function tide_core_update_8016() {
     $role->save();
   }
 }
+
+/**
+ * Uninstall Scheduled Update modules.
+ */
+function tide_core_update_8017() {
+  $modules = [
+    'scheduled_updates',
+    'content_moderation_scheduled_updates',
+  ];
+
+  $module_installer = \Drupal::service('module_installer');
+  $module_installer->uninstall($modules);
+}
+
+/**
+ * Update Scheduled Transitions View.
+ */
+function tide_core_update_8018() {
+  $title_fields = [
+    'label',
+    'display.default.display_options.title',
+  ];
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('views.view.scheduled_transitions');
+  // Update field labels/titles.
+  foreach ($title_fields as $field) {
+    $config->set($field, 'Scheduled update list');
+  }
+  // Update empty View results.
+  $config->set('display.default.display_options.empty.area.content.value', 'There are no scheduled updates yet.');
+  $config->save();
+}
