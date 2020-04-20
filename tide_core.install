@@ -134,13 +134,13 @@ function _tide_core_update_editorial_workflow() {
         ],
         'create_new_draft' => [
           'label' => 'Create New Draft',
-          'from' => ['draft', 'published'],
+          'from' => ['draft', 'published', 'archive_pending'],
           'to' => 'draft',
           'weight' => -10,
         ],
         'needs_review' => [
           'label' => 'Needs Review',
-          'from' => ['draft'],
+          'from' => ['draft', 'archive_pending'],
           'to' => 'needs_review',
           'weight' => -9,
         ],
@@ -164,7 +164,7 @@ function _tide_core_update_editorial_workflow() {
         ],
         'archived_draft' => [
           'label' => 'Restore to Draft',
-          'from' => ['archived', 'archive_pending'],
+          'from' => ['archived'],
           'to' => 'draft',
           'weight' => -5,
         ],
@@ -468,8 +468,9 @@ function tide_core_update_8019() {
 
   $from_fields = [
     'archive.from',
-    'archived_draft.from',
     'archived_published.from',
+    'create_new_draft.from',
+    'needs_review.from',
   ];
 
   foreach ($from_fields as $field) {
