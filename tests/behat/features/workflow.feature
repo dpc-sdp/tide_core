@@ -128,7 +128,7 @@ Feature: Workflow states and transitions
 
   @api
   Scenario: Editor transitions Test content through states:
-  Draft -> Draft -> Needs Review -> Archive pending
+  Draft -> Draft -> Needs Review -> Archive pending -> Needs Review
 
     Given I am logged in as a user with the Editor role
     When I go to "node/add/test"
@@ -187,9 +187,22 @@ Feature: Workflow states and transitions
     Then I should see the success message "[TEST] Test title has been updated."
     And I should see a "article.node--unpublished" element
 
+    # Change state from Archive Pending to Needs Review.
+    When I edit test "[TEST] Test title"
+    Then the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should not contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+    And I select "Needs Review" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
   @api
   Scenario: Editor transitions Test content from Draft to Archive pending:
-  Draft -> Archive pending
+  Draft -> Archive pending -> Draft
 
     Given I am logged in as a user with the Editor role
     When I go to "node/add/test"
@@ -209,7 +222,7 @@ Feature: Workflow states and transitions
     Then I should see the success message "[TEST] Test title has been created."
     And I should see a "article.node--unpublished" element
 
-    # Change state from Draft to Draft.
+    # Change state from Draft to Archive pending.
     When I edit test "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
@@ -217,8 +230,20 @@ Feature: Workflow states and transitions
     And the "#edit-moderation-state-0-state" element should contain "Archive pending"
     And the "#edit-moderation-state-0-state" element should not contain "Published"
     And the "#edit-moderation-state-0-state" element should not contain "Archived"
-
     And I select "Archive pending" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
+    # Change state from Archive pending to Draft.
+    When I edit test "[TEST] Test title"
+    Then the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should not contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+    And I select "Draft" from "Change to"
     And I press "Save"
     Then I should see the success message "[TEST] Test title has been updated."
     And I should see a "article.node--unpublished" element
