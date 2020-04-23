@@ -456,7 +456,7 @@ function tide_core_update_8018() {
 }
 
 /**
- * Update workflow to add archive pending.
+ * Update workflow to add archive pending SDPA-3781.
  */
 function tide_core_update_8019() {
   $config_factory = \Drupal::configFactory();
@@ -500,7 +500,18 @@ function tide_core_update_8019() {
 
   $config->save();
 
-  // Updating the tide_workflow_notification with new values.
+  // Updating the tide_workflow_notification.
+  $notification_status = [
+    'draft_needs_review',
+    'draft_published',
+    'needs_review_draft',
+    'needs_review_published',
+    'published_archived',
+  ];
+
+  $current_string = ['([node:url])', '(https://www.vic.gov.au/how-publish-content-vicgovau).'];
+  $replacement_string = [' - [node:url]', ' https://www.vic.gov.au/how-publish-content-vicgovau'];
+
   $notification_fields = [
     'draft_archive_pending',
     'needs_review_archive_pending',
@@ -510,7 +521,14 @@ function tide_core_update_8019() {
 
   $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
 
-  // Add new email templates.
+  // Update existing email template to fix link issue SDPSUP-1309.
+  foreach ($notification_status as $status) {
+    $current_status_message = $config_notification->get()['notifications'][$status]['message'];
+    $updated_status_message = str_replace($current_string, $replacement_string, $current_status_message);
+    $config_notification->set('notifications.' . $status . '.message', $updated_status_message);
+  }
+
+  // Add new email templates SDPA-3781.
   foreach ($notification_fields as $field) {
     $status = '';
     if ($field == 'draft_archive_pending') {
@@ -544,4 +562,31 @@ function tide_core_update_8019() {
     $role->grantPermission('use editorial transition archive_pending');
     $role->save();
   }
+}
+
+/**
+ * Disable moderated_content view.
+ */
+function tide_site_update_8020() {
+  $view = 'moderated_content';
+  \Drupal::entityTypeManager()->getStorage('view')
+    ->load($view)
+    ->setStatus(FALSE)
+    ->save();
+
+  \Drupal::entityTypeManager()->getStorage('view')
+    ->load($view)->delete();
+  \Drupal::configFactory()->getEditable('views.view.moderated_content')->delete();
+
+}
+
+/**
+ * Import tide_core_moderated_content_filters.
+ */
+function tide_site_update_8021() {
+  $view = 'views.view.tide_core_moderated_content_filters';
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($view, $source->read($view));
 }
