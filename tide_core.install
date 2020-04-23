@@ -10,6 +10,7 @@ use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\Core\Config\FileStorage;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
