@@ -567,7 +567,7 @@ function tide_core_update_8019() {
 /**
  * Disable moderated_content view.
  */
-function tide_site_update_8020() {
+function tide_core_update_8020() {
   $view = 'moderated_content';
   \Drupal::entityTypeManager()->getStorage('view')
     ->load($view)
@@ -583,7 +583,7 @@ function tide_site_update_8020() {
 /**
  * Import tide_core_moderated_content_filters.
  */
-function tide_site_update_8021() {
+function tide_core_update_8021() {
   $view = 'views.view.tide_core_moderated_content_filters';
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
