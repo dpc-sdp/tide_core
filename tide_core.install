@@ -574,11 +574,6 @@ function tide_core_update_8020() {
     ->load($view)
     ->setStatus(FALSE)
     ->save();
-
-  \Drupal::entityTypeManager()->getStorage('view')
-    ->load($view)->delete();
-  \Drupal::configFactory()->getEditable('views.view.moderated_content')->delete();
-
 }
 
 /**
