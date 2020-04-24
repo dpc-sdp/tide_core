@@ -569,11 +569,10 @@ function tide_core_update_8019() {
  * Disable moderated_content view.
  */
 function tide_core_update_8020() {
-  $view = 'moderated_content';
-  \Drupal::entityTypeManager()->getStorage('view')
-    ->load($view)
-    ->setStatus(FALSE)
-    ->save();
+  $view = \Drupal::entityTypeManager()->getStorage('view')->load('moderated_content');
+  if ($view) {
+    $view->setStatus(FALSE)->save();
+  }
 }
 
 /**
