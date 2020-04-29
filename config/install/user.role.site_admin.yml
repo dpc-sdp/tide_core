@@ -26,7 +26,6 @@ permissions:
   - 'administer menu'
   - 'administer redirect settings'
   - 'administer redirects'
-  - 'administer taxonomy'
   - 'administer url aliases'
   - 'administer users'
   - 'administer webform'
@@ -151,3 +150,4 @@ permissions:
   - 'view section_page revisions'
   - 'view the administration theme'
   - 'view timeline revisions'
+  - 'access taxonomy overview'

@@ -442,3 +442,17 @@ function tide_core_update_8018() {
   $config->set('display.default.display_options.empty.area.content.value', 'There are no scheduled updates yet.');
   $config->save();
 }
+
+/**
+ * Change permissions.
+ *
+ * Revokes 'administer taxonomy' permission from site_admin and approver roles,
+ * and grants them 'access taxonomy overview'.
+ */
+function tide_core_update_8019() {
+  $roles = ['approver', 'site_admin'];
+  foreach ($roles as $role_id) {
+    user_role_revoke_permissions($role_id, ['administer taxonomy']);
+    user_role_grant_permissions($role_id, ['access taxonomy overview']);
+  }
+}
