@@ -14,6 +14,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
+use Drupal\taxonomy\TaxonomyPermissions;
 
 /**
  * Implements hook_install().
@@ -451,8 +452,16 @@ function tide_core_update_8018() {
  */
 function tide_core_update_8019() {
   $roles = ['approver', 'site_admin'];
+  $taxonomy_permissions = new TaxonomyPermissions(\Drupal::entityManager());
   foreach ($roles as $role_id) {
+    $assigned_permissions = ['access taxonomy overview'];
+    foreach ($taxonomy_permissions->permissions() as $permission => $details) {
+      $exploded = explode(' ', trim($permission));
+      if ($exploded[0] != 'delete') {
+        $assigned_permissions[] = $permission;
+      }
+    }
     user_role_revoke_permissions($role_id, ['administer taxonomy']);
-    user_role_grant_permissions($role_id, ['access taxonomy overview']);
+    user_role_grant_permissions($role_id, $assigned_permissions);
   }
 }
