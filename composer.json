@@ -57,7 +57,8 @@
         "drupal/content_moderation_scheduled_updates": "^1.0",
         "drupal/scheduled_updates": "^1.0-alpha7",
         "drupal/link_field_autocomplete_filter": "^1.8",
-        "drupal/queue_mail": "^1.0"
+        "drupal/queue_mail": "^1.0",
+        "drupal/token": "1.6.0"
     },
     "repositories": {
         "drupal": {
