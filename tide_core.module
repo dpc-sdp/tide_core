@@ -86,13 +86,12 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
   $info = \Drupal::service('entity_type.bundle.info');
   foreach ($info->getBundleInfo('node') as $bundle => $item) {
     if ($form_id == 'node_' . $bundle . '_scheduled_transitions_add_form_form') {
-      if (isset($form['scheduled_transitions']['new_meta']['state']['#options'])) {
-        foreach ($form['scheduled_transitions']['new_meta']['state']['#options'] as $key => &$option) {
-          if ($option == 'Restore') {
-            $option = 'Published';
-          }
-          if (!in_array($key, ['published', 'archived'])) {
-            unset($form['scheduled_transitions']['new_meta']['state']['#options'][$key]);
+      // In this form, we only keep 'publish' and 'archive' options regardless
+      // of what permissions the user has.
+      if (isset($form['scheduled_transitions']['new_meta']['transition']['#options'])) {
+        foreach ($form['scheduled_transitions']['new_meta']['transition']['#options'] as $key => $option) {
+          if (!in_array($key, ['publish', 'archive'])) {
+            unset($form['scheduled_transitions']['new_meta']['transition']['#options'][$key]);
           }
         }
       }
