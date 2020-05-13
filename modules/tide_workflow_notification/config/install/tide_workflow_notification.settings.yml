@@ -5,11 +5,11 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      The status of the web content [node:title]([node:url]) has changed from Draft to Needs review.
+      The status of the web content [node:title] - [node:url] has changed from Draft to Needs review.
 
       Please review this content and check:
 
-      • it meets our standards and style guide(https://www.vic.gov.au/how-publish-content-vicgovau).
+      • it meets our standards and style guide https://www.vic.gov.au/how-publish-content-vicgovau
       • it is factually accurate
 
       If it does not meet standards, provide feedback to the Content editor [user:display-name] by return email and change the status back to Draft.
@@ -24,7 +24,7 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      [user:display-name] has reviewed your content and changed the status of [node:title]([node:url]) from Draft to Published.
+      [user:display-name] has reviewed your content and changed the status of [node:title] - [node:url] from Draft to Published.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
 
@@ -34,7 +34,7 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      [user:display-name] has reviewed your content and changed the status of [node:title]([node:url]) from Needs review back to Draft.
+      [user:display-name] has reviewed your content and changed the status of [node:title] - [node:url] from Needs review back to Draft.
       Read the Approvers' comments and make the requested changes to the content. Save your changes and set the status to Needs review and the approvers will be notified.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
@@ -45,7 +45,7 @@ notifications:
     message: |
       Hi, [workflow-notification:recipient:display-name],
 
-      [user:display-name] has reviewed your content and changed the status of [node:title]([node:url]) from Needs review to Published.
+      [user:display-name] has reviewed your content and changed the status of [node:title] - [node:url] from Needs review to Published.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
 
@@ -55,8 +55,60 @@ notifications:
     message: |
       Hi [workflow-notification:recipient:display-name],
 
-      The status of the web content [node:title]([node:url]) has changed from Published to Archived. This could be because:
+      The status of the web content [node:title] - [node:url] has changed from Published to Archived. This could be because:
       • your approver archived it
       • the content had a scheduled archive date
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  draft_archive_pending:
+    enabled: 1
+    subject: 'Archive of web content required: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of the web content [node:title] - [node:url] has changed from Draft to Archive pending.
+
+      Remember to remove all menu links and navigation links to the page as well.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  needs_review_archive_pending:
+    enabled: 1
+    subject: 'Archive of web content required: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of the web content [node:title] - [node:url] has changed from Needs Review to Archive pending.
+
+      Remember to remove all menu links and navigation links to the page as well.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  published_archive_pending:
+    enabled: 1
+    subject: 'Archive of web content required: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of the web content [node:title] - [node:url] has changed from Published to Archive pending.
+
+      Remember to remove all menu links and navigation links to the page as well.
+
+      Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states
+
+  archive_pending_archived:
+    enabled: 1
+    subject: 'Your web content has been archived: [node:title]'
+    message: |
+      Hi [workflow-notification:recipient:display-name],
+
+      The status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:
+      • your approver approved your request to archive it
+      • the content had a scheduled archive date
+
+      You should also ensure all menu links and navigation links to the page are removed.
+
+      When a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.
 
       Need help? Read about workflow and roles https://www.vic.gov.au/workflow-moderation-states

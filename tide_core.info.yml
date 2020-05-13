@@ -30,6 +30,7 @@ dependencies:
   - drupal:user
   - drupal:workflows
   - drupal:hal
+  - drupal:token
   - editor_advanced_link:editor_advanced_link
   - entity_browser:entity_browser
   - entity_browser:entity_browser_entity_form
@@ -74,17 +75,32 @@ themes:
   - seven
 config_devel:
   install:
+    - core.entity_form_display.paragraph.accordion.default
+    - core.entity_form_display.paragraph.accordion_content.default
     - core.entity_form_display.paragraph.links.default
     - core.entity_form_display.paragraph.related_links.default
     - core.entity_view_display.paragraph.links.default
     - core.entity_view_display.paragraph.related_links.default
     - core.entity_view_mode.node.card
     - core.entity_view_mode.node.featured_card
+    - core.entity_view_display.paragraph.accordion.default
+    - core.entity_view_display.paragraph.accordion.preview
+    - core.entity_view_display.paragraph.accordion_content.default
+    - core.entity_view_display.paragraph.accordion_content.preview
+    - field.field.paragraph.accordion.field_paragraph_accordion
+    - field.field.paragraph.accordion.field_paragraph_accordion_style
+    - field.field.paragraph.accordion.field_paragraph_title
+    - field.field.paragraph.accordion_content.field_paragraph_accordion_body
+    - field.field.paragraph.accordion_content.field_paragraph_accordion_name
     - field.field.paragraph.links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_link
+    - field.storage.node.field_audience
     - field.storage.node.field_featured_image
+    - field.storage.node.field_landing_page_intro_text
+    - field.storage.node.field_landing_page_nav_title
     - field.storage.node.field_metatags
     - field.storage.node.field_node_author
+    - field.storage.node.field_node_documents
     - field.storage.node.field_node_email
     - field.storage.node.field_node_link
     - field.storage.node.field_node_phone
@@ -97,6 +113,10 @@ config_devel:
     - field.storage.node.field_tags
     - field.storage.node.field_topic
     - field.storage.node.field_whats_next
+    - field.storage.paragraph.field_paragraph_accordion
+    - field.storage.paragraph.field_paragraph_accordion_body
+    - field.storage.paragraph.field_paragraph_accordion_name
+    - field.storage.paragraph.field_paragraph_accordion_style
     - field.storage.paragraph.field_paragraph_body
     - field.storage.paragraph.field_paragraph_cta
     - field.storage.paragraph.field_paragraph_cta_text
@@ -108,6 +128,8 @@ config_devel:
     - filter.format.rich_text
     - image.style.thumbnail
     - linkit.linkit_profile.content
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.accordion_content
     - paragraphs.paragraphs_type.links
     - paragraphs.paragraphs_type.related_links
     - taxonomy.vocabulary.audience
@@ -119,6 +141,8 @@ config_devel:
     - user.role.editor
     - user.role.previewer
     - user.role.site_admin
+    - views.view.tide_core_moderated_content_filters
+    - workflows.workflow.editorial
     - wysiwyg_template.wysiwyg_template.blockquote
     - wysiwyg_template.wysiwyg_template.primary_button
     - wysiwyg_template.wysiwyg_template.secondary_button
@@ -151,4 +175,3 @@ config_devel:
     - system.action.pathauto_update_alias_user
     - user.role.administrator
     - user.role.anonymous
-    - workflows.workflow.editorial

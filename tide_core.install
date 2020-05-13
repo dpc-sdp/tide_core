@@ -10,6 +10,7 @@ use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\Core\Config\FileStorage;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
@@ -118,17 +119,29 @@ function _tide_core_update_editorial_workflow() {
           'published' => FALSE,
           'default_revision' => TRUE,
         ],
+        'archive_pending' => [
+          'label' => 'Archive pending',
+          'published' => FALSE,
+          'default_revision' => FALSE,
+          'weight' => -6,
+        ],
       ],
       'transitions' => [
+        'create_archive_pending' => [
+          'label' => 'Archive pending',
+          'from' => ['draft', 'published', 'needs_review'],
+          'to' => 'archive_pending',
+          'weight' => -11,
+        ],
         'create_new_draft' => [
           'label' => 'Create New Draft',
-          'from' => ['draft', 'published'],
+          'from' => ['draft', 'published', 'archive_pending'],
           'to' => 'draft',
           'weight' => -10,
         ],
         'needs_review' => [
           'label' => 'Needs Review',
-          'from' => ['draft'],
+          'from' => ['draft', 'archive_pending'],
           'to' => 'needs_review',
           'weight' => -9,
         ],
@@ -158,7 +171,7 @@ function _tide_core_update_editorial_workflow() {
         ],
         'archived_published' => [
           'label' => 'Restore',
-          'from' => ['archived'],
+          'from' => ['archived', 'archive_pending'],
           'to' => 'published',
           'weight' => -4,
         ],
@@ -388,4 +401,187 @@ function tide_core_update_8015() {
     $config->set('mode_daemon_tcpip.hostname', 'clamav.sdp-central-clamav-master.svc.cluster.local');
     $config->save();
   }
+}
+
+/**
+ * Fix permissions for to access video entity browser.
+ */
+function tide_core_update_8016() {
+  $role = Role::load('approver');
+  if ($role) {
+    $role->grantPermission('access tide_embedded_video_browser entity browser pages');
+    $role->save();
+  }
+  $role = Role::load('editor');
+  if ($role) {
+    $role->grantPermission('access tide_embedded_video_browser entity browser pages');
+    $role->save();
+  }
+  $role = Role::load('site_admin');
+  if ($role) {
+    $role->grantPermission('access tide_embedded_video_browser entity browser pages');
+    $role->save();
+  }
+}
+
+/**
+ * Uninstall Scheduled Update modules.
+ */
+function tide_core_update_8017() {
+  $modules = [
+    'scheduled_updates',
+    'content_moderation_scheduled_updates',
+  ];
+
+  $module_installer = \Drupal::service('module_installer');
+  $module_installer->uninstall($modules);
+}
+
+/**
+ * Update Scheduled Transitions View.
+ */
+function tide_core_update_8018() {
+  $title_fields = [
+    'label',
+    'display.default.display_options.title',
+  ];
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('views.view.scheduled_transitions');
+  // Update field labels/titles.
+  foreach ($title_fields as $field) {
+    $config->set($field, 'Scheduled update list');
+  }
+  // Update empty View results.
+  $config->set('display.default.display_options.empty.area.content.value', 'There are no scheduled updates yet.');
+  $config->save();
+}
+
+/**
+ * Update workflow to add archive pending SDPA-3781.
+ */
+function tide_core_update_8019() {
+  $config_factory = \Drupal::configFactory();
+
+  // Updating the workflow states & transitions.
+  $base_states = 'type_settings.states.';
+  $base_transitions = 'type_settings.transitions.';
+  $config = $config_factory->getEditable('workflows.workflow.editorial');
+
+  $from_fields = [
+    'archive.from',
+    'archived_published.from',
+    'create_new_draft.from',
+    'needs_review.from',
+  ];
+
+  foreach ($from_fields as $field) {
+    $form_value = [];
+    $form_value = $config->get($base_transitions . $field);
+    $form_value[] = 'archive_pending';
+    $config->set($base_transitions . $field, $form_value);
+  }
+
+  $config->set($base_states . 'archive_pending', [
+    'label' => 'Archive pending',
+    'published' => FALSE,
+    'default_revision' => FALSE,
+    'weight' => -6,
+  ]);
+
+  $config->set($base_transitions . 'archive_pending', [
+    'label' => 'Archive pending',
+    'from' => [
+      'draft',
+      'published',
+      'needs_review',
+    ],
+    'to' => 'archive_pending',
+    'weight' => -11,
+  ]);
+
+  $config->save();
+
+  // Updating the tide_workflow_notification.
+  $notification_status = [
+    'draft_needs_review',
+    'draft_published',
+    'needs_review_draft',
+    'needs_review_published',
+    'published_archived',
+  ];
+
+  $current_string = ['([node:url])', '(https://www.vic.gov.au/how-publish-content-vicgovau).'];
+  $replacement_string = [' - [node:url]', ' https://www.vic.gov.au/how-publish-content-vicgovau'];
+
+  $notification_fields = [
+    'draft_archive_pending',
+    'needs_review_archive_pending',
+    'published_archive_pending',
+    'archive_pending_archived',
+  ];
+
+  $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
+
+  // Update existing email template to fix link issue SDPSUP-1309.
+  foreach ($notification_status as $status) {
+    $current_status_message = $config_notification->get()['notifications'][$status]['message'];
+    $updated_status_message = str_replace($current_string, $replacement_string, $current_status_message);
+    $config_notification->set('notifications.' . $status . '.message', $updated_status_message);
+  }
+
+  // Add new email templates SDPA-3781.
+  foreach ($notification_fields as $field) {
+    $status = '';
+    if ($field == 'draft_archive_pending') {
+      $status = 'Draft';
+    }
+    if ($field == 'needs_review_archive_pending') {
+      $status = 'Needs Review';
+    }
+    if ($field == 'published_archive_pending') {
+      $status = 'Published';
+    }
+    $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+    $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+
+    $config_notification->set('notifications.' . $field, [
+      'enabled' => 1,
+      'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
+      'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
+    ]);
+  }
+  $config_notification->save();
+
+  // Add required permissions.
+  $role = Role::load('editor');
+  if ($role) {
+    $role->grantPermission('use editorial transition archive_pending');
+    $role->save();
+  }
+  $role = Role::load('site_admin');
+  if ($role) {
+    $role->grantPermission('use editorial transition archive_pending');
+    $role->save();
+  }
+}
+
+/**
+ * Disable moderated_content view.
+ */
+function tide_core_update_8020() {
+  $view = \Drupal::entityTypeManager()->getStorage('view')->load('moderated_content');
+  if ($view) {
+    $view->setStatus(FALSE)->save();
+  }
+}
+
+/**
+ * Import tide_core_moderated_content_filters.
+ */
+function tide_core_update_8021() {
+  $view = 'views.view.tide_core_moderated_content_filters';
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($view, $source->read($view));
 }

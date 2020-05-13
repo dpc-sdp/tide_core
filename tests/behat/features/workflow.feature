@@ -11,7 +11,9 @@ Feature: Workflow states and transitions
     And the "#edit-states-container" element should contain "Needs Review"
     And the "#edit-states-container" element should contain "Published"
     And the "#edit-states-container" element should contain "Archived"
+    And the "#edit-states-container" element should contain "Archive pending"
 
+    And the "#edit-transitions-container" element should contain "Archive pending"
     And the "#edit-transitions-container" element should contain "Create New Draft"
     And the "#edit-transitions-container" element should contain "Needs Review"
     And the "#edit-transitions-container" element should contain "Publish"
@@ -126,13 +128,14 @@ Feature: Workflow states and transitions
 
   @api
   Scenario: Editor transitions Test content through states:
-  Draft -> Draft -> Needs Review
+  Draft -> Draft -> Needs Review -> Archive pending -> Needs Review
 
     Given I am logged in as a user with the Editor role
     When I go to "node/add/test"
     And the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should contain "Archive pending"
     And the "#edit-moderation-state-0-state" element should not contain "Published"
     And the "#edit-moderation-state-0-state" element should not contain "Archived"
 
@@ -150,8 +153,10 @@ Feature: Workflow states and transitions
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should contain "Archive pending"
     And the "#edit-moderation-state-0-state" element should not contain "Published"
     And the "#edit-moderation-state-0-state" element should not contain "Archived"
+
     And I select "Draft" from "Change to"
     And I press "Save"
     Then I should see the success message "[TEST] Test title has been updated."
@@ -162,9 +167,83 @@ Feature: Workflow states and transitions
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should contain "Archive pending"
     And the "#edit-moderation-state-0-state" element should not contain "Published"
     And the "#edit-moderation-state-0-state" element should not contain "Archived"
     And I select "Needs Review" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
+    # Change state from Needs Review to Archive Pending.
+    When I edit test "[TEST] Test title"
+    Then the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+    And I select "Archive pending" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
+    # Change state from Archive Pending to Needs Review.
+    When I edit test "[TEST] Test title"
+    Then the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should not contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+    And I select "Needs Review" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
+  @api
+  Scenario: Editor transitions Test content from Draft to Archive pending:
+  Draft -> Archive pending -> Draft
+
+    Given I am logged in as a user with the Editor role
+    When I go to "node/add/test"
+    And the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+
+    # Populate content fields and create content piece in Draft.
+    When I fill in "Title" with "[TEST] Test title"
+    And I fill in "Body" with "Test body content"
+    And I select "Draft" from "Save as"
+    And I press "Save"
+    And I save screenshot
+    Then I should see the success message "[TEST] Test title has been created."
+    And I should see a "article.node--unpublished" element
+
+    # Change state from Draft to Archive pending.
+    When I edit test "[TEST] Test title"
+    Then the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+    And I select "Archive pending" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
+    # Change state from Archive pending to Draft.
+    When I edit test "[TEST] Test title"
+    Then the response status code should be 200
+    And the "#edit-moderation-state-0-state" element should contain "Draft"
+    And the "#edit-moderation-state-0-state" element should contain "Needs Review"
+    And the "#edit-moderation-state-0-state" element should not contain "Archive pending"
+    And the "#edit-moderation-state-0-state" element should not contain "Published"
+    And the "#edit-moderation-state-0-state" element should not contain "Archived"
+    And I select "Draft" from "Change to"
     And I press "Save"
     Then I should see the success message "[TEST] Test title has been updated."
     And I should see a "article.node--unpublished" element
@@ -229,6 +308,24 @@ Feature: Workflow states and transitions
     And I press "Save"
     Then I should see the success message "[TEST] Editor Test title has been updated."
     And I should not see a "article.node--unpublished" element
+
+    # Editor send request to archive content.
+    Given I am logged in as a user with the Editor role
+    When I edit test "[TEST] Editor Test title"
+    Then the response status code should be 200
+    And I select "Archive pending" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Editor Test title has been updated."
+    And I should see a "article.node--unpublished" element
+
+    # Approver reviews and archive.
+    Given I am logged in as a user with the Approver role
+    When I edit test "[TEST] Editor Test title"
+    Then the response status code should be 200
+    And I select "Archived" from "Change to"
+    And I press "Save"
+    Then I should see the success message "[TEST] Editor Test title has been updated."
+    And I should see a "article.node--unpublished" element
 
   @api @skipped
   Scenario: Users with permission to Archive content can use Archive operation on content

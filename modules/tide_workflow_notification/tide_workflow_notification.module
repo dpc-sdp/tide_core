@@ -39,6 +39,10 @@ function tide_workflow_notification_form_workflow_edit_form_alter(array &$form, 
     'needs_review_draft' => t('Needs Review to Draft'),
     'needs_review_published' => t('Needs Review to Published'),
     'published_archived' => t('Published to Archived'),
+    'draft_archive_pending' => t('Draft to Archive Pending'),
+    'needs_review_archive_pending' => t('Needs Review to Archive Pending'),
+    'published_archive_pending' => t('Published to Archive Pending'),
+    'archive_pending_archived' => t('Archive Pending to Archived'),
   ];
 
   $settings = \Drupal::config('tide_workflow_notification.settings');
@@ -139,6 +143,8 @@ function tide_workflow_notification_node_presave(NodeInterface $node) {
 
       // Notify all Approvers.
       case 'draft_needs_review':
+      case 'draft_archive_pending':
+      case 'needs_review_archive_pending':
         $recipients = _tide_workflow_notification_get_node_approvers($node, $transition);
         break;
 
@@ -146,6 +152,8 @@ function tide_workflow_notification_node_presave(NodeInterface $node) {
       case 'draft_published':
       case 'needs_review_published':
       case 'published_archived':
+      case 'published_archive_pending':
+      case 'archive_pending_archived':
         $recipients = _tide_workflow_notification_get_node_approvers($node, $transition);
         $recipients[$last_author->id()] = $last_author;
         break;
