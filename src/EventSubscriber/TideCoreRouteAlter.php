@@ -26,6 +26,11 @@ class TideCoreRouteAlter extends RouteSubscriberBase {
     if ($route) {
       $route->setDefault('_title', 'Add Scheduled update');
     }
+    // JWT can only be edited by developers who are managing modules.
+    $route = $collection->get('jwt.jwt_config_form');
+    if ($route) {
+      $route->setRequirement('_permission', 'administer modules');
+    }
   }
 
 }
