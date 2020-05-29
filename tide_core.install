@@ -520,37 +520,39 @@ function tide_core_update_8019() {
     'archive_pending_archived',
   ];
 
-  $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
+  if (\Drupal::moduleHandler()->moduleExists('tide_workflow_notification')) {
+    $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
 
-  // Update existing email template to fix link issue SDPSUP-1309.
-  foreach ($notification_status as $status) {
-    $current_status_message = $config_notification->get()['notifications'][$status]['message'];
-    $updated_status_message = str_replace($current_string, $replacement_string, $current_status_message);
-    $config_notification->set('notifications.' . $status . '.message', $updated_status_message);
+    // Update existing email template to fix link issue SDPSUP-1309.
+    foreach ($notification_status as $status) {
+      $current_status_message = $config_notification->get()['notifications'][$status]['message'];
+      $updated_status_message = str_replace($current_string, $replacement_string, $current_status_message);
+      $config_notification->set('notifications.' . $status . '.message', $updated_status_message);
+    }
+
+    // Add new email templates SDPA-3781.
+    foreach ($notification_fields as $field) {
+      $status = '';
+      if ($field == 'draft_archive_pending') {
+        $status = 'Draft';
+      }
+      if ($field == 'needs_review_archive_pending') {
+        $status = 'Needs Review';
+      }
+      if ($field == 'published_archive_pending') {
+        $status = 'Published';
+      }
+      $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+      $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+
+      $config_notification->set('notifications.' . $field, [
+        'enabled' => 1,
+        'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
+        'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
+      ]);
+    }
+    $config_notification->save();
   }
-
-  // Add new email templates SDPA-3781.
-  foreach ($notification_fields as $field) {
-    $status = '';
-    if ($field == 'draft_archive_pending') {
-      $status = 'Draft';
-    }
-    if ($field == 'needs_review_archive_pending') {
-      $status = 'Needs Review';
-    }
-    if ($field == 'published_archive_pending') {
-      $status = 'Published';
-    }
-    $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
-    $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
-
-    $config_notification->set('notifications.' . $field, [
-      'enabled' => 1,
-      'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
-      'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
-    ]);
-  }
-  $config_notification->save();
 
   // Add required permissions.
   $role = Role::load('editor');
