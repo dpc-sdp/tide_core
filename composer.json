@@ -75,7 +75,8 @@
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
                 "Unrecognised entity operation passed to Menu Link Content throws exceptions - https://www.drupal.org/project/drupal/issues/3016038": "https://www.drupal.org/files/issues/2019-03-03/3016038-menu-link-operation-8.patch",
                 "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
-                "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485#comment-11004325": "https://www.drupal.org/files/issues/2693485-node-3.patch"
+                "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485#comment-11004325": "https://www.drupal.org/files/issues/2693485-node-3.patch",
+                "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch"
             },
             "drupal/entity_reference_revisions": {
                 "Allow entities to be generated if none exist - https://www.drupal.org/node/2910326": "https://www.drupal.org/files/issues/entity_reference_revisions-stop_checking_for_entities_before_generating_sample-2910326-2.patch"
