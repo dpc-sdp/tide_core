@@ -593,9 +593,7 @@ function tide_core_update_8021() {
  */
 function tide_core_update_8022() {
   // Get the available content types.
-  $types = \Drupal::entityTypeManager()
-  ->getStorage('node_type')
-  ->loadMultiple();
+  $types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   foreach ($types as $type) {
     if ($type->id()) {
       $content_types[] = $type->id();
