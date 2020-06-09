@@ -587,3 +587,49 @@ function tide_core_update_8021() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Enable scheduled transitions for each content type.
+ */
+function tide_core_update_8022() {
+  // Get the available content types.
+  $types = \Drupal::entityTypeManager()
+  ->getStorage('node_type')
+  ->loadMultiple();
+  foreach ($types as $type) {
+    if ($type->id()) {
+      $content_types[] = $type->id();
+    }
+  }
+  if (\Drupal::moduleHandler()->moduleExists('scheduled_transitions') && !empty($content_types)) {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('scheduled_transitions.settings');
+    $bundles = $config->get('bundles');
+    if (!$bundles) {
+      foreach ($content_types as $bundle) {
+        $bundles_array[] = ['entity_type' => 'node', 'bundle' => $bundle];
+      }
+      $config->set('bundles', $bundles_array);
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Import sdpa password policy.
+ */
+function tide_core_update_8023() {
+  if (\Drupal::moduleHandler()->moduleExists('password_policy')) {
+    // Remove default password policy if exists.
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('password_policy.password_policy.default');
+    $default_id = $config->get('id');
+    if (empty($default_id)) {
+      $config->delete();
+    }
+    // Import the sdpa password policy.
+    module_load_include('inc', 'tide_core', 'includes/helpers');
+    $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+    _tide_import_single_config('password_policy.password_policy.password_policy_sdpa', $config_location);
+  }
+}
