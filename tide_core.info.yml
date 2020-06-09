@@ -132,6 +132,7 @@ config_devel:
     - paragraphs.paragraphs_type.accordion_content
     - paragraphs.paragraphs_type.links
     - paragraphs.paragraphs_type.related_links
+    - password_policy.password_policy.password_policy_sdpa
     - taxonomy.vocabulary.audience
     - taxonomy.vocabulary.department
     - taxonomy.vocabulary.location
