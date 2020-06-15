@@ -67,6 +67,7 @@ dependencies:
   - twig_field_value:twig_field_value
   - views_menu_children_filter:views_menu_children_filter
   - viewsreference:viewsreference
+  - username_enumeration_prevention:username_enumeration_prevention
   - wysiwyg_template:wysiwyg_template
   - wysiwyg_template:wysiwyg_template_core
   - scheduled_transitions:scheduled_transitions

@@ -587,3 +587,13 @@ function tide_core_update_8021() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Enable username_enumeration_prevention module.
+ */
+function tide_core_update_8022() {
+  if (!\Drupal::moduleHandler()->moduleExists('username_enumeration_prevention')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['username_enumeration_prevention']);
+  }
+}
