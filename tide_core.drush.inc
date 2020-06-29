@@ -12,7 +12,6 @@ function tide_core_drush_help($section) {
   switch ($section) {
     case 'tide-core-scheduled-transitions-queue-jobs':
       return dt('Drush 8 wrapper for the Drush 9 Scheduled transitions queuing Drush command.');
-      break;
   }
 }
 
