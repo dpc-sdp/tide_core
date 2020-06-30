@@ -599,7 +599,7 @@ function tide_core_update_8022() {
   ];
   foreach ($fields as $field) {
     $config = $config_factory->getEditable($field);
-    $config->set('required', true);
+    $config->set('required', TRUE);
     $config->save();
   }
 }
