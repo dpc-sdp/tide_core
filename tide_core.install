@@ -589,9 +589,25 @@ function tide_core_update_8021() {
 }
 
 /**
- * Changes the order of transitions list.
+ * Update accordion name and content fields to be mandatory.
  */
 function tide_core_update_8022() {
+  $config_factory = \Drupal::configFactory();
+  $fields = [
+    'field.field.paragraph.accordion_content.field_paragraph_accordion_name',
+    'field.field.paragraph.accordion_content.field_paragraph_accordion_body',
+  ];
+  foreach ($fields as $field) {
+    $config = $config_factory->getEditable($field);
+    $config->set('required', TRUE);
+    $config->save();
+  }
+}
+
+/**
+ * Changes the order of transitions list.
+ */
+function tide_core_update_8023() {
   $order = [
     'Create New Draft',
     'Needs Review',
