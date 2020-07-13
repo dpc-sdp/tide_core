@@ -634,3 +634,14 @@ function tide_core_update_8023() {
     $editorial_workflow->save();
   }
 }
+
+/**
+ * Clean up cloudflare module.
+ */
+function tide_core_update_8024() {
+  $module_handler = \Drupal::moduleHandler();
+  $module_exist = $module_handler->moduleExists('cloudflare');
+  if ($module_exist) {
+    \Drupal::service('module_installer')->uninstall(['cloudflare']);
+  }
+}
