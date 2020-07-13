@@ -1,4 +1,4 @@
-@tide
+@tide @skipped
 Feature: Workflow states and transitions
 
   Ensure that workflow states and transitions are configured as expected
