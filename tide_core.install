@@ -672,3 +672,24 @@ function tide_core_update_8025() {
     ->set('register', UserInterface::REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
     ->save(TRUE);
 }
+
+/**
+ * Deletes unsupported actions from /admin/contents view.
+ */
+function tide_core_update_8026() {
+  // Actions whose provided by drupal core.
+  $unsupported_actions = [
+    'system.action.node_make_sticky_action',
+    'system.action.node_make_unsticky_action',
+    'system.action.node_promote_action',
+    'system.action.node_save_action',
+    'system.action.node_unpromote_action',
+  ];
+  $config_storage = \Drupal::service('config.storage');
+  $config_factory = \Drupal::configFactory();
+  foreach ($unsupported_actions as $action) {
+    if ($config_storage->read($action)) {
+      $config_factory->getEditable($action)->delete();
+    }
+  }
+}
