@@ -694,3 +694,20 @@ function tide_core_update_8026() {
     }
   }
 }
+
+/**
+ * Imports custom actions.
+ */
+function tide_core_update_8027() {
+  $actions = [
+    'system.action.tide_core_archive',
+    'system.action.tide_core_publish',
+    'system.action.tide_core_unpublish',
+  ];
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  foreach ($actions as $action) {
+    $config_storage->write($action, $source->read($action));
+  }
+}
