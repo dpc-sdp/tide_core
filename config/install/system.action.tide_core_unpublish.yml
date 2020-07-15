@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: tide_core_unpublish
+label: 'Unpublish content'
+type: node
+plugin: tide_core_unpublish_action
+configuration: {  }
