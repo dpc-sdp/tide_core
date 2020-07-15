@@ -684,6 +684,7 @@ function tide_core_update_8026() {
     'system.action.node_promote_action',
     'system.action.node_save_action',
     'system.action.node_unpromote_action',
+    'system.action.node_publish_action',
   ];
   $config_storage = \Drupal::service('config.storage');
   $config_factory = \Drupal::configFactory();
