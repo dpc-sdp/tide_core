@@ -2,9 +2,6 @@
 
 namespace Drupal\tide_core\Plugin\Action;
 
-use Drupal\Core\Action\ActionBase;
-use Drupal\Core\Session\AccountInterface;
-
 /**
  * Class TideCoreUnpublishAction.
  *
@@ -12,28 +9,22 @@ use Drupal\Core\Session\AccountInterface;
  *   id = "tide_core_unpublish_action",
  *   label = @Translation("Tide Core unpublish Action"),
  *   type = "node",
+ *   confirm_form_route_name = "tide_core.node.action_confirm"
  * )
  */
-class TideCoreUnpublishAction extends ActionBase {
+class TideCoreUnpublishAction extends TideCoreBaseAction {
 
   /**
    * {@inheritdoc}
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
-    if ($object->getEntityType() === 'node') {
-      $access = $object->access('update', $account, TRUE)->andIf($object->status->access('edit', $account, TRUE));
-      return $return_as_object ? $access : $access->isAllowed();
+  public function executeMultiple(array $entities) {
+    /** @var \Drupal\Core\Entity\EntityInterface[] $entities */
+    $selection = [];
+    foreach ($entities as $entity) {
+      $langcode = $entity->language()->getId();
+      $selection[$entity->id()][$langcode] = $langcode;
     }
-    return TRUE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function execute($entity = NULL) {
-    $entity->set('moderation_state', 'draft');
-    $entity->setPublished(FALSE);
-    $entity->save();
+    $this->tempStore->set($this->currentUser->id() . ':node', ['unpublish' => $selection]);
   }
 
 }
