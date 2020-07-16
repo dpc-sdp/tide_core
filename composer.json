@@ -23,7 +23,7 @@
         "drupal/entity_reference_revisions": "~1.6.0",
         "drupal/entity_embed": "^1.0.0-beta2",
         "drupal/environment_indicator": "^3.5",
-        "drupal/events_log_track": "^2.0",
+        "drupal/events_log_track": "^1.1",
         "drupal/fakeobjects": "^1.0",
         "drupal/fast_404": "^1.0-alpha4",
         "drupal/field_group": "3.0.0-rc1",
@@ -90,6 +90,14 @@
             "drupal/token": {
                 "Node preview button generates useless menu link - https://www.drupal.org/node/2823731#comment-11905884": "https://www.drupal.org/files/issues/token_node_preview_menu_link-2823731-4.patch",
                 "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
+            },
+            "drupal/events_log_track": {
+                "Events Log Track breaks Entity Browser #5 - https://www.drupal.org/project/events_log_track/issues/2934036": "https://www.drupal.org/files/issues/2018-04-19/2934036-check_empty_submit-5.patch",
+                "Entities with title longer than 50 characters - https://www.drupal.org/project/events_log_track/issues/2930817": "https://www.drupal.org/files/issues/increase-character-length-2930817-2.patch",
+                "Event logs for change in workflows - https://www.drupal.org/project/events_log_track/issues/2974170": "https://www.drupal.org/files/issues/2018-06-26/events_log_track-add-workflows-2974170-7.patch",
+                "Add handlers for file and media entities - https://www.drupal.org/project/events_log_track/issues/2959769": "https://www.drupal.org/files/issues/2018-06-26/events-log-track_add-file-media-2959769-9.patch",
+                "Skip password logging during failed authentication attempt - https://www.drupal.org/project/events_log_track/issues/3027463": "https://www.drupal.org/files/issues/2019-01-22/event-log-track-auth-3027463-2.patch",
+                "Fix fatal error when we request password with non-existing users/emails on the Events Log Track User Authentication - https://www.drupal.org/node/3060838": "https://www.drupal.org/files/issues/2019-06-11/3060838-4.patch"
             },
             "drupal/field_group": {
                 "Do not translate field group labels using interface translation. - https://www.drupal.org/project/field_group/issues/2846617": "https://www.drupal.org/files/issues/2019-04-18/field_group-use_config_translation-2846617-26.patch"
