@@ -44,3 +44,11 @@ Feature: Access permissions
     And I select "Remove the Previewer role from the selected user(s)" from "edit-action"
     And I select "Remove the Editor role from the selected user(s)" from "edit-action"
     And I select "Remove the Approver role from the selected user(s)" from "edit-action"
+
+  @api @javascript
+  Scenario: Password reset should not show username validation message.
+    Given I go to "user/password"
+    Then I fill in "Username or email address" with "test@example.com"
+    And I press "Submit"
+    And I should see the success message "If the username or email address exists and is active, further instructions have been sent to your email address."
+    And I save screenshot
