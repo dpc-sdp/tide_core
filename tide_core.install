@@ -15,6 +15,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_install().
@@ -181,6 +182,16 @@ function _tide_core_update_editorial_workflow() {
     $editorial_workflow->set('type_settings', $type_settings);
     $editorial_workflow->save();
   }
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function tide_core_update_dependencies() {
+  $dependencies['tide_core'][8007] = ['system' => 8805];
+  $dependencies['tide_core'][8016] = ['system' => 8805];
+
+  return $dependencies;
 }
 
 /**
@@ -586,4 +597,78 @@ function tide_core_update_8021() {
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
+}
+
+/**
+ * Update accordion name and content fields to be mandatory.
+ */
+function tide_core_update_8022() {
+  $config_factory = \Drupal::configFactory();
+  $fields = [
+    'field.field.paragraph.accordion_content.field_paragraph_accordion_name',
+    'field.field.paragraph.accordion_content.field_paragraph_accordion_body',
+  ];
+  foreach ($fields as $field) {
+    $config = $config_factory->getEditable($field);
+    $config->set('required', TRUE);
+    $config->save();
+  }
+}
+
+/**
+ * Changes the order of transitions list.
+ */
+function tide_core_update_8023() {
+  $order = [
+    'Create New Draft',
+    'Needs Review',
+    'Send back to Draft',
+    'Publish',
+    'Archive pending',
+    'Archive',
+    'Restore to Draft',
+    'Published',
+  ];
+  $editorial_workflow = Workflow::load('editorial');
+  $type_settings = $editorial_workflow->get('type_settings');
+  if (isset($type_settings['transitions']) && !empty($type_settings['transitions'])) {
+    $keys = array_flip($order);
+    foreach ($keys as $label => $key) {
+      foreach ($type_settings['transitions'] as &$transition) {
+        if ($label == $transition['label']) {
+          $transition['weight'] = $key;
+          continue;
+        }
+      }
+    }
+    $editorial_workflow->set('type_settings', $type_settings);
+    $editorial_workflow->save();
+  }
+}
+
+/**
+ * Clean up cloudflare module.
+ */
+function tide_core_update_8024() {
+  $module_handler = \Drupal::moduleHandler();
+  $module_exist = $module_handler->moduleExists('cloudflare');
+  if ($module_exist) {
+    \Drupal::service('module_installer')->uninstall(['cloudflare']);
+  }
+}
+
+/**
+ * Make user creation require admin approval.
+ */
+function tide_core_update_8025() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  // Restrict user registration to admin role creation.
+  \Drupal::configFactory()
+    ->getEditable('user.settings')
+    ->set('register', UserInterface::REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)
+    ->save(TRUE);
 }
