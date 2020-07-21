@@ -29,7 +29,7 @@ function tide_core_drush_command() {
 /**
  * Dispatches scheduled media releases.
  */
-function drush_tide_core_tide_core_scheduled_transitions_queue_jobs() {
+function drush_tide_core_scheduled_transitions_queue_jobs() {
   $jobs = \Drupal::service('scheduled_transitions.jobs');
   $jobs->jobCreator();
   drush_print(dt('Scheduled transitions queued.'));
