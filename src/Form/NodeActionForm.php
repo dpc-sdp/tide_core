@@ -133,7 +133,7 @@ class NodeActionForm extends ConfirmFormBase {
       $ops[] = [get_class($this) . '::doAction', [$ids, $this->action]];
     }
     $batch = [
-      'title' => t('Processing all contents'),
+      'title' => t('Processing selected content'),
       'operations' => $ops,
       'finished' => [get_class($this), 'finishBatch'],
     ];
