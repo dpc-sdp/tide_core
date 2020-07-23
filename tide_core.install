@@ -684,3 +684,45 @@ function tide_core_update_8026() {
   $config->set('display.default.display_options.empty.area.content.format', 'plain_text');
   $config->save();
 }
+
+/**
+ * Moves introduction up to top.
+ */
+function tide_core_update_8026() {
+  $node_types = NodeType::loadMultiple();
+  $entity_view_display_storage = \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display');
+  $skipped_items = ['title', 'uuid', 'created'];
+  foreach ($node_types as $node_type_id => $node_type) {
+    $order = [];
+    $entity_view_display_id = 'node.' . $node_type_id . '.default';
+    $field_name = 'field_' . $node_type_id . '_intro_text';
+    // Some of fields named as field_{node_type_id}_intro_text,
+    // so we have to deal with them separately.
+    $entity_view_display = $entity_view_display_storage->loadByProperties([
+      'id' => $entity_view_display_id,
+      'bundle' => $node_type_id,
+      'content.' . $field_name . '.region' => 'content',
+    ]);
+    // Some of fields named as field_landing_page_intro_text.
+    if (!$entity_view_display) {
+      $field_name = 'field_landing_page_intro_text';
+      $entity_view_display = $entity_view_display_storage->loadByProperties([
+        'id' => $entity_view_display_id,
+        'bundle' => $node_type_id,
+        'content.' . $field_name . '.region' => 'content',
+      ]);
+    }
+    if ($entity_view_display) {
+      foreach ($content = $entity_view_display[$entity_view_display_id]->get('content') as $key => $item) {
+        if (in_array($key, $skipped_items)) {
+          continue;
+        }
+        $order[] = $item['weight'];
+      }
+      $content[$field_name]['weight'] = min($order) + 1;
+      $entity_view_display[$entity_view_display_id]->set('content', $content)
+        ->save();
+    }
+  }
+}
