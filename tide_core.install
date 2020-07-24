@@ -16,6 +16,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\user\UserInterface;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Implements hook_install().
@@ -688,7 +689,7 @@ function tide_core_update_8026() {
 /**
  * Moves introduction up to top.
  */
-function tide_core_update_8026() {
+function tide_core_update_8027() {
   $node_types = NodeType::loadMultiple();
   $entity_view_display_storage = \Drupal::entityTypeManager()
     ->getStorage('entity_view_display');
