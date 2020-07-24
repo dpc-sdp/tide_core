@@ -187,6 +187,7 @@ class NodeActionForm extends ConfirmFormBase {
       case 'publish':
         $to_state = 'published';
         break;
+
       case 'archive':
         $to_state = 'archived';
         break;
