@@ -704,7 +704,6 @@ function tide_core_update_8027() {
   $actions = [
     'system.action.tide_core_archive',
     'system.action.tide_core_publish',
-    'system.action.tide_core_unpublish',
   ];
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);

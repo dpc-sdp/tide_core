@@ -187,11 +187,6 @@ class NodeActionForm extends ConfirmFormBase {
       case 'publish':
         $to_state = 'published';
         break;
-
-      case 'unpublish':
-        $to_state = 'draft';
-        break;
-
       case 'archive':
         $to_state = 'archived';
         break;
@@ -215,13 +210,13 @@ class NodeActionForm extends ConfirmFormBase {
         }
       }
       else {
-        \Drupal::messenger()->addStatus(t('All contents has been processed'));
+        \Drupal::messenger()->addStatus(t('Selected content has been processed'));
       }
     }
     else {
       // An error occurred.
       // $operations contains the operations that remained unprocessed.
-      $message = t('An error occurred processing contents');
+      $message = t('An error occurred processing content');
       \Drupal::messenger()->addError($message, 'error');
     }
   }
