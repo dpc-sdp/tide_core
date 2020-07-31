@@ -694,3 +694,22 @@ function tide_core_update_8027() {
     $module_installer->install(['username_enumeration_prevention']);
   }
 }
+
+/**
+ * Changes allowed HTML list.
+ */
+function tide_core_update_8028() {
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    $value = $filter->get('filters.filter_html.settings.allowed_html');
+    $replaced = str_replace('<td>', '<td colspan rowspan align>', $value);
+    $replaced = str_replace('<th>', '<th colspan rowspan align>', $replaced);
+    $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+    $filter->save();
+  }
+}
