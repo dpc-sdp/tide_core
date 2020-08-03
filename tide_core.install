@@ -684,3 +684,13 @@ function tide_core_update_8026() {
   $config->set('display.default.display_options.empty.area.content.format', 'plain_text');
   $config->save();
 }
+
+/**
+ * Enable username_enumeration_prevention module.
+ */
+function tide_core_update_8027() {
+  if (!\Drupal::moduleHandler()->moduleExists('username_enumeration_prevention')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['username_enumeration_prevention']);
+  }
+}
