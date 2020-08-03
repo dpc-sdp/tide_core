@@ -686,9 +686,19 @@ function tide_core_update_8026() {
 }
 
 /**
- * Deletes unsupported actions from /admin/contents view.
+ * Enable username_enumeration_prevention module.
  */
 function tide_core_update_8027() {
+  if (!\Drupal::moduleHandler()->moduleExists('username_enumeration_prevention')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['username_enumeration_prevention']);
+  }
+}
+
+/**
+ * Deletes unsupported actions from /admin/contents view.
+ */
+function tide_core_update_8028() {
   // Actions whose provided by drupal core.
   $unsupported_actions = [
     'system.action.node_make_sticky_action',
@@ -712,7 +722,7 @@ function tide_core_update_8027() {
 /**
  * Imports custom actions.
  */
-function tide_core_update_8028() {
+function tide_core_update_8029() {
   $actions = [
     'system.action.tide_core_archive',
     'system.action.tide_core_publish',

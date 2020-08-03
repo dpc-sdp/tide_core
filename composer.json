@@ -59,7 +59,8 @@
         "drupal/scheduled_updates": "^1.0-alpha7",
         "drupal/link_field_autocomplete_filter": "^1.8",
         "drupal/queue_mail": "^1.0",
-        "drupal/token": "^1.7"
+        "drupal/token": "^1.7",
+        "drupal/username_enumeration_prevention": "^1.1"
     },
     "repositories": {
         "drupal": {
@@ -95,7 +96,8 @@
                 "Entities with title longer than 50 characters - https://www.drupal.org/project/events_log_track/issues/2930817": "https://www.drupal.org/files/issues/increase-character-length-2930817-2.patch",
                 "Event logs for change in workflows - https://www.drupal.org/project/events_log_track/issues/2974170": "https://www.drupal.org/files/issues/2018-06-26/events_log_track-add-workflows-2974170-7.patch",
                 "Add handlers for file and media entities - https://www.drupal.org/project/events_log_track/issues/2959769": "https://www.drupal.org/files/issues/2018-06-26/events-log-track_add-file-media-2959769-9.patch",
-                "Skip password logging during failed authentication attempt - https://www.drupal.org/project/events_log_track/issues/3027463": "https://www.drupal.org/files/issues/2019-01-22/event-log-track-auth-3027463-2.patch"
+                "Skip password logging during failed authentication attempt - https://www.drupal.org/project/events_log_track/issues/3027463": "https://www.drupal.org/files/issues/2019-01-22/event-log-track-auth-3027463-2.patch",
+                "Fix fatal error when we request password with non-existing users/emails on the Events Log Track User Authentication - https://www.drupal.org/node/3060838": "https://www.drupal.org/files/issues/2019-06-11/3060838-4.patch"
             },
             "drupal/field_group": {
                 "Do not translate field group labels using interface translation. - https://www.drupal.org/project/field_group/issues/2846617": "https://www.drupal.org/files/issues/2019-04-18/field_group-use_config_translation-2846617-26.patch"
