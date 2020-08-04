@@ -707,8 +707,8 @@ function tide_core_update_8028() {
   foreach ($filter_ids as $filter_id) {
     $filter = $config_factory->getEditable($filter_id);
     $value = $filter->get('filters.filter_html.settings.allowed_html');
-    $replaced = str_replace('<td>', '<td colspan rowspan align>', $value);
-    $replaced = str_replace('<th>', '<th colspan rowspan align>', $replaced);
+    $replaced = str_replace('<td>', '<td colspan rowspan align style>', $value);
+    $replaced = str_replace('<th>', '<th colspan rowspan align style>', $replaced);
     $filter->set('filters.filter_html.settings.allowed_html', $replaced);
     $filter->save();
   }
