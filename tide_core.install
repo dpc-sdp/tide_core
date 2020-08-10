@@ -719,11 +719,17 @@ function tide_core_update_8027() {
         if (in_array($key, $skipped_items)) {
           continue;
         }
-        $order[] = $item['weight'];
+        if ($key == 'content_moderation_control') {
+          continue;
+        }
+        if ($key == $field_name) {
+          $content[$field_name]['weight'] = $content['content_moderation_control']['weight'] + 1;
+        }
+        else {
+          $content[$key]['weight'] += 1;
+        }
       }
-      $content[$field_name]['weight'] = min($order) + 1;
-      $entity_view_display[$entity_view_display_id]->set('content', $content)
-        ->save();
+      $entity_view_display[$entity_view_display_id]->set('content', $content)->save();
     }
   }
 }
