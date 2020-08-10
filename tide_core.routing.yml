@@ -5,3 +5,11 @@ tide_core.entity.archive_confirm:
     _title: 'Confirm Archive'
   requirements:
     _custom_access: '\Drupal\tide_core\Form\EntityArchiveForm::access'
+
+tide_core.node.action_confirm:
+  path: '/admin/content/action'
+  defaults:
+    _form: '\Drupal\tide_core\Form\NodeActionForm'
+    _title_callback: '\Drupal\tide_core\Form\NodeActionForm::getTitle'
+  requirements:
+    _custom_access: '\Drupal\tide_core\Form\NodeActionForm::access'

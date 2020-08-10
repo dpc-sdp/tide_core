@@ -114,6 +114,9 @@
             },
             "drupal/viewsreference": {
                 "Updating from alpha4 to alpha5 via composer results in error - https://www.drupal.org/project/viewsreference/issues/3096956#comment-13370643": "https://www.drupal.org/files/issues/2019-11-28/3096956-17.Unmet-service-dependencies.patch"
+            },
+            "drupal/inline_entity_form": {
+                "Preventing multiple submissions - https://www.drupal.org/project/inline_entity_form/issues/3160683#comment-13758454": "https://www.drupal.org/files/issues/2020-07-22/3160683-1.0-rc-6.patch"
             }
         }
     }
