@@ -783,3 +783,13 @@ function tide_core_update_8030() {
     }
   }
 }
+
+/**
+ * Enable addition of a second contact block on screen sidebar.
+ */
+function tide_core_update_8031() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
+  $config->set('cardinality', 2);
+  $config->save();
+}
