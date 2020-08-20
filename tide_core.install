@@ -783,3 +783,27 @@ function tide_core_update_8030() {
     }
   }
 }
+
+/**
+ * CMS UI improvements - Accordion.
+ */
+function tide_core_update_8031() {
+  // Changes select style.
+  $entity_form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('paragraph.accordion.default');
+  $component = $entity_form_display->getComponent('field_paragraph_accordion_style');
+  $component['type'] = 'options_buttons';
+  $entity_form_display->setComponent('field_paragraph_accordion_style', $component);
+  $entity_form_display->save();
+  // Changes field_paragraph_accordion label.
+  $field_paragraph_accordion = \Drupal::configFactory()
+    ->getEditable('field.field.paragraph.accordion.field_paragraph_accordion');
+  $field_paragraph_accordion->set('label', 'Accordion items')->save();
+  // Changes field_paragraph_title label.
+  $field_paragraph_title = \Drupal::configFactory()->getEditable('field.field.paragraph.accordion.field_paragraph_title');
+  $field_paragraph_title->set('label', 'Accordion title')->save();
+  // Changes accordion_content label.
+  $field_paragraph_accordion_name = \Drupal::configFactory()->getEditable('field.field.paragraph.accordion_content.field_paragraph_accordion_name');
+  $field_paragraph_accordion_name->set('label', 'Item name')->save();
+}

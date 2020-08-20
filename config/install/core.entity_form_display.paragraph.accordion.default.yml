@@ -18,7 +18,7 @@ content:
     type: paragraphs
     weight: 3
     settings:
-      title: 'Accordion content'
+      title: 'Accordion items'
       title_plural: 'Accordion content'
       edit_mode: closed
       closed_mode: preview
@@ -32,7 +32,7 @@ content:
     weight: 2
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+    type: options_buttons
     region: content
   field_paragraph_title:
     weight: 1
