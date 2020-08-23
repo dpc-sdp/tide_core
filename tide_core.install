@@ -783,3 +783,15 @@ function tide_core_update_8030() {
     }
   }
 }
+
+/**
+ * Changes display of dates in CMS to Australian style DD/MM/YYYY.
+ */
+function tide_core_update_8031() {
+  // Changes media view.
+  $media_view = \Drupal::configFactory()->getEditable('views.view.media');
+  $display = $media_view->get('display');
+  $display['default']['display_options']['fields']['changed']['settings']['date_format'] = 'custom';
+  $display['default']['display_options']['fields']['changed']['settings']['custom_date_format'] = 'd/m/Y - H:i';
+  $media_view->set('display', $display)->save();
+}
