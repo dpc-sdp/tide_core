@@ -819,3 +819,13 @@ function tide_core_update_8032() {
   $field_paragraph_accordion_name = \Drupal::configFactory()->getEditable('field.field.paragraph.accordion_content.field_paragraph_accordion_name');
   $field_paragraph_accordion_name->set('label', 'Item name')->save();
 }
+
+/**
+ * Enable addition of a second contact block on screen sidebar.
+ */
+function tide_core_update_8033() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
+  $config->set('cardinality', 2);
+  $config->save();
+}
