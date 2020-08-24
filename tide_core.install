@@ -16,6 +16,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\user\UserInterface;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Implements hook_install().
@@ -736,9 +737,57 @@ function tide_core_update_8029() {
 }
 
 /**
- * Changes allowed HTML list.
+ * Moves introduction up to top.
  */
 function tide_core_update_8030() {
+  $node_types = NodeType::loadMultiple();
+  $entity_view_display_storage = \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display');
+  $skipped_items = ['title', 'uuid', 'created'];
+  foreach ($node_types as $node_type_id => $node_type) {
+    $order = [];
+    $entity_view_display_id = 'node.' . $node_type_id . '.default';
+    $field_name = 'field_' . $node_type_id . '_intro_text';
+    // Some of fields named as field_{node_type_id}_intro_text,
+    // so we have to deal with them separately.
+    $entity_view_display = $entity_view_display_storage->loadByProperties([
+      'id' => $entity_view_display_id,
+      'bundle' => $node_type_id,
+      'content.' . $field_name . '.region' => 'content',
+    ]);
+    // Some of fields named as field_landing_page_intro_text.
+    if (!$entity_view_display) {
+      $field_name = 'field_landing_page_intro_text';
+      $entity_view_display = $entity_view_display_storage->loadByProperties([
+        'id' => $entity_view_display_id,
+        'bundle' => $node_type_id,
+        'content.' . $field_name . '.region' => 'content',
+      ]);
+    }
+    if ($entity_view_display) {
+      foreach ($content = $entity_view_display[$entity_view_display_id]->get('content') as $key => $item) {
+        if (in_array($key, $skipped_items)) {
+          continue;
+        }
+        if ($key == 'content_moderation_control') {
+          continue;
+        }
+        if ($key == $field_name) {
+          $content[$field_name]['weight'] = $content['content_moderation_control']['weight'] + 1;
+        }
+        else {
+          $content[$key]['weight'] += 1;
+        }
+      }
+      $entity_view_display[$entity_view_display_id]->set('content', $content)->save();
+    }
+  }
+}
+
+/**
+ * Changes allowed HTML list.
+ */
+function tide_core_update_8031() {
   $config_factory = \Drupal::configFactory();
   $filter_ids = [
     'filter.format.admin_text',
