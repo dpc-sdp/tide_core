@@ -829,3 +829,22 @@ function tide_core_update_8033() {
   $config->set('cardinality', 2);
   $config->save();
 }
+
+/**
+ * Changes allowed HTML list.
+ */
+function tide_core_update_8034() {
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    $value = $filter->get('filters.filter_html.settings.allowed_html');
+    $replaced = str_replace('<td>', '<td colspan rowspan align class>', $value);
+    $replaced = str_replace('<th>', '<th colspan rowspan align class>', $replaced);
+    $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+    $filter->save();
+  }
+}
