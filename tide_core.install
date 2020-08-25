@@ -815,9 +815,33 @@ function tide_core_update_8032() {
   // Changes field_paragraph_title label.
   $field_paragraph_title = \Drupal::configFactory()->getEditable('field.field.paragraph.accordion.field_paragraph_title');
   $field_paragraph_title->set('label', 'Accordion title')->save();
+  $field_paragraph_title->set('description', 'This will be displayed above the accordion.')->save();
   // Changes accordion_content label.
   $field_paragraph_accordion_name = \Drupal::configFactory()->getEditable('field.field.paragraph.accordion_content.field_paragraph_accordion_name');
-  $field_paragraph_accordion_name->set('label', 'Item name')->save();
+  $field_paragraph_accordion_name->set('label', 'Item title')->save();
+
+  // Changes field_paragraph_accordion_style label to Style.
+  $field_paragraph_accordion_style = \Drupal::configFactory()
+    ->getEditable('field.field.paragraph.accordion.field_paragraph_accordion_style');
+  $field_paragraph_accordion_style->set('label', 'Style');
+  $field_paragraph_accordion_style->set('required', TRUE);
+  $field_paragraph_accordion_style->set('description', 'Choose standard or numbered.');
+  $field_paragraph_accordion_style->save();
+
+  // Changes field_paragraph_accordion_style value.
+  $config = \Drupal::configFactory()
+    ->getEditable('field.storage.paragraph.field_paragraph_accordion_style');
+  $settings = $config->get('settings');
+  foreach ($settings['allowed_values'] as $key => &$allowed_value) {
+    if ($allowed_value['label'] == 'Basic') {
+      $allowed_value['label'] = 'Standard';
+    }
+  }
+  // Changes field_paragraph_accordion_body label.
+  $config->set('settings', $settings)->save();
+  $field_paragraph_accordion_body = \Drupal::configFactory()
+    ->getEditable('field.field.paragraph.accordion_content.field_paragraph_accordion_body');
+  $field_paragraph_accordion_body->set('label', 'Item content')->save();
 }
 
 /**

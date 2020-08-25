@@ -10,8 +10,8 @@ id: paragraph.accordion.field_paragraph_accordion_style
 field_name: field_paragraph_accordion_style
 entity_type: paragraph
 bundle: accordion
-label: 'Accordion Style'
-description: ''
+label: 'Style'
+description: 'Choose standard or numbered.'
 required: true
 translatable: false
 default_value:

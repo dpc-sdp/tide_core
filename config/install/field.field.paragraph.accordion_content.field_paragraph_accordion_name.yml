@@ -8,7 +8,7 @@ id: paragraph.accordion_content.field_paragraph_accordion_name
 field_name: field_paragraph_accordion_name
 entity_type: paragraph
 bundle: accordion_content
-label: 'Item name'
+label: 'Item title'
 description: ''
 required: true
 translatable: false
