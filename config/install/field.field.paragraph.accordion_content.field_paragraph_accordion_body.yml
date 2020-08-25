@@ -16,7 +16,7 @@ id: paragraph.accordion_content.field_paragraph_accordion_body
 field_name: field_paragraph_accordion_body
 entity_type: paragraph
 bundle: accordion_content
-label: 'Item Content'
+label: 'Item content'
 description: ''
 required: true
 translatable: false
