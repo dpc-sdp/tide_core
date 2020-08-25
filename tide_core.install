@@ -804,9 +804,21 @@ function tide_core_update_8031() {
 }
 
 /**
- * Enable addition of a second contact block on screen sidebar.
+ * Changes display of dates in CMS to Australian style DD/MM/YYYY.
  */
 function tide_core_update_8032() {
+  // Changes media view.
+  $media_view = \Drupal::configFactory()->getEditable('views.view.media');
+  $display = $media_view->get('display');
+  $display['default']['display_options']['fields']['changed']['settings']['date_format'] = 'custom';
+  $display['default']['display_options']['fields']['changed']['settings']['custom_date_format'] = 'd/m/Y - H:i';
+  $media_view->set('display', $display)->save();
+}
+
+/**
+ * Enable addition of a second contact block on screen sidebar.
+ */
+function tide_core_update_8033() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
   $config->set('cardinality', 2);
