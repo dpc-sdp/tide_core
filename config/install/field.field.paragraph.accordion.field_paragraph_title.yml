@@ -9,7 +9,7 @@ field_name: field_paragraph_title
 entity_type: paragraph
 bundle: accordion
 label: 'Accordion title'
-description: ''
+description: 'Add a heading 2 if you need a heading above your accordions (not mandatory).'
 required: false
 translatable: true
 default_value: {  }
