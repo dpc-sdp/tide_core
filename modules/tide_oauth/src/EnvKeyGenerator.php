@@ -92,6 +92,9 @@ class EnvKeyGenerator {
       return FALSE;
     }
 
+    $private = 'private://';
+    $this->fileSystem->prepareDirectory($private, FileSystemInterface::CREATE_DIRECTORY);
+
     $key_files = [
       static::FILE_PRIVATE_KEY => $this->privateKey,
       static::FILE_PUBLIC_KEY => $this->publicKey,
