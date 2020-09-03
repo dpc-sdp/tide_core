@@ -1,0 +1,6 @@
+services:
+  tide_oauth.commands:
+    class: \Drupal\tide_oauth\Commands\TideOauthCommands
+    arguments: ['@tide_oauth.env_key_generator']
+      tags:
+        - { name: drush.command }

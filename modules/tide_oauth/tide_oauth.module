@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Tide OAuth module.
+ */
+
+/**
+ * Implements hook_tide_api_jsonapi_custom_query_parameters_alter().
+ */
+function tide_oauth_tide_api_jsonapi_custom_query_parameters_alter(&$custom_params) {
+  // DefaultExceptionHtmlSubscriber may append those query to JSON:API requests
+  // if the authorisation is invalid.
+  $custom_params[] = 'destination';
+  $custom_params[] = '_exception_statuscode';
+}

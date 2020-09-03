@@ -1,0 +1,20 @@
+services:
+  tide_oauth.authentication.x_simple_oauth:
+    class: Drupal\tide_oauth\Authentication\Provider\XSimpleOauthAuthenticationProvider
+    arguments:
+      - '@simple_oauth.server.resource_server'
+      - '@entity_type.manager'
+      - '@tide_oauth.page_cache_request_policy.disallow_x_oauth2_token_requests'
+    tags:
+      - { name: authentication_provider, provider_id: tide_oauth2, global: TRUE, priority: 35 }
+  tide_oauth.page_cache_request_policy.disallow_x_oauth2_token_requests:
+    class: Drupal\tide_oauth\PageCache\DisallowXSimpleOauthRequests
+    public: false
+    tags:
+      - { name: page_cache_request_policy }
+  tide_oauth.env_key_generator:
+    class: Drupal\tide_oauth\EnvKeyGenerator
+    arguments:
+      - '@file_system'
+      - '@simple_oauth.filesystem_checker'
+      - '@config.factory'

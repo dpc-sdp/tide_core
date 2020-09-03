@@ -1,0 +1,12 @@
+{
+    "name": "dpc-sdp/tide_oauth",
+    "type": "drupal-drush",
+    "description": "Drush commands for Tide OAuth.",
+    "extra": {
+        "drush": {
+            "services": {
+                "drush.services.yml": "^9"
+            }
+        }
+    }
+}

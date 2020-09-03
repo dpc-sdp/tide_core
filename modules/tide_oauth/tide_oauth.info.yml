@@ -1,0 +1,11 @@
+name: Tide Simple OAuth
+description: Provides Simple OAuth for Tide.
+type: module
+package: Tide
+core: 8.x
+dependencies:
+  - consumers:consumers
+  - simple_oauth:simple_oauth
+config_devel:
+  install: { }
+  optional: { }

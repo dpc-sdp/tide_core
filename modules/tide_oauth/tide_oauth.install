@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Tide OAuth installation.
+ */
+
+use Drupal\consumers\Entity\Consumer;
+use Drupal\tide_oauth\EnvKeyGenerator;
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_install().
+ */
+function tide_oauth_install() {
+  // Create the Editorial Preview consumer.
+  /** @var \Drupal\consumers\Entity\Consumer $consumer */
+  $consumer = Consumer::create([
+    'label' => 'Editorial Preview',
+    'description' => 'The external application is asking for the following permissions.',
+    'is_default' => FALSE,
+    'confidential' => 0,
+    'third_party' => 1,
+    'roles' => [
+      ['target_id' => 'editor'],
+    ],
+  ]);
+  $consumer->save();
+
+  // Grant the required permissions to default roles.
+  $roles = [
+    'editor',
+    'approver',
+    'site_admin',
+    'previewer',
+  ];
+  foreach ($roles as $rid) {
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = Role::load($rid);
+    if ($role) {
+      $role->grantPermission('grant simple_oauth codes')->save();
+    }
+  }
+
+  /** @var \Drupal\tide_oauth\EnvKeyGenerator $env_key_generator */
+  $env_key_generator = \Drupal::service('tide_oauth.env_key_generator');
+  /** @var \Drupal\Core\File\FileSystemInterface $fs */
+  $fs = \Drupal::service('file_system');
+
+  // Generate the OAuth encryption keys from Environment variables.
+  if ($env_key_generator->hasEnvKeys()) {
+    $env_key_generator->generateEnvKeys();
+  }
+  // Generate new keys.
+  else {
+    /** @var \Drupal\simple_oauth\Service\KeyGeneratorService $key_generator */
+    $key_generator = \Drupal::service('simple_oauth.key.generator');
+    $key_generator->generateKeys('private://');
+    $fs->move('private://private.key', EnvKeyGenerator::FILE_PRIVATE_KEY);
+    $fs->move('private://public.key', EnvKeyGenerator::FILE_PUBLIC_KEY);
+  }
+
+  // Update Simple OAuth settings.
+  $env_key_generator->setSimpleOauthKeySettings();
+}
