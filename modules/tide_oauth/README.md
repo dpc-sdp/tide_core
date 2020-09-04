@@ -30,13 +30,16 @@
 ### Authentication
 1. See the documentation of [Simple OAuth2](https://www.drupal.org/node/2843627)
 2. Due to both JWT Authentication module and Simple OAuth module accept 
-    `Authorization: Bearer {TOKEN}` header, Tide OAuth provides an extra header 
-    `X-OAuth2-Authorization: Bearer {TOKEN}`. If Tide Authenticated Content
-    module is enabled, all OAuth2 authentication calls should use the custom 
-    header `X-OAuth2-Authorization` as the normal `Authorization` header is used
-    by JWT Authentication.
+    `Authorization: Bearer {TOKEN}` header, Tide OAuth provides extra headers:
+    * `Authorization: OAuth2 {TOKEN}`     
+    * `X-OAuth2-Authorization: Bearer {TOKEN}`
+    * `X-OAuth2-Authorization: OAuth2 {TOKEN}` 
+    
+    When Tide Authenticated Content or JWT module is enabled, all OAuth2 
+    authentication calls should one of the custom headers as the normal 
+    `Authorization` header is always authenticated against JWT Authentication.
 3. By default, the module creates a client `Editorial Preview` with the scope
-    `editor`. All OAuth2 authentication requests using this scope will have
+    `editor`. All OAuth2 authentication requests using this client will have
     permissions of the `Editor` role.
 4. OAuth2 endpoints:
     * Authorization URL: `/oauth/authorize`

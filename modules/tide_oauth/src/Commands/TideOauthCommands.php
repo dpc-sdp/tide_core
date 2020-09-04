@@ -45,7 +45,7 @@ class TideOauthCommands extends DrushCommands {
       if ($this->envKeyGenerator->generateEnvKeys()) {
         // Update Simple OAuth settings.
         $this->envKeyGenerator->setSimpleOauthKeySettings();
-        $this->io()->comment('OAuth keys have been created from TIDE_OAUTH_*_KEY environment variables.');
+        $this->io()->success('OAuth keys have been created from TIDE_OAUTH_*_KEY environment variables.');
       }
       else {
         $this->io()->error('Could not generate OAuth keys from TIDE_OAUTH_*_KEY environment variables.');
