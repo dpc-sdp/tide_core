@@ -5,3 +5,8 @@ content_moderation:
       css/content_moderation.module.css: {}
     theme:
       css/content_moderation.theme.css: {}
+ckeditor_stylesheets:
+  version: VERSION
+  css:
+    theme:
+      css/ckeditor_overrides.css: {}
