@@ -916,20 +916,14 @@ function tide_core_update_8037() {
   $source = new FileStorage($config_path);
   // $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
     
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
   $field_storage = 'field.storage.node.field_node_display_headings';
-  // $exist = \Drupal::entityManager()->getStorage('field_storage_config')->load('field_node_display_headings');
-  // echo 'EXIST VALUE';
-  // echo $exist;
-  // echo 'EXIST VALUE ENDS';
-  $config_read = _tide_read_config($field_storage, $config_location, TRUE);
   $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
   if (empty($storage->load('node.field_node_display_headings'))) {
-    // $config_entity = $storage->createFromStorageRecord($config_read);
-    // $config_entity->save();
+    $config_read = _tide_read_config($field_storage, $config_location, TRUE);
     // Obtain the storage manager for field storage bases.
     // Create a new field from the yaml configuration and save.
-    \Drupal::entityManager()->getStorage('field_storage_config')
-      ->create($source->read($config_read))
-      ->save();
+    $storage->create($config_read)->save();
   }
 }
