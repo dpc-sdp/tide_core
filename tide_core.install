@@ -915,9 +915,12 @@ function tide_core_update_8037() {
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
   $field_storage = 'field.storage.node.field_node_display_headings';
-  // Obtain the storage manager for field storage bases.
-  // Create a new field from the yaml configuration and save.
-  \Drupal::entityManager()->getStorage('field_storage_config')
-    ->create($source->read($field_storage))
-    ->save();
+  $exist = \Drupal::entityManager()->getStorage('field_storage_config')->load('field_node_display_headings');
+  if (is_null($exist)) {
+    // Obtain the storage manager for field storage bases.
+    // Create a new field from the yaml configuration and save.
+    \Drupal::entityManager()->getStorage('field_storage_config')
+      ->create($source->read($field_storage))
+      ->save();
+  }
 }
