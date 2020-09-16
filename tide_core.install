@@ -52,7 +52,7 @@ function tide_core_install() {
     ->save(TRUE);
 
   // Creates terms for Topic vocabulary.
-  _tide_core_create_topic_terms();
+  //_tide_core_create_topic_terms();
 
   // Update default Editorial workflow of Content Moderation.
   _tide_core_update_editorial_workflow();
