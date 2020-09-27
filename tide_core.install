@@ -948,3 +948,11 @@ function tide_core_update_8038() {
     $editable_config->save();
   }
 }
+
+/**
+ * Updates site_admin permissions.
+ */
+function tide_core_update_8039() {
+  $permissions = ['administer nodes', 'bypass node access'];
+  user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
+}
