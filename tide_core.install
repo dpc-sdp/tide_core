@@ -948,3 +948,13 @@ function tide_core_update_8038() {
     $editable_config->save();
   }
 }
+
+/**
+ * Enable ckeditor_liststyle module.
+ */
+function tide_core_update_8039() {
+  if (!\Drupal::moduleHandler()->moduleExists('ckeditor_liststyle')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['ckeditor_liststyle']);
+  }
+}
