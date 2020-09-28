@@ -8,7 +8,6 @@
     "require": {
         "ckeditor/fakeobjects": "^4.5.11",
         "ckeditor/iframe": "^4.5.11",
-        "ckeditor/liststyle": "4.8.0",
         "drupal/address": "^1.4",
         "drupal/allowed_formats": "^1.1",
         "drupal/better_exposed_filters": "^3.0-alpha5",
@@ -68,29 +67,9 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        "ckeditor/liststyle": {
-            "type": "package",
-            "package": {
-                "name": "ckeditor/liststyle",
-                "version": "4.8.0",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "ckeditor/plugins/liststyle"
-                },
-                "dist": {
-                    "url": "https://download.ckeditor.com/liststyle/releases/liststyle_4.8.0.zip",
-                    "type": "zip"
-                }
-            }
         }
     },
     "extra": {
-        "installer-paths": {
-            "docroot/libraries/{$name}": [
-                "type:drupal-library"
-            ]
-        },
         "patches": {
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/node/2898875": "https://www.drupal.org/files/issues/2018-03-16/contextual_links_should-2898875-6.patch",
