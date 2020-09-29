@@ -948,3 +948,39 @@ function tide_core_update_8038() {
     $editable_config->save();
   }
 }
+
+/**
+ * Add Slogan to each sites in taxonomy table.
+ */
+function tide_core_update_8039() {
+  $database = \Drupal::database();
+  $slogans = [
+    4 => 'Victorian Government',
+    56 => 'Buying for Victoria',
+    507 => 'Coronavirus Victoria',
+    129 => 'Data Vic',
+    157 => 'Family Violence Reform Implementation Monitor',
+    224 => 'Aboriginal Victoria',
+    57 => 'Victorian Aboriginal Heritage Council',
+    283 => 'Local Government Inspectorate',
+    281 => 'Office of the Victorian Government Architect',
+    282 => 'Single Digital Presence',
+    125 => 'Victorian Inspectorate',
+    287 => 'Victorian Multicultural Commission',
+    290 => 'Shrine of Remembrance',
+  ];
+
+  foreach ($slogans as $site_id => $slogan) {
+    $database->merge('taxonomy_term__field_site_slogan')
+      ->fields([
+        'entity_id' => $site_id,
+        'field_site_slogan_value' => $slogan,
+        'revision_id' => $site_id,
+        'delta' => 0,
+        'langcode' => 'en',
+        'bundle' => 'sites',
+      ])
+      ->key('entity_id', $site_id)
+      ->execute();
+  }
+}
