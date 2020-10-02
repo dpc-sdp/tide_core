@@ -57,7 +57,9 @@ function tide_oauth_install() {
     $key_generator = \Drupal::service('simple_oauth.key.generator');
     $key_generator->generateKeys('private://');
     $fs->move('private://private.key', EnvKeyGenerator::FILE_PRIVATE_KEY);
+    $fs->chmod(EnvKeyGenerator::FILE_PRIVATE_KEY, 0600);
     $fs->move('private://public.key', EnvKeyGenerator::FILE_PUBLIC_KEY);
+    $fs->chmod(EnvKeyGenerator::FILE_PUBLIC_KEY, 0600);
   }
 
   // Update Simple OAuth settings.
