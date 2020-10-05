@@ -42,6 +42,7 @@ settings:
           name: Media
           items:
             - Blockquote
+            - TideCallout
             - Table
             - HorizontalRule
         -

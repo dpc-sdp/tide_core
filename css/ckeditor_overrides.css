@@ -1,0 +1,12 @@
+.cke_button__tide_media_label {
+  display: inline !important;
+}
+
+.cke_button__tide_media_icon {
+  display: none !important;
+}
+
+.callout-wrapper {
+  border-left: 2px solid #eee;
+  padding-left: 20px;
+}

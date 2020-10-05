@@ -134,6 +134,7 @@ permissions:
   - 'use published_published transition'
   - 'use text format admin_text'
   - 'use text format rich_text'
+  - 'use text format summary_text'
   - 'view alert revisions'
   - 'view all revisions'
   - 'view any unpublished content'
