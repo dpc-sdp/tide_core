@@ -116,6 +116,9 @@
             "drupal/scheduled_transitions": {
                 "The revision user is incorrect after CRON ran - https://www.drupal.org/project/scheduled_transitions/issues/3094322": "https://www.drupal.org/files/issues/2019-11-14/3094322_8.x-8.x-1.0-rc3-2.patch"
             },
+            "drupal/simple_oauth": {
+                "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch"
+            },
             "drupal/viewsreference": {
                 "Updating from alpha4 to alpha5 via composer results in error - https://www.drupal.org/project/viewsreference/issues/3096956#comment-13370643": "https://www.drupal.org/files/issues/2019-11-28/3096956-17.Unmet-service-dependencies.patch"
             },
