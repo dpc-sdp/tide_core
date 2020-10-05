@@ -973,3 +973,12 @@ function tide_core_update_8039() {
     $filter->save();
   }
 }
+
+/**
+ * Editor should not have access to redirects.
+ */
+function tide_core_update_8040() {
+  $role = 'editor';
+  $permissions = ['administer redirect settings', 'administer redirects'];
+  user_role_revoke_permissions(Role::load($role)->id(), $permissions);
+}
