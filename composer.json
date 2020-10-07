@@ -122,6 +122,9 @@
             },
             "drupal/inline_entity_form": {
                 "Preventing multiple submissions - https://www.drupal.org/project/inline_entity_form/issues/3160683#comment-13758454": "https://www.drupal.org/files/issues/2020-07-22/3160683-1.0-rc-6.patch"
+            },
+            "ckeditor/liststyle": {
+                "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
             }
         }
     }
