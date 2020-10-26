@@ -52,3 +52,9 @@ Feature: Access permissions
     And I press "Submit"
     And I should see the success message "If the username or email address exists and is active, further instructions have been sent to your email address."
     And I save screenshot
+
+  @api
+  Scenario: Editor role should not have access to redirects.
+    Given I am logged in as a user with the "editor" role
+    When I go to "admin/config/search/redirect"
+    Then I should get a 404 HTTP response

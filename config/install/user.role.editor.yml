@@ -21,8 +21,6 @@ permissions:
   - 'access webform submission log'
   - 'administer blocks'
   - 'administer menu'
-  - 'administer redirect settings'
-  - 'administer redirects'
   - 'administer url aliases'
   - 'administer webform'
   - 'administer webform element access'
