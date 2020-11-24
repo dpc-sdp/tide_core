@@ -9,6 +9,8 @@ use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
+use Drupal\Core\Serialization\Yaml;
+use Drupal\Core\Site\Settings;
 
 /**
  * Helper to read configuration from provided locations.
@@ -151,4 +153,37 @@ function _tide_import_single_config($config_name, array $locations = [], $priori
     }
     throw $exception;
   }
+}
+
+/**
+ * Retrieve UUID of a config file in config/sync directory.
+ *
+ * @param string $config_name
+ *   The config name.
+ *
+ * @return string|null
+ *   The UUID.
+ */
+function _tide_retrieve_config_uuid(string $config_name) : ?string {
+  try {
+    if (version_compare(\Drupal::VERSION, '8.8.0', '<')) {
+      $config_sync = config_get_config_directory(CONFIG_SYNC_DIRECTORY);
+    }
+    else {
+      $config_sync = Settings::get('config_sync_directory');
+    }
+    if ($config_sync) {
+      $config_file = $config_sync . DIRECTORY_SEPARATOR . $config_name . '.yml';
+      if (file_exists($config_file)) {
+        $config = Yaml::decode(file_get_contents($config_file));
+        if (!empty($config['uuid'])) {
+          return $config['uuid'];
+        }
+      }
+    }
+  }
+  catch (Exception $exception) {
+    watchdog_exception('tide_core', $exception);
+  }
+  return NULL;
 }

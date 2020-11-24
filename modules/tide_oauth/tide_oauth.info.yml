@@ -7,5 +7,5 @@ dependencies:
   - consumers:consumers
   - simple_oauth:simple_oauth
 config_devel:
-  install: { }
-  optional: { }
+  install: {  }
+  optional: {  }

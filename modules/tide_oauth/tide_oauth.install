@@ -6,23 +6,158 @@
  */
 
 use Drupal\consumers\Entity\Consumer;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\tide_oauth\EnvKeyGenerator;
 use Drupal\user\Entity\Role;
+
+/**
+ * Add the field_long_description field to Consumer entity display.
+ */
+function _tide_oauth_update_consumer_long_description_field() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+
+  // Update the UUID of field storage and field config.
+  $field_name = 'field_long_description';
+  $field_storage = FieldStorageConfig::loadByName('consumer', $field_name);
+  if (!$field_storage) {
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'consumer',
+      'type' => 'text_long',
+      'cardinality' => 1,
+      'dependencies' => [
+        'module' => ['consumers', 'text'],
+      ],
+    ]);
+    $uuid = _tide_retrieve_config_uuid('field.storage.consumer.' . $field_name);
+    if ($uuid) {
+      $field_storage->set('uuid', $uuid);
+    }
+    $field_storage->save();
+  }
+
+  $field_config = FieldConfig::loadByName('consumer', 'consumer', $field_name);
+  if (!$field_config) {
+    $field_config = FieldConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'consumer',
+      'bundle' => 'consumer',
+      'label' => 'Long Description',
+      'description' => '',
+      'settings' => [],
+      'field_type' => 'text_long',
+      'required' => FALSE,
+      'dependencies' => [
+        'config' => ['field.storage.consumer.field_long_description'],
+        'module' => ['allowed_formats', 'text'],
+      ],
+      'third_party_settings' => [
+        'allowed_formats' => [
+          'rich_text' => 'rich_text',
+          'admin_text' => 'admin_text',
+          'plain_text' => 'plain_text',
+        ],
+      ],
+    ]);
+    $uuid = _tide_retrieve_config_uuid('field.field.consumer.consumer.' . $field_name);
+    if ($uuid) {
+      $field_config->setOriginalId($field_config->id());
+      $field_config->set('uuid', $uuid);
+      $field_config->save();
+    }
+  }
+
+  // Update form display and view display.
+  $field_settings = [
+    'entity_form_display' => [
+      $field_name => [
+        'settings' => [
+          'rows' => 5,
+          'placeholder' => '',
+        ],
+        'third_party_settings' => [],
+        'type' => 'text_textarea',
+        'region' => 'content',
+        'weight' => 0,
+      ],
+    ],
+    'entity_view_display' => [
+      $field_name => [
+        'weight' => 1,
+        'label' => 'hidden',
+        'settings' => [],
+        'third_party_settings' => [],
+        'type' => 'text_default',
+        'region' => 'content',
+      ],
+    ],
+  ];
+
+  foreach ($field_settings as $mode => $fields) {
+    $entity_display = \Drupal::entityTypeManager()
+      ->getStorage($mode)
+      ->load('consumer.consumer.default');
+    if (!$entity_display) {
+      $display_config = [
+        'targetEntityType' => 'consumer',
+        'bundle' => 'consumer',
+        'mode' => 'default',
+        'status' => TRUE,
+      ];
+      switch ($mode) {
+        case 'entity_form_display':
+          $entity_display = EntityFormDisplay::create($display_config);
+          $uuid = _tide_retrieve_config_uuid('core.entity_form_display.consumer.consumer.default');
+          if ($uuid) {
+            $entity_display->set('uuid', $uuid);
+          }
+          $entity_display->save();
+          break;
+
+        case 'entity_view_display':
+          $entity_display = EntityViewDisplay::create($display_config);
+          $uuid = _tide_retrieve_config_uuid('core.entity_view_display.consumer.consumer.default');
+          if ($uuid) {
+            $entity_display->set('uuid', $uuid);
+          }
+          $entity_display->save();
+          break;
+      }
+    }
+
+    if ($entity_display) {
+      foreach ($fields as $field_name => $field_settings) {
+        $entity_display->setComponent($field_name, $field_settings)->save();
+      }
+    }
+  }
+}
 
 /**
  * Implements hook_install().
  */
 function tide_oauth_install() {
+  _tide_oauth_update_consumer_long_description_field();
+
   // Create the Editorial Preview consumer.
   /** @var \Drupal\consumers\Entity\Consumer $consumer */
   $consumer = Consumer::create([
     'label' => 'Editorial Preview',
-    'description' => 'The external application is asking for the following permissions.',
+    'description' => '',
     'is_default' => FALSE,
     'confidential' => 0,
     'third_party' => 1,
     'roles' => [
       ['target_id' => 'editor'],
+    ],
+    'field_long_description' => [
+      [
+        'value' => '<h2>Grant access for previews</h2><p>Click the ‘Grant access’ button to allow your CMS user account to connect to the website’s front end to display page previews.</p><p>This access is for a set time. You can click and view multiple preview links until your access times out. After your access times out, you’ll have log in again.</p>',
+        'format' => 'rich_text',
+      ],
     ],
   ]);
   $consumer->save();
