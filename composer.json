@@ -18,7 +18,7 @@
         "drupal/config_ignore": "^2.1",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/core": "8.8.10",
+        "drupal/core": "8.8.x",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/entity_browser": "^1.6",
