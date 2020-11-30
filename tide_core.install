@@ -996,8 +996,9 @@ function tide_core_update_8041() {
     'site_admin',
   ];
   $node_types = NodeType::loadMultiple();
+  $permissions = [];
   foreach ($node_types as $type => $node_type) {
-    $permissions = 'clone ' . $type . ' content';
+    $permissions[] = 'clone ' . $type . ' content';
   }
 
   foreach ($roles as $role) {
