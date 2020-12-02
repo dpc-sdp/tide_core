@@ -35,6 +35,7 @@ dependencies:
   - entity_browser:entity_browser
   - entity_browser:entity_browser_entity_form
   - entity_reference_revisions:entity_reference_revisions
+  - quick_node_clone:quick_node_clone
   - events_log_track:event_log_track
   - events_log_track:event_log_track_auth
   - events_log_track:event_log_track_node
