@@ -983,7 +983,6 @@ function tide_core_update_8040() {
   user_role_revoke_permissions(Role::load($role)->id(), $permissions);
 }
 
-
 /**
  * Updates site_admin permissions.
  */
