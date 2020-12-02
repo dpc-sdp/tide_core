@@ -8,15 +8,17 @@
     "require": {
         "ckeditor/fakeobjects": "^4.5.11",
         "ckeditor/iframe": "^4.5.11",
+        "ckeditor/liststyle": "4.8.0",
         "drupal/address": "^1.4",
         "drupal/allowed_formats": "^1.1",
         "drupal/better_exposed_filters": "^3.0-alpha5",
         "drupal/ckeditor_iframe": "^2.0-beta1",
+        "drupal/ckeditor_liststyle": "^1.4",
         "drupal/clamav": "^1.1",
         "drupal/config_ignore": "^2.1",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/core": "8.8.10",
+        "drupal/core": "8.9.x",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^1.4",
         "drupal/entity_browser": "^1.6",
@@ -73,10 +75,10 @@
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/node/2898875": "https://www.drupal.org/files/issues/2018-03-16/contextual_links_should-2898875-6.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
-                "Unrecognised entity operation passed to Menu Link Content throws exceptions - https://www.drupal.org/project/drupal/issues/3016038": "https://www.drupal.org/files/issues/2019-03-03/3016038-menu-link-operation-8.patch",
                 "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
                 "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485#comment-11004325": "https://www.drupal.org/files/issues/2693485-node-3.patch",
-                "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch"
+                "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
+                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650": "https://www.drupal.org/files/issues/2020-06-26/refactor_xss_attributes-3109650.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
@@ -120,6 +122,9 @@
             },
             "drupal/inline_entity_form": {
                 "Preventing multiple submissions - https://www.drupal.org/project/inline_entity_form/issues/3160683#comment-13758454": "https://www.drupal.org/files/issues/2020-07-22/3160683-1.0-rc-6.patch"
+            },
+            "ckeditor/liststyle": {
+                "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
             }
         }
     }
