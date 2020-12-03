@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\tide_oauth\Plugin\Field\FieldWidget\MachineNameWidget.
- */
-
 namespace Drupal\tide_oauth\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Field\FieldItemListInterface;
@@ -23,6 +18,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class MachineNameWidget extends StringTextfieldWidget {
+
   /**
    * {@inheritdoc}
    */
@@ -35,7 +31,6 @@ class MachineNameWidget extends StringTextfieldWidget {
 
     return $settings;
   }
-
 
   /**
    * {@inheritdoc}

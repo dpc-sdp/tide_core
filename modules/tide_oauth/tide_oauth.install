@@ -139,7 +139,7 @@ function _tide_oauth_update_consumer_long_description_field() {
 /**
  * Add the machine_name field to Consumer entity display.
  */
-function _tide_oauth_update_consumer_machine_name_field(){
+function _tide_oauth_update_consumer_machine_name_field() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
 
   // Update the UUID of field storage and field config.
