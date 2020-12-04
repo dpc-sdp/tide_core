@@ -194,8 +194,9 @@ class NodeActionForm extends ConfirmFormBase {
     }
 
     foreach ($entities as $entity) {
+      $vid = $controller->getLatestRevisionId($entity->id());
+      $entity = $controller->loadRevision($vid);
       $entity->set('moderation_state', $to_state);
-      $entity->setPublished($action == 'publish');
       $entity->save();
     }
   }

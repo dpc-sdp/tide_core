@@ -982,3 +982,34 @@ function tide_core_update_8040() {
   $permissions = ['administer redirect settings', 'administer redirects'];
   user_role_revoke_permissions(Role::load($role)->id(), $permissions);
 }
+
+/**
+ * Enables quick node clone module.
+ */
+function tide_core_update_8041() {
+  if (!\Drupal::moduleHandler()->moduleExists('quick_node_clone')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['quick_node_clone']);
+  }
+  $roles = [
+    'editor',
+    'site_admin',
+  ];
+  $node_types = NodeType::loadMultiple();
+  $permissions = [];
+  foreach ($node_types as $type => $node_type) {
+    $permissions[] = 'clone ' . $type . ' content';
+  }
+
+  foreach ($roles as $role) {
+    user_role_grant_permissions(Role::load($role)->id(), $permissions);
+  }
+}
+
+/**
+ * Updates site_admin permissions.
+ */
+function tide_core_update_8042() {
+  $permissions = ['administer nodes', 'bypass node access'];
+  user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
+}
