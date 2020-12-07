@@ -24,8 +24,6 @@ class TideOauthCommands extends DrushCommands {
    *
    * @param \Drupal\tide_oauth\EnvKeyGenerator $env_key_generator
    *   Env Key Generator.
-   * @param \Drupal\Core\File\FileSystemInterface $file_system
-   *   File system.
    */
   public function __construct(EnvKeyGenerator $env_key_generator) {
     parent::__construct();
