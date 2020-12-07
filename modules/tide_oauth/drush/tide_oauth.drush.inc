@@ -24,23 +24,11 @@ function drush_tide_oauth_keygen() {
   /** @var \Drupal\tide_oauth\EnvKeyGenerator $env_key_generator */
   $env_key_generator = \Drupal::service('tide_oauth.env_key_generator');
   // Generate the OAuth encryption keys from Environment variables.
-  if ($env_key_generator->hasEnvKeys()) {
-    if ($env_key_generator->generateEnvKeys()) {
-      // Update Simple OAuth settings.
-      $env_key_generator->setSimpleOauthKeySettings();
-    }
-    else {
-      drush_set_error('Could not generate OAuth keys from TIDE_OAUTH_*_KEY environment variables.');
-    }
+  if ($env_key_generator->generateEnvKeys()) {
+    // Update Simple OAuth settings.
+    $env_key_generator->setSimpleOauthKeySettings();
   }
   else {
-    // Generate keys if Environment variables are not set.
-    if ($env_key_generator->generateOauthKeys()) {
-      // Update Simple OAuth settings.
-      $env_key_generator->setSimpleOauthKeySettings();
-    }
-    else {
-      drush_set_error('Could not generate keys.');
-    }
+    drush_set_error('Could not generate OAuth keys from TIDE_OAUTH_*_KEY environment variables.');
   }
 }

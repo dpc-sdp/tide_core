@@ -77,7 +77,7 @@ class EnvKeyGenerator {
     $this->fileSystem = $file_system;
     $this->fileSystemChecker = $fs_checker;
     $this->configFactory = $config_factory;
-    $this->$keyGenerator = $key_generator;
+    $this->keyGenerator = $key_generator;
     $this->privateKey = getenv(static::ENV_PRIVATE_KEY);
     $this->publicKey = getenv(static::ENV_PUBLIC_KEY);
   }
@@ -100,7 +100,7 @@ class EnvKeyGenerator {
    */
   public function generateEnvKeys() : bool {
     if (!$this->hasEnvKeys()) {
-      return FALSE;
+      $this->generateOauthKeys();
     }
 
     $private = 'private://';
@@ -165,7 +165,7 @@ class EnvKeyGenerator {
       return FALSE;
     }
 
-    $this->$keyGenerator->generateKeys('private://');
+    $this->keyGenerator->generateKeys('private://');
     $this->fileSystem->move('private://private.key', static::FILE_PRIVATE_KEY);
     $this->fileSystem->chmod(static::FILE_PRIVATE_KEY, 0600);
     $this->fileSystem->move('private://public.key', static::FILE_PUBLIC_KEY);
