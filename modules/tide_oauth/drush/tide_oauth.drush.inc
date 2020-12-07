@@ -22,7 +22,7 @@ function tide_oauth_drush_command() {
 /**
  * Callback for tide-oauth:env-keygen command.
  */
-function drush_tide_oauth_env_keygen() {
+function drush_tide_oauth_keygen() {
   /** @var \Drupal\tide_oauth\EnvKeyGenerator $env_key_generator */
   $env_key_generator = \Drupal::service('tide_oauth.env_key_generator');
   /** @var \Drupal\Core\File\FileSystemInterface $fs */
