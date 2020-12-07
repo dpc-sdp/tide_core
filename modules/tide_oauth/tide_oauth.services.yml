@@ -18,3 +18,4 @@ services:
       - '@file_system'
       - '@simple_oauth.filesystem_checker'
       - '@config.factory'
+      - '@simple_oauth.key.generator'

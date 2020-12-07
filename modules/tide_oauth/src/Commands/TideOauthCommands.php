@@ -3,8 +3,6 @@
 namespace Drupal\tide_oauth\Commands;
 
 use Drupal\tide_oauth\EnvKeyGenerator;
-use Drupal\Core\File\FileSystemInterface;
-use Drupal\simple_oauth\Service\KeyGeneratorService;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -29,27 +27,17 @@ class TideOauthCommands extends DrushCommands {
   protected $fileSystem;
 
   /**
-   * Simple Oauth Key Generator Service.
-   *
-   * @var \Drupal\simple_oauth\Service\KeyGeneratorService
-   */
-  protected $keyGenerator;
-
-  /**
    * TideOauthCommands constructor.
    *
    * @param \Drupal\tide_oauth\EnvKeyGenerator $env_key_generator
    *   Env Key Generator.
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   File system.
-   * @param \Drupal\simple_oauth\Service\KeyGeneratorService $key_generator
-   *   Simple Oauth Key Generator Service.
    */
-  public function __construct(EnvKeyGenerator $env_key_generator, FileSystemInterface $file_system, KeyGeneratorService $key_generator) {
+  public function __construct(EnvKeyGenerator $env_key_generator, FileSystemInterface $file_system) {
     parent::__construct();
     $this->envKeyGenerator = $env_key_generator;
     $this->fileSystem = $file_system;
-    $this->$keyGenerator = $key_generator;
   }
 
   /**
@@ -74,14 +62,15 @@ class TideOauthCommands extends DrushCommands {
       }
     }
     else {
-      $this->$keyGenerator->generateKeys('private://');
-      $this->fileSystem->move('private://private.key', EnvKeyGenerator::FILE_PRIVATE_KEY);
-      $this->fileSystem->chmod(EnvKeyGenerator::FILE_PRIVATE_KEY, 0600);
-      $this->fileSystem->move('private://public.key', EnvKeyGenerator::FILE_PUBLIC_KEY);
-      $this->fileSystem->chmod(EnvKeyGenerator::FILE_PUBLIC_KEY, 0600);
-      // Update Simple OAuth settings.
-      $this->envKeyGenerator->setSimpleOauthKeySettings();
-      $this->io()->success('OAuth keys have been created.');
+      // Generate keys if Environment variables are not set.
+      if ($this->envKeyGenerator->generateOauthKeys()) {
+        // Update Simple OAuth settings.
+        $this->envKeyGenerator->setSimpleOauthKeySettings();
+        $this->io()->success('OAuth keys have been created.');
+      }
+      else {
+        $this->io()->error('Could not generate OAuth keys.');
+      }
     }
   }
 

@@ -5,6 +5,7 @@ namespace Drupal\tide_oauth;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\simple_oauth\Service\Filesystem\FileSystemChecker;
+use Drupal\simple_oauth\Service\KeyGeneratorService;
 
 /**
  * Class EnvKeyGenerator.
@@ -40,6 +41,13 @@ class EnvKeyGenerator {
   protected $configFactory;
 
   /**
+   * Simple Oauth Key Generator Service.
+   *
+   * @var \Drupal\simple_oauth\Service\KeyGeneratorService
+   */
+  protected $keyGenerator;
+
+  /**
    * Private key.
    *
    * @var string
@@ -62,11 +70,14 @@ class EnvKeyGenerator {
    *   File system checker.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   Config factory.
+   * @param \Drupal\simple_oauth\Service\KeyGeneratorService $key_generator
+   *   Simple Oauth Key Generator Service.
    */
-  public function __construct(FileSystemInterface $file_system, FileSystemChecker $fs_checker, ConfigFactoryInterface $config_factory) {
+  public function __construct(FileSystemInterface $file_system, FileSystemChecker $fs_checker, ConfigFactoryInterface $config_factory, KeyGeneratorService $key_generator) {
     $this->fileSystem = $file_system;
     $this->fileSystemChecker = $fs_checker;
     $this->configFactory = $config_factory;
+    $this->$keyGenerator = $key_generator;
     $this->privateKey = getenv(static::ENV_PRIVATE_KEY);
     $this->publicKey = getenv(static::ENV_PUBLIC_KEY);
   }
@@ -139,6 +150,26 @@ class EnvKeyGenerator {
     if ($has_changes) {
       $settings->save();
     }
+
+    return TRUE;
+  }
+
+  /**
+   * Generate keys if Environment variables not set.
+   *
+   * @return bool
+   *   TRUE if the keys are generated.
+   */
+  public function generateOauthKeys() : bool {
+    if ($this->hasEnvKeys()) {
+      return FALSE;
+    }
+
+    $this->$keyGenerator->generateKeys('private://');
+    $this->fileSystem->move('private://private.key', static::FILE_PRIVATE_KEY);
+    $this->fileSystem->chmod(static::FILE_PRIVATE_KEY, 0600);
+    $this->fileSystem->move('private://public.key', static::FILE_PUBLIC_KEY);
+    $this->fileSystem->chmod(static::FILE_PUBLIC_KEY, 0600);
 
     return TRUE;
   }
