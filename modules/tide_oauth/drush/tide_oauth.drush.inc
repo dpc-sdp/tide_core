@@ -11,16 +11,16 @@ use Drupal\tide_oauth\EnvKeyGenerator;
  * Implements hook_drush_command().
  */
 function tide_oauth_drush_command() {
-  $commands['tide-oauth-env-keygen'] = [
+  $commands['tide-oauth-keygen'] = [
     'description' => 'Generate OAuth keys from environment variables',
     'drupal dependencies' => ['tide_oauth'],
-    'aliases' => ['toenvkg', 'tide-oauth:env-keygen'],
+    'aliases' => ['tokgn', 'tide-oauth:keygen'],
   ];
   return $commands;
 }
 
 /**
- * Callback for tide-oauth:env-keygen command.
+ * Callback for tide-oauth:keygen command.
  */
 function drush_tide_oauth_keygen() {
   /** @var \Drupal\tide_oauth\EnvKeyGenerator $env_key_generator */

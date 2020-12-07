@@ -55,12 +55,12 @@ class TideOauthCommands extends DrushCommands {
   /**
    * Generate OAuth keys from Environment variables.
    *
-   * @usage drush tide-oauth:env-keygen
+   * @usage drush tide-oauth:keygen
    *   Generate OAuth keys from Environment variables.
    *
-   * @command tide-oauth:env-keygen
+   * @command tide-oauth:keygen
    * @validate-module-enabled tide_oauth
-   * @aliases toenvkg,tide-oauth-env-keygen
+   * @aliases tokgn,tide-oauth-keygen
    */
   public function generateKeys() {
     if ($this->envKeyGenerator->hasEnvKeys()) {

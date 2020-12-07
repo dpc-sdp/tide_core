@@ -23,7 +23,7 @@
        post-rollout:
           - run:
              name: Generate OAuth keys from ENV variables.
-             command: 'drush tide-oauth:env-keygen'
+             command: 'drush tide-oauth:keygen'
              service: cli
     ```    
 
