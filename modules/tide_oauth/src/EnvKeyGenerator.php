@@ -100,7 +100,7 @@ class EnvKeyGenerator {
    */
   public function generateEnvKeys() : bool {
     if (!$this->hasEnvKeys()) {
-      $this->generateOauthKeys();
+      return $this->generateOauthKeys();
     }
 
     $private = 'private://';

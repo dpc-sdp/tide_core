@@ -29,6 +29,6 @@ function drush_tide_oauth_keygen() {
     $env_key_generator->setSimpleOauthKeySettings();
   }
   else {
-    drush_set_error('Could not generate OAuth keys from TIDE_OAUTH_*_KEY environment variables.');
+    drush_set_error('Could not generate OAuth keys.');
   }
 }
