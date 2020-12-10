@@ -1,7 +1,7 @@
 @tide
 Feature: Node clone test
 
-  As an Editor I can see Clone tab and creat a cloned node.
+  As an editor I can see Clone tab and creat a cloned node.
 
   Background:
     And test content:
@@ -9,7 +9,7 @@ Feature: Node clone test
       | [TEST] Page title | /test-page-alias | published        | test.editor | 999999 | Test |
 
   @api @javascript
-  Scenario: User who clones content is set as owner of the clone.
+  Scenario: check if the Clone tab exists and the node can be cloned.
     Given I am logged in as a user with the "site_admin" role
     Then I go to "/node/999999"
     Then I should see the link "Clone"
