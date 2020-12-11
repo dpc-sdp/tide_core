@@ -102,6 +102,11 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         }
       }
     }
+    if ($form_id == 'node_' . $bundle . '_quick_node_clone_form') {
+      if (isset($form['moderation_state'])) {
+        $form['moderation_state']['#group'] = 'footer';
+      }
+    }
   }
 }
 
