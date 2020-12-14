@@ -64,10 +64,10 @@ function _tide_oauth_update_consumer_long_description_field() {
     ]);
     $uuid = _tide_retrieve_config_uuid('field.field.consumer.consumer.' . $field_name);
     if ($uuid) {
-      $field_config->setOriginalId($field_config->id());
       $field_config->set('uuid', $uuid);
-      $field_config->save();
     }
+    $field_config->setOriginalId($field_config->id());
+    $field_config->save();
   }
 
   // Update form display and view display.
@@ -184,10 +184,10 @@ function _tide_oauth_update_consumer_machine_name_field() {
     ]);
     $uuid = _tide_retrieve_config_uuid('field.field.consumer.consumer.' . $field_name);
     if ($uuid) {
-      $field_config->setOriginalId($field_config->id());
       $field_config->set('uuid', $uuid);
-      $field_config->save();
     }
+    $field_config->setOriginalId($field_config->id());
+    $field_config->save();
   }
 
   // Update form display and view display.
