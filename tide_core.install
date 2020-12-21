@@ -1013,3 +1013,31 @@ function tide_core_update_8042() {
   $permissions = ['administer nodes', 'bypass node access'];
   user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
 }
+
+/**
+ * Enable Maximize button in wysiwyg toolbar.
+ */
+function tide_core_update_8043() {
+  $config_factory = \Drupal::configFactory();
+  $configs = [
+    'editor.editor.admin_text',
+    'editor.editor.rich_text',
+    'editor.editor.summary_text',
+  ];
+  foreach ($configs as $config) {
+    $editable_config = $config_factory->getEditable($config);
+    $rows = $editable_config->get('settings.toolbar.rows.0');
+    $updated_rows = [];
+
+    foreach ($rows as $key => $row) {
+      if ($row['name'] === 'Tools' && !in_array('Maximize', $row['items'])) {
+        // Insert Maximise inside Tools group toolbar.
+        array_splice($row['items'], 3, 0, 'Maximize');
+      }
+      $updated_rows[] = $row;
+    }
+
+    $editable_config->set('settings.toolbar.rows.0', $updated_rows);
+    $editable_config->save();
+  }
+}

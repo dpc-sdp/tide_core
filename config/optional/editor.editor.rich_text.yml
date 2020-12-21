@@ -62,6 +62,7 @@ settings:
             - Undo
             - Redo
             - ShowBlocks
+            - Maximize
             - Source
             - TemplateSelector
             - Iframe
