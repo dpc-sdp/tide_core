@@ -165,6 +165,9 @@ class EnvKeyGenerator {
       return FALSE;
     }
 
+    $private = 'private://';
+    $this->fileSystem->prepareDirectory($private, FileSystemInterface::CREATE_DIRECTORY);
+
     $this->keyGenerator->generateKeys('private://');
     $this->fileSystem->move('private://private.key', static::FILE_PRIVATE_KEY);
     $this->fileSystem->chmod(static::FILE_PRIVATE_KEY, 0600);
