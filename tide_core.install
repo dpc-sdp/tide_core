@@ -17,6 +17,7 @@ use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\user\UserInterface;
 use Drupal\node\Entity\NodeType;
+use Drupal\views\Entity\View;
 
 /**
  * Implements hook_install().
@@ -1039,5 +1040,26 @@ function tide_core_update_8043() {
 
     $editable_config->set('settings.toolbar.rows.0', $updated_rows);
     $editable_config->save();
+  }
+}
+
+/**
+ * Updates files view.
+ */
+function tide_core_update_8044() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('view');
+  if ($storage->load('enhanced_files') == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  $view = View::load('files');
+  if ($view) {
+    if ($view->status() == TRUE) {
+      $view->setStatus(FALSE);
+      $view->save();
+    }
   }
 }
