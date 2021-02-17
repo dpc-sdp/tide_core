@@ -267,23 +267,25 @@ function tide_core_editor_js_settings_alter(array &$settings) {
  * Implements hook_ENTITY_TYPE_access().
  */
 function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $operation, AccountInterface $account) {
-  $url = $menu_link_item->getUrlObject();
-  if (!$url->isExternal() && $url->isRouted() && $menu_link_item->isPublished()) {
-    $parameters = $url->getRouteParameters();
-    if (isset($parameters['node'])) {
-      $node = Node::load($parameters['node']);
-      if ($account->hasPermission('administer menu')) {
-        return AccessResult::neutral();
-      }
-      if (!$node->isPublished()) {
-        return AccessResult::forbidden();
-      }
-      if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
-        if ($node->moderation_state->value != 'published') {
+  if ($menu_link_item->hasField('link') && !$menu_link_item->link->isEmpty()) {
+    $url = $menu_link_item->getUrlObject();
+    if (!$url->isExternal() && $url->isRouted() && $menu_link_item->isPublished()) {
+      $parameters = $url->getRouteParameters();
+      if (isset($parameters['node'])) {
+        $node = Node::load($parameters['node']);
+        if ($account->hasPermission('administer menu')) {
+          return AccessResult::neutral();
+        }
+        if (!$node->isPublished()) {
           return AccessResult::forbidden();
         }
+        if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
+          if ($node->moderation_state->value != 'published') {
+            return AccessResult::forbidden();
+          }
+        }
+        return AccessResult::neutral();
       }
-      return AccessResult::neutral();
     }
   }
 }
