@@ -273,18 +273,19 @@ function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $op
       $parameters = $url->getRouteParameters();
       if (isset($parameters['node'])) {
         $node = Node::load($parameters['node']);
+        $menu_link_item->addCacheableDependency($node);
         if ($account->hasPermission('administer menu')) {
-          return AccessResult::neutral();
+          return AccessResult::neutral()->addCacheableDependency($menu_link_item);
         }
         if (!$node->isPublished()) {
-          return AccessResult::forbidden();
+          return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
         }
         if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
           if ($node->moderation_state->value != 'published') {
-            return AccessResult::forbidden();
+            return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
           }
         }
-        return AccessResult::neutral();
+        return AccessResult::neutral()->addCacheableDependency($menu_link_item);
       }
     }
   }
