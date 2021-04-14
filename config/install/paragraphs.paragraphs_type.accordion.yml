@@ -1,8 +1,8 @@
 langcode: en
 status: true
-dependencies: {  }
 id: accordion
 label: Accordion
-icon_uuid: null
-description: ''
+icon_uuid: 7cfd8a76-9c18-42c9-8514-d49812b9688f
+icon_default: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjgiIGhlaWdodD0iNzciIHZpZXdCb3g9IjAgMCA2OCA3NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY3LjM3MTkiIGhlaWdodD0iNzYuOTA1NyIgZmlsbD0id2hpdGUiLz4KPHJlY3QgeD0iNyIgeT0iMTAiIHdpZHRoPSI1MyIgaGVpZ2h0PSIxMiIgZmlsbD0iI0UwRTBFMCIvPgo8cmVjdCB4PSI3IiB5PSIyNyIgd2lkdGg9IjUzIiBoZWlnaHQ9IjEyIiBmaWxsPSIjRTBFMEUwIi8+CjxwYXRoIGQ9Ik01NiAxNEw1Mi41IDE3LjcxNzNMNDkgMTQiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNNTYgMzFMNTIuNSAzNC43MTczTDQ5IDMxIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+Cg=='
+description: 'Add a list of headings that can be clicked to show or hide content.'
 behavior_plugins: {  }
