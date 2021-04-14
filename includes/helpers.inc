@@ -11,6 +11,7 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Site\Settings;
+use Drupal\paragraphs\Entity\ParagraphsType;
 
 /**
  * Helper to read configuration from provided locations.
@@ -156,15 +157,17 @@ function _tide_import_single_config($config_name, array $locations = [], $priori
 }
 
 /**
- * Retrieve UUID of a config file in config/sync directory.
+ * Retrieve content of a config file in config/sync directory.
  *
  * @param string $config_name
  *   The config name.
+ * @param string|null $key
+ *   The key to return. If empty, the whole config is returned.
  *
- * @return string|null
- *   The UUID.
+ * @return array|mixed|null
+ *   The config, or the value of the key in the config.
  */
-function _tide_retrieve_config_uuid(string $config_name) : ?string {
+function _tide_retrieve_config_sync(string $config_name, string $key = NULL) {
   try {
     if (version_compare(\Drupal::VERSION, '8.8.0', '<')) {
       $config_sync = config_get_config_directory(CONFIG_SYNC_DIRECTORY);
@@ -176,9 +179,7 @@ function _tide_retrieve_config_uuid(string $config_name) : ?string {
       $config_file = $config_sync . DIRECTORY_SEPARATOR . $config_name . '.yml';
       if (file_exists($config_file)) {
         $config = Yaml::decode(file_get_contents($config_file));
-        if (!empty($config['uuid'])) {
-          return $config['uuid'];
-        }
+        return ($key && array_key_exists($key, $config)) ? $config[$key] : $config;
       }
     }
   }
@@ -186,4 +187,57 @@ function _tide_retrieve_config_uuid(string $config_name) : ?string {
     watchdog_exception('tide_core', $exception);
   }
   return NULL;
+}
+
+/**
+ * Retrieve UUID of a config file in config/sync directory.
+ *
+ * @param string $config_name
+ *   The config name.
+ *
+ * @return string|null
+ *   The UUID.
+ */
+function _tide_retrieve_config_uuid(string $config_name) : ?string {
+  $uuid = _tide_retrieve_config_sync($config_name, 'uuid');
+  return is_string($uuid) ? $uuid : NULL;
+}
+
+/**
+ * Set the icon for a paragraph type.
+ *
+ * @param string|\Drupal\paragraphs\Entity\ParagraphsType $paragraph_type
+ *   The paragraph type id, or a loaded ParagraphsType entity.
+ * @param string $icon_file
+ *   The path to the icon file.
+ *
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ */
+function _tide_set_paragraph_type_icon($paragraph_type, string $icon_file) {
+  if (!($paragraph_type instanceof ParagraphsType)) {
+    $paragraph_type = ParagraphsType::load((string) $paragraph_type);
+  }
+  if ($paragraph_type instanceof ParagraphsType) {
+    if (@file_exists($icon_file)) {
+      $icon_data = base64_encode(file_get_contents($icon_file));
+
+      /** @var \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser $mime_guesser */
+      $mime_guesser = \Drupal::service('file.mime_type.guesser');
+      $icon_mime = $mime_guesser->guess($icon_file);
+      if (!$icon_mime) {
+        $icon_mime = 'image/png';
+      }
+
+      $icon_uuid = _tide_retrieve_config_sync($paragraph_type->getConfigDependencyName(), 'icon_uuid');
+      if (!$icon_uuid) {
+        $icon_uuid = \Drupal::service('uuid')->generate();
+      }
+
+      $paragraph_type->set('icon_uuid', $icon_uuid);
+      $paragraph_type->set('icon_default', 'data:' . $icon_mime . ';base64,' . $icon_data);
+      $paragraph_type->getIconFile();
+    }
+
+    $paragraph_type->save();
+  }
 }

@@ -6,6 +6,7 @@
  */
 
 use Drupal\filter\Entity\FilterFormat;
+use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
@@ -980,7 +981,7 @@ function tide_core_update_8039() {
 function tide_core_update_8040() {
   $role = 'editor';
   $permissions = ['administer redirect settings', 'administer redirects'];
-  user_role_revoke_permissions(Role::load($role)->id(), $permissions);
+  user_role_revoke_permissions($role, $permissions);
 }
 
 /**
@@ -1002,7 +1003,7 @@ function tide_core_update_8041() {
   }
 
   foreach ($roles as $role) {
-    user_role_grant_permissions(Role::load($role)->id(), $permissions);
+    user_role_grant_permissions($role, $permissions);
   }
 }
 
@@ -1011,7 +1012,7 @@ function tide_core_update_8041() {
  */
 function tide_core_update_8042() {
   $permissions = ['administer nodes', 'bypass node access'];
-  user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
+  user_role_grant_permissions('site_admin', $permissions);
 }
 
 /**
@@ -1039,5 +1040,28 @@ function tide_core_update_8043() {
 
     $editable_config->set('settings.toolbar.rows.0', $updated_rows);
     $editable_config->save();
+  }
+}
+
+/**
+ * Update paragraph description and icon.
+ */
+function tide_core_update_8044() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $icon_dir = drupal_get_path('module', 'tide_core') . DIRECTORY_SEPARATOR . 'icons';
+
+  $paragraphs = [
+    'accordion' => 'Add a list of headings that can be clicked to show or hide content.',
+  ];
+  foreach ($paragraphs as $paragraph_type_id => $description) {
+    /** @var \Drupal\paragraphs\Entity\ParagraphsType $paragraph_type */
+    $paragraph_type = ParagraphsType::load($paragraph_type_id);
+    if ($paragraph_type) {
+      $paragraph_type->set('description', $description);
+      $paragraph_type->save();
+
+      $icon_filename = $icon_dir . DIRECTORY_SEPARATOR . $paragraph_type_id . '.svg';
+      _tide_set_paragraph_type_icon($paragraph_type, $icon_filename);
+    }
   }
 }
