@@ -35,7 +35,7 @@ function tide_paragraphs_enhanced_modal_theme($existing, $type, $theme, $path) {
 function tide_paragraphs_enhanced_modal_preprocess_paragraphs_add_dialog(&$variables) {
   if (isset($variables['buttons'])) {
     $variables['button_enhancements'] = [];
-    $placeholder_icon_path = drupal_get_path('module', 'tide_paragraphs_enhanced_modal') . '/icons/placeholder.png';
+    $placeholder_icon_path = drupal_get_path('module', 'tide_paragraphs_enhanced_modal') . '/icons/placeholder.svg';
     $placeholder_icon_url = file_create_url($placeholder_icon_path);
     foreach (Element::children($variables['buttons']) as $key) {
       $bundle_machine_name = $variables['buttons'][$key]['#bundle_machine_name'];
