@@ -1,0 +1,9 @@
+{
+    "name": "dpc-sdp/tide_edit_protection",
+    "description": "Prevents the user leaving the page without saving.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "drupal/content_lock": "^2.2"
+    }
+}
