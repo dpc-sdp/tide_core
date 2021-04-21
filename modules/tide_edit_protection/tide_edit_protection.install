@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Installation functions for tide_edit_protection.
+ */
+
+use Drupal\views\Entity\View;
+
+/**
+ * Updates locked_content view.
+ */
+function tide_edit_protection_install() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_edit_protection') . '/config/install'];
+  $config_read = _tide_read_config('views.view.tide_locked_content', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('view');
+  if ($storage->load('tide_locked_content') == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  $view = View::load('locked_content');
+  if ($view) {
+    if ($view->status() == TRUE) {
+      $view->setStatus(FALSE);
+      $view->save();
+    }
+  }
+  $contentLockSettings = \Drupal::configFactory()
+    ->getEditable('content_lock.settings');
+  $types = $contentLockSettings->get('types');
+  $types['node'] = ['*' => '*'];
+  $contentLockSettings->set('types', $types)->save();
+}
