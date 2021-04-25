@@ -34,8 +34,6 @@ display:
             site_admin: site_admin
             editor: editor
             previewer: previewer
-            event_author: event_author
-            grant_author: grant_author
       cache:
         type: none
         options: {  }
@@ -694,8 +692,6 @@ display:
               site_admin: '0'
               editor: '0'
               previewer: '0'
-              event_author: '0'
-              grant_author: '0'
           is_grouped: false
           group_info:
             label: ''
