@@ -6,9 +6,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "ckeditor/fakeobjects": "^4.5.11",
-        "ckeditor/iframe": "^4.5.11",
-        "ckeditor/liststyle": "4.8.0",
+        "ckeditor/fakeobjects": "4.16.0",
+        "ckeditor/iframe": "4.16.0",
+        "ckeditor/liststyle": "4.16.0",
         "drupal/address": "^1.4",
         "drupal/allowed_formats": "^1.1",
         "drupal/better_exposed_filters": "^3.0-alpha5",
@@ -72,6 +72,67 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        "package/ckeditor-fakeobjects": {
+            "type": "package",
+            "package": {
+                "name": "ckeditor/fakeobjects",
+                "type": "drupal-library",
+                "version": "4.16.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://download.ckeditor.com/iframe/releases/iframe_4.16.0.zip",
+                    "reference": "master"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "package/ckeditor-iframe": {
+            "type": "package",
+            "package": {
+                "name": "ckeditor/iframe",
+                "type": "drupal-library",
+                "version": "4.16.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://download.ckeditor.com/iframe/releases/iframe_4.16.0.zip",
+                    "reference": "master"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "package/ckeditor-liststyle": {
+            "type": "package",
+            "package": {
+                "name": "ckeditor/liststyle",
+                "type": "drupal-library",
+                "version": "4.16.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://download.ckeditor.com/liststyle/releases/liststyle_4.16.0.zip",
+                    "reference": "master"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "package/ckeditor-templates": {
+            "type": "package",
+            "package": {
+                "name": "ckeditor/templates",
+                "type": "drupal-library",
+                "version": "4.11.1",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://download.ckeditor.com/templates/releases/templates_4.11.1.zip",
+                    "reference": "master"
+                }
+            }
         }
     },
     "extra": {
