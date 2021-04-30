@@ -1,0 +1,7 @@
+tide_edit_protection.admin:
+  path: '/admin/config/form_edit_protection'
+  defaults:
+    _form: '\Drupal\tide_edit_protection\Form\TideEditProtectionForm'
+    _title: 'Tide edit protection settings'
+  requirements:
+    _permission: 'access administration pages'

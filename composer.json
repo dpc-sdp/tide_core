@@ -50,6 +50,7 @@
         "drupal/smart_trim": "^1.1",
         "drupal/smtp": "^1.0@RC",
         "drupal/stage_file_proxy": "1.0-rc2",
+        "drupal/tablefield": "2.2",
         "drupal/token_conditions": "dev-1.x",
         "drupal/token_filter": "^1.1",
         "drupal/twig_field_value": "^1.1",
@@ -64,7 +65,8 @@
         "drupal/queue_mail": "^1.0",
         "drupal/token": "^1.7",
         "drupal/username_enumeration_prevention": "^1.1",
-        "drupal/quick_node_clone": "^1.13"
+        "drupal/quick_node_clone": "^1.13",
+        "drupal/content_lock": "^2.2"
     },
     "repositories": {
         "drupal": {
@@ -80,7 +82,7 @@
                 "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
                 "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485#comment-11004325": "https://www.drupal.org/files/issues/2693485-node-3.patch",
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
-                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650": "https://www.drupal.org/files/issues/2020-06-26/refactor_xss_attributes-3109650.patch"
+                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14068224": "https://www.drupal.org/files/issues/2021-04-21/refactor_xss_attributes-3109650-24.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
@@ -117,6 +119,9 @@
             },
             "drupal/simple_oauth": {
                 "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch"
+            },
+            "drupal/tablefield": {
+                "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
             },
             "drupal/viewsreference": {
                 "Updating from alpha4 to alpha5 via composer results in error - https://www.drupal.org/project/viewsreference/issues/3096956#comment-13370643": "https://www.drupal.org/files/issues/2019-11-28/3096956-17.Unmet-service-dependencies.patch"

@@ -1,0 +1,10 @@
+name: Tide edit protection
+type: module
+description: Extends Node Edit Protection module to provide custom functions
+core: 8.x
+package: tide
+dependencies:
+  - content_lock:content_lock
+config_devel:
+  install:
+    - tide_edit_protection_form.yml

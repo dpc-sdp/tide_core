@@ -1066,9 +1066,40 @@ function tide_core_update_8044() {
 }
 
 /**
- * Update paragraph description and icon.
+ * Enable tablefield module.
  */
 function tide_core_update_8045() {
+  if (!\Drupal::moduleHandler()->moduleExists('tablefield')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tablefield']);
+  }
+  $roles = ['approver', 'site_admin', 'editor'];
+  $permissions = [
+    'addrow tablefield',
+    'rebuild tablefield',
+    'import tablefield',
+  ];
+  foreach ($roles as $role) {
+    user_role_grant_permissions(Role::load($role)->id(), $permissions);
+  }
+}
+
+/**
+ * Enable tide_edit_protection module.
+ */
+function tide_core_update_8046() {
+  $administrator = Role::load('administrator');
+  $anonymous = Role::load('anonymous');
+  if ($administrator && $anonymous && !\Drupal::moduleHandler()->moduleExists('tide_edit_protection')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_edit_protection']);
+  }
+}
+
+/**
+ * Update paragraph description and icon.
+ */
+function tide_core_update_8047() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
   $icon_dir = drupal_get_path('module', 'tide_core') . DIRECTORY_SEPARATOR . 'icons';
 
