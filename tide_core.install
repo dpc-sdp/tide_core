@@ -1104,7 +1104,7 @@ function tide_core_update_8047() {
   $icon_dir = drupal_get_path('module', 'tide_core') . DIRECTORY_SEPARATOR . 'icons';
 
   $paragraphs = [
-    'accordion' => 'Add a list of headings that can be clicked to show or hide content.',
+    'accordion' => 'Add a list of headings that can be clicked on to show or hide content.',
   ];
   foreach ($paragraphs as $paragraph_type_id => $description) {
     /** @var \Drupal\paragraphs\Entity\ParagraphsType $paragraph_type */
