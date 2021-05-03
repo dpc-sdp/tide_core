@@ -1,0 +1,4 @@
+entity_method: entity_type
+entity_types:
+  node: node
+entity_bundles: {  }
