@@ -1074,8 +1074,8 @@ function tide_core_update_8045() {
   }
   $roles = ['approver', 'site_admin', 'editor'];
   $permissions = [
-    'addrow tablefield', 
-    'rebuild tablefield', 
+    'addrow tablefield',
+    'rebuild tablefield',
     'import tablefield',
   ];
   foreach ($roles as $role) {
