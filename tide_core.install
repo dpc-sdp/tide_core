@@ -1082,3 +1082,10 @@ function tide_core_update_8045() {
     user_role_grant_permissions(Role::load($role)->id(), $permissions);
   }
 }
+
+/**
+ * Enable tide_edit_protection module.
+ */
+function tide_core_update_8046() {
+  // @todo This update will be removed before Drupal 9.0.0
+}
