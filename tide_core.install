@@ -1087,10 +1087,5 @@ function tide_core_update_8045() {
  * Enable tide_edit_protection module.
  */
 function tide_core_update_8046() {
-  $administrator = Role::load('administrator');
-  $anonymous = Role::load('anonymous');
-  if ($administrator && $anonymous && !\Drupal::moduleHandler()->moduleExists('tide_edit_protection')) {
-    $module_installer = \Drupal::service('module_installer');
-    $module_installer->install(['tide_edit_protection']);
-  }
+  // @todo This update will be removed before Drupal 9.0.0
 }

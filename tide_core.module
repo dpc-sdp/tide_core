@@ -167,9 +167,6 @@ function tide_core_menu_links_discovered_alter(&$links) {
   if (isset($links['entity.scheduled_update.collection'])) {
     unset($links['entity.scheduled_update.collection']);
   }
-  if (isset($links['system.modules_list'])) {
-    unset($links['system.modules_list']);
-  }
 }
 
 /**
@@ -191,9 +188,6 @@ function tide_core_local_tasks_alter(&$local_tasks) {
   // TODO: delete after scheduled_updates module fully uninstalled.
   if (isset($local_tasks['scheduled_update.admin'])) {
     unset($local_tasks['scheduled_update.admin']);
-  }
-  if (isset($local_tasks['system.modules_uninstall'])) {
-    unset($local_tasks['system.modules_uninstall']);
   }
 }
 

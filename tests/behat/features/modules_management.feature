@@ -1,3 +1,4 @@
+@install:tide_ui_restriction
 Feature: Module management permissions
 
   Ensure that modules management permissions are not set for roles.
