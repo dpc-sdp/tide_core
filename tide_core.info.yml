@@ -20,6 +20,7 @@ dependencies:
   - drupal:dynamic_page_cache
   - drupal:entity_embed
   - drupal:filter
+  - drupal:link_field_autocomplete_filter
   - drupal:media
   - drupal:node
   - drupal:options
