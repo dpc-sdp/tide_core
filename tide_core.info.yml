@@ -48,6 +48,7 @@ dependencies:
   - fakeobjects:fakeobjects
   - fast_404:fast404
   - linkit:linkit
+  - login_redirect_per_role:login_redirect_per_role
   - m4032404:m4032404
   - maxlength:maxlength
   - media_entity_audio:media_entity_audio

@@ -1041,3 +1041,33 @@ function tide_core_update_8043() {
     $editable_config->save();
   }
 }
+
+/**
+ * Set default home page and login redirect.
+ */
+function tide_core_update_8044() {
+  if (!\Drupal::moduleHandler()->moduleExists('login_redirect_per_role')) {
+    /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['login_redirect_per_role']);
+  }
+
+  $system_site_config = \Drupal::configFactory()->getEditable('system.site');
+  $page = $system_site_config->get('page');
+  $page['front'] = '/user/login';
+  $system_site_config->set('page', $page);
+  $system_site_config->save();
+
+  $login_redirect_config = \Drupal::configFactory()->getEditable('login_redirect_per_role.settings');
+  $login_redirect = $login_redirect_config->get('login');
+  foreach (['editor', 'approver', 'site_admin', 'administrator'] as $role_id) {
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = Role::load($role_id);
+    if ($role) {
+      $login_redirect[$role_id]['redirect_url'] = '/admin/content';
+      $login_redirect[$role_id]['allow_destination'] = FALSE;
+    }
+  }
+  $login_redirect_config->set('login', $login_redirect);
+  $login_redirect_config->save();
+}
