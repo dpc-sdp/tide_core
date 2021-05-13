@@ -11,22 +11,3 @@ tide_dashboard.dashboard.logout:
   parent: tide_dashboard.dashboard
   weight: -50
 
-tide_dashboard.node.add:
-  title: '+ New Page'
-  route_name: node.add_page
-  weight: -80
-  parent: system.admin
-  menu_name: admin
-
-tide_dashboard.media:
-  title: 'Media library'
-  route_name: entity.media.collection
-  weight: -70
-  menu_name: admin
-  parent: system.admin
-tide_dashboard.media.add:
-  title: 'Add media'
-  route_name: entity.media.add_page
-  weight: -50
-  parent: tide_dashboard.media
-  menu_name: admin

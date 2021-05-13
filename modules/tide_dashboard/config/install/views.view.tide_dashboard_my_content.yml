@@ -883,7 +883,7 @@ display:
           admin_label: 'New Page button'
           empty: true
           tokenize: false
-          content: "<ul class=\"action-links\">\r\n      <li><a href=\"/node/add\" class=\"button button-action button--primary button--small\" data-drupal-link-system-path=\"node/add\">New page</a></li>\r\n</ul>"
+          content: "<ul class=\"action-links\">\r\n      <li><a href=\"/node/add\" class=\"button button-action button--primary button--small\" data-drupal-link-system-path=\"node/add\">Add content</a></li>\r\n</ul>"
           plugin_id: text_custom
       footer:
         text_raw:

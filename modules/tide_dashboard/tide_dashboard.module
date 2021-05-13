@@ -21,64 +21,6 @@ function tide_dashboard_toolbar_alter(&$items) {
 }
 
 /**
- * Implements hook_menu_links_discovered_alter().
- *
- * Adds node types and media types to the custom menu items.
- *
- * @see admin_toolbar_tools_menu_links_discovered_alter()
- */
-function tide_dashboard_menu_links_discovered_alter(&$links) {
-  $entity_type_manager = \Drupal::entityTypeManager();
-
-  // Add menu item for each content type.
-  foreach ($entity_type_manager->getStorage('node_type')->loadMultiple() as $type) {
-    $links['tide_dashboard.node.add.' . $type->id()] = [
-      'title' => $type->label(),
-      'provider' => 'tide_dashboard',
-      'route_name' => 'node.add',
-      'parent' => 'tide_dashboard.node.add',
-      'route_parameters' => ['node_type' => $type->id()],
-    ];
-  }
-
-  // Add menu item for each media type.
-  foreach ($entity_type_manager->getStorage('media_type')->loadMultiple() as $type) {
-    $links['tide_dashboard.media.add.' . $type->id()] = [
-      'title' => $type->label(),
-      'provider' => 'tide_dashboard',
-      'route_name' => 'entity.media.add_form',
-      'parent' => 'tide_dashboard.media.add',
-      'route_parameters' => ['media_type' => $type->id()],
-    ];
-  }
-
-  // Add menu item to Files.
-  if (_tide_dashboard_route_exists('view.files.page_1')) {
-    $links['tide_dashboard.media.files'] = [
-      'title' => t('Files'),
-      'provider' => 'tide_dashboard',
-      'route_name' => 'view.files.page_1',
-      'parent' => 'tide_dashboard.media',
-      'weight' => -40,
-    ];
-  }
-}
-
-/**
- * Determine if a route exists by name.
- *
- * @param string $route_name
- *   The name of the route to check.
- *
- * @return bool
- *   Whether a route with that route name exists.
- */
-function _tide_dashboard_route_exists(string $route_name) : bool {
-  $route_provider = \Drupal::service('router.route_provider');
-  return (count($route_provider->getRoutesByNames([$route_name])) === 1);
-}
-
-/**
  * Callback for workbench.content route title.
  *
  * @return \Drupal\Core\StringTranslation\TranslatableMarkup
