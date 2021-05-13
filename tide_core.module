@@ -14,6 +14,9 @@ use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\node\Entity\Node;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Implements hook_views_data().
@@ -45,6 +48,15 @@ function tide_core_views_data_alter(array &$data) {
   // to add an extra check for the 'view any unpublished content' permission
   // provided by the Content Moderation module.
   $data['node_field_data']['status_extra']['filter']['id'] = 'node_status_moderated';
+  $data['file_managed']['file_type_filter'] = [
+    'title' => t('Enhanced file MIME type filter'),
+    'filter' => [
+      'title' => t('Enhanced file MIME type filter'),
+      'help' => t('provide a custom file MIME type selection filter'),
+      'field' => 'filemime',
+      'id' => 'tide_enhanced_mime_type_filter',
+    ],
+  ];
 }
 
 /**
@@ -259,5 +271,33 @@ function tide_core_preprocess_page(&$variables) {
 function tide_core_editor_js_settings_alter(array &$settings) {
   foreach (array_keys($settings['editor']['formats']) as $text_format_id) {
     $settings['editor']['formats'][$text_format_id]['editorSettings']['contentsCss'][] = '/' . drupal_get_path('module', 'tide_core') . '/css/ckeditor_overrides.css';
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_access().
+ */
+function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $operation, AccountInterface $account) {
+  if ($menu_link_item->hasField('link') && !$menu_link_item->link->isEmpty()) {
+    $url = $menu_link_item->getUrlObject();
+    if (!$url->isExternal() && $url->isRouted() && $menu_link_item->isPublished()) {
+      $parameters = $url->getRouteParameters();
+      if (isset($parameters['node'])) {
+        $node = Node::load($parameters['node']);
+        $menu_link_item->addCacheableDependency($node);
+        if ($account->hasPermission('administer menu')) {
+          return AccessResult::neutral()->addCacheableDependency($menu_link_item);
+        }
+        if (!$node->isPublished()) {
+          return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
+        }
+        if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
+          if ($node->moderation_state->value != 'published') {
+            return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
+          }
+        }
+        return AccessResult::neutral()->addCacheableDependency($menu_link_item);
+      }
+    }
   }
 }

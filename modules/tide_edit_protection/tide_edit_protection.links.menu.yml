@@ -1,0 +1,11 @@
+tide_edit_protection.settings:
+  title: Tide Edit Protection settings
+  description: 'Tide Edit Protection settings.'
+  route_name: tide_edit_protection.admin
+  parent: system.admin_config_content
+
+tide_edit_protection.view:
+  title: 'Locked content'
+  route_name: view.tide_locked_content.page_1
+  parent: system.admin_content
+  weight: 100

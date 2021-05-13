@@ -17,6 +17,7 @@ use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\user\UserInterface;
 use Drupal\node\Entity\NodeType;
+use Drupal\views\Entity\View;
 
 /**
  * Implements hook_install().
@@ -1043,9 +1044,56 @@ function tide_core_update_8043() {
 }
 
 /**
- * Set default home page and login redirect.
+ * Updates files view.
  */
 function tide_core_update_8044() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('view');
+  if ($storage->load('enhanced_files') == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  $view = View::load('files');
+  if ($view) {
+    if ($view->status() == TRUE) {
+      $view->setStatus(FALSE);
+      $view->save();
+    }
+  }
+}
+
+/**
+ * Enable tablefield module.
+ */
+function tide_core_update_8045() {
+  if (!\Drupal::moduleHandler()->moduleExists('tablefield')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tablefield']);
+  }
+  $roles = ['approver', 'site_admin', 'editor'];
+  $permissions = [
+    'addrow tablefield',
+    'rebuild tablefield',
+    'import tablefield',
+  ];
+  foreach ($roles as $role) {
+    user_role_grant_permissions(Role::load($role)->id(), $permissions);
+  }
+}
+
+/**
+ * Enable tide_edit_protection module.
+ */
+function tide_core_update_8046() {
+  // @todo This update will be removed before Drupal 9.0.0
+}
+
+/**
+ * Set default home page and login redirect.
+ */
+function tide_core_update_8047() {
   if (!\Drupal::moduleHandler()->moduleExists('login_redirect_per_role')) {
     /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
     $module_installer = \Drupal::service('module_installer');
@@ -1058,7 +1106,8 @@ function tide_core_update_8044() {
   $system_site_config->set('page', $page);
   $system_site_config->save();
 
-  $login_redirect_config = \Drupal::configFactory()->getEditable('login_redirect_per_role.settings');
+  $login_redirect_config = \Drupal::configFactory()
+    ->getEditable('login_redirect_per_role.settings');
   $login_redirect = $login_redirect_config->get('login');
   foreach (['editor', 'approver', 'site_admin', 'administrator'] as $role_id) {
     /** @var \Drupal\user\RoleInterface $role */

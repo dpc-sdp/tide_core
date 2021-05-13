@@ -1,0 +1,7 @@
+form_edit_protection:
+  version: 1.x
+  js:
+    js/form-edit-protection.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
