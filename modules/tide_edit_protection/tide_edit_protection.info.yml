@@ -9,3 +9,5 @@ dependencies:
 config_devel:
   install:
     - tide_edit_protection_form.yml
+  optional:
+    - views.view.tide_locked_content.yml
