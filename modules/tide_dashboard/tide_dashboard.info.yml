@@ -6,7 +6,6 @@ core: 8.x
 dependencies:
   - admin_toolbar:admin_toolbar
   - admin_toolbar:admin_toolbar_tools
-  - login_redirect_per_role:login_redirect_per_role
   - tide_core:tide_core
   - tide_media:tide_media
   - tide_site:tide_site

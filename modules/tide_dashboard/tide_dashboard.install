@@ -18,8 +18,12 @@ function tide_dashboard_install($is_syncing) {
     'administrator' => ['access workbench'],
   ];
 
-  $login_redirect_config = \Drupal::configFactory()->getEditable('login_redirect_per_role.settings');
-  $login_redirect = $login_redirect_config->get('login');
+  $login_redirect = [];
+  $login_redirect_exist = \Drupal::moduleHandler()->moduleExists('login_redirect_per_role');
+  if ($login_redirect_exist) {
+    $login_redirect_config = \Drupal::configFactory()->getEditable('login_redirect_per_role.settings');
+    $login_redirect = $login_redirect_config->get('login');
+  }
 
   foreach ($role_permissions as $role_id => $permissions) {
     /** @var \Drupal\user\RoleInterface $role */
@@ -35,8 +39,10 @@ function tide_dashboard_install($is_syncing) {
     }
   }
 
-  $login_redirect_config->set('login', $login_redirect);
-  $login_redirect_config->save();
+  if ($login_redirect_exist) {
+    $login_redirect_config->set('login', $login_redirect);
+    $login_redirect_config->save();
+  }
 
   $system_site_config = \Drupal::configFactory()->getEditable('system.site');
   $page = $system_site_config->get('page');
