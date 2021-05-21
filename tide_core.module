@@ -297,7 +297,6 @@ function _tide_core_form_node_form_process(array $element, FormStateInterface $f
   ];
 
   $core_fields = [
-    0 => 'field_topic',
     10 => 'field_node_department',
     20 => 'field_tags',
   ];
