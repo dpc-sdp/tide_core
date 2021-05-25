@@ -169,9 +169,9 @@ class EnvKeyGenerator {
     $this->fileSystem->prepareDirectory($private, FileSystemInterface::CREATE_DIRECTORY);
 
     $this->keyGenerator->generateKeys('private://');
-    $this->fileSystem->move('private://private.key', static::FILE_PRIVATE_KEY);
+    $this->fileSystem->move('private://private.key', static::FILE_PRIVATE_KEY, FileSystemInterface::EXISTS_REPLACE);
     $this->fileSystem->chmod(static::FILE_PRIVATE_KEY, 0600);
-    $this->fileSystem->move('private://public.key', static::FILE_PUBLIC_KEY);
+    $this->fileSystem->move('private://public.key', static::FILE_PUBLIC_KEY, FileSystemInterface::EXISTS_REPLACE);
     $this->fileSystem->chmod(static::FILE_PUBLIC_KEY, 0600);
 
     return TRUE;
