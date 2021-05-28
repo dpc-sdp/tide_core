@@ -1,0 +1,13 @@
+tide_dashboard.dashboard:
+  title: 'Dashboard'
+  route_name: workbench.content
+  menu_name: admin
+  parent: system.admin
+  weight: -90
+tide_dashboard.dashboard.logout:
+  title: 'Log out'
+  route_name: user.logout
+  menu_name: admin
+  parent: tide_dashboard.dashboard
+  weight: -50
+

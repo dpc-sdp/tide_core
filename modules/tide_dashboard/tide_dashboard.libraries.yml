@@ -1,0 +1,4 @@
+toolbar.icons:
+  css:
+    component:
+      css/toolbar.icons.css: {}

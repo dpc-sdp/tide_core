@@ -1,0 +1,5 @@
+services:
+  tide_dashboard.route_subscriber:
+    class: Drupal\tide_dashboard\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

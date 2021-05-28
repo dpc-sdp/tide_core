@@ -1,0 +1,17 @@
+name: Tide Dashboard
+description: Provides Dashboard for Tide distro.
+type: module
+package: Tide
+core: 8.x
+dependencies:
+  - admin_toolbar:admin_toolbar
+  - admin_toolbar:admin_toolbar_tools
+  - tide_core:tide_core
+  - tide_media:tide_media
+  - tide_site:tide_site
+  - workbench:workbench
+config_devel:
+  install:
+    - views.view.tide_dashboard_current_user
+    - views.view.tide_dashboard_my_content
+  optional: {  }

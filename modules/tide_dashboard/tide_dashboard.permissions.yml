@@ -1,0 +1,4 @@
+access workbench menu:
+  title: 'Access Workbench menu'
+  description: 'Access the Workbench menu.'
+  restrict access: FALSE

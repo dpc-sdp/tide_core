@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Tide Dashboard.
+ */
+
+/**
+ * Implements hook_toolbar_alter().
+ *
+ * Hide Workbench menu from users without the custom permission.
+ *
+ * @see workbench_toolbar()
+ */
+function tide_dashboard_toolbar_alter(&$items) {
+  $items['administration']['#attached']['library'][] = 'tide_dashboard/toolbar.icons';
+  $user = \Drupal::currentUser();
+  if (!$user->hasPermission('access workbench menu')) {
+    unset($items['workbench']);
+  }
+}
+
+/**
+ * Callback for workbench.content route title.
+ *
+ * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+ *   The route title.
+ */
+function _tide_dashboard_workbench_content_title_callback() {
+  return t('Dashboard');
+}

@@ -1,0 +1,32 @@
+/**
+ * Dashboard icon.
+ */
+.toolbar-icon-tide-dashboard-dashboard:before {
+  background-image: url(../images/icons/787878/dashboard.svg);
+}
+.toolbar-icon-tide-dashboard-dashboard:active:before,
+.toolbar-icon-tide-dashboard-dashboard.is-active:before {
+  background-image: url(../images/icons/000000/dashboard.svg);
+}
+
+/**
+ * New Page icon.
+ */
+.toolbar-icon-tide-dashboard-node-add:before {
+  background-image: url(/core/misc/icons/787878/file.svg);
+}
+.toolbar-icon-tide-dashboard-node-add:active:before,
+.toolbar-icon-tide-dashboard-node-add.is-active:before {
+  background-image: url(/core/misc/icons/000000/file.svg);
+}
+
+/**
+ * Media icon.
+ */
+.toolbar-icon-tide-dashboard-media:before {
+  background-image: url(/core/misc/icons/787878/file.svg);
+}
+.toolbar-icon-tide-dashboard-media:active:before,
+.toolbar-icon-tide-dashboard-media.is-active:before {
+  background-image: url(/core/misc/icons/000000/file.svg);
+}
