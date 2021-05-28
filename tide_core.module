@@ -19,6 +19,23 @@ use Drupal\node\Entity\Node;
 use Drupal\Core\Access\AccessResult;
 
 /**
+ * Implements hook_views_data().
+ */
+function tide_core_views_data() {
+  $data = [];
+
+  $data['views']['text_raw'] = [
+    'title' => t('Raw text'),
+    'help' => t('Add raw custom text or markup. This is similar to the custom text field.'),
+    'area' => [
+      'id' => 'text_raw',
+    ],
+  ];
+
+  return $data;
+}
+
+/**
  * Implements hook_views_data_alter().
  *
  * @see \Drupal\node\NodeViewsData::getViewsData()
