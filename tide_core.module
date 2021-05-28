@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
@@ -275,6 +276,60 @@ function tide_core_editor_js_settings_alter(array &$settings) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Move some core fields to Node form Sidebar.
+ */
+function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
+  $form['#process'][] = '_tide_core_form_node_form_process';
+}
+
+/**
+ * Node form #process callback.
+ *
+ * @param array $element
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param array $form
+ *   The complete form structure.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_core_form_node_form_process(array $element, FormStateInterface $form_state, array $form = []) {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+  $element['tide_core_metadata'] = [
+    '#type' => 'container',
+    '#open' => TRUE,
+    '#optional' => TRUE,
+    '#access' => TRUE,
+    '#group' => 'meta',
+    '#attributes' => [
+      'class' => ['tide-core-metadata'],
+    ],
+    '#weight' => 100,
+  ];
+
+  $core_fields = [
+    10 => 'field_node_department',
+    20 => 'field_tags',
+  ];
+  foreach ($core_fields as $weight => $core_field) {
+    if ($node->hasField($core_field)) {
+      if (isset($element[$core_field])) {
+        $element[$core_field]['#group'] = 'tide_core_metadata';
+        $element[$core_field]['#weight'] = $weight;
+      }
+    }
+  }
+
+  return $element;
+}
+
+/**
  * Implements hook_ENTITY_TYPE_access().
  */
 function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $operation, AccountInterface $account) {
@@ -284,16 +339,18 @@ function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $op
       $parameters = $url->getRouteParameters();
       if (isset($parameters['node'])) {
         $node = Node::load($parameters['node']);
-        $menu_link_item->addCacheableDependency($node);
-        if ($account->hasPermission('administer menu')) {
-          return AccessResult::neutral()->addCacheableDependency($menu_link_item);
-        }
-        if (!$node->isPublished()) {
-          return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
-        }
-        if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
-          if ($node->moderation_state->value != 'published') {
+        if ($node instanceof NodeInterface) {
+          $menu_link_item->addCacheableDependency($node);
+          if ($account->hasPermission('administer menu')) {
+            return AccessResult::neutral()->addCacheableDependency($menu_link_item);
+          }
+          if (!$node->isPublished()) {
             return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
+          }
+          if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
+            if ($node->moderation_state->value !== 'published') {
+              return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
+            }
           }
         }
         return AccessResult::neutral()->addCacheableDependency($menu_link_item);

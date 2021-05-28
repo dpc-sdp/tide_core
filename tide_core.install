@@ -6,6 +6,7 @@
  */
 
 use Drupal\filter\Entity\FilterFormat;
+use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
@@ -981,7 +982,7 @@ function tide_core_update_8039() {
 function tide_core_update_8040() {
   $role = 'editor';
   $permissions = ['administer redirect settings', 'administer redirects'];
-  user_role_revoke_permissions(Role::load($role)->id(), $permissions);
+  user_role_revoke_permissions($role, $permissions);
 }
 
 /**
@@ -1003,7 +1004,7 @@ function tide_core_update_8041() {
   }
 
   foreach ($roles as $role) {
-    user_role_grant_permissions(Role::load($role)->id(), $permissions);
+    user_role_grant_permissions($role, $permissions);
   }
 }
 
@@ -1012,7 +1013,7 @@ function tide_core_update_8041() {
  */
 function tide_core_update_8042() {
   $permissions = ['administer nodes', 'bypass node access'];
-  user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
+  user_role_grant_permissions('site_admin', $permissions);
 }
 
 /**
@@ -1088,4 +1089,70 @@ function tide_core_update_8045() {
  */
 function tide_core_update_8046() {
   // @todo This update will be removed before Drupal 9.0.0
+}
+
+/**
+ * Update paragraph description and icon.
+ */
+function tide_core_update_8047() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $icon_dir = drupal_get_path('module', 'tide_core') . DIRECTORY_SEPARATOR . 'icons';
+
+  $paragraphs = [
+    'accordion' => 'Add a list of headings that can be clicked on to show or hide content.',
+  ];
+  foreach ($paragraphs as $paragraph_type_id => $description) {
+    /** @var \Drupal\paragraphs\Entity\ParagraphsType $paragraph_type */
+    $paragraph_type = ParagraphsType::load($paragraph_type_id);
+    if ($paragraph_type) {
+      $paragraph_type->set('description', $description);
+      $paragraph_type->save();
+
+      $icon_filename = $icon_dir . DIRECTORY_SEPARATOR . $paragraph_type_id . '.svg';
+      _tide_set_paragraph_type_icon($paragraph_type, $icon_filename);
+    }
+  }
+}
+
+/**
+ * Set default home page and login redirect.
+ */
+function tide_core_update_8048() {
+  if (!\Drupal::moduleHandler()->moduleExists('login_redirect_per_role')) {
+    /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['login_redirect_per_role']);
+  }
+
+  $system_site_config = \Drupal::configFactory()->getEditable('system.site');
+  $page = $system_site_config->get('page');
+  $page['front'] = '/user/login';
+  $system_site_config->set('page', $page);
+  $system_site_config->save();
+
+  $login_redirect_config = \Drupal::configFactory()
+    ->getEditable('login_redirect_per_role.settings');
+  $login_redirect = $login_redirect_config->get('login');
+  foreach (['editor', 'approver', 'site_admin', 'administrator'] as $role_id) {
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = Role::load($role_id);
+    if ($role) {
+      $login_redirect[$role_id]['redirect_url'] = '/admin/content';
+      $login_redirect[$role_id]['allow_destination'] = FALSE;
+    }
+  }
+  $login_redirect_config->set('login', $login_redirect);
+  $login_redirect_config->save();
+}
+
+/**
+ * Disable node preview for all content types.
+ */
+function tide_core_update_8049() {
+  /** @var \Drupal\node\NodeTypeInterface[] $node_types */
+  $node_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($node_types as $node_type) {
+    $node_type->setPreviewMode(0);
+    $node_type->save();
+  }
 }
