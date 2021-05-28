@@ -5,6 +5,9 @@ core: 8.x
 package: tide
 dependencies:
   - content_lock:content_lock
+  - content_lock_timeout:content_lock_timeout
 config_devel:
   install:
     - tide_edit_protection_form.yml
+  optional:
+    - views.view.tide_locked_content.yml

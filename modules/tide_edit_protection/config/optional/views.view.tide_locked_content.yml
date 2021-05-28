@@ -9,6 +9,8 @@ dependencies:
     - user.role.site_admin
   module:
     - content_lock
+    - content_lock_timeout
+    - tide_edit_protection
     - node
     - user
 id: tide_locked_content

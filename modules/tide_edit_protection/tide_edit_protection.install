@@ -11,14 +11,6 @@ use Drupal\views\Entity\View;
  * Updates locked_content view.
  */
 function tide_edit_protection_install() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_edit_protection') . '/config/install'];
-  $config_read = _tide_read_config('views.view.tide_locked_content', $config_location, TRUE);
-  $storage = \Drupal::entityTypeManager()->getStorage('view');
-  if ($storage->load('tide_locked_content') == NULL) {
-    $config_entity = $storage->createFromStorageRecord($config_read);
-    $config_entity->save();
-  }
   $view = View::load('locked_content');
   if ($view) {
     if ($view->status() == TRUE) {
@@ -31,4 +23,26 @@ function tide_edit_protection_install() {
   $types = $contentLockSettings->get('types');
   $types['node'] = ['*' => '*'];
   $contentLockSettings->set('types', $types)->save();
+
+  // Sets content_lock_timeout module.
+  $contentTimeOutSettings = \Drupal::configFactory()
+    ->getEditable('content_lock_timeout.settings');
+  $contentTimeOutSettings->set('content_lock_timeout_minutes', '240');
+  $contentTimeOutSettings->set('content_lock_timeout_on_edit', 1);
+  $contentTimeOutSettings->save();
+}
+
+/**
+ * Enables content_lock_timeout module.
+ */
+function tide_edit_protection_update_8001() {
+  if (!\Drupal::moduleHandler()
+    ->moduleExists('content_lock_timeout')) {
+    \Drupal::service('module_installer')->install(['content_lock_timeout']);
+  }
+  $contentTimeOutSettings = \Drupal::configFactory()
+    ->getEditable('content_lock_timeout.settings');
+  $contentTimeOutSettings->set('content_lock_timeout_minutes', '240');
+  $contentTimeOutSettings->set('content_lock_timeout_on_edit', 1);
+  $contentTimeOutSettings->save();
 }
