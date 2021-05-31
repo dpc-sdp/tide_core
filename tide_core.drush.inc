@@ -37,7 +37,7 @@ function tide_core_drush_command() {
  * @see Drupal\scheduled_transitions\Commands\ScheduledTransitionsCommands
  */
 function drush_tide_core_scheduled_transitions_queue_jobs() {
-  @trigger_error('drush_tide_core_scheduled_transitions_queue_jobs() is deprecated in tide_core:2.0.5 and is removed tide_core:2.0.6. Use scheduled-transitions:queue-jobs.', E_USER_DEPRECATED);
+  @trigger_error('drush_tide_core_scheduled_transitions_queue_jobs() is deprecated in tide_core:2.0.5 and is removed from tide_core:2.0.6. Use scheduled-transitions:queue-jobs.', E_USER_DEPRECATED);
   $jobs = \Drupal::service('scheduled_transitions.jobs');
   $jobs->jobCreator();
   drush_print(dt('Scheduled transitions queued.'));
