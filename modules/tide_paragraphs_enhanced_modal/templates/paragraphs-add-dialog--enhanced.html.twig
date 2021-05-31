@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Default theme implementation of modal add paragraph dialog template.
+ *
+ * Following classes have custom use:
+ *   - paragraphs-add-dialog - is used to wrap the dialog.
+ *   - paragraphs-add-dialog-row - is used to wrap the paragraph type rows.
+ *
+ *
+ * @ingroup themeable
+ */
+#}
+{{ add }}
+<div class="paragraphs-add-dialog paragraphs-add-dialog-enhanced js-hide">
+    <ul class="paragraphs-add-dialog-list">
+        {% for key, button in buttons %}
+            <li class="paragraphs-add-dialog-row button" style="background-image: url({{ button_enhancements[key].icon_url }});">
+                <span class="add-button">{{ button }}</span>
+                <span class="description">{{ button_enhancements[key].description }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

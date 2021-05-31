@@ -9,6 +9,8 @@ dependencies:
     - user.role.site_admin
   module:
     - content_lock
+    - content_lock_timeout
+    - tide_edit_protection
     - node
     - user
 id: tide_locked_content
@@ -34,8 +36,6 @@ display:
             site_admin: site_admin
             editor: editor
             previewer: previewer
-            event_author: event_author
-            grant_author: grant_author
       cache:
         type: none
         options: {  }
@@ -694,8 +694,6 @@ display:
               site_admin: '0'
               editor: '0'
               previewer: '0'
-              event_author: '0'
-              grant_author: '0'
           is_grouped: false
           group_info:
             label: ''

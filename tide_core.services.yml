@@ -3,7 +3,3 @@ services:
     class: Drupal\tide_core\EventSubscriber\TideCoreRouteAlter
     tags:
       - { name: event_subscriber }
-  tide_core.redirect_subscriber:
-    class: Drupal\tide_core\EventSubscriber\TideCoreRedirectAlter
-    tags:
-      - { name: event_subscriber }

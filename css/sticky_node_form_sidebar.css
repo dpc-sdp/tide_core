@@ -1,0 +1,8 @@
+/**
+ * @file
+ * Set Sidebar of node form to be sticky.
+ */
+.layout-node-form .layout-region.layout-region-node-secondary {
+  position: sticky;
+  top: 100px;
+}

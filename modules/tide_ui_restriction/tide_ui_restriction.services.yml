@@ -1,0 +1,5 @@
+services:
+  tide_ui_restriction.redirect_subscriber:
+    class: Drupal\tide_ui_restriction\EventSubscriber\TideAdminUIRedirectAlter
+    tags:
+      - { name: event_subscriber }

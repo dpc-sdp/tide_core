@@ -122,3 +122,23 @@ function tide_edit_protection_views_pre_view(ViewExecutable $view, $display_id, 
     }
   }
 }
+
+/**
+ * Implements hook_content_lock_timeout_message_alter().
+ */
+function tide_edit_protection_content_lock_timeout_message_alter(&$message, $context) {
+  $message = 'The lock on this page is broken and you can edit this content. The lock was set by @name, 4 hours ago.';
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function tide_edit_protection_preprocess_status_messages(&$variables) {
+  if ($variables && isset($variables['message_list']) && isset($variables['message_list']['status'])) {
+    foreach ($variables['message_list']['status'] as $key => $message) {
+      if (strpos($message->__toString(), 'This content is now locked by you against simultaneous editing') !== FALSE) {
+        $variables['message_list']['status'][$key] = t('This content is locked against simultaneous editing. It will remain locked if you navigate away from this page without saving or unlocking it.');
+      }
+    }
+  }
+}

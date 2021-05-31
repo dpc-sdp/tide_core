@@ -1,0 +1,77 @@
+/**
+ * @file
+ * Enhancements for Paragraphs modal dialog.
+ */
+
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 800px;
+  max-width: 800px;
+}
+
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row {
+  flex: 0 0 auto;
+  padding: 5px 5px 5px 85px;
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  margin: 0.25rem;
+  width: calc(50% - 0.5rem);
+  box-sizing: border-box;
+  border-radius: 3px;
+  min-height: 90px;
+}
+
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row.button {
+  text-align: left;
+  font-weight: normal;
+}
+
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row .add-button input.button,
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row .add-button input.button:hover {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 0 0.5em;
+}
+
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row .description {
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+@media screen and (max-width: 800px) {
+  .paragraphs-add-dialog-enhanced {
+    width: auto !important;
+  }
+  .paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row {
+    width: calc(100% - 0.5rem);
+  }
+}
+
+@media screen and (max-height: 1024px) {
+  .paragraphs-add-dialog-enhanced {
+    max-height: 600px !important;
+  }
+  .paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list {
+    max-height: 600px;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .paragraphs-add-dialog-enhanced {
+    max-height: calc(100vh - 100px) !important;
+  }
+  .paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list {
+    max-height: calc(100vh - 100px);
+  }
+}
+
+@media screen and (min-height: 1200px) {
+  .paragraphs-add-dialog-enhanced {
+    max-height: 1024px !important;
+  }
+  .paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list {
+    max-height: 1024px;
+  }
+}

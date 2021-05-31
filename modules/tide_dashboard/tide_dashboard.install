@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Tide Dashboard install.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_install().
+ */
+function tide_dashboard_install($is_syncing) {
+  $role_permissions = [
+    'editor' => ['access workbench'],
+    'approver' => ['access workbench'],
+    'site_admin' => ['access workbench'],
+    'administrator' => ['access workbench'],
+  ];
+
+  $login_redirect = [];
+  $login_redirect_exist = \Drupal::moduleHandler()->moduleExists('login_redirect_per_role');
+  if ($login_redirect_exist) {
+    $login_redirect_config = \Drupal::configFactory()->getEditable('login_redirect_per_role.settings');
+    $login_redirect = $login_redirect_config->get('login');
+  }
+
+  foreach ($role_permissions as $role_id => $permissions) {
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = Role::load($role_id);
+    if ($role) {
+      foreach ($permissions as $permission) {
+        $role->grantPermission($permission);
+      }
+      $role->save();
+
+      $login_redirect[$role_id]['redirect_url'] = '/admin/workbench';
+      $login_redirect[$role_id]['allow_destination'] = FALSE;
+    }
+  }
+
+  if ($login_redirect_exist) {
+    $login_redirect_config->set('login', $login_redirect);
+    $login_redirect_config->save();
+  }
+
+  $system_site_config = \Drupal::configFactory()->getEditable('system.site');
+  $page = $system_site_config->get('page');
+  $page['front'] = '/user/login';
+  $system_site_config->set('page', $page);
+  $system_site_config->save();
+
+  $workbench_config = \Drupal::configFactory()->getEditable('workbench.settings');
+  $workbench_config->set('overview_left', 'tide_dashboard_current_user:empty');
+  $workbench_config->set('overview_right', 'tide_dashboard_current_user:empty');
+  $workbench_config->set('overview_main', 'tide_dashboard_my_content:overview');
+  $workbench_config->save();
+}

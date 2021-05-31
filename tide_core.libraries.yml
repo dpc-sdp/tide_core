@@ -10,3 +10,8 @@ ckeditor_stylesheets:
   css:
     theme:
       css/ckeditor_overrides.css: {}
+sticky_node_form_sidebar:
+  version: VERSION
+  css:
+    theme:
+      css/sticky_node_form_sidebar.css: {}

@@ -1,0 +1,9 @@
+paragraphs.enhanced_modal:
+  version: VERSION
+  css:
+    theme:
+      css/paragraphs.enhanced_modal.css: {}
+  js:
+    js/paragraphs.enhanced_modal.js: {}
+  dependencies:
+    - paragraphs/drupal.paragraphs.modal

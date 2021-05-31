@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_ui_restriction.module.
+ */
+
+/**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function tide_ui_restriction_menu_links_discovered_alter(&$links) {
+  if (isset($links['system.modules_list'])) {
+    unset($links['system.modules_list']);
+  }
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function tide_ui_restriction_local_tasks_alter(&$local_tasks) {
+  if (isset($local_tasks['system.modules_uninstall'])) {
+    unset($local_tasks['system.modules_uninstall']);
+  }
+}
