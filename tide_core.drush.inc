@@ -30,6 +30,11 @@ function tide_core_drush_command() {
  * Dispatches scheduled media releases.
  *
  * @deprecated in tide_core:2.0.5 and is removed tide_core:2.0.6
+ *    With a move to Drush 9+ the functionality provided by this function is now
+ *    accessible with the Drush command provided by Scheduled Transitions
+ *    module.
+ *
+ * @see https://github.com/dpc-sdp/tide_core/pull/220
  */
 function drush_tide_core_scheduled_transitions_queue_jobs() {
   @trigger_error('drush_tide_core_scheduled_transitions_queue_jobs() is deprecated in tide_core:2.0.5 and is removed tide_core:2.0.6. Use scheduled-transitions:queue-jobs.', E_USER_DEPRECATED);
