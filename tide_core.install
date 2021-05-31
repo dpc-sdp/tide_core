@@ -817,6 +817,9 @@ function tide_core_update_8031() {
 function tide_core_update_8032() {
   // Changes media view.
   $media_view = \Drupal::configFactory()->getEditable('views.view.media');
+  if ($media_view->isNew()) {
+    return;
+  }
   $display = $media_view->get('display');
   $display['default']['display_options']['fields']['changed']['settings']['date_format'] = 'custom';
   $display['default']['display_options']['fields']['changed']['settings']['custom_date_format'] = 'd/m/Y - H:i';
