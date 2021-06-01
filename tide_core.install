@@ -59,11 +59,14 @@ function tide_core_install() {
   // Update default Editorial workflow of Content Moderation.
   _tide_core_update_editorial_workflow();
 
+  $excluded = [
+    'tide_core_update_8015',
+  ];
   $functions = get_defined_functions();
   foreach ($functions['user'] as $function) {
     if (strpos($function, 'tide_core_update_') === 0) {
       // We don't want the tide_core_update_8015 to run during the CI.
-      if ($function == 'tide_core_update_8015') {
+      if (in_array($function, $excluded)) {
         continue;
       }
       call_user_func($function);
@@ -461,6 +464,9 @@ function tide_core_update_8018() {
   ];
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.scheduled_transitions');
+  if ($config->isNew()) {
+    return;
+  }
   // Update field labels/titles.
   foreach ($title_fields as $field) {
     $config->set($field, 'Scheduled update list');
@@ -811,6 +817,9 @@ function tide_core_update_8031() {
 function tide_core_update_8032() {
   // Changes media view.
   $media_view = \Drupal::configFactory()->getEditable('views.view.media');
+  if ($media_view->isNew()) {
+    return;
+  }
   $display = $media_view->get('display');
   $display['default']['display_options']['fields']['changed']['settings']['date_format'] = 'custom';
   $display['default']['display_options']['fields']['changed']['settings']['custom_date_format'] = 'd/m/Y - H:i';
