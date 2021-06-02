@@ -1,0 +1,3 @@
+admin lock content view:
+  title: 'Admin lock content view'
+  description: 'Users who have the permission could bypass Lock content view permission check.'
