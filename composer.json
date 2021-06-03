@@ -79,10 +79,10 @@
     "extra": {
         "patches": {
             "drupal/core": {
-                "Contextual links should not be added inside another link - https://www.drupal.org/node/2898875": "https://www.drupal.org/files/issues/2021-02-23/contextual_links_should-2898875-15.patch",
+                "Contextual links should not be added inside another link - https://www.drupal.org/node/2898875": "https://www.drupal.org/files/issues/2018-03-16/contextual_links_should-2898875-6.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
                 "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
-                "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485": "https://www.drupal.org/files/issues/2021-02-04/2693485-144.patch",
+                "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485#comment-11004325": "https://www.drupal.org/files/issues/2693485-node-3.patch",
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14068224": "https://www.drupal.org/files/issues/2021-04-21/refactor_xss_attributes-3109650-24.patch"
             },
@@ -96,7 +96,7 @@
                 "Unable to install if media is not yet installed - https://www.drupal.org/project/media_entity_audio/issues/2984336": "https://www.drupal.org/files/issues/2018-07-07/requirements-not-met-if-no-media-2984336-4.patch"
             },
             "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2021-02-22/metatag-data-type-support-2945817-112_0.patch"
+                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2019-01-18/computed_field_2945817_61.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
@@ -113,6 +113,7 @@
                 "scheduled_transitions module integration issue - https://www.drupal.org/project/permissions_by_term/issues/3065986#comment-13171384": "https://www.drupal.org/files/issues/2019-07-05/permissions_by_term-issue-3065986-D8.6.16.patch"
             },
             "drupal/password_policy": {
+                "Allow users to bypass validation when editing another user, and correct permission is set - https://www.drupal.org/project/password_policy/issues/2786315": "https://www.drupal.org/files/issues/2019-02-15/edit_other_users-2786315-38.patch",
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-13525843": "https://www.drupal.org/files/issues/2020-03-27/password_policy-move-password-validation-to-user-entity-2941526-8-D8.patch"
             },
             "drupal/scheduled_transitions": {
