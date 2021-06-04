@@ -96,9 +96,7 @@ function tide_edit_protection_form_views_exposed_form_alter(&$form, FormStateInt
     if (!empty($form['#id']) && $form['#id'] == 'views-exposed-form-tide-locked-content-page-1') {
       if (!empty($form['uid_current'])) {
         $form['uid_current']['#disabled'] = TRUE;
-        if (\Drupal::currentUser()
-            ->hasPermission('admin lock content view') || \Drupal::service('tide_site_restriction.helper')
-            ->canBypassRestriction(\Drupal::currentUser())) {
+        if (\Drupal::currentUser()->hasPermission('admin lock content view') || \Drupal::service('tide_site_restriction.helper')->canBypassRestriction(\Drupal::currentUser())) {
           $form['uid_current']['#disabled'] = FALSE;
         }
       }

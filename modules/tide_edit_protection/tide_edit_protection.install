@@ -52,7 +52,7 @@ function tide_edit_protection_update_8001() {
  * Adds node site filter to lock_content view.
  */
 function tide_edit_protection_update_8002() {
-  if (!\Drupal::moduleHandler()->moduleExists('tide_site_restriction')){
+  if (!\Drupal::moduleHandler()->moduleExists('tide_site_restriction')) {
     return;
   }
   $site_filter =
@@ -64,9 +64,7 @@ function tide_edit_protection_update_8002() {
       'group_type' => 'group',
       'admin_label' => '',
       'operator' => 'or',
-      'value' =>
-        [
-        ],
+      'value' => [],
       'group' => 1,
       'exposed' => TRUE,
       'expose' =>
@@ -77,9 +75,7 @@ function tide_edit_protection_update_8002() {
           'use_operator' => FALSE,
           'operator' => 'field_node_site_target_id_op',
           'operator_limit_selection' => FALSE,
-          'operator_list' =>
-            [
-            ],
+          'operator_list' => [],
           'identifier' => 'field_node_site_target_id',
           'required' => FALSE,
           'remember' => FALSE,
@@ -109,12 +105,8 @@ function tide_edit_protection_update_8002() {
           'multiple' => FALSE,
           'remember' => FALSE,
           'default_group' => 'All',
-          'default_group_multiple' =>
-            [
-            ],
-          'group_items' =>
-            [
-            ],
+          'default_group_multiple' => [],
+          'group_items' => [],
         ],
       'reduce_duplicates' => FALSE,
       'type' => 'select',
