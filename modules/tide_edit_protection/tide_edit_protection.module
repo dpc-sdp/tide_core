@@ -147,6 +147,9 @@ function tide_edit_protection_preprocess_status_messages(&$variables) {
 
 /**
  * Implements hook_entity_predelete().
+ *
+ * @todo Follows up
+ *   https://www.drupal.org/project/content_lock/issues/2951652#comment-12829088
  */
 function tide_edit_protection_entity_predelete(EntityInterface $entity) {
   \Drupal::service('content_lock')
