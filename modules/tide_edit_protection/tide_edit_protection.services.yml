@@ -1,6 +1,0 @@
-services:
-  tide_edit_protection.break_lock_on_rollback:
-    class: Drupal\tide_edit_protection\EventSubscriber\BreakLockOnRollback
-    arguments: ['@content_lock']
-    tags:
-      - { name: 'event_subscriber' }

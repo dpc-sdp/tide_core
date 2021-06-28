@@ -9,6 +9,8 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Implements hook_help().
@@ -141,4 +143,12 @@ function tide_edit_protection_preprocess_status_messages(&$variables) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_entity_predelete().
+ */
+function tide_edit_protection_entity_predelete(EntityInterface $entity) {
+  \Drupal::service('content_lock')
+    ->release($entity->id(), LanguageInterface::LANGCODE_NOT_SPECIFIED);
 }
