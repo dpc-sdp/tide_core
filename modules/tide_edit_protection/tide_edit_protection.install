@@ -30,6 +30,8 @@ function tide_edit_protection_install() {
   $contentTimeOutSettings->set('content_lock_timeout_minutes', '240');
   $contentTimeOutSettings->set('content_lock_timeout_on_edit', 1);
   $contentTimeOutSettings->save();
+  // Changes content_lock weight.
+  module_set_weight('content_lock', 1000);
 }
 
 /**
@@ -45,4 +47,11 @@ function tide_edit_protection_update_8001() {
   $contentTimeOutSettings->set('content_lock_timeout_minutes', '240');
   $contentTimeOutSettings->set('content_lock_timeout_on_edit', 1);
   $contentTimeOutSettings->save();
+}
+
+/**
+ * Changes content_lock weight.
+ */
+function tide_edit_protection_update_8002() {
+  module_set_weight('content_lock', 1000);
 }
