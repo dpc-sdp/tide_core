@@ -31,6 +31,8 @@ function tide_edit_protection_install() {
   $contentTimeOutSettings->set('content_lock_timeout_minutes', '240');
   $contentTimeOutSettings->set('content_lock_timeout_on_edit', 1);
   $contentTimeOutSettings->save();
+  // Changes content_lock weight.
+  module_set_weight('content_lock', 1000);
 }
 
 /**
@@ -49,9 +51,16 @@ function tide_edit_protection_update_8001() {
 }
 
 /**
- * Adds node site filter to lock_content view.
+ * Changes content_lock weight.
  */
 function tide_edit_protection_update_8002() {
+  module_set_weight('content_lock', 1000);
+}
+
+/**
+ * Adds node site filter to lock_content view.
+ */
+function tide_edit_protection_update_8003() {
   if (!\Drupal::moduleHandler()->moduleExists('tide_site_restriction')) {
     return;
   }
@@ -132,7 +141,7 @@ function tide_edit_protection_update_8002() {
 /**
  * Assign `admin lock content view` permission to approvers.
  */
-function tide_edit_protection_update_8003() {
+function tide_edit_protection_update_8004() {
   $approver = Role::load('approver');
   if ($approver) {
     $approver->grantPermission('admin lock content view');

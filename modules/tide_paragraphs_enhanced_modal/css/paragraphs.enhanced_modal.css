@@ -51,10 +51,10 @@
 
 @media screen and (max-height: 1024px) {
   .paragraphs-add-dialog-enhanced {
-    max-height: 600px !important;
+    max-height: 90vh !important;
   }
   .paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list {
-    max-height: 600px;
+    max-height: 85vh;
   }
 }
 

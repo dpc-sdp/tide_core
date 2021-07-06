@@ -61,6 +61,8 @@ function tide_core_install() {
 
   $excluded = [
     'tide_core_update_8015',
+    'tide_core_update_8038',
+    'tide_core_update_8043',
   ];
   $functions = get_defined_functions();
   foreach ($functions['user'] as $function) {
@@ -945,6 +947,9 @@ function tide_core_update_8038() {
   foreach ($configs as $config) {
     $editable_config = $config_factory->getEditable($config);
     $rows = $editable_config->get('settings.toolbar.rows.0');
+    if (!isset($rows)) {
+      continue;
+    }
     $updated_rows = [];
 
     foreach ($rows as $key => $row) {
@@ -1038,6 +1043,9 @@ function tide_core_update_8043() {
   foreach ($configs as $config) {
     $editable_config = $config_factory->getEditable($config);
     $rows = $editable_config->get('settings.toolbar.rows.0');
+    if (!isset($rows)) {
+      continue;
+    }
     $updated_rows = [];
 
     foreach ($rows as $key => $row) {
