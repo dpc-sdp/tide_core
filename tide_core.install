@@ -1194,7 +1194,7 @@ function tide_core_update_8050() {
   $img_src = str_replace($insecure_domains, '', $img_src);
   $style_src = str_replace($insecure_domains, '', $style_src);
 
-  // Clean up double spaces
+  // Clean up double spaces.
   $script_src = str_replace($double_space, ' ', $script_src);
   $img_src = str_replace($double_space, ' ', $img_src);
   $style_src = str_replace($double_space, ' ', $style_src);
