@@ -1184,6 +1184,7 @@ function tide_core_update_8050() {
     'cdn.jsdelivr.net',
     'cdnjs.cloudflare.com',
     'cdn.rawgit.com',
+    'raw.githubusercontent.com',
   ];
   $double_space = '  ';
   $script_src = $config->get('seckit_xss.csp.script-src');
