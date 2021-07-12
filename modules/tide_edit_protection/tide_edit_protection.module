@@ -9,6 +9,9 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\ViewExecutable;
+use Drupal\user\Entity\User;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Implements hook_help().
@@ -94,10 +97,22 @@ function tide_edit_protection_form_views_exposed_form_alter(&$form, FormStateInt
   if (\Drupal::moduleHandler()->moduleExists('tide_site_restriction')) {
     if (!empty($form['#id']) && $form['#id'] == 'views-exposed-form-tide-locked-content-page-1') {
       if (!empty($form['uid_current'])) {
-        if (!\Drupal::service('tide_site_restriction.helper')
-          ->canBypassRestriction(\Drupal::currentUser())) {
-          $form['uid_current']['#disabled'] = TRUE;
+        $form['uid_current']['#disabled'] = TRUE;
+        if (\Drupal::currentUser()->hasPermission('admin lock content view') || \Drupal::service('tide_site_restriction.helper')->canBypassRestriction(\Drupal::currentUser())) {
+          $form['uid_current']['#disabled'] = FALSE;
         }
+      }
+    }
+    if (!empty($form['#id']) && $form['#id'] === 'views-exposed-form-tide-locked-content-page-1') {
+      if (!empty($form['field_node_site_target_id']['#multiple'])) {
+        $form['field_node_site_target_id']['#type'] = 'select2';
+        $form['field_node_site_target_id']['#select2'] = [
+          'allowClear' => TRUE,
+          'dropdownAutoWidth' => FALSE,
+          'width' => 'resolve',
+          'closeOnSelect' => FALSE,
+          'placeholder' => t('- Any -'),
+        ];
       }
     }
   }
@@ -117,6 +132,19 @@ function tide_edit_protection_views_pre_view(ViewExecutable $view, $display_id, 
           $filters['uid_current']['value'] = 1;
           $filters['uid_current']['expose']['required'] = TRUE;
           $view->display_handler->setOption('filters', $filters);
+        }
+      }
+      if (!empty($filters['field_node_site_target_id'])) {
+        $filters['field_node_site_target_id']['expose']['multiple'] = TRUE;
+        $view->display_handler->setOption('filters', $filters);
+        if (!$user_can_bypass_restriction) {
+          $user = User::load(\Drupal::currentUser()->id());
+          $user_sites = $site_restriction_helper->getUserSites($user);
+          $exposed_input = $view->getExposedInput();
+          if (!empty($user_sites) && empty($exposed_input)) {
+            $exposed_input['field_node_site_target_id'] = $user_sites;
+            $view->setExposedInput($exposed_input);
+          }
         }
       }
     }
@@ -141,4 +169,15 @@ function tide_edit_protection_preprocess_status_messages(&$variables) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_entity_predelete().
+ *
+ * @todo Follows up
+ *   https://www.drupal.org/project/content_lock/issues/2951652#comment-12829088
+ */
+function tide_edit_protection_entity_predelete(EntityInterface $entity) {
+  \Drupal::service('content_lock')
+    ->release($entity->id(), LanguageInterface::LANGCODE_NOT_SPECIFIED);
 }

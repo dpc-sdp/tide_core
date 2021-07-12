@@ -8,6 +8,7 @@ dependencies:
     - user.role.previewer
     - user.role.site_admin
   module:
+    - tide_site
     - content_lock
     - content_lock_timeout
     - tide_edit_protection
@@ -708,6 +709,59 @@ display:
             group_items: {  }
           entity_type: user
           plugin_id: user_current
+        field_node_site_target_id:
+          id: field_node_site_target_id
+          table: node__field_node_site
+          field: field_node_site_target_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: or
+          value: { }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_node_site_target_id_op
+            label: Sites
+            description: ''
+            use_operator: false
+            operator: field_node_site_target_id_op
+            operator_limit_selection: false
+            operator_list: { }
+            identifier: field_node_site_target_id
+            required: false
+            remember: false
+            multiple: true
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              approver: '0'
+              site_admin: '0'
+              editor: '0'
+              previewer: '0'
+              event_author: '0'
+              grant_author: '0'
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: { }
+            group_items: { }
+          reduce_duplicates: false
+          type: select
+          limit: true
+          vid: sites
+          hierarchy: true
+          error_message: true
+          plugin_id: taxonomy_index_tid
       sorts:
         created:
           id: created

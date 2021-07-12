@@ -4,6 +4,7 @@ description: Extends Node Edit Protection module to provide custom functions
 core: 8.x
 package: tide
 dependencies:
+  - tide_site:tide_site
   - content_lock:content_lock
   - content_lock_timeout:content_lock_timeout
 config_devel:

@@ -48,6 +48,7 @@ dependencies:
   - events_log_track:event_log_track_workflows
   - fakeobjects:fakeobjects
   - fast_404:fast404
+  - link_field_autocomplete_filter:link_field_autocomplete_filter
   - linkit:linkit
   - login_redirect_per_role:login_redirect_per_role
   - m4032404:m4032404
@@ -62,9 +63,9 @@ dependencies:
   - pathauto:pathauto
   - redirect:redirect
   - role_delegation:role_delegation
-  - simple_sitemap:simple_sitemap
   - seckit:seckit
   - simple_sitemap:simple_sitemap
+  - tablefield:tablefield
   - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value
