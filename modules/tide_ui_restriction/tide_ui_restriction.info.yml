@@ -1,5 +1,12 @@
-name: Tide ui restriction
+name: Tide UI restriction
 type: module
 description: Admin UI restriction
 core: 8.x
 package: tide
+dependencies:
+  - config_perms:config_perms
+  - tide_core:tide_core
+config_devel:
+  install:
+    - config_perms.custom_perms_entity.administer_custom_block_types
+  optional: {  }

@@ -1,0 +1,6 @@
+tide_ui_restriction.event_log_track.report_form:
+  title: 'Events Log Track'
+  parent: entity.user.collection
+  description: 'Get report about cud operation performed by the user on the website.'
+  weight: 100
+  route_name: event_log_track.report_form

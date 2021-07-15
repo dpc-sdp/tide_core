@@ -22,3 +22,30 @@ function tide_ui_restriction_local_tasks_alter(&$local_tasks) {
     unset($local_tasks['system.modules_uninstall']);
   }
 }
+
+/**
+ * Implements hook_admin_config_access_check_exclude().
+ */
+function tide_ui_restriction_admin_config_access_check_exclude($path) : bool {
+  // Exclude URL Aliases and Redirects from _admin_config_access_check.
+  $paths = [
+    '/admin/config/search',
+    '/admin/config/search/path',
+    '/admin/config/search/redirect',
+  ];
+  if (in_array($path, $paths, TRUE)) {
+    return TRUE;
+  }
+
+  $prefixes = [
+    '/admin/config/search/path/',
+    '/admin/config/search/redirect/',
+  ];
+  foreach ($prefixes as $prefix) {
+    if (strpos($path, $prefix) === 0) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}

@@ -22,6 +22,7 @@
         "drupal/ckeditor_liststyle": "^1.4",
         "drupal/clamav": "^1.1",
         "drupal/config_ignore": "^2.1",
+        "drupal/config_perms": "^2.0",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
         "drupal/core": "8.9.x",
