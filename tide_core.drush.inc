@@ -27,15 +27,6 @@ function tide_core_drush_command() {
 }
 
 /**
- * Disabiling some warning rule check.
- * phpcs:disable Drupal.Commenting.Deprecated.DeprecatedVersionFormat
- * phpcs:disable Drupal.Commenting.Deprecated.DeprecatedWrongSeeUrlFormat
- * phpcs:disable Drupal.Semantics.FunctionTriggerError.TriggerErrorVersion
- * phpcs:disable Drupal.Semantics.FunctionTriggerError.TriggerErrorVersion
- * phpcs:disable Drupal.Semantics.FunctionTriggerError.TriggerErrorSeeUrlFormat
- */
-
-/**
  * Dispatches scheduled media releases.
  *
  * @deprecated in tide_core:2.0.5 and is removed from tide_core:2.0.6.
@@ -51,5 +42,3 @@ function drush_tide_core_scheduled_transitions_queue_jobs() {
   $jobs->jobCreator();
   drush_print(dt('Scheduled transitions queued.'));
 }
-
-/* phpcs:enable */
