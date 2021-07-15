@@ -1173,3 +1173,36 @@ function tide_core_update_8049() {
     $node_type->save();
   }
 }
+
+/**
+ * Remove insecure domains from SecKit policies.
+ */
+function tide_core_update_8050() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('seckit.settings');
+  $insecure_domains = [
+    'cdn.jsdelivr.net',
+    'cdnjs.cloudflare.com',
+    'cdn.rawgit.com',
+    'raw.githubusercontent.com',
+  ];
+  $double_space = '  ';
+  $script_src = $config->get('seckit_xss.csp.script-src');
+  $img_src = $config->get('seckit_xss.csp.img-src');
+  $style_src = $config->get('seckit_xss.csp.style-src');
+
+  $script_src = str_replace($insecure_domains, '', $script_src);
+  $img_src = str_replace($insecure_domains, '', $img_src);
+  $style_src = str_replace($insecure_domains, '', $style_src);
+
+  // Clean up double spaces.
+  $script_src = str_replace($double_space, ' ', $script_src);
+  $img_src = str_replace($double_space, ' ', $img_src);
+  $style_src = str_replace($double_space, ' ', $style_src);
+
+  $config->set('seckit_xss.csp.script-src', $script_src);
+  $config->set('seckit_xss.csp.img-src', $img_src);
+  $config->set('seckit_xss.csp.style-src', $style_src);
+
+  $config->save();
+}
