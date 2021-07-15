@@ -1206,3 +1206,37 @@ function tide_core_update_8050() {
 
   $config->save();
 }
+
+/**
+ * Updated previewer role.
+ */
+function tide_core_update_8043(&$sandbox) {
+  // Add new permission to previewer role.
+  $permissions = ['bypass site restriction'];
+  user_role_grant_permissions('previewer', $permissions);
+  
+  // Revoke previewer permission from all users.
+  $results = \Drupal::entityQuery('user')
+    ->condition('roles', 'previewer')
+    ->execute();
+  if (!empty($results)) {
+    $users = \Drupal::entityTypeManager()->getStorage('user')
+      ->loadMultiple($results);
+
+    // Remove previewer role in batches.
+    if (!isset($sandbox['total'])) {
+      $sandbox['total'] = count($users);
+      $sandbox['processed'] = 0;
+      $sandbox['#finished'] = 0;
+    }
+    $batch_size = 10;
+    $batch = array_slice($users, 0, $batch_size);
+    foreach ($batch as $user) {
+      $user->removeRole('previewer');
+      $user->save();
+      $sandbox['processed']++;
+    }
+    $sandbox['#finished'] = $sandbox['total'] ? $sandbox['processed'] / $sandbox['total'] : 1;
+    $sandbox['#finished'] = $sandbox['#finished'] > 1 ? 1 : $sandbox['#finished'];
+  }
+}
