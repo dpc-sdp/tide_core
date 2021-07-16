@@ -53,6 +53,12 @@ function tide_core_install() {
     ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
     ->save(TRUE);
 
+  // Change timezone to Australia/Melbourne.
+  \Drupal::configFactory()
+    ->getEditable('system.date')
+    ->set('timezone.default', 'Australia/Melbourne')
+    ->save(TRUE);
+
   // Creates terms for Topic vocabulary.
   _tide_core_create_topic_terms();
 
