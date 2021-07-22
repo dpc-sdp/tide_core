@@ -21,7 +21,12 @@ function tide_workflow_notification_install() {
   }
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('queue_mail.settings');
-  $config->set('queue_mail_keys', 'tide_workflow_notification_*');
+  $mail_keys = $config->get('queue_mail_keys');
+  if (!\Drupal::service('path.matcher')
+    ->matchPath('tide_workflow_notification_*', $mail_keys)) {
+    $mail_keys .= "\r\ntide_workflow_notification_*";
+    $config->set('queue_mail_keys', $mail_keys);
+  }
   $config->set('threshold', '1');
   $config->set('requeue_interval', '0');
   $config->save();
