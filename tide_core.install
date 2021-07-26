@@ -50,7 +50,7 @@ function tide_core_install() {
   // Restrict user registration to admin role creation.
   \Drupal::configFactory()
     ->getEditable('user.settings')
-    ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
+    ->set('register', UserInterface::REGISTER_ADMINISTRATORS_ONLY)
     ->save(TRUE);
 
   // Creates terms for Topic vocabulary.
@@ -312,37 +312,38 @@ function tide_core_update_8008() {
 
 /**
  * Create pathauto pattern for Taxonomy terms.
+ * @todo This hook doesn't work with Drupal 9 or Drush 10.
  */
 function tide_core_update_8009() {
-  if (!PathautoPattern::load('taxonomy_term')) {
-    $pattern = PathautoPattern::create([
-      'id' => 'taxonomy_term',
-      'label' => 'Taxonomy term',
-      'type' => 'canonical_entities:taxonomy_term',
-      'pattern' => '[term:vocabulary:machine-name]/[term:name]',
-      'weight' => 0,
-    ]);
-    $pattern->save();
-  }
-
-  $batch = [
-    'title' => 'Bulk updating Term URL aliases',
-    'operations' => [
-      ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
-      [
-        'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
-        [
-          'canonical_entities:taxonomy_term',
-          'all',
-        ],
-      ],
-    ],
-    'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
-    'progressive' => FALSE,
-  ];
-
-  batch_set($batch);
-  batch_process();
+//  if (!PathautoPattern::load('taxonomy_term')) {
+//    $pattern = PathautoPattern::create([
+//      'id' => 'taxonomy_term',
+//      'label' => 'Taxonomy term',
+//      'type' => 'canonical_entities:taxonomy_term',
+//      'pattern' => '[term:vocabulary:machine-name]/[term:name]',
+//      'weight' => 0,
+//    ]);
+//    $pattern->save();
+//  }
+//
+//  $batch = [
+//    'title' => 'Bulk updating Term URL aliases',
+//    'operations' => [
+//      ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
+//      [
+//        'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
+//        [
+//          'canonical_entities:taxonomy_term',
+//          'all',
+//        ],
+//      ],
+//    ],
+//    'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
+//    'progressive' => FALSE,
+//  ];
+//
+//  batch_set($batch);
+//  batch_process();
 }
 
 /**

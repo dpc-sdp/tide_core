@@ -35,15 +35,13 @@ use Drupal\paragraphs\Entity\ParagraphsType;
 function _tide_read_config($id, array $locations = [], $prioritise_sync = TRUE) {
   static $storages;
 
-  global $config_directories;
-
   if (!$prioritise_sync) {
     // CONFIG_SYNC has lower priority.
-    array_push($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
+    array_push($locations, Settings::get('config_sync_directory'));
   }
   else {
     // CONFIG_SYNC has top priority.
-    array_unshift($locations, $config_directories[CONFIG_SYNC_DIRECTORY]);
+    array_unshift($locations, Settings::get('config_sync_directory'));
   }
 
   foreach ($locations as $path) {
@@ -117,6 +115,7 @@ function _tide_import_single_config($config_name, array $locations = [], $priori
   $module_installer = \Drupal::service('module_installer');
   $theme_handler = \Drupal::service('theme_handler');
   $string_translation = \Drupal::service('string_translation');
+  $module_extension_list = \Drupal::service('extension.list.module');
 
   \Drupal::config($config_name);
 
@@ -126,7 +125,6 @@ function _tide_import_single_config($config_name, array $locations = [], $priori
   $storage_comparer = new StorageComparer(
     $source_storage,
     $config_storage,
-    $config_manager
   );
 
   $storage_comparer->createChangelist();
@@ -140,7 +138,8 @@ function _tide_import_single_config($config_name, array $locations = [], $priori
     $module_handler,
     $module_installer,
     $theme_handler,
-    $string_translation
+    $string_translation,
+    $module_extension_list
   );
 
   try {

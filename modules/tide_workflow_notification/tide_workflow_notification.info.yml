@@ -2,7 +2,7 @@ name: Tide Workflow Notification
 description: Functionality to send notifications upon workflow state changes.
 type: module
 package: Tide
-core: 8.x
+core_version_requirement: ^8.9 || ^9
 dependencies:
   - queue_mail:queue_mail
 config_devel:
