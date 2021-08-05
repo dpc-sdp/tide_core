@@ -1240,3 +1240,19 @@ function tide_core_update_8050() {
 
   $config->save();
 }
+
+/**
+ * Make user creation require admin approval.
+ */
+function tide_core_update_8051() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  // Restrict user registration to admin role creation.
+  \Drupal::configFactory()
+    ->getEditable('user.settings')
+    ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
+    ->save(TRUE);
+}
