@@ -1,0 +1,7 @@
+name: Tide Inactive Users Management
+type: module
+package: Tide
+core_version_requirement: ^8.9 || ^9
+dependencies:
+  - tide_core:tide_core
+  - block_inactive_users:block_inactive_users
