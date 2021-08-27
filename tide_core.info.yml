@@ -75,6 +75,7 @@ dependencies:
   - wysiwyg_template:wysiwyg_template_core
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
+  - block_inactive_users:block_inactive_users
 themes:
   - seven
 config_devel:
