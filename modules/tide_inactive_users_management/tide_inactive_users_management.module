@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains tide_inactive_users_management.module.
+ */
+
+/**
  * Implements hook_module_implements_alter().
  */
 function tide_inactive_users_management_module_implements_alter(&$implementations, $hook) {
