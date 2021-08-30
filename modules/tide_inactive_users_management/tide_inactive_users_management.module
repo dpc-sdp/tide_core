@@ -5,6 +5,8 @@
  * Contains tide_inactive_users_management.module.
  */
 
+use Drupal\user\UserInterface;
+
 /**
  * Implements hook_module_implements_alter().
  */
@@ -12,4 +14,12 @@ function tide_inactive_users_management_module_implements_alter(&$implementation
   if ($hook == 'cron') {
     unset($implementations['block_inactive_users']);
   }
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function tide_inactive_users_management_user_login(UserInterface $account) {
+  // Try to remove the key/value if user logged in.
+  \Drupal::keyValue('tide_inactive_users_management')->delete($account->id());
 }

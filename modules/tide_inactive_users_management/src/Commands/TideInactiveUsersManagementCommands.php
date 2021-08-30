@@ -92,12 +92,23 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
         $current_time = time();
         if ($last_access != 0 && !$user->hasRole('administrator')) {
           if ($this->blockUserhandler->timestampdiff($last_access, $current_time) >= $this->idleTime) {
-            $this->sendingEmail($user);
+            // Ensure the email only send once.
+            if (!\Drupal::keyValue('tide_inactive_users_management')
+              ->get($user->id())) {
+              $this->sendingEmail($user);
+              \Drupal::keyValue('tide_inactive_users_management')
+                ->set($user->id(), TRUE);
+            }
           }
         }
         if ($this->includeNeverAccessed == 1 && $last_access == 0) {
           if ($this->blockUserhandler->timestampdiff($user->getCreatedTime(), $current_time) >= $this->idleTime) {
-            $this->sendingEmail($user);
+            if (!\Drupal::keyValue('tide_inactive_users_management')
+              ->get($user->id())) {
+              $this->sendingEmail($user);
+              \Drupal::keyValue('tide_inactive_users_management')
+                ->set($user->id(), TRUE);
+            }
           }
         }
       }
@@ -120,12 +131,16 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
           if ($this->blockUserhandler->timestampdiff($last_access, $current_time) >= $this->idleTime + 1) {
             $user->block();
             $user->save();
+            \Drupal::keyValue('tide_inactive_users_management')
+              ->delete($user->id());
           }
         }
         if ($this->includeNeverAccessed == 1 && $last_access == 0) {
           if ($this->blockUserhandler->timestampdiff($user->getCreatedTime(), $current_time) >= $this->idleTime + 1) {
             $user->block();
             $user->save();
+            \Drupal::keyValue('tide_inactive_users_management')
+              ->delete($user->id());
           }
         }
       }
