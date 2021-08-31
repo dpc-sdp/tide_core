@@ -5,6 +5,7 @@ namespace Drupal\tide_inactive_users_management\Commands;
 use Drupal\block_inactive_users\InactiveUsersHandler;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 
@@ -65,9 +66,16 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
   protected $config;
 
   /**
+   * QueueInterface.
+   *
+   * @var \Drupal\Core\Queue\QueueInterface
+   */
+  protected $queue;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $configFactory, InactiveUsersHandler $handler, LoggerChannelFactory $logger) {
+  public function __construct(ConfigFactoryInterface $configFactory, InactiveUsersHandler $handler, LoggerChannelFactory $logger, QueueFactory $queueFactory) {
     parent::__construct();
     $this->config = $configFactory;
     $this->blockUserhandler = $handler;
@@ -76,6 +84,7 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
     $this->idleTime = $this->blockInactiveUsers->get('block_inactive_users_idle_time');
     $this->includeNeverAccessed = $this->blockInactiveUsers->get('block_inactive_users_include_never_accessed');
     $this->excludeUserRoles = $this->blockInactiveUsers->get('block_inactive_users_exclude_roles');
+    $this->queue = $queueFactory->get('tide_inactive_users_management_queue');
   }
 
   /**
@@ -95,9 +104,9 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
             // Ensure the email only send once.
             if (!\Drupal::keyValue('tide_inactive_users_management')
               ->get($user->id())) {
-              $this->sendingEmail($user);
-              \Drupal::keyValue('tide_inactive_users_management')
-                ->set($user->id(), TRUE);
+              $item = new \stdClass();
+              $item->uid = $user->id();
+              $this->queue->createItem($item);
             }
           }
         }
@@ -105,9 +114,9 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
           if ($this->blockUserhandler->timestampdiff($user->getCreatedTime(), $current_time) >= $this->idleTime) {
             if (!\Drupal::keyValue('tide_inactive_users_management')
               ->get($user->id())) {
-              $this->sendingEmail($user);
-              \Drupal::keyValue('tide_inactive_users_management')
-                ->set($user->id(), TRUE);
+              $item = new \stdClass();
+              $item->uid = $user->id();
+              $this->queue->createItem($item);
             }
           }
         }
@@ -122,26 +131,15 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
    * @aliases inactive-block
    */
   public function block() {
-    $users = $this->getUsers();
-    if ($users) {
-      foreach ($users as $user) {
-        $last_access = $user->getLastLoginTime();
-        $current_time = time();
-        if ($last_access != 0 && !$user->hasRole('administrator')) {
-          if ($this->blockUserhandler->timestampdiff($last_access, $current_time) >= $this->idleTime + 1) {
-            $user->block();
-            $user->save();
-            \Drupal::keyValue('tide_inactive_users_management')
-              ->delete($user->id());
-          }
-        }
-        if ($this->includeNeverAccessed == 1 && $last_access == 0) {
-          if ($this->blockUserhandler->timestampdiff($user->getCreatedTime(), $current_time) >= $this->idleTime + 1) {
-            $user->block();
-            $user->save();
-            \Drupal::keyValue('tide_inactive_users_management')
-              ->delete($user->id());
-          }
+    $tide_inactive_users_management_results = \Drupal::keyValue('tide_inactive_users_management');
+    if ($times = $tide_inactive_users_management_results->getAll()) {
+      foreach ($times as $uid => $time) {
+        $user = User::load($uid);
+        if ($user && time() > $time) {
+          $user->block();
+          $user->save();
+          \Drupal::keyValue('tide_inactive_users_management')
+            ->delete($user->id());
         }
       }
     }
@@ -160,25 +158,6 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
       return User::loadMultiple($user_ids);
     }
     return [];
-  }
-
-  /**
-   * Helper function to send emails.
-   */
-  public function sendingEmail(User $user, $sendmail = TRUE) {
-    $this->logger->info($user->getAccountName() . ' has been notified.');
-    $url = \Drupal::request()->getHost();
-    if ($sendmail) {
-      $this->blockUserhandler->mailUser($this->blockInactiveUsers
-        ->get('block_inactive_users_from_email'),
-        $user->getEmail(), $user->getAccountName(),
-        $this->blockInactiveUsers
-          ->get('block_inactive_users_email_subject'),
-        $this->blockInactiveUsers
-          ->get('block_inactive_users_email_content'),
-        $url);
-    }
-    return $user;
   }
 
 }

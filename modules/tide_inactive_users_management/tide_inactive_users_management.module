@@ -6,6 +6,8 @@
  */
 
 use Drupal\user\UserInterface;
+use Drupal\user\Entity\User;
+use Drupal\block_inactive_users\InactiveUsersHandler;
 
 /**
  * Implements hook_module_implements_alter().
@@ -22,4 +24,27 @@ function tide_inactive_users_management_module_implements_alter(&$implementation
 function tide_inactive_users_management_user_login(UserInterface $account) {
   // Try to remove the key/value if user logged in.
   \Drupal::keyValue('tide_inactive_users_management')->delete($account->id());
+}
+
+/**
+ * Helper function to send emails.
+ */
+function tide_inactive_users_management_sending_email(User $user, $sendmail = TRUE) {
+  $logger = Drupal::service('logger.factory')
+    ->get(InactiveUsersHandler::LOGGER_CHANNEL);
+  $blockUserhandler = Drupal::service('block_inactive_users.deactivate_users');
+  $config = \Drupal::configFactory()->get(InactiveUsersHandler::FORM_SETTINGS_CONFIG_OBJ_NAME);
+  $logger->info($user->getAccountName() . ' has been notified.');
+  $url = \Drupal::request()->getHost();
+  if ($sendmail) {
+    $blockUserhandler->mailUser($config
+      ->get('block_inactive_users_from_email'),
+      $user->getEmail(), $user->getAccountName(),
+      $config
+        ->get('block_inactive_users_email_subject'),
+      $config
+        ->get('block_inactive_users_email_content'),
+      $url);
+  }
+  return $user;
 }
