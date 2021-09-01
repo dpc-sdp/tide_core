@@ -148,3 +148,17 @@ function tide_edit_protection_update_8004() {
     $approver->save();
   }
 }
+
+/**
+ * Updates uid_current form label.
+ */
+function tide_edit_protection_update_8005() {
+  $config = Drupal::configFactory()
+    ->getEditable('views.view.tide_locked_content');
+  $options = $config->get('display');
+  if (isset($options['default']['display_options']['filters']['uid_current']['expose']['label'])) {
+    $options['default']['display_options']['filters']['uid_current']['expose']['label'] = 'Is the user logged in right now?';
+    $config->set('display', $options);
+    $config->save();
+  }
+}

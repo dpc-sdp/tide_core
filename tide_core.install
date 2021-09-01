@@ -416,6 +416,9 @@ function tide_core_update_8015() {
   if (\Drupal::moduleHandler()->moduleExists('clamav')) {
     $config_factory = \Drupal::configFactory();
     $config = $config_factory->getEditable('clamav.settings');
+    if ($config->isNew()) {
+      return;
+    }
     $config->set('scan_mode', 0);
     $config->set('mode_daemon_tcpip.hostname', 'clamav.sdp-central-clamav-master.svc.cluster.local');
     $config->save();
@@ -488,40 +491,42 @@ function tide_core_update_8019() {
   $base_states = 'type_settings.states.';
   $base_transitions = 'type_settings.transitions.';
   $config = $config_factory->getEditable('workflows.workflow.editorial');
+  if (!$config->isNew()) {
 
-  $from_fields = [
-    'archive.from',
-    'archived_published.from',
-    'create_new_draft.from',
-    'needs_review.from',
-  ];
+    $from_fields = [
+      'archive.from',
+      'archived_published.from',
+      'create_new_draft.from',
+      'needs_review.from',
+    ];
 
-  foreach ($from_fields as $field) {
-    $form_value = [];
-    $form_value = $config->get($base_transitions . $field);
-    $form_value[] = 'archive_pending';
-    $config->set($base_transitions . $field, $form_value);
+    foreach ($from_fields as $field) {
+      $form_value = [];
+      $form_value = $config->get($base_transitions . $field);
+      $form_value[] = 'archive_pending';
+      $config->set($base_transitions . $field, $form_value);
+    }
+
+    $config->set($base_states . 'archive_pending', [
+      'label' => 'Archive pending',
+      'published' => FALSE,
+      'default_revision' => FALSE,
+      'weight' => -6,
+    ]);
+
+    $config->set($base_transitions . 'archive_pending', [
+      'label' => 'Archive pending',
+      'from' => [
+        'draft',
+        'published',
+        'needs_review',
+      ],
+      'to' => 'archive_pending',
+      'weight' => -11,
+    ]);
+
+    $config->save();
   }
-
-  $config->set($base_states . 'archive_pending', [
-    'label' => 'Archive pending',
-    'published' => FALSE,
-    'default_revision' => FALSE,
-    'weight' => -6,
-  ]);
-
-  $config->set($base_transitions . 'archive_pending', [
-    'label' => 'Archive pending',
-    'from' => [
-      'draft',
-      'published',
-      'needs_review',
-    ],
-    'to' => 'archive_pending',
-    'weight' => -11,
-  ]);
-
-  $config->save();
 
   // Updating the tide_workflow_notification.
   $notification_status = [
@@ -544,36 +549,40 @@ function tide_core_update_8019() {
 
   if (\Drupal::moduleHandler()->moduleExists('tide_workflow_notification')) {
     $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
+    if (!$config_notification->isNew()) {
 
-    // Update existing email template to fix link issue SDPSUP-1309.
-    foreach ($notification_status as $status) {
-      $current_status_message = $config_notification->get()['notifications'][$status]['message'];
-      $updated_status_message = str_replace($current_string, $replacement_string, $current_status_message);
-      $config_notification->set('notifications.' . $status . '.message', $updated_status_message);
+      // Update existing email template to fix link issue SDPSUP-1309.
+      foreach ($notification_status as $status) {
+        $current_status_message = $config_notification->get()['notifications'][$status]['message'];
+        $updated_status_message = str_replace($current_string,
+          $replacement_string, $current_status_message);
+        $config_notification->set('notifications.' . $status . '.message',
+          $updated_status_message);
+      }
+
+      // Add new email templates SDPA-3781.
+      foreach ($notification_fields as $field) {
+        $status = '';
+        if ($field == 'draft_archive_pending') {
+          $status = 'Draft';
+        }
+        if ($field == 'needs_review_archive_pending') {
+          $status = 'Needs Review';
+        }
+        if ($field == 'published_archive_pending') {
+          $status = 'Published';
+        }
+        $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+        $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
+
+        $config_notification->set('notifications.' . $field, [
+          'enabled' => 1,
+          'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
+          'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
+        ]);
+      }
+      $config_notification->save();
     }
-
-    // Add new email templates SDPA-3781.
-    foreach ($notification_fields as $field) {
-      $status = '';
-      if ($field == 'draft_archive_pending') {
-        $status = 'Draft';
-      }
-      if ($field == 'needs_review_archive_pending') {
-        $status = 'Needs Review';
-      }
-      if ($field == 'published_archive_pending') {
-        $status = 'Published';
-      }
-      $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
-      $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
-
-      $config_notification->set('notifications.' . $field, [
-        'enabled' => 1,
-        'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
-        'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
-      ]);
-    }
-    $config_notification->save();
   }
 
   // Add required permissions.
@@ -621,6 +630,9 @@ function tide_core_update_8022() {
   ];
   foreach ($fields as $field) {
     $config = $config_factory->getEditable($field);
+    if ($config->isNew()) {
+      continue;
+    }
     $config->set('required', TRUE);
     $config->save();
   }
@@ -690,6 +702,9 @@ function tide_core_update_8025() {
 function tide_core_update_8026() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.scheduled_transitions');
+  if ($config->isNew()) {
+    return;
+  }
 
   // Update empty View results.
   $config->set('display.default.display_options.empty.area.content.format', 'plain_text');
@@ -725,7 +740,10 @@ function tide_core_update_8028() {
   $config_factory = \Drupal::configFactory();
   foreach ($unsupported_actions as $action) {
     if ($config_storage->read($action)) {
-      $config_factory->getEditable($action)->delete();
+      $config = $config_factory->getEditable($action);
+      if (!$config->isNew()) {
+        $config->delete();
+      }
     }
   }
 }
@@ -805,6 +823,9 @@ function tide_core_update_8031() {
   ];
   foreach ($filter_ids as $filter_id) {
     $filter = $config_factory->getEditable($filter_id);
+    if ($filter->isNew()) {
+      continue;
+    }
     $value = $filter->get('filters.filter_html.settings.allowed_html');
     $replaced = str_replace('<td>', '<td colspan rowspan align class>', $value);
     $replaced = str_replace('<th>', '<th colspan rowspan align class>', $replaced);
@@ -834,6 +855,9 @@ function tide_core_update_8032() {
 function tide_core_update_8033() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
+  if ($config->isNew()) {
+    return;
+  }
   $config->set('cardinality', 2);
   $config->save();
 }
@@ -946,6 +970,9 @@ function tide_core_update_8038() {
   ];
   foreach ($configs as $config) {
     $editable_config = $config_factory->getEditable($config);
+    if ($editable_config->isNew()) {
+      continue;
+    }
     $rows = $editable_config->get('settings.toolbar.rows.0');
     if (!isset($rows)) {
       continue;
@@ -982,6 +1009,10 @@ function tide_core_update_8039() {
   ];
   foreach ($filter_ids as $filter_id) {
     $filter = $config_factory->getEditable($filter_id);
+    if ($filter->isNew()) {
+      continue;
+    }
+
     $value = $filter->get('filters.filter_html.settings.allowed_html');
     $replaced = str_replace('<ol start type class>', '<ol start type style class>', $value);
     $replaced = str_replace('<ul type class>', '<ul type style class>', $replaced);
@@ -1042,6 +1073,9 @@ function tide_core_update_8043() {
   ];
   foreach ($configs as $config) {
     $editable_config = $config_factory->getEditable($config);
+    if ($editable_config->isNew()) {
+      continue;
+    }
     $rows = $editable_config->get('settings.toolbar.rows.0');
     if (!isset($rows)) {
       continue;
@@ -1205,4 +1239,20 @@ function tide_core_update_8050() {
   $config->set('seckit_xss.csp.style-src', $style_src);
 
   $config->save();
+}
+
+/**
+ * Make user creation require admin approval.
+ */
+function tide_core_update_8051() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  // Restrict user registration to admin role creation.
+  \Drupal::configFactory()
+    ->getEditable('user.settings')
+    ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
+    ->save(TRUE);
 }

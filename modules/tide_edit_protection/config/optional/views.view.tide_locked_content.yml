@@ -677,7 +677,7 @@ display:
           exposed: true
           expose:
             operator_id: ''
-            label: 'Is the logged in user'
+            label: 'Is the user logged in right now?'
             description: ''
             use_operator: false
             operator: uid_current_op
