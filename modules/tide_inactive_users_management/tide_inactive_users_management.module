@@ -8,6 +8,7 @@
 use Drupal\user\UserInterface;
 use Drupal\user\Entity\User;
 use Drupal\block_inactive_users\InactiveUsersHandler;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_module_implements_alter().
@@ -15,6 +16,34 @@ use Drupal\block_inactive_users\InactiveUsersHandler;
 function tide_inactive_users_management_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'cron') {
     unset($implementations['block_inactive_users']);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function tide_inactive_users_management_cron() {
+  $config = \Drupal::configFactory()->get('tide_block_inactive_users.settings');
+  if ($config->get('cron') === TRUE) {
+    \Drupal::service('tide_inactive_users_management.commands')->notify();
+    \Drupal::service('tide_inactive_users_management.commands')->block();
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_inactive_users_management_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id === 'tide_block_inactive_users_settings') {
+    unset($form['actions']['block_inactive_users_update']);
+  }
+  if ($form_id === 'block_inactive_users_settings') {
+    $route_name = \Drupal::routeMatch()->getRouteName();
+    if ($route_name === 'block_inactive_users.settings') {
+      if (isset($form['users_settings']['block_inactive_users_idle_time']['#description'])) {
+        $form['users_settings']['block_inactive_users_idle_time']['#description'] = t('Notify inactive users.');
+      }
+    }
   }
 }
 
@@ -30,9 +59,9 @@ function tide_inactive_users_management_user_login(UserInterface $account) {
  * Helper function to send emails.
  */
 function tide_inactive_users_management_sending_email(User $user, $sendmail = TRUE) {
-  $logger = Drupal::service('logger.factory')
+  $logger = \Drupal::service('logger.factory')
     ->get(InactiveUsersHandler::LOGGER_CHANNEL);
-  $blockUserhandler = Drupal::service('block_inactive_users.deactivate_users');
+  $blockUserhandler = \Drupal::service('block_inactive_users.deactivate_users');
   $config = \Drupal::configFactory()->get(InactiveUsersHandler::FORM_SETTINGS_CONFIG_OBJ_NAME);
   $logger->info($user->getAccountName() . ' has been notified.');
   $url = \Drupal::request()->getHost();
