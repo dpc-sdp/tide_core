@@ -1266,7 +1266,10 @@ function tide_core_update_8052() {
     $auditor_role = Role::create([
       'id' => 'site_auditor',
       'label' => 'Site Auditor',
-      'permissions' => ['access admin audit trail'],
+      'permissions' => [
+        'access admin audit trail', 
+        'access site reports',
+      ],
     ]);
     $auditor_role->save();
   }
