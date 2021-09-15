@@ -1263,6 +1263,6 @@ function tide_core_update_8051() {
   // Restrict user registration to admin role creation.
   \Drupal::configFactory()
     ->getEditable('user.settings')
-    ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
+    ->set('register', UserInterface::REGISTER_ADMINISTRATORS_ONLY)
     ->save(TRUE);
 }
