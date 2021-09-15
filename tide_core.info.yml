@@ -182,3 +182,4 @@ config_devel:
     - system.action.pathauto_update_alias_user
     - user.role.administrator
     - user.role.anonymous
+    - views.view.enhanced_files

@@ -29,6 +29,15 @@ function tide_core_install() {
   $user->roles[] = 'administrator';
   $user->save();
 
+  // Try to disable views.view.files.
+  try {
+    $config = \Drupal::configFactory()->getEditable('views.view.files');
+    $config->set('status', FALSE);
+    $config->save();
+  } catch (Exception $e) {
+    watchdog_exception('tide_core', $e);
+  }
+
   // Override default Plain Text format from Core.
   try {
     $plain_text = FilterFormat::load('plain_text');
@@ -1101,7 +1110,7 @@ function tide_core_update_8043() {
  */
 function tide_core_update_8044() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
   $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
   $storage = \Drupal::entityTypeManager()->getStorage('view');
   if ($storage->load('enhanced_files') == NULL) {
