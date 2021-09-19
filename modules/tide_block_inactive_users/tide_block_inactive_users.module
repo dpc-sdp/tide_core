@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains tide_inactive_users_management.module.
+ * Contains tide_block_inactive_users.module.
  */
 
 use Drupal\user\UserInterface;
@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Implements hook_module_implements_alter().
  */
-function tide_inactive_users_management_module_implements_alter(&$implementations, $hook) {
+function tide_block_inactive_users_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'cron') {
     unset($implementations['block_inactive_users']);
   }
@@ -22,7 +22,7 @@ function tide_inactive_users_management_module_implements_alter(&$implementation
 /**
  * Implements hook_cron().
  */
-function tide_inactive_users_management_cron() {
+function tide_block_inactive_users_cron() {
   $config = \Drupal::configFactory()->get('tide_block_inactive_users.settings');
   if ($config->get('cron') === TRUE) {
     \Drupal::service('tide_inactive_users_management.commands')->notify();
@@ -33,7 +33,7 @@ function tide_inactive_users_management_cron() {
 /**
  * Implements hook_form_alter().
  */
-function tide_inactive_users_management_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function tide_block_inactive_users_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if ($form_id === 'tide_block_inactive_users_settings') {
     unset($form['actions']['block_inactive_users_update']);
   }
@@ -50,7 +50,7 @@ function tide_inactive_users_management_form_alter(&$form, FormStateInterface $f
 /**
  * Implements hook_user_login().
  */
-function tide_inactive_users_management_user_login(UserInterface $account) {
+function tide_block_inactive_users_user_login(UserInterface $account) {
   // Try to remove the key/value if user logged in.
   \Drupal::keyValue('tide_inactive_users_management')->delete($account->id());
 }
@@ -58,7 +58,7 @@ function tide_inactive_users_management_user_login(UserInterface $account) {
 /**
  * Helper function to send emails.
  */
-function tide_inactive_users_management_sending_email(User $user, $sendmail = TRUE) {
+function _tide_inactive_users_management_sending_email(User $user, $sendmail = TRUE) {
   $logger = \Drupal::service('logger.factory')
     ->get(InactiveUsersHandler::LOGGER_CHANNEL);
   $blockUserhandler = \Drupal::service('block_inactive_users.deactivate_users');

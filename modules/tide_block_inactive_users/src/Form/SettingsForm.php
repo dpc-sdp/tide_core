@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_inactive_users_management\Form;
+namespace Drupal\tide_block_inactive_users\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 /**
  * Class SettingsForm.
  *
- * @package Drupal\tide_inactive_users_management\Form
+ * @package Drupal\tide_block_inactive_users\Form
  */
 class SettingsForm extends ConfigFormBase {
 

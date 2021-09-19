@@ -9,8 +9,5 @@ tide_block_inactive_users.settings:
       type: boolean
       label: 'Cron run setting'
     time_unit:
-      type: sequence
+      type: text
       label: 'Time Unit'
-      sequence:
-        type: string
-        label: 'Time Unit'

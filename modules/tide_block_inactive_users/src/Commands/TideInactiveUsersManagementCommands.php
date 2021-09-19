@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_inactive_users_management\Commands;
+namespace Drupal\tide_block_inactive_users\Commands;
 
 use Drupal\block_inactive_users\InactiveUsersHandler;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -12,7 +12,7 @@ use Drush\Commands\DrushCommands;
 /**
  * Class TideInactiveUsersManagementCommands.
  *
- * @package Drupal\tide_inactive_users_management\Commands
+ * @package Drupal\tide_block_inactive_users\Commands
  */
 class TideInactiveUsersManagementCommands extends DrushCommands {
 
@@ -84,13 +84,13 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
     $this->idleTime = $this->blockInactiveUsers->get('block_inactive_users_idle_time');
     $this->includeNeverAccessed = $this->blockInactiveUsers->get('block_inactive_users_include_never_accessed');
     $this->excludeUserRoles = $this->blockInactiveUsers->get('block_inactive_users_exclude_roles');
-    $this->queue = $queueFactory->get('tide_inactive_users_management_queue');
+    $this->queue = $queueFactory->get('tide_block_inactive_users_queue');
   }
 
   /**
    * Notifies users.
    *
-   * @command tide_inactive_users_management:notify
+   * @command tide_block_inactive_users:notify
    * @aliases inactive-notify
    */
   public function notify() {
@@ -127,7 +127,7 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
   /**
    * Block users.
    *
-   * @command tide_inactive_users_management:block
+   * @command tide_block_inactive_users:block
    * @aliases inactive-block
    */
   public function block() {

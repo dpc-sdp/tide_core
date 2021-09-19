@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_inactive_users_management\Plugin\QueueWorker;
+namespace Drupal\tide_block_inactive_users\Plugin\QueueWorker;
 
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\user\Entity\User;
@@ -9,7 +9,7 @@ use Drupal\user\Entity\User;
  * A queue work on CRON run.
  *
  * @QueueWorker(
- *   id = "tide_inactive_users_management_queue",
+ *   id = "tide_block_inactive_users_queue",
  *   title = @Translation("Inactive users records"),
  *   cron = {"time" = 60}
  * )
@@ -24,7 +24,7 @@ class InactiveRecordsQueue extends QueueWorkerBase {
     if ($user) {
       if (!\Drupal::keyValue('tide_inactive_users_management')
         ->get($user->id())) {
-        tide_inactive_users_management_sending_email($user);
+        _tide_inactive_users_management_sending_email($user);
         $current_time = time();
         $block_time = strtotime('+1 month', $current_time);
         $config = \Drupal::configFactory()

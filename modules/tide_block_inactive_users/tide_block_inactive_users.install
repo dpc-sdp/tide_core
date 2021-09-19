@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Tide Block Inactive Users.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_block_inactive_users_uninstall() {
+  \Drupal::configFactory()->getEditable('tide_block_inactive_users.settings')->delete();
+}
