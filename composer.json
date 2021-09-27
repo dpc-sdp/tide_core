@@ -209,7 +209,7 @@
                 "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
                 "Content types are ordered by machine name on node/add - https://www.drupal.org/project/drupal/issues/2693485": "https://www.drupal.org/files/issues/2021-02-04/2693485-144.patch",
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
-                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14068224": "https://www.drupal.org/files/issues/2021-04-21/refactor_xss_attributes-3109650-24.patch"
+                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14220629": "https://www.drupal.org/files/issues/2021-09-16/refactor_xss_attributes-3109650-42.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
