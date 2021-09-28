@@ -69,3 +69,13 @@ function tide_oauth_form_simple_oauth_authorize_form_alter(&$form, FormStateInte
 
   $form['submit']['#value'] = t('Grant access');
 }
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function tide_oauth_module_implements_alter(&$implementations, $hook) {
+  $destination = \Drupal::service('redirect.destination')->get();
+  if (strpos($destination, '/oauth/authorize') !== false) {
+    unset($implementations['login_redirect_per_role']);
+  }
+}
