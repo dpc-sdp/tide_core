@@ -67,6 +67,7 @@ dependencies:
   - seckit:seckit
   - simple_sitemap:simple_sitemap
   - tablefield:tablefield
+  - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value
   - views_menu_children_filter:views_menu_children_filter
