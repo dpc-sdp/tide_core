@@ -79,6 +79,7 @@ function tide_oauth_module_implements_alter(&$implementations, $hook) {
   }
   $destination = \Drupal::service('redirect.destination')->get();
   if (strpos($destination, '/oauth/authorize') !== FALSE) {
+    \Drupal::service('page_cache_kill_switch')->trigger();
     unset($implementations['login_redirect_per_role']);
   }
 }
