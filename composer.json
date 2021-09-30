@@ -198,11 +198,6 @@
                     "composer/installers": "~1.0"
                 }
             }
-        },
-        "drupal/token_conditions": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/token_conditions"
         }
     },
     "extra": {
