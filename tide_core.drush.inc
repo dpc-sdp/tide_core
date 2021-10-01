@@ -19,6 +19,7 @@ function tide_core_drush_help($section) {
  * Implements hook_drush_command().
  */
 function tide_core_drush_command() {
+  $commands = [];
   $commands['tide-core-scheduled-transitions-queue-jobs'] = [
     'description' => dt('Drush 8 wrapper for the Drush 9 Scheduled transitions queuing Drush command.'),
   ];

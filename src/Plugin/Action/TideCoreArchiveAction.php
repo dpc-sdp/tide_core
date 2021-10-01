@@ -3,7 +3,7 @@
 namespace Drupal\tide_core\Plugin\Action;
 
 /**
- * Class TideCoreArchiveAction.
+ * Class TideCoreArchiveAction defines the archive action.
  *
  * @Action(
  *   id = "tide_core_archive_action",

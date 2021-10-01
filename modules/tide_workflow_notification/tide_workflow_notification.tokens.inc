@@ -11,6 +11,7 @@ use Drupal\Core\Render\BubbleableMetadata;
  * Implements hook_token_info().
  */
 function tide_workflow_notification_token_info() {
+  $types = [];
   $types['workflow-notification:recipient'] = [
     'name' => t('Workflow Notification Recipient'),
     'description' => t('Tokens related to Workflow Notification recipient.'),

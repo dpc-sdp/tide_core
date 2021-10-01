@@ -7,7 +7,6 @@
 
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\paragraphs\Entity\ParagraphsType;
-use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\User;
 use Drupal\workflows\Entity\Workflow;
@@ -34,7 +33,8 @@ function tide_core_install() {
     $config = \Drupal::configFactory()->getEditable('views.view.files');
     $config->set('status', FALSE);
     $config->save();
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     watchdog_exception('tide_core', $e);
   }
 
@@ -205,6 +205,7 @@ function _tide_core_update_editorial_workflow() {
  * Implements hook_update_dependencies().
  */
 function tide_core_update_dependencies() {
+  $dependencies = [];
   $dependencies['tide_core'][8007] = ['system' => 8805];
   $dependencies['tide_core'][8016] = ['system' => 8805];
 
@@ -321,38 +322,37 @@ function tide_core_update_8008() {
 
 /**
  * Create pathauto pattern for Taxonomy terms.
+ *
  * @todo This hook doesn't work with Drupal 9 or Drush 10.
  */
 function tide_core_update_8009() {
-//  if (!PathautoPattern::load('taxonomy_term')) {
-//    $pattern = PathautoPattern::create([
-//      'id' => 'taxonomy_term',
-//      'label' => 'Taxonomy term',
-//      'type' => 'canonical_entities:taxonomy_term',
-//      'pattern' => '[term:vocabulary:machine-name]/[term:name]',
-//      'weight' => 0,
-//    ]);
-//    $pattern->save();
-//  }
-//
-//  $batch = [
-//    'title' => 'Bulk updating Term URL aliases',
-//    'operations' => [
-//      ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
-//      [
-//        'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
-//        [
-//          'canonical_entities:taxonomy_term',
-//          'all',
-//        ],
-//      ],
-//    ],
-//    'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
-//    'progressive' => FALSE,
-//  ];
-//
-//  batch_set($batch);
-//  batch_process();
+  // If (!PathautoPattern::load('taxonomy_term')) {
+  // $pattern = PathautoPattern::create([
+  // 'id' => 'taxonomy_term',
+  // 'label' => 'Taxonomy term',
+  // 'type' => 'canonical_entities:taxonomy_term',
+  // 'pattern' => '[term:vocabulary:machine-name]/[term:name]',
+  // 'weight' => 0,
+  // ]);
+  // $pattern->save();
+  // }
+  // $batch = [
+  // 'title' => 'Bulk updating Term URL aliases',
+  // 'operations' => [
+  // ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
+  // [
+  // 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
+  // [
+  // 'canonical_entities:taxonomy_term',
+  // 'all',
+  // ],
+  // ],
+  // ],
+  // 'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
+  // 'progressive' => FALSE,
+  // ];
+  // batch_set($batch);
+  // batch_process();
 }
 
 /**
@@ -547,8 +547,14 @@ function tide_core_update_8019() {
     'published_archived',
   ];
 
-  $current_string = ['([node:url])', '(https://www.vic.gov.au/how-publish-content-vicgovau).'];
-  $replacement_string = [' - [node:url]', ' https://www.vic.gov.au/how-publish-content-vicgovau'];
+  $current_string = [
+    '([node:url])',
+    '(https://www.vic.gov.au/how-publish-content-vicgovau).',
+  ];
+  $replacement_string = [
+    ' - [node:url]',
+    ' https://www.vic.gov.au/how-publish-content-vicgovau',
+  ];
 
   $notification_fields = [
     'draft_archive_pending',
@@ -946,6 +952,7 @@ function tide_core_update_8035() {
  * Approver, site_admin and editor should access to `summary_text` text format.
  */
 function tide_core_update_8036() {
+  $permissions = [];
   $roles = ['approver', 'site_admin', 'editor'];
   $permissions[] = 'use text format summary_text';
   foreach ($roles as $role) {

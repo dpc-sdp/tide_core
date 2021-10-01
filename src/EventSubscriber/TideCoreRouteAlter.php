@@ -6,7 +6,7 @@ use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class TideCoreRouteAlter.
+ * Provides functionality to alter core route and path.
  *
  * @package Drupal\tide_core
  */

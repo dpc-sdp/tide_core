@@ -9,6 +9,7 @@
  * Implements hook_drush_command().
  */
 function tide_oauth_drush_command() {
+  $commands = [];
   $commands['tide-oauth-keygen'] = [
     'description' => 'Generate OAuth keys from environment variables',
     'drupal dependencies' => ['tide_oauth'],

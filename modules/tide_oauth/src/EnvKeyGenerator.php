@@ -8,7 +8,7 @@ use Drupal\simple_oauth\Service\Filesystem\FileSystemChecker;
 use Drupal\simple_oauth\Service\KeyGeneratorService;
 
 /**
- * Class EnvKeyGenerator.
+ * Class EnvKeyGenerator generates the environment key.
  *
  * @package Drupal\tide_oauth
  */
