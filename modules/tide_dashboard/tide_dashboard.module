@@ -29,3 +29,14 @@ function tide_dashboard_toolbar_alter(&$items) {
 function _tide_dashboard_workbench_content_title_callback() {
   return t('Dashboard');
 }
+
+/**
+ * Implements hook_user_login().
+ */
+function tide_dashboard_user_login($account) {
+  $destination = \Drupal::service('redirect.destination')->get();
+  if (!(strpos($destination, '/oauth/authorize') !== FALSE)) {
+    $request = \Drupal::service('request_stack')->getCurrentRequest();
+    $request->query->set('destination', '/admin/workbench');
+  }
+}
