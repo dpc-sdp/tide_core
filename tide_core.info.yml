@@ -50,7 +50,6 @@ dependencies:
   - fast_404:fast404
   - link_field_autocomplete_filter:link_field_autocomplete_filter
   - linkit:linkit
-  - login_redirect_per_role:login_redirect_per_role
   - m4032404:m4032404
   - maxlength:maxlength
   - media_entity_audio:media_entity_audio
