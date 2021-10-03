@@ -61,5 +61,5 @@ function tide_dashboard_install($is_syncing) {
  * Uninstall Login Redirect per Role.
  */
 function tide_dashboard_update_8001() {
-  $module_installer = \Drupal::service('module_installer')->uninstall(['login_redirect_per_role']);
+  \Drupal::service('module_installer')->uninstall(['login_redirect_per_role']);
 }
