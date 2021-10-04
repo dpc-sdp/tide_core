@@ -40,6 +40,12 @@ function tide_block_inactive_users_form_alter(&$form, FormStateInterface $form_s
   if ($form_id === 'block_inactive_users_settings') {
     $route_name = \Drupal::routeMatch()->getRouteName();
     if ($route_name === 'block_inactive_users.settings') {
+      if (isset($form['actions']['block_inactive_users_update'])) {
+        $form['actions']['block_inactive_users_update']['#access'] = FALSE;
+      }
+      if (isset($form['email_settings']['block_inactive_users_send_email'])) {
+        $form['email_settings']['block_inactive_users_send_email']['#access'] = FALSE;
+      }
       if (isset($form['users_settings']['block_inactive_users_idle_time']['#description'])) {
         $form['users_settings']['block_inactive_users_idle_time']['#description'] = t('Notify inactive users.');
       }

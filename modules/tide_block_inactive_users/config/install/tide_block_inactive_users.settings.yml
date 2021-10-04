@@ -1,3 +1,3 @@
 idle_time: '1'
 cron: true
-time_unit: week
+time_unit: month
