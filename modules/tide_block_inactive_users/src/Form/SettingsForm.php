@@ -83,7 +83,7 @@ class SettingsForm extends ConfigFormBase {
       '#required' => TRUE,
       '#type' => 'number',
       '#attributes' => [
-        'min' => 0,
+        'min' => 1,
       ],
       '#default_value' => $config->get('idle_time'),
       '#description' => $this->t('How long do you want to wait to block inactive users, after sent notifications.'),

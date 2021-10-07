@@ -43,8 +43,14 @@ function tide_block_inactive_users_form_alter(&$form, FormStateInterface $form_s
       if (isset($form['actions']['block_inactive_users_update'])) {
         $form['actions']['block_inactive_users_update']['#access'] = FALSE;
       }
+      if (isset($form['users_settings']['block_inactive_users_idle_time']['#attributes'])) {
+        $form['users_settings']['block_inactive_users_idle_time']['#attributes']['min'] = 1;
+      }
       if (isset($form['email_settings']['block_inactive_users_send_email'])) {
         $form['email_settings']['block_inactive_users_send_email']['#access'] = FALSE;
+        $form['email_settings']['block_inactive_users_from_email']['#required'] = TRUE;
+        $form['email_settings']['block_inactive_users_email_subject']['#required'] = TRUE;
+        $form['email_settings']['block_inactive_users_email_content']['#required'] = TRUE;
       }
       if (isset($form['users_settings']['block_inactive_users_idle_time']['#description'])) {
         $form['users_settings']['block_inactive_users_idle_time']['#description'] = t('Notify inactive users.');
