@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_jira.module.
+ */
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_jira_node_presave(NodeInterface $node) {
+  \Drupal::service('tide_jira.jira_api')->createTicketFromNodeParameters($node);
+}

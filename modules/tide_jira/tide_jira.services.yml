@@ -1,0 +1,4 @@
+services:
+  tide_jira.jira_api:
+    class: Drupal\tide_jira\JiraAPI
+    arguments: [ '@jira_rest_wrapper_service' ]

@@ -37,6 +37,7 @@
         "drupal/fast_404": "^1.0-alpha4",
         "drupal/field_group": "^3.1",
         "drupal/google_analytics": "^2.3",
+        "drupal/jira_rest": "^4.0@beta",
         "drupal/hotjar": "^1.2",
         "drupal/linkit": "5.0-beta9",
         "drupal/login_redirect_per_role": "^1.7",
