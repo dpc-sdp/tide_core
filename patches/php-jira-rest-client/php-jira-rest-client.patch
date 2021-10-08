@@ -1,0 +1,28 @@
+diff --git a/src/User/UserService.php.old b/src/User/UserService.php
+index 6592105b..a13c76bc 100644
+--- a/src/User/UserService.php.old
++++ b/src/User/UserService.php
+@@ -156,6 +156,23 @@ public function findUsersByQuery($paramArray)
+         return $users;
+     }
+ 
++    public function findUserByEmail($email)
++    {
++
++      $ret = $this->exec($this->uri.'/search?query='.$email, null);
++
++      $this->log->info("Result=\n".$ret);
++
++      $userData = json_decode($ret);
++
++      $user = $this->json_mapper->map(
++        $userData[0],
++        new User(),
++      );
++
++      return $user;
++    }
++
+     /**
+      * Delete a User.
+      *

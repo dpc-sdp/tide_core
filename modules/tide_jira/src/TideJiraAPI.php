@@ -3,26 +3,15 @@
 namespace Drupal\tide_jira;
 
 use Drupal\node\NodeInterface;
-use JiraRestApi\Issue\IssueField;
 use Drupal\jira_rest\JiraRestWrapperService;
+use JiraRestApi\Issue\IssueField;
 
-class JiraAPI {
+class TideJiraAPI {
 
   private $jira_rest_wrapper_service;
-  private $user_list;
 
   public function __construct(JiraRestWrapperService $jira_rest_wrapper_service) {
     $this->jira_rest_wrapper_service = $jira_rest_wrapper_service;
-
-    // This should be queried from the JIRA API
-    $this->user_list = [
-      'administrator1.test@example.com' => 'qm:65dc928f-4371-4874-a86e-2398b4bdc099:d4f24b8a-ae25-49d4-8a89-f14cd27b2aff',
-      'administrator2.test@example.com' => 'qm:65dc928f-4371-4874-a86e-2398b4bdc099:972803c0-31a3-4436-b951-b12a30d2464d',
-      'approver1.test@example.com' => 'qm:65dc928f-4371-4874-a86e-2398b4bdc099:097cafeb-f961-4a91-9dbf-85b47f809ccc',
-      'approver2.test@example.com' => 'qm:65dc928f-4371-4874-a86e-2398b4bdc099:ec892f92-898a-4086-ba24-dd22f6b666dd',
-      'editor1.test@example.com' => 'qm:65dc928f-4371-4874-a86e-2398b4bdc099:c1db908a-0499-4aad-a11f-873c3b4cae57',
-      'editor2.test@example.com' => 'qm:65dc928f-4371-4874-a86e-2398b4bdc099:84a5be1e-6396-459c-9fa7-e4970dcd26cd',
-    ];
   }
 
   public function createTicketFromNodeParameters(NodeInterface $node) {
@@ -36,7 +25,13 @@ class JiraAPI {
     }
     $author = $this->getAuthorInfo($node);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
-    $this->createTicket($summary, $author['email'], $description);
+    $this->createTicket($summary, $author['email'], $author['account_id'], $description);
+  }
+
+  private function getJiraAccountIdByEmail($email) {
+    $us = $this->jira_rest_wrapper_service->getUserService();
+    $user = $us->findUserByEmail('editor1.test@example.com');
+    return $user->accountId;
   }
 
   private function getRevisionInfo(NodeInterface $node) {
@@ -53,25 +48,26 @@ class JiraAPI {
   private function getAuthorInfo (NodeInterface $node) {
     return [
       'email' => $node->getRevisionUser()->getEmail(),
+      'account_id' => $this->getJiraAccountIdByEmail($node->getRevisionUser()->getEmail()),
       'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
       'department' => $node->getRevisionUser()->get('field_department_agency')->value,
     ];
   }
 
-  private function createTicket($title, $email, $description) {
+  private function createTicket($title, $email, $account_id, $description) {
     $issueField = new IssueField();
     $issueField->setProjectKey("SFP")
       ->setSummary($title)
       ->setIssueType("Service Request")
       ->setReporterName($email)
-      ->setReporterAccountId($this->user_list[$email])
+      ->setReporterAccountId($account_id)
       ->setDescription($description);
 
     // CAUTION
     // HANDLE JIRA API ERRORS PROPERLY
     $link = $this->jira_rest_wrapper_service->getIssueService()->create($issueField);
     $link = print_r($link, TRUE);
-    \Drupal::logger('tide_jira')->info($link);
+    \Drupal::logger('vicgovau')->info($link);
   }
 
   private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date){

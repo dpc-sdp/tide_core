@@ -76,7 +76,8 @@
         "drupal/token": "^1.7",
         "drupal/username_enumeration_prevention": "^1.1",
         "drupal/quick_node_clone": "^1.13",
-        "drupal/content_lock": "^2.2"
+        "drupal/content_lock": "^2.2",
+        "lesstif/php-jira-rest-client": "^1.37"
     },
     "repositories": {
         "drupal": {
@@ -264,6 +265,12 @@
             },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
+            },
+            "drupal/jira_rest": {
+                "Add wrapper for UserService object": "patches/jira_rest/jira_rest.patch"
+            },
+            "lesstif/php-jira-rest-client": {
+                "Add function to lookup user by email": "patches/php-jira-rest-client/php-jira-rest-client.patch"
             }
         }
     }
