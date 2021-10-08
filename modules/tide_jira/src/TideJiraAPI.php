@@ -30,7 +30,7 @@ class TideJiraAPI {
 
   private function getJiraAccountIdByEmail($email) {
     $us = $this->jira_rest_wrapper_service->getUserService();
-    $user = $us->findUserByEmail('editor1.test@example.com');
+    $user = $us->findUserByEmail($email);
     return $user->accountId;
   }
 
