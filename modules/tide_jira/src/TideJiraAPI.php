@@ -5,6 +5,7 @@ namespace Drupal\tide_jira;
 use Drupal\node\NodeInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
+use Drupal\Core\Cache\CacheBackendInterface;
 
 class TideJiraAPI {
 
@@ -25,13 +26,34 @@ class TideJiraAPI {
     }
     $author = $this->getAuthorInfo($node);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
-    $this->createTicket($summary, $author['email'], $author['account_id'], $description);
+    $ticket = $this->createTicket($summary, $author['email'], $author['account_id'], $description);
+    \Drupal::messenger()->addMessage(t('A content support request has been generated for you. Ref: ' . $ticket));
+  }
+
+  private function getUserCid($email) {
+    return 'tide_jira:jira_account_id:' . sha1($email);
   }
 
   private function getJiraAccountIdByEmail($email) {
-    $us = $this->jira_rest_wrapper_service->getUserService();
-    $user = $us->findUserByEmail($email);
-    return $user->accountId;
+    if($cache = \Drupal::cache('data')->get($this->getUserCid($email))) {
+      \Drupal::messenger()->addMessage(t('Cache HIT cid '. $this->getUserCid($email)));
+      return $cache->data['account_id'];
+    } else {
+      \Drupal::messenger()->addMessage(t('Cache MISS cid '. $this->getUserCid($email)));
+      $us = $this->jira_rest_wrapper_service->getUserService();
+      $user = $us->findUserByEmail($email);
+
+      $cached_data = [
+        'account_id' => $user->accountId,
+      ];
+      \Drupal::cache('data')
+        ->set($this->getUserCid($email),
+          $cached_data,
+          CacheBackendInterface::CACHE_PERMANENT,
+          ['tide_jira:jira_account_ids']
+        );
+      return $user->accountId;
+    }
   }
 
   private function getRevisionInfo(NodeInterface $node) {
@@ -66,8 +88,7 @@ class TideJiraAPI {
     // CAUTION
     // HANDLE JIRA API ERRORS PROPERLY
     $link = $this->jira_rest_wrapper_service->getIssueService()->create($issueField);
-    $link = print_r($link, TRUE);
-    \Drupal::logger('vicgovau')->info($link);
+    return $link->key;
   }
 
   private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date){
