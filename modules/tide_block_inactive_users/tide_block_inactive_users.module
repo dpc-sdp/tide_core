@@ -68,24 +68,52 @@ function tide_block_inactive_users_user_login(UserInterface $account) {
 }
 
 /**
+ * Implements hook_mail().
+ */
+function tide_block_inactive_users_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'inactive_users':
+      $message['from'] = $params['from'];
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+  }
+}
+
+/**
  * Helper function to send emails.
  */
-function _tide_inactive_users_management_sending_email(User $user, $sendmail = TRUE) {
+function _tide_inactive_users_management_sending_email(User $user) {
+  // Settings.
   $logger = \Drupal::service('logger.factory')
     ->get(InactiveUsersHandler::LOGGER_CHANNEL);
-  $blockUserhandler = \Drupal::service('block_inactive_users.deactivate_users');
-  $config = \Drupal::configFactory()->get(InactiveUsersHandler::FORM_SETTINGS_CONFIG_OBJ_NAME);
-  $logger->info($user->getAccountName() . ' has been notified.');
+  $config = \Drupal::configFactory()
+    ->get(InactiveUsersHandler::FORM_SETTINGS_CONFIG_OBJ_NAME);
   $url = \Drupal::request()->getHost();
-  if ($sendmail) {
-    $blockUserhandler->mailUser($config
-      ->get('block_inactive_users_from_email'),
-      $user->getEmail(), $user->getAccountName(),
-      $config
-        ->get('block_inactive_users_email_subject'),
-      $config
-        ->get('block_inactive_users_email_content'),
-      $url);
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'tide_block_inactive_users';
+  $key = 'inactive_users';
+  $from = $config->get('block_inactive_users_from_email');
+  $to = $user->getEmail();
+  $body = $config->get('block_inactive_users_email_content');
+  $subject = $config->get('block_inactive_users_email_subject');
+  $system_site_config = \Drupal::configFactory()->get('system.site');
+  $site_name = $system_site_config->get('name');
+  // Logs mails.
+  $logger->info($user->getAccountName() . ' has been notified.');
+  $tring_to_replace = [
+    '[account-name]' => $user->getAccountName(),
+    '[site-name]' => $site_name,
+    '[activation-link]' => $url,
+  ];
+  foreach ($tring_to_replace as $k => $value) {
+    $body = str_replace($k, $value, $body);
   }
-  return $user;
+  $params['message'] = $body;
+  $params['subject'] = $subject;
+  $params['from'] = $from;
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+  $send = TRUE;
+  // Sending.
+  $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 }
