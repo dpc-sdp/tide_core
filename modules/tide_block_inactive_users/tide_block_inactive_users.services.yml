@@ -1,0 +1,6 @@
+services:
+  tide_inactive_users_management.commands:
+    class: \Drupal\tide_block_inactive_users\Commands\TideInactiveUsersManagementCommands
+    arguments: ['@config.factory','@block_inactive_users.deactivate_users','@logger.factory','@queue' ]
+    tags:
+      - { name: drush.command }

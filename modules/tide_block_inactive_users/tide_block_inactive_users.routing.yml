@@ -1,0 +1,7 @@
+tide_block_inactive_users.block_user_settings:
+  path: '/admin/config/people/block_inactive_users/block_user_settings'
+  defaults:
+    _form: '\Drupal\tide_block_inactive_users\Form\SettingsForm'
+    _title:  'Block user settings'
+  requirements:
+    _permission: 'administer site configuration'
