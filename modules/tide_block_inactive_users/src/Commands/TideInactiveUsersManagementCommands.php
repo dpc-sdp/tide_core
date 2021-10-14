@@ -10,7 +10,7 @@ use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class TideInactiveUsersManagementCommands.
+ * Defines the drush commands for TideInactiveUsersManagementCommands.
  *
  * @package Drupal\tide_block_inactive_users\Commands
  */

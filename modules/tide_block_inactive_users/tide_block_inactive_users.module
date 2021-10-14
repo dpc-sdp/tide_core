@@ -109,6 +109,7 @@ function _tide_inactive_users_management_sending_email(User $user) {
   foreach ($tring_to_replace as $k => $value) {
     $body = str_replace($k, $value, $body);
   }
+  $params = [];
   $params['message'] = $body;
   $params['subject'] = $subject;
   $params['from'] = $from;

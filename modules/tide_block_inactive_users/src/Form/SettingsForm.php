@@ -9,7 +9,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
- * Class SettingsForm.
+ * Provides the settings form.
  *
  * @package Drupal\tide_block_inactive_users\Form
  */
