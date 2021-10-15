@@ -18,6 +18,8 @@ use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_views_data().
@@ -419,4 +421,24 @@ function tide_core_node_access(NodeInterface $node, $op, AccountInterface $accou
     }
   }
   return AccessResult::neutral()->addCacheableDependency($node);
+}
+
+/**
+ * Implements hook_system_breadcrumb_alter().
+ *
+ * @todo Follow up with the issue.
+ * @see https://www.drupal.org/project/drupal/issues/3220437
+ */
+function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+  if (!empty($breadcrumb)) {
+    $links = $breadcrumb->getLinks();
+    $route = $route_match->getRouteName();
+    if (isset($links[1]) && !empty($route)) {
+      $link = $links[1]->getUrl()->toString();
+      $routes = ['entity.node.delete_form', 'entity.node.version_history', 'entity.node.entity_hierarchy_reorder', 'entity.node.scheduled_transitions', 'entity.share_link_token.node_collection'];
+      if (in_array($route , $routes) && $link = '/node') {
+        $links[1]->setText('Node');
+      }
+    }
+  }
 }
