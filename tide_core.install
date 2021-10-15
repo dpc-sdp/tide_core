@@ -29,7 +29,7 @@ function tide_core_install() {
   $user->roles[] = 'administrator';
   $user->save();
 
-  // Try to disable views.view.files.
+  // Using cusotm views.view.enhanced_files instead of views.view.files.
   try {
     $config = \Drupal::configFactory()->getEditable('views.view.files');
     $config->set('status', FALSE);
