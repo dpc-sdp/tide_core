@@ -435,8 +435,14 @@ function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchIn
     $route = $route_match->getRouteName();
     if (isset($links[1]) && !empty($route)) {
       $link = $links[1]->getUrl()->toString();
-      $routes = ['entity.node.delete_form', 'entity.node.version_history', 'entity.node.entity_hierarchy_reorder', 'entity.node.scheduled_transitions', 'entity.share_link_token.node_collection'];
-      if (in_array($route , $routes) && $link = '/node') {
+      $routes = [
+        'entity.node.delete_form',
+        'entity.node.version_history',
+        'entity.node.entity_hierarchy_reorder',
+        'entity.node.scheduled_transitions',
+        'entity.share_link_token.node_collection',
+      ];
+      if (in_array($route, $routes) && $link = '/node') {
         $links[1]->setText('Node');
       }
     }
