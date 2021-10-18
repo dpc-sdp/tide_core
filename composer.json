@@ -75,7 +75,8 @@
         "drupal/token": "^1.7",
         "drupal/username_enumeration_prevention": "^1.1",
         "drupal/quick_node_clone": "^1.13",
-        "drupal/content_lock": "^2.2"
+        "drupal/content_lock": "^2.2",
+        "drupal/block_inactive_users": "^2.0"
     },
     "repositories": {
         "drupal": {
