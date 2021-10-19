@@ -3,7 +3,7 @@
 namespace Drupal\tide_core\Plugin\Action;
 
 /**
- * Class TideCorePublishAction.
+ * Class TideCorePublishAction defines the publish action.
  *
  * @Action(
  *   id = "tide_core_publish_action",

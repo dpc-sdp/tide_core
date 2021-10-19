@@ -2,7 +2,7 @@ name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
-core: 8.x
+core_version_requirement: ^8.9 || ^9
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
@@ -11,6 +11,7 @@ dependencies:
   - clamav:clamav
   - config_split:config_split
   - config_update:config_update
+  - config_ignore:config_ignore
   - diff:diff
   - drupal:block
   - drupal:block_content
@@ -50,7 +51,6 @@ dependencies:
   - fast_404:fast404
   - link_field_autocomplete_filter:link_field_autocomplete_filter
   - linkit:linkit
-  - login_redirect_per_role:login_redirect_per_role
   - m4032404:m4032404
   - maxlength:maxlength
   - media_entity_audio:media_entity_audio
@@ -75,6 +75,8 @@ dependencies:
   - wysiwyg_template:wysiwyg_template_core
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
+  - admin_audit_trail:admin_audit_trail
+  - block_inactive_users:block_inactive_users
 themes:
   - seven
 config_devel:
@@ -181,3 +183,4 @@ config_devel:
     - system.action.pathauto_update_alias_user
     - user.role.administrator
     - user.role.anonymous
+    - views.view.enhanced_files

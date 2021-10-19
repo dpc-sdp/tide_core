@@ -2,7 +2,7 @@ name: Tide Paragraphs Enhanced Modal
 description: Provides enhancements for modal dialog of paragraph widget.
 type: module
 package: Tide
-core: 8.x
+core_version_requirement: ^8.9 || ^9
 dependencies:
   - paragraphs:paragraphs
 config_devel:

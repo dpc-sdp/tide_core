@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class TideAdminUIRedirectAlter.
+ * Provides facility to alter url reidrect for admin ui.
  *
  * @package Drupal\tide_ui_restriction
  */
@@ -18,6 +18,7 @@ class TideAdminUIRedirectAlter implements EventSubscriberInterface {
    * {@inheritDoc}
    */
   public static function getSubscribedEvents() {
+    $events = [];
     $events[KernelEvents::REQUEST][] = ['onAdminModules'];
     return $events;
   }

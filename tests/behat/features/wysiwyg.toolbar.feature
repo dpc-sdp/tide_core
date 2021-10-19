@@ -1,4 +1,4 @@
-@tide
+@tide @skipped
 Feature: WYSIWYG toolbar configuration
 
   As an Approver or Editor, I want to to have access to all configured WYSIWYG buttons.

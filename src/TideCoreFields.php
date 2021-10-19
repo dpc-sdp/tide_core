@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 
 /**
- * Class TideCoreFields.
+ * Defines the tide_core fields.
  *
  * @package Drupal\tide_core.
  */
@@ -62,7 +62,10 @@ abstract class TideCoreFields {
   protected function createField($entity_type_id, $bundle, $config) {
     $field_config = $this->loadFieldConfig($entity_type_id, $bundle, $config['field_name']);
     if (empty($field_config)) {
-      $field_config = FieldConfig::create($config + ['entity_type' => $entity_type_id, 'bundle' => $bundle]);
+      $field_config = FieldConfig::create($config + [
+        'entity_type' => $entity_type_id,
+        'bundle' => $bundle,
+      ]);
       $field_config->save();
     }
   }

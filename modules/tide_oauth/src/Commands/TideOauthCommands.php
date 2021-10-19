@@ -6,7 +6,7 @@ use Drupal\tide_oauth\EnvKeyGenerator;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class TideOauthCommands.
+ * Class TideOauthCommands defines the drush commands.
  *
  * @package Drupal\tide_oauth\Commands
  */

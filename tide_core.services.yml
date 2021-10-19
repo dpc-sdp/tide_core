@@ -6,4 +6,4 @@ services:
   tide_core.entity_update_helper:
     class: Drupal\tide_core\TideEntityUpdateHelper
     arguments:
-      [ '@entity_type.manager', '@entity_field.manager', '@entity.last_installed_schema.repository', '@entity.manager' ]
+      [ '@entity_type.manager', '@entity_field.manager', '@entity.last_installed_schema.repository', '@field_storage_definition.listener' ]

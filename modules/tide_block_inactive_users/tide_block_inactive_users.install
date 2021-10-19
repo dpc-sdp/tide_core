@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Tide Block Inactive Users.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_block_inactive_users_uninstall() {
+  \Drupal::configFactory()->getEditable('tide_block_inactive_users.settings')->delete();
+}
+
+/**
+ * Implements hook_install().
+ */
+function tide_block_inactive_users_install($is_syncing) {
+  $settings = \Drupal::configFactory()
+    ->getEditable('block_inactive_users.settings');
+  $settings->set('block_inactive_users_idle_time', '5')
+    ->set('block_inactive_users_from_email', 'sdp.siteadmin@dpc.vic.gov.au')
+    ->set('block_inactive_users_email_content', "Hi [account-name],\r\n\r\nOur records show that you have not accessed your Single Digital Presence CMS account for the past five months. To comply with our user policy please login to your account within the next 30 days or your account with be automatically blocked.\r\n\r\nKind regards,\r\n\r\nThe Single Digital Presence team")
+    ->set('block_inactive_users_email_subject', 'Login required: SDP CMS account')
+    ->save();
+}

@@ -1,0 +1,13 @@
+tide_block_inactive_users.settings:
+  type: config_object
+  label: 'Tide Block Inactive Users Module settings'
+  mapping:
+    idle_time:
+      type: text
+      label: 'Idle time'
+    cron:
+      type: boolean
+      label: 'Cron run setting'
+    time_unit:
+      type: text
+      label: 'Time Unit'

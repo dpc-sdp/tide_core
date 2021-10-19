@@ -29,6 +29,16 @@ function tide_core_install() {
   $user->roles[] = 'administrator';
   $user->save();
 
+  // Disable views.view.files in favour of views.view.enhanced_files.
+  try {
+    $config = \Drupal::configFactory()->getEditable('views.view.files');
+    $config->set('status', FALSE);
+    $config->save();
+  }
+  catch (Exception $e) {
+    watchdog_exception('tide_core', $e);
+  }
+
   // Override default Plain Text format from Core.
   try {
     $plain_text = FilterFormat::load('plain_text');
@@ -50,7 +60,7 @@ function tide_core_install() {
   // Restrict user registration to admin role creation.
   \Drupal::configFactory()
     ->getEditable('user.settings')
-    ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
+    ->set('register', UserInterface::REGISTER_ADMINISTRATORS_ONLY)
     ->save(TRUE);
 
   // Creates terms for Topic vocabulary.
@@ -196,6 +206,7 @@ function _tide_core_update_editorial_workflow() {
  * Implements hook_update_dependencies().
  */
 function tide_core_update_dependencies() {
+  $dependencies = [];
   $dependencies['tide_core'][8007] = ['system' => 8805];
   $dependencies['tide_core'][8016] = ['system' => 8805];
 
@@ -324,25 +335,31 @@ function tide_core_update_8009() {
     ]);
     $pattern->save();
   }
-
-  $batch = [
-    'title' => 'Bulk updating Term URL aliases',
-    'operations' => [
-      ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
-      [
-        'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
+  try {
+    $batch = [
+      'title' => 'Bulk updating Term URL aliases',
+      'operations' => [
+        ['Drupal\pathauto\Form\PathautoBulkUpdateForm::batchStart', []],
         [
-          'canonical_entities:taxonomy_term',
-          'all',
+          'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchProcess',
+          [
+            'canonical_entities:taxonomy_term',
+            'all',
+          ],
         ],
       ],
-    ],
-    'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
-    'progressive' => FALSE,
-  ];
+      'finished' => 'Drupal\pathauto\Form\PathautoBulkUpdateForm::batchFinished',
+      'progressive' => FALSE,
+    ];
 
-  batch_set($batch);
-  batch_process();
+    batch_set($batch);
+    batch_process();
+  }
+  catch (\Exception $e) {
+    \Drupal::logger("default")
+      ->warning($e->getMessage());
+    return;
+  }
 }
 
 /**
@@ -537,8 +554,14 @@ function tide_core_update_8019() {
     'published_archived',
   ];
 
-  $current_string = ['([node:url])', '(https://www.vic.gov.au/how-publish-content-vicgovau).'];
-  $replacement_string = [' - [node:url]', ' https://www.vic.gov.au/how-publish-content-vicgovau'];
+  $current_string = [
+    '([node:url])',
+    '(https://www.vic.gov.au/how-publish-content-vicgovau).',
+  ];
+  $replacement_string = [
+    ' - [node:url]',
+    ' https://www.vic.gov.au/how-publish-content-vicgovau',
+  ];
 
   $notification_fields = [
     'draft_archive_pending',
@@ -936,6 +959,7 @@ function tide_core_update_8035() {
  * Approver, site_admin and editor should access to `summary_text` text format.
  */
 function tide_core_update_8036() {
+  $permissions = [];
   $roles = ['approver', 'site_admin', 'editor'];
   $permissions[] = 'use text format summary_text';
   foreach ($roles as $role) {
@@ -1100,7 +1124,7 @@ function tide_core_update_8043() {
  */
 function tide_core_update_8044() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
   $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
   $storage = \Drupal::entityTypeManager()->getStorage('view');
   if ($storage->load('enhanced_files') == NULL) {
@@ -1253,7 +1277,7 @@ function tide_core_update_8051() {
   // Restrict user registration to admin role creation.
   \Drupal::configFactory()
     ->getEditable('user.settings')
-    ->set('register', USER_REGISTER_ADMINISTRATORS_ONLY)
+    ->set('register', UserInterface::REGISTER_ADMINISTRATORS_ONLY)
     ->save(TRUE);
 }
 

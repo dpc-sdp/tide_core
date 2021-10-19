@@ -10,7 +10,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionListenerInterface;
 
 /**
- * Class TideEntityUpdateHelper.
+ * Provides helper function for entity updates.
  *
  * @package Drupal\tide_core
  */
@@ -160,6 +160,7 @@ class TideEntityUpdateHelper {
    * @return array
    *   Keyed by a field name.
    *   Returns an array.
+   *
    * @example
    * ['nid'=> BaseFieldDefinition .. ]
    */

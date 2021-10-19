@@ -18,6 +18,8 @@ use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_views_data().
@@ -88,7 +90,10 @@ function tide_core_entity_operation(EntityInterface $entity) {
         $operations['archive'] = [
           'title' => t('Archive'),
           'weight' => 100,
-          'url' => Url::fromRoute('tide_core.entity.archive_confirm', ['bundle' => $entity->getEntityTypeId(), 'entity_type_id' => $entity->id()]),
+          'url' => Url::fromRoute('tide_core.entity.archive_confirm', [
+            'bundle' => $entity->getEntityTypeId(),
+            'entity_type_id' => $entity->id(),
+          ]),
         ];
       }
     }
@@ -181,7 +186,7 @@ function tide_core_menu_links_discovered_alter(&$links) {
   if (isset($links['entity.scheduled_transition.collection']['title'])) {
     $links['entity.scheduled_transition.collection']['title'] = 'Scheduled updates';
   }
-  // TODO: delete after scheduled_updates module fully uninstalled.
+  // @todo delete after scheduled_updates module fully uninstalled.
   if (isset($links['entity.scheduled_update.collection'])) {
     unset($links['entity.scheduled_update.collection']);
   }
@@ -203,7 +208,7 @@ function tide_core_local_tasks_alter(&$local_tasks) {
   if (isset($local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'])) {
     $local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'] = 'Scheduled updates';
   }
-  // TODO: delete after scheduled_updates module fully uninstalled.
+  // @todo delete after scheduled_updates module fully uninstalled.
   if (isset($local_tasks['scheduled_update.admin'])) {
     unset($local_tasks['scheduled_update.admin']);
   }
@@ -366,6 +371,7 @@ function tide_core_node_access_records(NodeInterface $node) {
   // Only run if the module permission by terms is enabled.
   if (\Drupal::moduleHandler()->moduleExists('permissions_by_term')) {
     if (!$node->isPublished()) {
+      $grants = [];
       $grants[] = [
         'realm' => 'tide_core',
         'gid' => 1,
@@ -391,6 +397,7 @@ function tide_core_node_grants(AccountInterface $account, $op) {
       $view_unpublished_content_roles = array_keys(user_roles(TRUE, 'view any unpublished content'));
       $account_roles = $account->getRoles();
       if (!empty(array_intersect($account_roles, $view_unpublished_content_roles))) {
+        $grants = [];
         $grants['tide_core'][] = 1;
 
         return $grants;
@@ -414,4 +421,30 @@ function tide_core_node_access(NodeInterface $node, $op, AccountInterface $accou
     }
   }
   return AccessResult::neutral()->addCacheableDependency($node);
+}
+
+/**
+ * Implements hook_system_breadcrumb_alter().
+ *
+ * @todo Follow up with the issue.
+ * @see https://www.drupal.org/project/drupal/issues/3220437
+ */
+function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+  if (!empty($breadcrumb)) {
+    $links = $breadcrumb->getLinks();
+    $route = $route_match->getRouteName();
+    if (isset($links[1]) && !empty($route)) {
+      $link = $links[1]->getUrl()->toString();
+      $routes = [
+        'entity.node.delete_form',
+        'entity.node.version_history',
+        'entity.node.entity_hierarchy_reorder',
+        'entity.node.scheduled_transitions',
+        'entity.share_link_token.node_collection',
+      ];
+      if (in_array($route, $routes) && $link = '/node') {
+        $links[1]->setText('Node');
+      }
+    }
+  }
 }
