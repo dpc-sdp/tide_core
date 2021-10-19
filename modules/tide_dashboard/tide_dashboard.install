@@ -56,3 +56,10 @@ function tide_dashboard_install($is_syncing) {
   $workbench_config->set('overview_main', 'tide_dashboard_my_content:overview');
   $workbench_config->save();
 }
+
+/**
+ * Uninstall Login Redirect per Role.
+ */
+function tide_dashboard_update_8001() {
+  \Drupal::service('module_installer')->uninstall(['login_redirect_per_role']);
+}
