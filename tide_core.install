@@ -1301,7 +1301,7 @@ function tide_core_update_8052() {
 
 /**
  * Enable better_exposed_filters module's dependencies.
- * 
+ *
  * @see https://www.drupal.org/project/better_exposed_filters/issues/3109536#comment-13737523
  */
 function tide_core_update_8053() {
