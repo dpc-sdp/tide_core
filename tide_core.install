@@ -1298,3 +1298,24 @@ function tide_core_update_8052() {
     $auditor_role->save();
   }
 }
+
+/**
+ * Enable better_exposed_filters module's dependencies.
+ * 
+ * @see https://www.drupal.org/project/better_exposed_filters/issues/3109536#comment-13737523
+ */
+function tide_core_update_8053() {
+  $module_handler = \Drupal::moduleHandler();
+  $module_exist = $module_handler->moduleExists('better_exposed_filters');
+  if ($module_exist) {
+    $modules = [
+      'jquery_ui',
+      'jquery_ui_slider',
+      'jquery_ui_touch_punch',
+      'jquery_ui_datepicker',
+    ];
+
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install($modules);
+  }
+}
