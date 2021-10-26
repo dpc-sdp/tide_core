@@ -19,6 +19,7 @@ use Drupal\user\Entity\Role;
 use Drupal\user\UserInterface;
 use Drupal\node\Entity\NodeType;
 use Drupal\views\Entity\View;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 
 /**
  * Implements hook_install().
@@ -1318,4 +1319,14 @@ function tide_core_update_8053() {
     $module_installer = \Drupal::service('module_installer');
     $module_installer->install($modules);
   }
+}
+
+/**
+ * Update the cardinality of field_landing_page_contact to unlimited.
+ */
+function tide_core_update_8054() {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+  $storage_definition = $manager->getFieldStorageDefinition('field_landing_page_contact', 'node');
+  $storage_definition->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
+  $manager->updateFieldStorageDefinition($storage_definition);
 }
