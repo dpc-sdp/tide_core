@@ -448,3 +448,27 @@ function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchIn
     }
   }
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_core_node_presave(NodeInterface $node) {
+  $node_state = $node->get('moderation_state')->getValue()[0]['value'];
+
+  if ($node_state === 'published') {
+    $log = [
+      'type' => 'node',
+      'operation' => 'published',
+      'description' => t('%type: %title - New node created with workflow state %new_state', [
+        '%type' => $node->getType(),
+        '%title' => $node->getTitle(),
+        '%new_state' => $node_state,
+      ]),
+      'ref_numeric' => $node->id(),
+      'ref_char' => $node->getTitle(),
+    ];
+
+    // Add the log to the "admin_audit_trail" table
+    admin_audit_trail_insert($log);
+  }
+}
