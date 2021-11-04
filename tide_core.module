@@ -457,7 +457,10 @@ function tide_core_node_presave(NodeInterface $node) {
 
   if ($node_state === 'published') {
     $log = [
-      // Term the 'type' => 'node' as 'type' => 'page' to improve log readability.
+      /*
+       * Term the 'type' => 'node' as 'type' => 'page'
+       * to improve log readability.
+       */
       'type' => 'page',
       'operation' => 'published',
       'description' => t('%type: %title - New node created with workflow state %new_state', [
@@ -470,7 +473,7 @@ function tide_core_node_presave(NodeInterface $node) {
     ];
 
     // Add the log to the "admin_audit_trail" table.
-    if(function_exists('admin_audit_trail_insert')) {
+    if (function_exists('admin_audit_trail_insert')) {
       admin_audit_trail_insert($log);
     }
   }
@@ -480,10 +483,10 @@ function tide_core_node_presave(NodeInterface $node) {
  * Implements hook_admin_audit_trail_handlers().
  */
 function tide_core_admin_audit_trail_handlers() {
-    // Page event log handler.
-    $handlers = [];
-    $handlers['page'] = [
-        'title' => t('Page'),
-    ];
-    return $handlers;
+  // Page event log handler.
+  $handlers = [];
+  $handlers['page'] = [
+    'title' => t('Page'),
+  ];
+  return $handlers;
 }
