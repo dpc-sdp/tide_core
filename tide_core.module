@@ -470,7 +470,9 @@ function tide_core_node_presave(NodeInterface $node) {
     ];
 
     // Add the log to the "admin_audit_trail" table.
-    admin_audit_trail_insert($log);
+    if(function_exists('admin_audit_trail_insert')) {
+      admin_audit_trail_insert($log);
+    }
   }
 }
 
