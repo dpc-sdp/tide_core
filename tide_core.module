@@ -469,7 +469,7 @@ function tide_core_node_presave(NodeInterface $node) {
       'ref_char' => $node->getTitle(),
     ];
 
-    // Add the log to the "admin_audit_trail" table
+    // Add the log to the "admin_audit_trail" table.
     admin_audit_trail_insert($log);
   }
 }
