@@ -457,7 +457,8 @@ function tide_core_node_presave(NodeInterface $node) {
 
   if ($node_state === 'published') {
     $log = [
-      'type' => 'node',
+      // Term the 'type' => 'node' as 'type' => 'page' to improve log readability.
+      'type' => 'page',
       'operation' => 'published',
       'description' => t('%type: %title - New node created with workflow state %new_state', [
         '%type' => $node->getType(),
