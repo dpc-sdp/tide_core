@@ -473,3 +473,15 @@ function tide_core_node_presave(NodeInterface $node) {
     admin_audit_trail_insert($log);
   }
 }
+
+/**
+ * Implements hook_admin_audit_trail_handlers().
+ */
+function tide_core_admin_audit_trail_handlers() {
+    // Page event log handler.
+    $handlers = [];
+    $handlers['page'] = [
+        'title' => t('Page'),
+    ];
+    return $handlers;
+}
