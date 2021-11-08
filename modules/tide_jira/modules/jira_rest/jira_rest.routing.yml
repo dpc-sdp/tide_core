@@ -1,0 +1,39 @@
+jira_rest.test:
+  path: '/jira_rest/test'
+  defaults:
+    _controller: '\Drupal\jira_rest\Controller\JiraRestController::test'
+    _title: 'Jira Rest Test'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.jira_endpoint.collection:
+  path: '/admin/config/services/jira_rest'
+  defaults:
+    _entity_list: 'jira_endpoint'
+    _title: 'JIRA Endpoints'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.jira_endpoint.add_form:
+  path: '/admin/config/services/jira_rest/add'
+  defaults:
+    _entity_form: 'jira_endpoint.add'
+    _title: 'Add Endpoint'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.jira_endpoint.edit_form:
+  path: '/admin/config/services/jira_rest/manage/{jira_endpoint}'
+  defaults:
+    _entity_form: 'jira_endpoint.edit'
+    _title: 'Edit Endpoint'
+  requirements:
+    _permission: 'administer site configuration'
+
+entity.jira_endpoint.delete_form:
+  path: '/admin/config/services/jira_rest/manage/{jira_endpoint}/delete'
+  defaults:
+    _entity_form: 'jira_endpoint.delete'
+    _title: 'Delete Endpoint'
+  requirements:
+    _permission: 'administer site configuration'

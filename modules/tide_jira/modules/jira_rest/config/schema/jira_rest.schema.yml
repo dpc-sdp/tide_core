@@ -1,0 +1,27 @@
+# Schema for the configuration files of the Jira Rest module.
+
+jira_rest.jira_endpoint.*:
+  type: config_entity
+  label: 'Jira Endpoint'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    instanceurl:
+      type: string
+      label: 'JIRA Instance URL'
+    username:
+      type: string
+      label: 'JIRA Username'
+    password:
+      type: key.key.id
+      label: 'Key entity containing JIRA password'
+    close_issue_transition_id:
+      type: integer
+      label: 'Close Issue Transition ID'
+    resolve_issue_transition_id:
+      type: integer
+      label: 'Resolve Issue Transition ID'
