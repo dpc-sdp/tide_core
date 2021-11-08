@@ -58,3 +58,9 @@ Feature: Access permissions
     Given I am logged in as a user with the "editor" role
     When I go to "admin/config/search/redirect"
     Then I should get a 404 HTTP response
+
+  @api
+  Scenario: Site Auditor role has access to Audit trail.
+    Given I am logged in as a user with the "Site Auditor" role
+    When I go to "/admin/reports/audit-trail"
+    Then I should get a 200 HTTP response

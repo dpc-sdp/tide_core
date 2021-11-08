@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies: {  }
+id: site_auditor
+label: 'Site Auditor'
+weight: 101
+is_admin: null
+permissions:
+  - 'access admin audit trail'
+  - 'access site reports'

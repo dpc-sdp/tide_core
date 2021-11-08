@@ -6,7 +6,7 @@ use Drupal\simple_oauth\Authentication\Provider\SimpleOauthAuthenticationProvide
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class XSimpleOauthAuthenticationProvider.
+ * Class XSimpleOauthAuthenticationProvider provides authentication.
  *
  * @internal
  * @package Drupal\tide_oauth\Authentication\Provider

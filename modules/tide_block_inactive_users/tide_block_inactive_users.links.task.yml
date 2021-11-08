@@ -1,0 +1,5 @@
+tide_inactive_users_management:
+  title: Block Users
+  route_name: tide_block_inactive_users.block_user_settings
+  base_route: block_inactive_users.settings
+  weight: 0

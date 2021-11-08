@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_block_inactive_users.module.
+ */
+
+use Drupal\user\UserInterface;
+use Drupal\user\Entity\User;
+use Drupal\block_inactive_users\InactiveUsersHandler;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function tide_block_inactive_users_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'cron') {
+    unset($implementations['block_inactive_users']);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function tide_block_inactive_users_cron() {
+  $config = \Drupal::configFactory()->get('tide_block_inactive_users.settings');
+  if ($config->get('cron') === TRUE) {
+    \Drupal::service('tide_inactive_users_management.commands')->notify();
+    \Drupal::service('tide_inactive_users_management.commands')->block();
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_block_inactive_users_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id === 'tide_block_inactive_users_settings') {
+    unset($form['actions']['block_inactive_users_update']);
+  }
+  if ($form_id === 'block_inactive_users_settings') {
+    $route_name = \Drupal::routeMatch()->getRouteName();
+    if ($route_name === 'block_inactive_users.settings') {
+      if (isset($form['actions']['block_inactive_users_update'])) {
+        $form['actions']['block_inactive_users_update']['#access'] = FALSE;
+      }
+      if (isset($form['users_settings']['block_inactive_users_idle_time']['#attributes'])) {
+        $form['users_settings']['block_inactive_users_idle_time']['#attributes']['min'] = 1;
+      }
+      if (isset($form['email_settings']['block_inactive_users_send_email'])) {
+        $form['email_settings']['block_inactive_users_send_email']['#access'] = FALSE;
+        $form['email_settings']['block_inactive_users_from_email']['#required'] = TRUE;
+        $form['email_settings']['block_inactive_users_email_subject']['#required'] = TRUE;
+        $form['email_settings']['block_inactive_users_email_content']['#required'] = TRUE;
+      }
+      if (isset($form['users_settings']['block_inactive_users_idle_time']['#description'])) {
+        $form['users_settings']['block_inactive_users_idle_time']['#description'] = t('Notify inactive users.');
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function tide_block_inactive_users_user_login(UserInterface $account) {
+  // Try to remove the key/value if user logged in.
+  \Drupal::keyValue('tide_inactive_users_management')->delete($account->id());
+}
+
+/**
+ * Implements hook_mail().
+ */
+function tide_block_inactive_users_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'inactive_users':
+      $message['from'] = $params['from'];
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['message'];
+      break;
+  }
+}
+
+/**
+ * Helper function to send emails.
+ */
+function _tide_inactive_users_management_sending_email(User $user) {
+  // Settings.
+  $logger = \Drupal::service('logger.factory')
+    ->get(InactiveUsersHandler::LOGGER_CHANNEL);
+  $config = \Drupal::configFactory()
+    ->get(InactiveUsersHandler::FORM_SETTINGS_CONFIG_OBJ_NAME);
+  $url = \Drupal::request()->getHost();
+  $mailManager = \Drupal::service('plugin.manager.mail');
+  $module = 'tide_block_inactive_users';
+  $key = 'inactive_users';
+  $from = $config->get('block_inactive_users_from_email');
+  $to = $user->getEmail();
+  $body = $config->get('block_inactive_users_email_content');
+  $subject = $config->get('block_inactive_users_email_subject');
+  $system_site_config = \Drupal::configFactory()->get('system.site');
+  $site_name = $system_site_config->get('name');
+  // Logs mails.
+  $logger->info($user->getAccountName() . ' has been notified.');
+  $tring_to_replace = [
+    '[account-name]' => $user->getAccountName(),
+    '[site-name]' => $site_name,
+    '[activation-link]' => $url,
+  ];
+  foreach ($tring_to_replace as $k => $value) {
+    $body = str_replace($k, $value, $body);
+  }
+  $params = [];
+  $params['message'] = $body;
+  $params['subject'] = $subject;
+  $params['from'] = $from;
+  $langcode = \Drupal::currentUser()->getPreferredLangcode();
+  $send = TRUE;
+  // Sending.
+  $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+}

@@ -1,0 +1,9 @@
+name: Tide Block Inactive Users
+type: module
+package: Tide
+description: An extension of block_inactive_users module.
+core_version_requirement: ^8.9 || ^9
+configure: tide_block_inactive_users.block_user_settings
+dependencies:
+  - dpc-sdp:tide_core
+  - block_inactive_users:block_inactive_users
