@@ -1,0 +1,7 @@
+name: Tide Jira
+type: module
+description: Tide Jira integration
+core: 8.x
+package: tide
+dependencies:
+  - jira_rest:jira_rest

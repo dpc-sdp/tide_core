@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies: {  }
+id: jira_rest_default
+label: 'Migrated Endpoint'
+description: null
+instanceurl: 'https://digital-engagement.atlassian.net'
+username: sdp.devs@dpc.vic.gov.au
+password: jira
+clone_issue_transititon_id: '2'
+resolve_issue_transition_id: 5

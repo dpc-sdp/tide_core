@@ -75,7 +75,9 @@
         "drupal/inline_entity_form": "^1.0",
         "drupal/jquery_ui_touch_punch": "^1.0",
         "drupal/admin_audit_trail": "^1.0",
-        "drupal/block_inactive_users": "^2.0"
+        "drupal/block_inactive_users": "^2.0",
+        "lesstif/php-jira-rest-client": "^1.37",
+        "drupal/jira_rest": "^4.0@beta",
     },
     "repositories": {
         "drupal": {
@@ -252,6 +254,12 @@
             },
             "drupal/jquery_ui_touch_punch": {
                 "jQuery UI Touch Punch library - https://www.drupal.org/project/jquery_ui_touch_punch/issues/3159222#comment-14011939": "https://www.drupal.org/files/issues/2021-02-26/jquery_ui_touch_punch.patch"
+            },
+            "drupal/jira_rest": {
+                "Add wrapper for UserService object": "patches/jira_rest/jira_rest.patch"
+            },
+            "lesstif/php-jira-rest-client": {
+                "Add function to lookup user by email": "patches/php-jira-rest-client/php-jira-rest-client.patch"
             }
         }
     }
