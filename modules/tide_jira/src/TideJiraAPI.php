@@ -40,38 +40,8 @@ class TideJiraAPI {
     }
     $author = $this->getAuthorInfo($node);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
-    //$ticket = $this->createTicket($summary, $author['email'], $author['account_id'], $description);
-
     $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description);
     $this->queue_backend->createItem($request);
-//    $test = $this->queue_backend->claimItem(60)->data->getTitle();
-//    $this->logger->error('Number of items ' . $test);
-  }
-
-  private function getUserCid($email) {
-    return 'tide_jira:jira_account_id:' . sha1($email);
-  }
-
-  private function getJiraAccountIdByEmail($email) {
-    if($cache = \Drupal::cache('data')->get($this->getUserCid($email))) {
-      $this->messenger->addMessage(t('Cache HIT cid '. $this->getUserCid($email)));
-      return $cache->data['account_id'];
-    } else {
-      $this->messenger->addMessage(t('Cache MISS cid '. $this->getUserCid($email)));
-      $us = $this->jira_rest_wrapper_service->getUserService();
-      $user = $us->findUserByEmail($email);
-
-      $cached_data = [
-        'account_id' => $user->accountId,
-      ];
-      \Drupal::cache('data')
-        ->set($this->getUserCid($email),
-          $cached_data,
-          CacheBackendInterface::CACHE_PERMANENT,
-          ['tide_jira:jira_account_ids']
-        );
-      return $user->accountId;
-    }
   }
 
   private function getRevisionInfo(NodeInterface $node) {
@@ -88,25 +58,10 @@ class TideJiraAPI {
   private function getAuthorInfo (NodeInterface $node) {
     return [
       'email' => $node->getRevisionUser()->getEmail(),
-      'account_id' => $this->getJiraAccountIdByEmail($node->getRevisionUser()->getEmail()),
+      'account_id' => '',
       'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
       'department' => $node->getRevisionUser()->get('field_department_agency')->value ?: '',
     ];
-  }
-
-  private function createTicket($title, $email, $account_id, $description) {
-    $issueField = new IssueField();
-    $issueField->setProjectKey("SFP")
-      ->setSummary($title)
-      ->setIssueType("Service Request")
-      ->setReporterName($email)
-      ->setReporterAccountId($account_id)
-      ->setDescription($description);
-
-    // CAUTION
-    // HANDLE JIRA API ERRORS PROPERLY
-    $link = $this->jira_rest_wrapper_service->getIssueService()->create($issueField);
-    return $link->key;
   }
 
   private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date){

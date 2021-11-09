@@ -29,7 +29,7 @@ class TideJiraTicketModel {
     $this->is_new = $is_new;
     $this->updated_date = $updated_date;
     $this->account_id = $account_id;
-    $this->department = $description;
+    $this->description = $description;
   }
 
   /**

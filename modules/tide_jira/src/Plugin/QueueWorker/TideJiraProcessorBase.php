@@ -5,8 +5,7 @@ namespace Drupal\tide_jira\Plugin\QueueWorker;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\tide_jira\TideJiraAPI;
-use Drupal\jira_rest\JiraRestWrapperService;
+use Drupal\tide_jira\TideJiraConnector;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 abstract class TideJiraProcessorBase extends QueueWorkerBase implements ContainerFactoryPluginInterface {
@@ -15,10 +14,9 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
   protected $jira_rest;
   protected $logger;
 
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, $tide_jira, $jira_rest, $logger) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, TideJiraConnector $tide_jira, LoggerChannelFactoryInterface $logger) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->tide_jira = $tide_jira;
-    $this->jira_rest = $jira_rest;
     $this->logger = $logger->get('tide_jira');
   }
 
@@ -27,17 +25,18 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('tide_jira.jira_api'),
-      $container->get('jira_rest_wrapper_service'),
+      $container->get('tide_jira.jira_connector'),
       $container->get('logger.factory'),
     );
   }
 
   protected function createTicket($ticket) {
-
+    $ticket->setAccountId($this->tide_jira->getJiraAccountIdByEmail($ticket->getEmail()));
+    $this->tide_jira->createTicket($ticket->getName(), $ticket->getEmail(), $ticket->getAccountId(), $ticket->getDescription());
   }
 
   public function processItem($ticket) {
     $this->logger->debug(print_r($ticket, TRUE));
+    $this->createTicket($ticket);
   }
 }

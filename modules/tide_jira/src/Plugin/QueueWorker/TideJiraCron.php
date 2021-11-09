@@ -8,7 +8,7 @@ namespace Drupal\tide_jira\Plugin\QueueWorker;
  * @QueueWorker(
  *   id = "tide_jira",
  *   title = @Translation("Tide Federated Publishing"),
- *   cron = {"time" = 30}
+ *   cron = {"time" = 15}
  * )
  */
 class TideJiraCron extends TideJiraProcessorBase {}
