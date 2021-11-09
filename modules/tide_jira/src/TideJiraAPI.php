@@ -5,7 +5,6 @@ namespace Drupal\tide_jira;
 use Drupal\Core\Cache\Cache;
 use Drupal\node\NodeInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
-use Drupal\simple_sitemap\Logger;
 use JiraRestApi\Issue\IssueField;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Queue\QueueFactory;
