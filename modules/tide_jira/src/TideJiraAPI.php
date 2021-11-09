@@ -2,13 +2,16 @@
 
 namespace Drupal\tide_jira;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\node\NodeInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
+use Drupal\simple_sitemap\Logger;
 use JiraRestApi\Issue\IssueField;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Messenger\Messenger;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 class TideJiraAPI {
 
@@ -16,11 +19,15 @@ class TideJiraAPI {
   private $jira_rest_wrapper_service;
   private $queue_backend;
   private $messenger;
+  private $cache;
+  private $logger;
 
-  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service, QueueFactory  $queue_backend, Messenger $messenger) {
+  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service, QueueFactory  $queue_backend, Messenger $messenger, CacheBackendInterface $cache, LoggerChannelFactoryInterface $logger) {
     $this->jira_rest_wrapper_service = $jira_rest_wrapper_service;
-    $this->queue_backend = $queue_backend;
+    $this->queue_backend = $queue_backend->get(self::QUEUE_NAME);
     $this->messenger = $messenger;
+    $this->cache = $cache;
+    $this->logger = $logger->get('tide_jira');
   }
 
   public function createTicketFromNodeParameters(NodeInterface $node) {
@@ -34,8 +41,12 @@ class TideJiraAPI {
     }
     $author = $this->getAuthorInfo($node);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
-    $ticket = $this->createTicket($summary, $author['email'], $author['account_id'], $description);
-    $this->messenger->addMessage(t('A content support request has been generated for you. Ref: ' . $ticket));
+    //$ticket = $this->createTicket($summary, $author['email'], $author['account_id'], $description);
+
+    $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description);
+    $this->queue_backend->createItem($request);
+//    $test = $this->queue_backend->claimItem(60)->data->getTitle();
+//    $this->logger->error('Number of items ' . $test);
   }
 
   private function getUserCid($email) {
@@ -44,10 +55,10 @@ class TideJiraAPI {
 
   private function getJiraAccountIdByEmail($email) {
     if($cache = \Drupal::cache('data')->get($this->getUserCid($email))) {
-      \Drupal::messenger()->addMessage(t('Cache HIT cid '. $this->getUserCid($email)));
+      $this->messenger->addMessage(t('Cache HIT cid '. $this->getUserCid($email)));
       return $cache->data['account_id'];
     } else {
-      \Drupal::messenger()->addMessage(t('Cache MISS cid '. $this->getUserCid($email)));
+      $this->messenger->addMessage(t('Cache MISS cid '. $this->getUserCid($email)));
       $us = $this->jira_rest_wrapper_service->getUserService();
       $user = $us->findUserByEmail($email);
 
@@ -80,7 +91,7 @@ class TideJiraAPI {
       'email' => $node->getRevisionUser()->getEmail(),
       'account_id' => $this->getJiraAccountIdByEmail($node->getRevisionUser()->getEmail()),
       'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
-      'department' => $node->getRevisionUser()->get('field_department_agency')->value,
+      'department' => $node->getRevisionUser()->get('field_department_agency')->value ?: '',
     ];
   }
 
