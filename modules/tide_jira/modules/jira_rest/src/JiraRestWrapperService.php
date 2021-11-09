@@ -8,6 +8,7 @@ use Drupal\key\KeyRepositoryInterface;
 use JiraRestApi\Configuration\ArrayConfiguration;
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\JiraException;
+use JiraRestApi\User\UserService;
 
 /**
  * Class JiraRestWrapperService.
@@ -102,4 +103,26 @@ class JiraRestWrapperService {
     }
     return $issueService;
   }
-}
+
+  public function getUserService($endpoint_id = NULL) {
+      // Attempt to get a specific endpoint
+      if (!empty($endpoint_id) ) {
+          $endpoint = $this->endpointRepository->getEndpoint($endpoint_id);
+        }
+    if (!isset($endpoint)) {
+          $endpoint = $this->endpointRepository->getDefaultEndpoint();
+        }
+
+    if (empty($endpoint)) {
+          throw new JiraException($this->t('No JIRA Endpoints could be found.'));
+    }
+
+    // Initialize the JIRA User Service
+    try {
+          $userService = new UserService($this->getArrayConfiguration($endpoint));
+        } catch (JiraException $e) {
+          $this->loggerRestJira->error($e->getMessage());
+        }
+    return $userService;
+  }
+ }

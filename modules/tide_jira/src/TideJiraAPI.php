@@ -6,13 +6,21 @@ use Drupal\node\NodeInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
 use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
+use Drupal\Core\Messenger\Messenger;
 
 class TideJiraAPI {
 
+  const QUEUE_NAME = 'TIDE_JIRA';
   private $jira_rest_wrapper_service;
+  private $queue_backend;
+  private $messenger;
 
-  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service) {
+  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service, QueueFactory  $queue_backend, Messenger $messenger) {
     $this->jira_rest_wrapper_service = $jira_rest_wrapper_service;
+    $this->queue_backend = $queue_backend;
+    $this->messenger = $messenger;
   }
 
   public function createTicketFromNodeParameters(NodeInterface $node) {
@@ -27,7 +35,7 @@ class TideJiraAPI {
     $author = $this->getAuthorInfo($node);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
     $ticket = $this->createTicket($summary, $author['email'], $author['account_id'], $description);
-    \Drupal::messenger()->addMessage(t('A content support request has been generated for you. Ref: ' . $ticket));
+    $this->messenger->addMessage(t('A content support request has been generated for you. Ref: ' . $ticket));
   }
 
   private function getUserCid($email) {
