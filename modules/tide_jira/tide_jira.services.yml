@@ -1,7 +1,7 @@
 services:
   tide_jira.jira_api:
     class: Drupal\tide_jira\TideJiraAPI
-    arguments: [ '@jira_rest_wrapper_service', '@queue', '@messenger', '@cache.data', '@logger.factory' ]
+    arguments: ['@queue', '@logger.factory' ]
   tide_jira.jira_connector:
     class: Drupal\tide_jira\TideJiraConnector
     arguments: ['@jira_rest_wrapper_service', '@cache.data', '@logger.factory']

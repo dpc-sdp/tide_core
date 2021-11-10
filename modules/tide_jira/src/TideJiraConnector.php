@@ -50,9 +50,6 @@ class TideJiraConnector {
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);
-
-    // CAUTION
-    // HANDLE JIRA API ERRORS PROPERLY
     $link = $this->jira_rest_wrapper_service->getIssueService()->create($issueField);
     return $link->key;
   }

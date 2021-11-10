@@ -7,6 +7,8 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\tide_jira\TideJiraConnector;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Queue\SuspendQueueException;
+use \Exception;
 
 abstract class TideJiraProcessorBase extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
@@ -37,6 +39,14 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
 
   public function processItem($ticket) {
     $this->logger->debug(print_r($ticket, TRUE));
-    $this->createTicket($ticket);
+
+    try {
+      $this->createTicket($ticket);
+    } catch (Exception $e) {
+      $this->logger->error($e);
+      // Tell the queue worker to stop processing this queue if JIRA API is not reachable.
+      throw new SuspendQueueException();
+    }
+
   }
 }

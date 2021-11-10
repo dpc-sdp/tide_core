@@ -15,33 +15,31 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 class TideJiraAPI {
 
   const QUEUE_NAME = 'TIDE_JIRA';
-  private $jira_rest_wrapper_service;
   private $queue_backend;
-  private $messenger;
-  private $cache;
   private $logger;
 
-  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service, QueueFactory  $queue_backend, Messenger $messenger, CacheBackendInterface $cache, LoggerChannelFactoryInterface $logger) {
-    $this->jira_rest_wrapper_service = $jira_rest_wrapper_service;
+  public function __construct(QueueFactory  $queue_backend, LoggerChannelFactoryInterface $logger) {
     $this->queue_backend = $queue_backend->get(self::QUEUE_NAME);
-    $this->messenger = $messenger;
-    $this->cache = $cache;
     $this->logger = $logger->get('tide_jira');
   }
 
-  public function createTicketFromNodeParameters(NodeInterface $node) {
+  public function generateJiraRequest(NodeInterface $node) {
     $revision = $this->getRevisionInfo($node);
-    if ($revision['moderation_state'] == 'needs_review') {
-      $summary = 'Review of web content required: ' . $revision['title'];
-    } else if ($revision['moderation_state'] == 'archive_pending') {
-      $summary = 'Archive of web content required: ' . $revision['title'];
-    } else {
-      return;
-    }
     $author = $this->getAuthorInfo($node);
+    $summary = $this->getSummary($revision);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
     $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description);
     $this->queue_backend->createItem($request);
+    $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
+  }
+
+  private function getSummary($revision) {
+    $moderation_state = $revision['moderation_state'];
+    if ($moderation_state == 'needs_review') {
+      return 'Review of web content required: ' . $revision['title'];
+    } else {
+      return 'Archive of web content required: ' . $revision['title'];
+    }
   }
 
   private function getRevisionInfo(NodeInterface $node) {
