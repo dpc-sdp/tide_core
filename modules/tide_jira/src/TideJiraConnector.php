@@ -23,7 +23,7 @@ class TideJiraConnector {
   }
 
   public function getJiraAccountIdByEmail($email) {
-    if($cache = \Drupal::cache('data')->get($this->getUserCid($email))) {
+    if($cache = $this->cache->get($this->getUserCid($email))) {
       return $cache->data['account_id'];
     } else {
       $us = $this->jira_rest_wrapper_service->getUserService();
