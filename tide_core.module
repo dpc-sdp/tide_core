@@ -463,7 +463,7 @@ function tide_core_node_presave(NodeInterface $node) {
        */
       'type' => 'page',
       'operation' => 'published',
-      'description' => t('%type: %title - New node created with workflow state %new_state', [
+      'description' => t('%type: %title - New page created with workflow state %new_state', [
         '%type' => $node->getType(),
         '%title' => $node->getTitle(),
         '%new_state' => $node_state,
