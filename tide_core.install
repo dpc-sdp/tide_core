@@ -1319,3 +1319,15 @@ function tide_core_update_8053() {
     $module_installer->install($modules);
   }
 }
+
+/**
+ * Changes the location field cardinality to -1.
+ */
+function tide_core_update_8054() {
+  $config = \Drupal::configFactory()
+    ->getEditable('field.storage.node.field_location');
+  $value = $config->get('cardinality');
+  if ($value === 1) {
+    $config->set('cardinality', -1)->save();
+  }
+}
