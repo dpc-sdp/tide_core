@@ -36,14 +36,26 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
     );
   }
 
+  protected function lookupAccount($ticket) {
+    if (!$ticket->getAccountId()) {
+      $account_id = $this->tide_jira->getJiraAccountIdByEmail($ticket->getEmail());
+      if (!$account_id) {
+        $ticket->setEmail('nojiraaccount@dpc.vic.gov.au');
+        $ticket->setAccountId($this->tide_jira->getJiraAccountIdByEmail($ticket->getEmail()));
+      } else {
+        $ticket->setAccountId($account_id);
+      }
+    }
+  }
+
   protected function createTicket($ticket) {
-    $ticket->setAccountId($this->tide_jira->getJiraAccountIdByEmail($ticket->getEmail()));
     $this->tide_jira->createTicket($ticket->getName(), $ticket->getEmail(), $ticket->getAccountId(), $ticket->getDescription());
   }
 
   public function processItem($ticket) {
     $retries = $this->state->get('tide_jira_current_retry_count') ?: 0;
     try {
+      $this->lookupAccount($ticket);
       $this->createTicket($ticket);
     } catch (Exception $e) {
       $this->logger->error($e);

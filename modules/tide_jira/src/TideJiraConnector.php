@@ -6,6 +6,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
+use \Exception;
 
 class TideJiraConnector {
 
@@ -27,7 +28,13 @@ class TideJiraConnector {
       return $cache->data['account_id'];
     } else {
       $us = $this->jira_rest_wrapper_service->getUserService();
-      $user = $us->findUserByEmail($email);
+
+      try {
+        $user = $us->findUserByEmail($email);
+      } catch (Exception $e) {
+        $this->logger->warning('Could not find JIRA account for ' . $email);
+        return null;
+      }
 
       $cached_data = [
         'account_id' => $user->accountId,
