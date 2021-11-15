@@ -16,8 +16,9 @@ class TideJiraTicketModel {
   private string $updated_date;
   private string $account_id;
   private string $description;
+  private string $project;
 
-  public function __construct($name, $email, $department, $title, $summary, $id, $moderation_state, $bundle, $is_new, $updated_date, $account_id, $description) {
+  public function __construct($name, $email, $department, $title, $summary, $id, $moderation_state, $bundle, $is_new, $updated_date, $account_id, $description, $project) {
     $this->name = $name;
     $this->email = $email;
     $this->department = $department;
@@ -30,6 +31,21 @@ class TideJiraTicketModel {
     $this->updated_date = $updated_date;
     $this->account_id = $account_id;
     $this->description = $description;
+    $this->project = $project;
+  }
+
+  /**
+   * @return string
+   */
+  public function getProject(): string {
+    return $this->project;
+  }
+
+  /**
+   * @param string $project
+   */
+  public function setProject(string $project): void {
+    $this->project = $project;
   }
 
   /**

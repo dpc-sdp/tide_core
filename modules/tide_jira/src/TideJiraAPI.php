@@ -10,6 +10,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Messenger\Messenger;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 class TideJiraAPI {
@@ -17,9 +18,10 @@ class TideJiraAPI {
   const QUEUE_NAME = 'TIDE_JIRA';
   private $queue_backend;
   private $logger;
-
-  public function __construct(QueueFactory  $queue_backend, LoggerChannelFactoryInterface $logger) {
+  private $entity_manager;
+  public function __construct(QueueFactory  $queue_backend, EntityTypeManagerInterface $entity_manager, LoggerChannelFactoryInterface $logger) {
     $this->queue_backend = $queue_backend->get(self::QUEUE_NAME);
+    $this->entity_manager = $entity_manager;
     $this->logger = $logger->get('tide_jira');
   }
 
@@ -28,9 +30,14 @@ class TideJiraAPI {
     $author = $this->getAuthorInfo($node);
     $summary = $this->getSummary($revision);
     $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
-    $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description);
+    $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project']);
     $this->queue_backend->createItem($request);
     $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
+  }
+
+  private function getProjectInfo($tid) {
+    $dept = $this->entity_manager->getStorage('taxonomy_term')->load($tid);
+    return $dept->get('field_jira_project')->getValue()[0]['value'];
   }
 
   private function getSummary($revision) {
@@ -59,6 +66,7 @@ class TideJiraAPI {
       'account_id' => '',
       'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
       'department' => $node->getRevisionUser()->get('field_department_agency')->value ?: '',
+      'project' => $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']),
     ];
   }
 

@@ -49,9 +49,9 @@ class TideJiraConnector {
     }
   }
 
-  public function createTicket($title, $email, $account_id, $description) {
+  public function createTicket($title, $email, $account_id, $description, $project) {
     $issueField = new IssueField();
-    $issueField->setProjectKey("SFP")
+    $issueField->setProjectKey($project)
       ->setSummary($title)
       ->setIssueType("Service Request")
       ->setReporterName($email)
