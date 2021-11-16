@@ -1,7 +1,7 @@
 services:
   tide_jira.jira_api:
     class: Drupal\tide_jira\TideJiraAPI
-    arguments: ['@queue', '@entity_type.manager', '@logger.factory' ]
+    arguments: ['@queue', '@entity_type.manager', '@date.formatter', '@logger.factory' ]
   tide_jira.jira_connector:
     class: Drupal\tide_jira\TideJiraConnector
     arguments: ['@jira_rest_wrapper_service', '@cache.data', '@logger.factory']

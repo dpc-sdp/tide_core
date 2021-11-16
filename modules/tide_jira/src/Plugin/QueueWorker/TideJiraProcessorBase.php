@@ -49,7 +49,7 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
   }
 
   protected function createTicket($ticket) {
-    $this->tide_jira->createTicket($ticket->getName(), $ticket->getEmail(), $ticket->getAccountId(), $ticket->getDescription(), $ticket->getProject());
+    $this->tide_jira->createTicket($ticket->getSummary(), $ticket->getEmail(), $ticket->getAccountId(), $ticket->getDescription(), $ticket->getProject());
   }
 
   public function processItem($ticket) {

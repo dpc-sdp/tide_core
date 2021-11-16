@@ -2,16 +2,11 @@
 
 namespace Drupal\tide_jira;
 
-use Drupal\Core\Cache\Cache;
 use Drupal\node\NodeInterface;
-use Drupal\jira_rest\JiraRestWrapperService;
-use JiraRestApi\Issue\IssueField;
-use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueInterface;
-use Drupal\Core\Messenger\Messenger;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Datetime\DateFormatter;
 
 class TideJiraAPI {
 
@@ -19,20 +14,24 @@ class TideJiraAPI {
   private $queue_backend;
   private $logger;
   private $entity_manager;
-  public function __construct(QueueFactory  $queue_backend, EntityTypeManagerInterface $entity_manager, LoggerChannelFactoryInterface $logger) {
+  private $date_formatter;
+  public function __construct(QueueFactory  $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
     $this->queue_backend = $queue_backend->get(self::QUEUE_NAME);
     $this->entity_manager = $entity_manager;
+    $this->date_formatter = $date_formatter;
     $this->logger = $logger->get('tide_jira');
   }
 
   public function generateJiraRequest(NodeInterface $node) {
-    $revision = $this->getRevisionInfo($node);
     $author = $this->getAuthorInfo($node);
-    $summary = $this->getSummary($revision);
-    $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date']);
-    $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project']);
-    $this->queue_backend->createItem($request);
-    $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
+    if (!empty($author['project'])) {
+      $revision = $this->getRevisionInfo($node);
+      $summary = $this->getSummary($revision);
+      $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $revision['notes']);
+      $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project']);
+      $this->queue_backend->createItem($request);
+      $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
+    }
   }
 
   private function getProjectInfo($tid) {
@@ -55,28 +54,30 @@ class TideJiraAPI {
       'title' => $node->getTitle(),
       'bundle' => $node->getType(),
       'moderation_state' => $node->get('moderation_state')->value,
-      'updated_date' => $node->get('changed')->value,
+      'updated_date' => $this->date_formatter->format($node->get('changed')->value),
       'is_new' => $node->isNew() ? 'New page' : 'Content update',
+      'notes' => $node->getRevisionLogMessage(),
     ];
   }
 
   private function getAuthorInfo (NodeInterface $node) {
+    $this->logger->error(print_r($node->getRevisionUser()->get('field_department_agency')->getValue(),TRUE));
     return [
       'email' => $node->getRevisionUser()->getEmail(),
       'account_id' => '',
       'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
-      'department' => $node->getRevisionUser()->get('field_department_agency')->value ?: '',
+      'department' => $this->entity_manager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
       'project' => $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']),
     ];
   }
 
-  private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date){
+  private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes){
     return <<<EOT
 Hi Support,
 
 This page is ready for review.
 
-Editor information (requester of the ticket)
+Editor information
 
 Editor name:   $name
 
@@ -100,7 +101,7 @@ Revision:         $is_new
 
 Date & time:   $updated_date
 
-Notes: [Revision notes]
+Notes: $notes
 
 EOT;
   }
