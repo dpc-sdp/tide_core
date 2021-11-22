@@ -17,7 +17,6 @@ class TideJiraTicketModel {
   private string $account_id;
   private string $description;
   private string $project;
-
   public function __construct($name, $email, $department, $title, $summary, $id, $moderation_state, $bundle, $is_new, $updated_date, $account_id, $description, $project) {
     $this->name = $name;
     $this->email = $email;
@@ -215,6 +214,5 @@ class TideJiraTicketModel {
   public function setSummary(string $summary): void {
     $this->summary = $summary;
   }
-
 
 }

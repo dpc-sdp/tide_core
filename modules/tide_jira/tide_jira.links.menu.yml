@@ -1,0 +1,6 @@
+tide_jira.config:
+  title: 'Tide Jira settings'
+  description: 'Configure Tide JIRA'
+  parent: system.admin_config_system
+  route_name: tide_jira.config
+  weight: 10
