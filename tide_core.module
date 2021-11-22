@@ -154,9 +154,6 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 
 /**
  * Redirect form upon saving to the Menu UI Module collection.
- *
- * @param array $form
- * @param FormStateInterface $form_state
  */
 function tide_core_menu_submit_handler(&$form, FormStateInterface $form_state) {
   $url = Url::fromRoute('entity.menu.collection');
