@@ -7,19 +7,20 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
+use Drupal\Core\Config\ConfigFactory;
 use \Exception;
 
 class TideJiraConnector {
 
-
   private $jira_rest_wrapper_service;
   private $cache;
   private $logger;
-  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service, CacheBackendInterface $cache, LoggerChannelFactoryInterface $logger) {
+  private $config;
+  public function __construct(JiraRestWrapperService $jira_rest_wrapper_service, CacheBackendInterface $cache, LoggerChannelFactoryInterface $logger, ConfigFactory $config_factory) {
     $this->logger = $logger->get('tide_jira');
     $this->jira_rest_wrapper_service = $jira_rest_wrapper_service;
     $this->cache = $cache;
-    $this->block_plugin_manager = $block_plugin_manager;
+    $this->config = $config_factory->get('tide_jira.settings');
   }
 
   private function getUserCid($email) {
@@ -54,12 +55,12 @@ class TideJiraConnector {
 
   public function createTicket($title, $email, $account_id, $description, $project) {
     // Move mappings to config
-    $request_type = strtolower($project) . '/' . '37e7a69b-3d10-411e-877b-43dc66413613';
+    $request_type = strtolower($project) . '/' . $this->config->get('customer_request_type_id');
     $issueField = new IssueField();
     $issueField->setProjectKey($project)
       ->setSummary($title)
-      ->setIssueType('Service Request')
-      ->addCustomField('customfield_10025', $request_type)
+      ->setIssueType($this->config->get('issue_type'))
+      ->addCustomField($this->config->get('customer_request_type_field_id'), $request_type)
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);

@@ -4,4 +4,4 @@ services:
     arguments: ['@plugin.manager.block', '@tide_site.helper', '@queue', '@entity_type.manager', '@date.formatter', '@logger.factory' ]
   tide_jira.jira_connector:
     class: Drupal\tide_jira\TideJiraConnector
-    arguments: ['@jira_rest_wrapper_service', '@cache.data', '@logger.factory']
+    arguments: ['@jira_rest_wrapper_service', '@cache.data', '@logger.factory', '@config.factory']

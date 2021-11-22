@@ -9,6 +9,7 @@ use Drupal\tide_jira\TideJiraConnector;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Config\ConfigFactory;
 use \Exception;
 
 abstract class TideJiraProcessorBase extends QueueWorkerBase implements ContainerFactoryPluginInterface {
@@ -18,11 +19,13 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
   protected $jira_rest;
   protected $logger;
   protected $state;
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, TideJiraConnector $tide_jira, LoggerChannelFactoryInterface $logger, StateInterface $state) {
+  protected $config;
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, TideJiraConnector $tide_jira, LoggerChannelFactoryInterface $logger, StateInterface $state, ConfigFactory $config_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->tide_jira = $tide_jira;
     $this->logger = $logger->get('tide_jira');
     $this->state = $state;
+    $this->config = $config_factory->get('tide_jira.settings');
   }
 
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -33,6 +36,7 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
       $container->get('tide_jira.jira_connector'),
       $container->get('logger.factory'),
       $container->get('state'),
+      $container->get('config.factory'),
     );
   }
 
@@ -40,7 +44,7 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
     if (!$ticket->getAccountId()) {
       $account_id = $this->tide_jira->getJiraAccountIdByEmail($ticket->getEmail());
       if (!$account_id) {
-        $ticket->setEmail('nojiraaccount@dpc.vic.gov.au');
+        $ticket->setEmail($this->config->get('no_account_email'));
         $ticket->setAccountId($this->tide_jira->getJiraAccountIdByEmail($ticket->getEmail()));
       } else {
         $ticket->setAccountId($account_id);
