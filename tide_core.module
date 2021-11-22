@@ -144,7 +144,7 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
   }
   if ($form_id === 'menu_edit_form') {
-    if(isset($form_state->getUserInput()['op'])) {
+    if (isset($form_state->getUserInput()['op'])) {
       if ($form_state->getUserInput()['op'] === 'Save') {
         $form['actions']['submit']['#submit'][] = 'tide_core_menu_submit_handler';
       }
@@ -153,14 +153,14 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 }
 
 /**
- * Redirect form upon saving to the Menu UI Module collection
+ * Redirect form upon saving to the Menu UI Module collection.
  *
- * @param $form
- * @param $form_state
+ * @param array $form
+ * @param FormStateInterface $form_state
  */
-function tide_core_menu_submit_handler(&$form, $form_state) {
-    $url = Url::fromRoute('entity.menu.collection');
-    $form_state->setRedirectUrl($url);
+function tide_core_menu_submit_handler(&$form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('entity.menu.collection');
+  $form_state->setRedirectUrl($url);
 }
 
 /**
