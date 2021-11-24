@@ -17,7 +17,8 @@ function tide_jira_node_presave(NodeInterface $node) {
     if (($moderation_state === 'needs_review') || ($moderation_state === 'archive_pending')) {
       \Drupal::service('tide_jira.jira_api')->generateJiraRequest($node);
     }
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     \Drupal::messenger()->addError("There was an error reaching JIRA. Please contact support.");
     \Drupal::logger('tide_jira')->error($e);
   }

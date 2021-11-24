@@ -10,6 +10,9 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\tide_site\TideSiteHelper;
 
+/**
+ *
+ */
 class TideJiraAPI {
 
   const QUEUE_NAME = 'TIDE_JIRA';
@@ -21,7 +24,11 @@ class TideJiraAPI {
   private $date_formatter;
   private $preview_builder;
   private $preview_generator;
-  public function __construct(BlockManager $block_plugin_manager, TideSiteHelper $site_helper, QueueFactory  $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
+
+  /**
+   *
+   */
+  public function __construct(BlockManager $block_plugin_manager, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
     $this->block_plugin_manager = $block_plugin_manager;
     $this->preview_builder = $this->block_plugin_manager->createInstance('tide_site_preview_links_block');
     $this->preview_generator = new \ReflectionMethod($this->preview_builder, 'buildFrontendPreviewLink');
@@ -33,6 +40,9 @@ class TideJiraAPI {
     $this->logger = $logger->get('tide_jira');
   }
 
+  /**
+   *
+   */
   public function generateJiraRequest(NodeInterface $node) {
     $author = $this->getAuthorInfo($node);
     if (!empty($author)) {
@@ -42,11 +52,15 @@ class TideJiraAPI {
       $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project'], $revision['preview_links']);
       $this->queue_backend->createItem($request);
       $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
-    } else {
+    }
+    else {
       $this->logger->notice('User ' . $node->getRevisionUser()->getEmail() . ' has no department/project set.');
     }
   }
 
+  /**
+   *
+   */
   private function getPreviewLinks(NodeInterface $node, $stringify = FALSE) {
     $results = [];
     $sites = $this->site_helper->getEntitySites($node);
@@ -56,7 +70,7 @@ class TideJiraAPI {
       $term = $this->entity_manager->getStorage('taxonomy_term')->load($site_id);
       $result = $this->preview_generator->invokeArgs($this->preview_builder, [
         $node,
-        $term
+        $term,
       ]);
       array_push($results, $result['url']->getUri());
     }
@@ -66,7 +80,8 @@ class TideJiraAPI {
       foreach ($results as $key => $result) {
         if (!($key === array_key_last($results))) {
           $temp .= $result . ', ';
-        } else {
+        }
+        else {
           $temp .= $result;
         }
       }
@@ -75,20 +90,30 @@ class TideJiraAPI {
     return $results;
   }
 
+  /**
+   *
+   */
   private function getProjectInfo($tid) {
     $dept = $this->entity_manager->getStorage('taxonomy_term')->load($tid);
     return $dept->get('field_jira_project')->getValue()[0]['value'];
   }
 
+  /**
+   *
+   */
   private function getSummary($revision) {
     $moderation_state = $revision['moderation_state'];
     if ($moderation_state == 'needs_review') {
       return 'Review of web content required: ' . $revision['title'];
-    } else {
+    }
+    else {
       return 'Archive of web content required: ' . $revision['title'];
     }
   }
 
+  /**
+   *
+   */
   private function getRevisionInfo(NodeInterface $node) {
     return [
       'id' => $node->id(),
@@ -102,7 +127,10 @@ class TideJiraAPI {
     ];
   }
 
-  private function getAuthorInfo (NodeInterface $node) {
+  /**
+   *
+   */
+  private function getAuthorInfo(NodeInterface $node) {
     $result = [];
     if ($node->getRevisionUser()->get('field_department_agency')->first()) {
       $result = [
@@ -116,7 +144,10 @@ class TideJiraAPI {
     return $result;
   }
 
-  private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links){
+  /**
+   *
+   */
+  private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
     return <<<EOT
 Hi Support,
 
@@ -150,4 +181,5 @@ Notes: $notes
 
 EOT;
   }
+
 }
