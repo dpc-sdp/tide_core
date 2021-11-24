@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\jira_rest\Unit\JiraRestController;
 
-use Drupal\jira_rest\Controller\JiraRestController;
 use Drupal\Tests\UnitTestCase;
 
 /**

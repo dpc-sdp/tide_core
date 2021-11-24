@@ -64,7 +64,7 @@ class JiraEndpointListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var $jira_endpoint \Drupal\jira_rest\Entity\JiraEndpoint */
+    /** @var \Drupal\jira_rest\Entity\JiraEndpoint $jira_endpoint */
     $jira_endpoint = $entity;
 
     $row['label'] = $jira_endpoint->label();
@@ -78,7 +78,7 @@ class JiraEndpointListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function getOperations(EntityInterface $entity) {
-    /* @var $jira_endpoint \Drupal\jira_rest\Entity\JiraEndpoint */
+    /** @var \Drupal\jira_rest\Entity\JiraEndpoint $jira_endpoint */
     $jira_endpoint = $entity;
 
     $operations = parent::getOperations($jira_endpoint);
@@ -95,4 +95,5 @@ class JiraEndpointListBuilder extends ConfigEntityListBuilder {
     $build['table']['#empty'] = $this->t('No JIRA Endpoints are available. <a href=":link">Create an endpoint</a>.', [':link' => Url::fromRoute('entity.jira_endpoint.add_form')->toString()]);
     return $build;
   }
+
 }

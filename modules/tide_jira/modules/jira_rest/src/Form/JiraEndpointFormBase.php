@@ -2,11 +2,9 @@
 
 namespace Drupal\jira_rest\Form;
 
-use DMore\ChromeDriver\HttpClient;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\jira_rest\Entity\JiraEndpoint;
 use Drupal\key\KeyRepositoryInterface;
 use Drupal\key\Plugin\KeyType\AuthenticationKeyType;
 use GuzzleHttp\Exception\RequestException;
@@ -71,7 +69,7 @@ abstract class JiraEndpointFormBase extends EntityForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
-    /* @var $jira_endpoint \Drupal\jira_rest\Entity\JiraEndpoint */
+    /** @var \Drupal\jira_rest\Entity\JiraEndpoint $jira_endpoint */
     $jira_endpoint = $this->entity;
 
     $form['label'] = [
@@ -148,7 +146,7 @@ abstract class JiraEndpointFormBase extends EntityForm {
     $key_values = $key_entity->getKeyValues();
     try {
       $this->httpClient->get($form_state->getValue('instanceurl') . '/rest/api/2/myself', [
-        'auth' => [$form_state->getValue('username'),array_shift($key_values)]
+        'auth' => [$form_state->getValue('username'), array_shift($key_values)],
       ]);
     }
     catch (RequestException $e) {
@@ -201,4 +199,5 @@ abstract class JiraEndpointFormBase extends EntityForm {
   public function getOriginalJiraEndpoint() {
     return $this->originalJiraEndpoint;
   }
+
 }

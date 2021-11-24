@@ -66,4 +66,5 @@ class JiraRestController extends ControllerBase {
       ];
     }
   }
+
 }

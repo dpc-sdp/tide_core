@@ -3,13 +3,7 @@
 namespace Drupal\jira_rest\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\jira_rest\JiraEndpointInterface;
-use Drupal\key\Exception\KeyValueNotSetException;
-use Drupal\key\KeyInterface;
-use Drupal\key\Plugin\KeyPluginCollection;
-use Drupal\key\Plugin\KeyProviderSettableValueInterface;
 
 /**
  * Defines the Key entity.
@@ -67,34 +61,39 @@ class JiraEndpoint extends ConfigEntityBase implements JiraEndpointInterface {
   protected $label;
 
   /**
-   * The Instance URL
+   * The Instance URL.
+   *
    * @var string
    */
-   protected $instanceurl;
+  protected $instanceurl;
 
-   /**
-    * JIRA Instance Username
-    * @var string
-    */
-   protected $username;
+  /**
+   * JIRA Instance Username.
+   *
+   * @var string
+   */
+  protected $username;
 
-   /**
-    * JIRA Instance Password Key
-    * @var \Drupal\key\KeyInterface
-    */
-   protected $password;
+  /**
+   * JIRA Instance Password Key.
+   *
+   * @var \Drupal\key\KeyInterface
+   */
+  protected $password;
 
-   /**
-    * Close issue transition ID
-    * @var integer
-    */
-   protected $close_issue_transition_id = 2;
+  /**
+   * Close issue transition ID.
+   *
+   * @var int
+   */
+  protected $close_issue_transition_id = 2;
 
-   /**
-    * Resolve Issue Transition ID
-    * @var integer
-    */
-   protected $resolve_issue_transition_id = 5;
+  /**
+   * Resolve Issue Transition ID.
+   *
+   * @var int
+   */
+  protected $resolve_issue_transition_id = 5;
 
   /**
    * @inheritDoc
@@ -123,7 +122,7 @@ class JiraEndpoint extends ConfigEntityBase implements JiraEndpointInterface {
     $keyRepository = \Drupal::service('key.repository');
 
     $key_entity = $keyRepository->getKey($this->password);
-    if(!$key_entity) {
+    if (!$key_entity) {
       throw new \Exception(
         $this->t('Entity Key not found with name: @key_id', ['@key_id' => $this->password])
       );
@@ -145,4 +144,5 @@ class JiraEndpoint extends ConfigEntityBase implements JiraEndpointInterface {
   public function getResolveTransitionId() {
     return $this->resolve_issue_transition_id;
   }
+
 }

@@ -33,4 +33,5 @@ class JiraEndpointEditForm extends JiraEndpointFormBase {
     $form['#title'] = $this->t('Edit JIRA Endpoint %label', ['%label' => $this->entity->label()]);
     return parent::form($form, $form_state);
   }
+
 }

@@ -78,51 +78,58 @@ class JiraRestWrapperService {
    *
    * @return \JiraRestApi\Issue\IssueService
    *   Issue Service API.
+   *
    * @throws \JiraRestApi\JiraException
    * @throws \JsonMapper_Exception
    * @throws \Exception
    */
   public function getIssueService($endpoint_id = NULL) {
-    // Attempt to get a specific endpoint
-    if (!empty($endpoint_id) ) {
+    // Attempt to get a specific endpoint.
+    if (!empty($endpoint_id)) {
       $endpoint = $this->endpointRepository->getEndpoint($endpoint_id);
     }
     if (!isset($endpoint)) {
-        $endpoint = $this->endpointRepository->getDefaultEndpoint();
+      $endpoint = $this->endpointRepository->getDefaultEndpoint();
     }
 
     if (empty($endpoint)) {
       throw new JiraException($this->t('No JIRA Endpoints could be found.'));
     }
 
-    // Initialize the JIRA Issue Service
+    // Initialize the JIRA Issue Service.
     try {
       $issueService = new IssueService($this->getArrayConfiguration($endpoint));
-    } catch (JiraException $e) {
+    }
+    catch (JiraException $e) {
       $this->loggerRestJira->error($e->getMessage());
     }
     return $issueService;
   }
 
+  /**
+   *
+   */
   public function getUserService($endpoint_id = NULL) {
-      // Attempt to get a specific endpoint
-      if (!empty($endpoint_id) ) {
-          $endpoint = $this->endpointRepository->getEndpoint($endpoint_id);
-        }
+    // Attempt to get a specific endpoint.
+    if (!empty($endpoint_id)) {
+      $endpoint = $this->endpointRepository->getEndpoint($endpoint_id);
+    }
     if (!isset($endpoint)) {
-          $endpoint = $this->endpointRepository->getDefaultEndpoint();
-        }
-
-    if (empty($endpoint)) {
-          throw new JiraException($this->t('No JIRA Endpoints could be found.'));
+      $endpoint = $this->endpointRepository->getDefaultEndpoint();
     }
 
-    // Initialize the JIRA User Service
+    if (empty($endpoint)) {
+      throw new JiraException($this->t('No JIRA Endpoints could be found.'));
+    }
+
+    // Initialize the JIRA User Service.
     try {
-          $userService = new UserService($this->getArrayConfiguration($endpoint));
-        } catch (JiraException $e) {
-          $this->loggerRestJira->error($e->getMessage());
-        }
+      $userService = new UserService($this->getArrayConfiguration($endpoint));
+    }
+    catch (JiraException $e) {
+      $this->loggerRestJira->error($e->getMessage());
+    }
     return $userService;
   }
- }
+
+}

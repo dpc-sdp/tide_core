@@ -69,11 +69,12 @@ class JiraEndpointRepository implements JiraEndpointRepositoryInterface {
       $endpoint_id = \Drupal::entityQuery('jira_endpoint')->execute();
       return $this->getEndpoint(array_shift($endpoint_id));
     }
-    else if ($endpoint_total == 0) {
+    elseif ($endpoint_total == 0) {
       return FALSE;
     }
     else {
       throw new JiraException($this->t("Multiple Endpoints were found. No Default Exists."));
     }
   }
+
 }

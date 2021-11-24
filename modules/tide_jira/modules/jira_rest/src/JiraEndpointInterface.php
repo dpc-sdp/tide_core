@@ -8,6 +8,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  * Provides an interface defining an Jira Endpoint config entity.
  */
 interface JiraEndpointInterface extends ConfigEntityInterface {
+
   /**
    * Gets the instance url of the endpoint.
    *
@@ -33,20 +34,19 @@ interface JiraEndpointInterface extends ConfigEntityInterface {
   public function getPassword();
 
   /**
-   * Close issue transition ID
+   * Close issue transition ID.
    *
-   * @return integer
+   * @return int
    *   The transition id to close an issue.
    */
   public function getCloseTransitionId();
 
   /**
-   * Resolve issue transition ID
+   * Resolve issue transition ID.
    *
-   * @return integer
+   * @return int
    *   The transition id to resolve an issue.
    */
   public function getResolveTransitionId();
+
 }
-
-

@@ -15,7 +15,7 @@ class JiraEndpointAddForm extends JiraEndpointFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // See if any other Endpoints exist
+    // See if any other Endpoints exist.
     /** @var integer $endpoint_total */
     $endpoint_total = \Drupal::entityQuery('jira_endpoint')->count()->execute();
 

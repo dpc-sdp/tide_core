@@ -47,4 +47,5 @@ interface JiraEndpointRepositoryInterface {
    * @throws \JiraRestApi\JiraException
    */
   public function getDefaultEndpoint();
+
 }

@@ -67,7 +67,6 @@ class JiraRestConfigForm extends ConfigFormBase {
     );
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -81,8 +80,7 @@ class JiraRestConfigForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     // Pretty sure this isn't needed...
-    //$form = parent::buildForm($form, $form_state);
-
+    // $form = parent::buildForm($form, $form_state);.
     $config = $this->config('jira_rest.settings');
 
     $form['instanceurl'] = [
@@ -125,10 +123,10 @@ class JiraRestConfigForm extends ConfigFormBase {
       '#required' => TRUE,
     ];
 
-    $form['submit'] = array(
+    $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
-    );
+    ];
 
     return $form;
   }
@@ -149,7 +147,7 @@ class JiraRestConfigForm extends ConfigFormBase {
     $key_values = $key_entity->getKeyValues();
     try {
       $this->httpClient->get($form_state->getValue('instanceurl') . '/rest/api/2/myself', [
-        'auth' => [$form_state->getValue('username'),array_shift($key_values)]
+        'auth' => [$form_state->getValue('username'), array_shift($key_values)],
       ]);
     }
     catch (RequestException $e) {
