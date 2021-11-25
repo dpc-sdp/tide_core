@@ -6,19 +6,25 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- *
+ * Tide Jira Config Form.
  */
 class TideJiraConfigForm extends ConfigFormBase {
 
   /**
+   * Returns the config form ID.
    *
+   * @return string
+   *   The config form ID.
    */
   public function getFormId() {
     return 'tide_jira_config_form';
   }
 
   /**
+   * Returns config ID to be updated.
    *
+   * @return string[]
+   *   The config ID.
    */
   public function getEditableConfigNames() {
     return [
@@ -27,7 +33,15 @@ class TideJiraConfigForm extends ConfigFormBase {
   }
 
   /**
+   * Build the config form.
    *
+   * @param \array $form
+   *   Config form definition.
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   Config form state.
+   *
+   * @return array
+   *   Config form render array.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
@@ -71,14 +85,12 @@ class TideJiraConfigForm extends ConfigFormBase {
   }
 
   /**
+   * Handles form submissions and config update.
    *
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-  }
-
-  /**
-   *
+   * @param \array $form
+   *   The config form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   State of the form.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
