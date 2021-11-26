@@ -11,37 +11,102 @@ use Drupal\Core\Datetime\DateFormatter;
 use Drupal\tide_site\TideSiteHelper;
 
 /**
- *
+ * Tide Jira helper functions.
  */
 class TideJiraAPI {
 
+  /**
+   * Name of the worker queue.
+   */
   const QUEUE_NAME = 'TIDE_JIRA';
-  private $block_plugin_manager;
-  private $queue_backend;
-  private $site_helper;
+  /**
+   * Block plugin manager.
+   *
+   * @var \Drupal\Core\Block\BlockManager
+   */
+  private $blockPluginManager;
+  /**
+   * Drupal queueing system.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
+  private $queueBackend;
+  /**
+   * Tide Site Helper.
+   *
+   * @var \Drupal\tide_site\TideSiteHelper
+   */
+  private $tideSiteHelper;
+  /**
+   * Drupal Logger.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
   private $logger;
-  private $entity_manager;
-  private $date_formatter;
-  private $preview_builder;
-  private $preview_generator;
+  /**
+   * Drupal Entity Manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  private $entityTypeManager;
+  /**
+   * Drupal DateTime Formatter.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatter
+   */
+  private $dateFormatter;
+  /**
+   * Injected Tide Site Preview Links Plugin.
+   *
+   * @var \Drupal\tide_site_preview\Plugin\Block\PreviewLinksBlock
+   */
+  private $previewBuilder;
+  /**
+   * Modified Preview Links Plugin.
+   *
+   * @var \ReflectionMethod
+   */
+  private $previewGenerator;
 
   /**
+   * Instantiates a new TideJiraAPI.
    *
+   * @param \Drupal\Core\Block\BlockManager $block_plugin_manager
+   *   Drupal Block Plugin Manager.
+   * @param \Drupal\tide_site\TideSiteHelper $site_helper
+   *   Tide Site Helper.
+   * @param \Drupal\Core\Queue\QueueFactory $queue_backend
+   *   Drupal Queue Factory.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_manager
+   *   Drupal Entity Type Manager.
+   * @param \Drupal\Core\Datetime\DateFormatter $date_formatter
+   *   Drupal Date Formatter.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
+   *   Drupal Logger Factory.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   *   Thrown when accessing a non-existent plugin.
+   *
+   * @throws \ReflectionException
+   *   Thrown when there's an issue changing class permissions.
    */
   public function __construct(BlockManager $block_plugin_manager, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
-    $this->block_plugin_manager = $block_plugin_manager;
-    $this->preview_builder = $this->block_plugin_manager->createInstance('tide_site_preview_links_block');
-    $this->preview_generator = new \ReflectionMethod($this->preview_builder, 'buildFrontendPreviewLink');
-    $this->preview_generator->setAccessible(TRUE);
-    $this->site_helper = $site_helper;
-    $this->queue_backend = $queue_backend->get(self::QUEUE_NAME);
-    $this->entity_manager = $entity_manager;
-    $this->date_formatter = $date_formatter;
+    $this->blockPluginManager = $block_plugin_manager;
+    $this->previewBuilder = $this->blockPluginManager->createInstance('tide_site_preview_links_block');
+    $this->previewGenerator = new \ReflectionMethod($this->previewBuilder, 'buildFrontendPreviewLink');
+    $this->previewGenerator->setAccessible(TRUE);
+    $this->tideSiteHelper = $site_helper;
+    $this->queueBackend = $queue_backend->get(self::QUEUE_NAME);
+    $this->entityTypeManager = $entity_manager;
+    $this->dateFormatter = $date_formatter;
     $this->logger = $logger->get('tide_jira');
   }
 
   /**
+   * Extracts relevant metadata from a Node and queues a Jira ticket.
    *
+   * @param \Drupal\node\NodeInterface $node
+   *   A node entity.
    */
   public function generateJiraRequest(NodeInterface $node) {
     $author = $this->getAuthorInfo($node);
@@ -50,7 +115,7 @@ class TideJiraAPI {
       $summary = $this->getSummary($revision);
       $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $revision['notes'], $revision['preview_links']);
       $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project'], $revision['preview_links']);
-      $this->queue_backend->createItem($request);
+      $this->queueBackend->createItem($request);
       $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
     }
     else {
@@ -59,16 +124,31 @@ class TideJiraAPI {
   }
 
   /**
+   * Generates frontend links for a node.
    *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   * @param bool $stringify
+   *   Whether to return an array or concatenated string.
+   *
+   * @return array|string
+   *   Preview links.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   *   Thrown on invalid plugin.
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   *   Thrown when a non-existent plugin is requested.
+   * @throws \ReflectionException
+   *   Thrown when there's an issue changing class permissions.
    */
   private function getPreviewLinks(NodeInterface $node, $stringify = FALSE) {
     $results = [];
-    $sites = $this->site_helper->getEntitySites($node);
+    $sites = $this->tideSiteHelper->getEntitySites($node);
     $sites = $sites['ids'];
 
     foreach ($sites as $site_id) {
-      $term = $this->entity_manager->getStorage('taxonomy_term')->load($site_id);
-      $result = $this->preview_generator->invokeArgs($this->preview_builder, [
+      $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($site_id);
+      $result = $this->previewGenerator->invokeArgs($this->previewBuilder, [
         $node,
         $term,
       ]);
@@ -91,15 +171,27 @@ class TideJiraAPI {
   }
 
   /**
+   * Returns field_jira_project for a taxonomy.
    *
+   * @param int $tid
+   *   Taxonomy term ID.
+   *
+   * @return string
+   *   Returns value of field_jira_project.
    */
   private function getProjectInfo($tid) {
-    $dept = $this->entity_manager->getStorage('taxonomy_term')->load($tid);
+    $dept = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
     return $dept->get('field_jira_project')->getValue()[0]['value'];
   }
 
   /**
+   * Generates a ticket summary based on moderation state.
    *
+   * @param string $revision
+   *   The moderation state.
+   *
+   * @return string
+   *   Ticket summary.
    */
   private function getSummary($revision) {
     $moderation_state = $revision['moderation_state'];
@@ -112,7 +204,13 @@ class TideJiraAPI {
   }
 
   /**
+   * Generates an array with relevant page metadata.
    *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   *
+   * @return array
+   *   Metadata for ticket creation.
    */
   private function getRevisionInfo(NodeInterface $node) {
     return [
@@ -120,7 +218,7 @@ class TideJiraAPI {
       'title' => $node->getTitle(),
       'bundle' => $node->getType(),
       'moderation_state' => $node->get('moderation_state')->value,
-      'updated_date' => $this->date_formatter->format($node->get('changed')->value),
+      'updated_date' => $this->dateFormatter->format($node->get('changed')->value),
       'is_new' => $node->isNew() ? 'New page' : 'Content update',
       'notes' => $node->getRevisionLogMessage(),
       'preview_links' => $this->getPreviewLinks($node, TRUE),
@@ -128,7 +226,13 @@ class TideJiraAPI {
   }
 
   /**
+   * Generates an array with relevant author metadata.
    *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   *
+   * @return array
+   *   Metadata for ticket creation.
    */
   private function getAuthorInfo(NodeInterface $node) {
     $result = [];
@@ -137,7 +241,7 @@ class TideJiraAPI {
         'email' => $node->getRevisionUser()->getEmail(),
         'account_id' => '',
         'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
-        'department' => $this->entity_manager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
+        'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
         'project' => $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first() ? $node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'] : NULL),
       ];
     }
@@ -145,7 +249,33 @@ class TideJiraAPI {
   }
 
   /**
+   * Templates the ticket body.
    *
+   * @param string $name
+   *   User's name.
+   * @param string $email
+   *   User's email.
+   * @param string $department
+   *   User's department.
+   * @param string $title
+   *   Ticket title.
+   * @param string $id
+   *   Revision ID.
+   * @param string $moderation_state
+   *   Moderation state.
+   * @param string $bundle
+   *   Content type.
+   * @param string $is_new
+   *   Whether the page is new.
+   * @param string $updated_date
+   *   Updated date.
+   * @param string $notes
+   *   Revision log notes.
+   * @param string $preview_links
+   *   Frontend preview links.
+   *
+   * @return string
+   *   Templated ticket body as a Heredoc.
    */
   private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
     return <<<EOT
