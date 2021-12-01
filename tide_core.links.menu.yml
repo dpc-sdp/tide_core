@@ -1,0 +1,5 @@
+tide_core.main.settings:
+  title: 'Tide auto complete'
+  route_name: tide_core.autocomplete
+  description: 'Configure tide entity reference auto complete.'
+  parent: system.admin_config_search

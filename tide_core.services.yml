@@ -7,3 +7,15 @@ services:
     class: Drupal\tide_core\TideEntityUpdateHelper
     arguments:
       [ '@entity_type.manager', '@entity_field.manager', '@entity.last_installed_schema.repository', '@field_storage_definition.listener' ]
+
+  tide_core.entity_autocomplete:
+    class: Drupal\tide_core\TideEntityAutocomplete
+
+  tide_core.route_subscriber:
+    class: Drupal\tide_core\Routing\AutocompleteRouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  tide_core.autocomplete_matcher:
+    class: Drupal\tide_core\EntityAutocompleteMatcher
+    arguments: ['@plugin.manager.entity_reference_selection']

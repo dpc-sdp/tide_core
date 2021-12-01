@@ -10,3 +10,7 @@
   border-left: 2px solid #eee;
   padding-left: 20px;
 }
+
+table.cke_dialog  .cke_dialog_body {
+  background-color: #FFF;
+}

@@ -13,3 +13,11 @@ tide_core.node.action_confirm:
     _title_callback: '\Drupal\tide_core\Form\NodeActionForm::getTitle'
   requirements:
     _custom_access: '\Drupal\tide_core\Form\NodeActionForm::access'
+
+tide_core.autocomplete:
+  path: '/admin/config/tide-entity-autocomplete'
+  defaults:
+    _form: 'Drupal\tide_core\Form\TideEntityAutocompleteSettings'
+    _title: 'Tide autocomplete settings'
+  requirements:
+    _permission: 'administration pages access'
