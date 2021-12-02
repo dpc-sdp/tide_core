@@ -76,18 +76,13 @@
         "drupal/jquery_ui_touch_punch": "^1.0",
         "drupal/admin_audit_trail": "^1.0",
         "drupal/block_inactive_users": "^2.0",
-        "lesstif/php-jira-rest-client": "dev-main as 2.6.0",
+        "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "4.x-dev@dev"
     },
     "repositories": {
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        "lesstif/php-jira-rest-client": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/php-jira-rest-client.git"
         },
         "ckeditor.autogrow": {
             "_webform": true,
@@ -262,6 +257,9 @@
             },
             "drupal/jira_rest": {
                 "Add a function to return the UserService object - https://www.drupal.org/project/jira_rest/issues/3252182": "https://www.drupal.org/files/issues/2021-12-02/jira_rest_userservice.patch"
+            },
+            "lesstif/php-jira-rest-client": {
+                "Supports email lookup" : "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
             }
         }
     }
