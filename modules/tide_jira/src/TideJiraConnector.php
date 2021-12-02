@@ -69,7 +69,7 @@ class TideJiraConnector {
    * @return string
    *   The CID.
    */
-  private function getUserCid($email) {
+  public function getUserCid($email) {
     return 'tide_jira:jira_account_id:' . sha1($email);
   }
 

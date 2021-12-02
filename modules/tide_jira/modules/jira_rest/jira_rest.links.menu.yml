@@ -1,6 +1,0 @@
-jira_rest.config:
-  title: 'Jira REST Config'
-  parent: system.admin_config_services
-  route_name: entity.jira_endpoint.collection
-  description: 'Configure Jira REST connection parameters'
-  weight: -1

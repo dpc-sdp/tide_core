@@ -76,7 +76,8 @@
         "drupal/jquery_ui_touch_punch": "^1.0",
         "drupal/admin_audit_trail": "^1.0",
         "drupal/block_inactive_users": "^2.0",
-        "lesstif/php-jira-rest-client": "dev-main"
+        "lesstif/php-jira-rest-client": "dev-main as 2.6.0",
+        "drupal/jira_rest": "4.x-dev@dev"
     },
     "repositories": {
         "drupal": {
@@ -258,6 +259,9 @@
             },
             "drupal/jquery_ui_touch_punch": {
                 "jQuery UI Touch Punch library - https://www.drupal.org/project/jquery_ui_touch_punch/issues/3159222#comment-14011939": "https://www.drupal.org/files/issues/2021-02-26/jquery_ui_touch_punch.patch"
+            },
+            "drupal/jira_rest": {
+                "Add a function to return the UserService object - https://www.drupal.org/project/jira_rest/issues/3252182": "https://www.drupal.org/files/issues/2021-12-02/jira_rest_userservice.patch"
             }
         }
     }

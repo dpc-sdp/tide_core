@@ -8,6 +8,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
+use Drupal\tide_site_preview\TideSitePreviewHelper;
 use Drupal\tide_site\TideSiteHelper;
 
 /**
@@ -58,15 +59,9 @@ class TideJiraAPI {
   /**
    * Injected Tide Site Preview Links Plugin.
    *
-   * @var \Drupal\tide_site_preview\Plugin\Block\PreviewLinksBlock
+   * @var \Drupal\tide_site_preview\TideSitePreviewHelper
    */
-  private $previewBuilder;
-  /**
-   * Modified Preview Links Plugin.
-   *
-   * @var \ReflectionMethod
-   */
-  private $previewGenerator;
+  private $tideSitePreviewHelper;
 
   /**
    * Instantiates a new TideJiraAPI.
@@ -90,11 +85,8 @@ class TideJiraAPI {
    * @throws \ReflectionException
    *   Thrown when there's an issue changing class permissions.
    */
-  public function __construct(BlockManager $block_plugin_manager, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
-    $this->blockPluginManager = $block_plugin_manager;
-    $this->previewBuilder = $this->blockPluginManager->createInstance('tide_site_preview_links_block');
-    $this->previewGenerator = new \ReflectionMethod($this->previewBuilder, 'buildFrontendPreviewLink');
-    $this->previewGenerator->setAccessible(TRUE);
+  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
+    $this->tideSitePreviewHelper = $site_preview_helper;
     $this->tideSiteHelper = $site_helper;
     $this->queueBackend = $queue_backend->get(self::QUEUE_NAME);
     $this->entityTypeManager = $entity_manager;
@@ -138,8 +130,6 @@ class TideJiraAPI {
    *   Thrown on invalid plugin.
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    *   Thrown when a non-existent plugin is requested.
-   * @throws \ReflectionException
-   *   Thrown when there's an issue changing class permissions.
    */
   private function getPreviewLinks(NodeInterface $node, $stringify = FALSE) {
     $results = [];
@@ -148,10 +138,7 @@ class TideJiraAPI {
 
     foreach ($sites as $site_id) {
       $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($site_id);
-      $result = $this->previewGenerator->invokeArgs($this->previewBuilder, [
-        $node,
-        $term,
-      ]);
+      $result = $this->tideSitePreviewHelper->buildFrontendPreviewLink($node, $term);
       array_push($results, $result['url']->getUri());
     }
 

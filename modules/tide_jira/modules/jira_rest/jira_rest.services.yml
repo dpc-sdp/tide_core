@@ -1,7 +1,0 @@
-services:
-  jira_endpoint.repository:
-    class: Drupal\jira_rest\JiraEndpointRepository
-    arguments: ['@entity_type.manager']
-  jira_rest_wrapper_service:
-    class: Drupal\jira_rest\JiraRestWrapperService
-    arguments: ['@jira_endpoint.repository','@key.repository', '@logger.factory']
