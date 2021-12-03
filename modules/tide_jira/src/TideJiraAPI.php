@@ -2,7 +2,6 @@
 
 namespace Drupal\tide_jira;
 
-use Drupal\Core\Block\BlockManager;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -66,8 +65,8 @@ class TideJiraAPI {
   /**
    * Instantiates a new TideJiraAPI.
    *
-   * @param \Drupal\Core\Block\BlockManager $block_plugin_manager
-   *   Drupal Block Plugin Manager.
+   * @param \Drupal\tide_site_preview\TideSitePreviewHelper $site_preview_helper
+   *   Tide Site Preview Helper.
    * @param \Drupal\tide_site\TideSiteHelper $site_helper
    *   Tide Site Helper.
    * @param \Drupal\Core\Queue\QueueFactory $queue_backend

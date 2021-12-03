@@ -5,7 +5,11 @@ id: jira_rest_default
 label: 'Migrated Endpoint'
 description: null
 instanceurl: 'https://digital-engagement.atlassian.net'
-username: sdp.devs@dpc.vic.gov.au
-password: jira
-clone_issue_transititon_id: '2'
+credential_provider: key
+credentials:
+  key:
+    username: jira_username
+    password: jira
+api_version: '2'
+close_issue_transititon_id: null
 resolve_issue_transition_id: 5
