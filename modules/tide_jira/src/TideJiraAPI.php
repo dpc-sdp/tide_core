@@ -77,12 +77,6 @@ class TideJiraAPI {
    *   Drupal Date Formatter.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
    *   Drupal Logger Factory.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\PluginException
-   *   Thrown when accessing a non-existent plugin.
-   *
-   * @throws \ReflectionException
-   *   Thrown when there's an issue changing class permissions.
    */
   public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
     $this->tideSitePreviewHelper = $site_preview_helper;
@@ -124,11 +118,6 @@ class TideJiraAPI {
    *
    * @return array|string
    *   Preview links.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   *   Thrown on invalid plugin.
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   *   Thrown when a non-existent plugin is requested.
    */
   private function getPreviewLinks(NodeInterface $node, $stringify = FALSE) {
     $results = [];
