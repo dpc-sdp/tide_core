@@ -256,12 +256,27 @@ function tide_core_preprocess_status_messages(&$variables) {
  */
 function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['revision_log'])) {
-    $form['#attached']['library'] = 'tide_core/content_moderation';
+    $form['#attached']['library'][] = 'tide_core/content_moderation';
+    $form['#attached']['library'][] = 'tide_core/node_revision_log';
     $form['revision_log']['#type'] = 'textarea';
-    $form['revision_log']['#title'] = t('Publishing instructions and comments');
-    $form['revision_log']['#description'] = t('All content will be published within 24 hours. State below if your content is embargoed or time critical.');
-    $form['new_state']['#title'] = t('Change status to');
+    $form['revision_log']['#title'] = t('Change request detail');
+    $form['revision_log']['#description'] = t('Specify details of <strong>all changes</strong> made in this update. If content is embargoed or time specific, enter the scheduling details. Content will be published within <strong>24 business hours</strong>. Contact your content team for urgent publishing requests.');
+    $form['#validate'][] = '_tide_core_node_form_log_message_validate';
   }
+
+}
+
+/**
+ * Moderation form validate function.
+ */
+function _tide_core_node_form_log_message_validate(&$form, FormStateInterface $form_state) {
+  $new_state = $form_state->getValue('new_state');
+  $require_logs = ['needs_review', 'archive_pending'];
+  $revision_log = $form_state->getValue('revision_log');
+  if (in_array($new_state, $require_logs) && empty($revision_log)) {
+    $form_state->setErrorByName('revision_log', t('The publisher comments field must not be blank'));
+  }
+
 }
 
 /**
@@ -288,6 +303,33 @@ function tide_core_editor_js_settings_alter(array &$settings) {
 function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#process'][] = '_tide_core_form_node_form_process';
+
+  // Add comment log message field.
+  if (isset($form['revision_log']) && $form['revision_log']['#access']) {
+    $form['moderation_state']['comment_log_message'] = [
+      '#type' => 'textarea',
+      '#title' => t('Change request detail:'),
+      '#description' => t('Specify details of <strong>all changes</strong> made in this update. If content is embargoed or time specific, enter the scheduling details. Content will be published within <strong>24 business hours</strong>. Contact your content team for urgent publishing requests.'),
+      '#rows' => 3,
+      '#weight' => 9,
+    ];
+    $form['#validate'][] = '_tide_core_node_edit_form_log_message_validate';
+    $form['#attached']['library'][] = 'tide_core/node_revision_log';
+  }
+
+}
+
+/**
+ * Node edit form validate function.
+ */
+function _tide_core_node_edit_form_log_message_validate(&$form, FormStateInterface $form_state) {
+  $moderation_state = reset($form_state->getValue('moderation_state'));
+  $require_logs = ['needs_review', 'archive_pending'];
+  $revision_log = reset($form_state->getValue('revision_log'));
+  if (in_array($moderation_state['value'], $require_logs) && empty($revision_log['value'])) {
+    $form_state->setErrorByName('comment_log_message', t('The publisher comments field must not be blank'));
+  }
+
 }
 
 /**

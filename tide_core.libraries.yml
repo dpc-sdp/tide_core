@@ -15,3 +15,13 @@ sticky_node_form_sidebar:
   css:
     theme:
       css/sticky_node_form_sidebar.css: {}
+node_revision_log:
+  version: VERSION
+  css:
+    theme:
+      css/node_revision_log.css: {}
+  js:
+    js/node_revision_log.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
