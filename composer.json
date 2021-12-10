@@ -229,9 +229,6 @@
             "drupal/field_group": {
                 "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch"
             },
-            "drupal/permissions_by_term": {
-                "scheduled_transitions module integration issue - https://www.drupal.org/project/permissions_by_term/issues/3065986#comment-13171384": "https://www.drupal.org/files/issues/2019-07-05/permissions_by_term-issue-3065986-D8.6.16.patch"
-            },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-13525843": "https://www.drupal.org/files/issues/2020-03-27/password_policy-move-password-validation-to-user-entity-2941526-8-D8.patch"
             },
