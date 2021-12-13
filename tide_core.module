@@ -306,7 +306,7 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
 
   // Add comment log message field.
   $node = $form_state->getFormObject()->getEntity();
-  // Apply to edit form only, look tide_workflow_notification_form_node_form_alter.
+  // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
   if ($node->isNew()) {
     return;
   }
