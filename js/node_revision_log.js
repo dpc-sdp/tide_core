@@ -45,8 +45,12 @@
       });
 
       // Copy comment log message to revision log.
-      $('.form-item-comment-log-message textarea').keyup(function(e){
+      $('.form-item-comment-log-message textarea').blur(function(e){
         $('.field--name-revision-log textarea').val(e.target.value);
+      });
+
+      $('.field--name-revision-log textarea').blur(function(e){
+        $('.form-item-comment-log-message textarea').val(e.target.value);
       });
 
     }

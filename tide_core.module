@@ -305,6 +305,11 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
   $form['#process'][] = '_tide_core_form_node_form_process';
 
   // Add comment log message field.
+  $node = $form_state->getFormObject()->getEntity();
+  // Apply to edit form only, look tide_workflow_notification_form_node_form_alter.
+  if ($node->isNew()) {
+    return;
+  }
   if (isset($form['revision_log']) && $form['revision_log']['#access']) {
     $form['moderation_state']['comment_log_message'] = [
       '#type' => 'textarea',
@@ -323,6 +328,9 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
  * Node edit form validate function.
  */
 function _tide_core_node_edit_form_log_message_validate(&$form, FormStateInterface $form_state) {
+  if (!$form['revision_log']['#access']) {
+    return;
+  }
   $moderation_state = reset($form_state->getValue('moderation_state'));
   $require_logs = ['needs_review', 'archive_pending'];
   $revision_log = reset($form_state->getValue('revision_log'));
