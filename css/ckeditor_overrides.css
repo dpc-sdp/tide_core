@@ -14,3 +14,15 @@
 table.cke_dialog  .cke_dialog_body {
   background-color: #FFF;
 }
+
+a.cke_button__drupallink span {
+  background-image: url('../icons/link.png') !important;
+}
+
+a.cke_button__drupalunlink span {
+  background-image: url('../icons/unlink.png') !important;
+}
+
+a.cke_button__link span {
+  background-image: url('../icons/external_link.png') !important;
+}
