@@ -276,7 +276,7 @@ function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, 
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
  */
-function _tide_core_node_form_log_message_validate(&$form, FormStateInterface $form_state) {
+function _tide_core_node_form_log_message_validate(array &$form, FormStateInterface $form_state) {
   $new_state = $form_state->getValue('new_state');
   $require_logs = ['needs_review', 'archive_pending'];
   $revision_log = $form_state->getValue('revision_log');
@@ -341,7 +341,7 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
  */
-function _tide_core_node_edit_form_log_message_validate(&$form, FormStateInterface $form_state) {
+function _tide_core_node_edit_form_log_message_validate(array &$form, FormStateInterface $form_state) {
   if (!$form['revision_log']['#access']) {
     return;
   }
