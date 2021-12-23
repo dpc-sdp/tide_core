@@ -267,7 +267,14 @@ function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, 
 }
 
 /**
- * Moderation form validate function.
+ * A validate handler on the moderation form.
+ *
+ * Check log message is required when status is needs_review or archive_pending.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
  */
 function _tide_core_node_form_log_message_validate(&$form, FormStateInterface $form_state) {
   $new_state = $form_state->getValue('new_state');
@@ -325,7 +332,14 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
 }
 
 /**
- * Node edit form validate function.
+ * A validate handler on the node form.
+ *
+ * Check log message ir required when status is needs_review or archive_pending.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
  */
 function _tide_core_node_edit_form_log_message_validate(&$form, FormStateInterface $form_state) {
   if (!$form['revision_log']['#access']) {
