@@ -9,7 +9,6 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\tide_site_preview\TideSitePreviewHelper;
 use Drupal\tide_site\TideSiteHelper;
-use Drupal\tide_jira\TideJiraException;
 
 /**
  * Tide Jira helper functions.

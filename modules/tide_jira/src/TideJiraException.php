@@ -2,6 +2,9 @@
 
 namespace Drupal\tide_jira;
 
-use \Exception;
+use Exception;
 
+/**
+ * Named exception for Tide Jira.
+ */
 class TideJiraException extends Exception {}
