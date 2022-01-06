@@ -9,6 +9,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\tide_site_preview\TideSitePreviewHelper;
 use Drupal\tide_site\TideSiteHelper;
+use Drupal\tide_jira\TideJiraException;
 
 /**
  * Tide Jira helper functions.
@@ -94,6 +95,10 @@ class TideJiraAPI {
    *   A node entity.
    */
   public function generateJiraRequest(NodeInterface $node) {
+    if (empty($node)) {
+      throw new TideJiraException('Invalid node provided.');
+    }
+
     $author = $this->getAuthorInfo($node);
     if (!empty($author)) {
       $revision = $this->getRevisionInfo($node);
@@ -217,7 +222,7 @@ class TideJiraAPI {
         'account_id' => '',
         'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
         'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
-        'project' => $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first() ? $node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'] : NULL),
+        'project' => $node->getRevisionUser()->get('field_department_agency')->first() ? $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']) : NULL,
       ];
     }
     return $result;
