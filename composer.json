@@ -221,7 +221,7 @@
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
             },
             "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2021-02-22/metatag-data-type-support-2945817-112_0.patch"
+                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2021-12-21/metatag-data-type-support-2945817-132.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
