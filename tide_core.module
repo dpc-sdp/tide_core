@@ -265,9 +265,10 @@ function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, 
 }
 
 /**
- * Common Text strings for Revision Log Message forms
+ * Common revision log message form label text.
  *
  * @return array
+ *   Form API key values.
  */
 function _tide_core_revision_log_form_label_text(): array {
   return [
