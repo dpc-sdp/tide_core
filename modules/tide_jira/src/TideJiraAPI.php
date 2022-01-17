@@ -160,7 +160,12 @@ class TideJiraAPI {
    */
   private function getProjectInfo($tid) {
     $dept = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
-    return $dept->get('field_jira_project')->getValue()[0]['value'];
+    $project = $dept->get('field_jira_project')->getValue();
+    $result = NULL;
+    if ($project) {
+      $result = $project[0]['value'];
+    }
+    return $result;
   }
 
   /**
@@ -216,13 +221,16 @@ class TideJiraAPI {
   private function getAuthorInfo(NodeInterface $node) {
     $result = [];
     if ($node->getRevisionUser()->get('field_department_agency')->first()) {
-      $result = [
-        'email' => $node->getRevisionUser()->getEmail(),
-        'account_id' => '',
-        'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
-        'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
-        'project' => $node->getRevisionUser()->get('field_department_agency')->first() ? $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']) : NULL,
-      ];
+      $project = $node->getRevisionUser()->get('field_department_agency')->first() ? $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']) : NULL;
+      if ($project) {
+        $result = [
+          'email' => $node->getRevisionUser()->getEmail(),
+          'account_id' => '',
+          'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
+          'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
+          'project' => $project,
+        ];
+      }
     }
     return $result;
   }
