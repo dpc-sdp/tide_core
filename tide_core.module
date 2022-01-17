@@ -5,21 +5,21 @@
  * Contains tide_core.module.
  */
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Markup;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\node\Entity\Node;
-use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Breadcrumb\Breadcrumb;
-use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_views_data().
@@ -259,11 +259,21 @@ function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, 
     $form['#attached']['library'][] = 'tide_core/content_moderation';
     $form['#attached']['library'][] = 'tide_core/node_revision_log';
     $form['revision_log']['#type'] = 'textarea';
-    $form['revision_log']['#title'] = t('Change request detail');
-    $form['revision_log']['#description'] = t('Specify details of <strong>all changes</strong> made in this update. If content is embargoed or time specific, enter the scheduling details. Content will be published within <strong>24 business hours</strong>. Contact your content team for urgent publishing requests.');
+    $form['revision_log'] = _tide_core_revision_log_form_label_text() + $form['revision_log'];
     $form['#validate'][] = '_tide_core_node_form_log_message_validate';
   }
+}
 
+/**
+ * Common Text strings for Revision Log Message forms
+ *
+ * @return array
+ */
+function _tide_core_revision_log_form_label_text(): array {
+  return [
+    '#title' => t('Change request detail'),
+    '#description' => t('Specify details of <strong>all changes</strong> made in this update. If content is embargoed or time specific, enter the scheduling details. Content will be published within <strong>2 business days</strong>. Contact your content team for urgent publishing requests.'),
+  ];
 }
 
 /**
@@ -318,10 +328,8 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     return;
   }
   if (isset($form['revision_log']) && $form['revision_log']['#access']) {
-    $form['moderation_state']['comment_log_message'] = [
+    $form['moderation_state']['comment_log_message'] = _tide_core_revision_log_form_label_text() + [
       '#type' => 'textarea',
-      '#title' => t('Change request detail:'),
-      '#description' => t('Specify details of <strong>all changes</strong> made in this update. If content is embargoed or time specific, enter the scheduling details. Content will be published within <strong>24 business hours</strong>. Contact your content team for urgent publishing requests.'),
       '#rows' => 3,
       '#weight' => 9,
     ];
