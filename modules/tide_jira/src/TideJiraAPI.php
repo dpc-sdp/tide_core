@@ -108,7 +108,7 @@ class TideJiraAPI {
       $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
     }
     else {
-      $this->logger->notice('User ' . $node->getRevisionUser()->getEmail() . ' has no department/project set.');
+      $this->logger->notice('User ' . $node->getRevisionUser()->getDisplayName() . ' has no project or email set.');
     }
   }
 
@@ -222,7 +222,8 @@ class TideJiraAPI {
     $result = [];
     if ($node->getRevisionUser()->get('field_department_agency')->first()) {
       $project = $node->getRevisionUser()->get('field_department_agency')->first() ? $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']) : NULL;
-      if ($project) {
+      $email = $node->getRevisionUser()->getEmail();
+      if ($project && $email) {
         $result = [
           'email' => $node->getRevisionUser()->getEmail(),
           'account_id' => '',
