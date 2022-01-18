@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_jira;
 
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -61,6 +62,12 @@ class TideJiraAPI {
    * @var \Drupal\tide_site_preview\TideSitePreviewHelper
    */
   private $tideSitePreviewHelper;
+  /**
+   * Drupal config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactory
+   */
+  protected $config;
 
   /**
    * Instantiates a new TideJiraAPI.
@@ -77,14 +84,17 @@ class TideJiraAPI {
    *   Drupal Date Formatter.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
    *   Drupal Logger Factory.
+   * @param \Drupal\Core\Config\ConfigFactory $config_factory
+   *   Drupal config factory.
    */
-  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger) {
+  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger, ConfigFactory $config_factory) {
     $this->tideSitePreviewHelper = $site_preview_helper;
     $this->tideSiteHelper = $site_helper;
     $this->queueBackend = $queue_backend->get(self::QUEUE_NAME);
     $this->entityTypeManager = $entity_manager;
     $this->dateFormatter = $date_formatter;
     $this->logger = $logger->get('tide_jira');
+    $this->config = $config_factory->get('tide_jira.settings');
   }
 
   /**
@@ -105,10 +115,10 @@ class TideJiraAPI {
       $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $revision['notes'], $revision['preview_links']);
       $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project'], $revision['preview_links']);
       $this->queueBackend->createItem($request);
-      $this->logger->debug('Queued support request for user ' . $author['email'] . ' for page ' . $revision['title']);
+      $this->logger->debug('Queued support request for user ' . $node->getRevisionUser()->getDisplayName() . ' for page ' . $revision['title']);
     }
     else {
-      $this->logger->notice('User ' . $node->getRevisionUser()->getDisplayName() . ' has no project or email set.');
+      $this->logger->notice('User ' . $node->getRevisionUser()->getDisplayName() . ' has no project or department set.');
     }
   }
 
@@ -222,10 +232,10 @@ class TideJiraAPI {
     $result = [];
     if ($node->getRevisionUser()->get('field_department_agency')->first()) {
       $project = $node->getRevisionUser()->get('field_department_agency')->first() ? $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']) : NULL;
-      $email = $node->getRevisionUser()->getEmail();
-      if ($project && $email) {
+      $email = $node->getRevisionUser()->getEmail() ? $node->getRevisionUser()->getEmail() : $this->config->get('no_account_email');
+      if ($project) {
         $result = [
-          'email' => $node->getRevisionUser()->getEmail(),
+          'email' => $email,
           'account_id' => '',
           'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
           'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
