@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_jira.module.
+ */
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_jira_node_presave(NodeInterface $node) {
+  // Never let an error working with JIRA stop content from being saved.
+  try {
+    $moderation_state = $node->get('moderation_state')->value;
+    if (($moderation_state === 'needs_review') || ($moderation_state === 'archive_pending')) {
+      \Drupal::service('tide_jira.jira_api')->generateJiraRequest($node);
+    }
+  }
+  catch (Exception $e) {
+    \Drupal::messenger()->addError("There was an error reaching JIRA. Please contact support.");
+    \Drupal::logger('tide_jira')->error($e);
+  }
+
+}

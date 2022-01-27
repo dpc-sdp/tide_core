@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_jira_project
+    - taxonomy.vocabulary.department
+id: taxonomy_term.department.field_jira_project
+field_name: field_jira_project
+entity_type: taxonomy_term
+bundle: department
+label: 'JIRA Project'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
