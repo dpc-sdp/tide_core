@@ -21,6 +21,9 @@ function tide_jira_node_update(NodeInterface $node) {
   handle_save($node);
 }
 
+/**
+ * Handle the node save operation.
+ */
 function handle_save(NodeInterface $node) {
   // Never let an error working with JIRA stop content from being saved.
   try {
