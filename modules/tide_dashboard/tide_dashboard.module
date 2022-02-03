@@ -33,10 +33,9 @@ function _tide_dashboard_workbench_content_title_callback() {
 /**
  * Implements hook_user_login().
  */
-function tide_dashboard_user_login($account) {
-  $destination = \Drupal::service('redirect.destination')->get();
-  if (!(strpos($destination, '/oauth/authorize') !== FALSE)) {
-    $request = \Drupal::service('request_stack')->getCurrentRequest();
+function tide_dashboard_user_login() {
+  $request = \Drupal::service('request_stack')->getCurrentRequest();
+  if (($request->query->has('destination')) === FALSE) {
     $request->query->set('destination', '/admin/workbench');
   }
 }

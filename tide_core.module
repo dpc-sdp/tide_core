@@ -143,6 +143,21 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
     }
   }
+  if ($form_id === 'menu_edit_form') {
+    if (isset($form_state->getUserInput()['op'])) {
+      if ($form_state->getUserInput()['op'] === 'Save') {
+        $form['actions']['submit']['#submit'][] = '_tide_core_menu_submit_handler';
+      }
+    }
+  }
+}
+
+/**
+ * Redirect form upon saving to the Menu UI Module collection.
+ */
+function _tide_core_menu_submit_handler(&$form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('entity.menu.collection');
+  $form_state->setRedirectUrl($url);
 }
 
 /**
@@ -443,21 +458,18 @@ function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $op
  * Implements hook_node_access_records().
  */
 function tide_core_node_access_records(NodeInterface $node) {
-  // Only run if the module permission by terms is enabled.
-  if (\Drupal::moduleHandler()->moduleExists('permissions_by_term')) {
-    if (!$node->isPublished()) {
-      $grants = [];
-      $grants[] = [
-        'realm' => 'tide_core',
-        'gid' => 1,
-        'grant_view' => 1,
-        'grant_update' => 0,
-        'grant_delete' => 0,
-        'nid' => $node->id(),
-      ];
+  if (!$node->isPublished()) {
+    $grants = [];
+    $grants[] = [
+      'realm' => 'tide_core',
+      'gid' => 1,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'nid' => $node->id(),
+    ];
 
-      return $grants;
-    }
+    return $grants;
   }
   return [];
 }
@@ -466,17 +478,14 @@ function tide_core_node_access_records(NodeInterface $node) {
  * Implements hook_node_grants().
  */
 function tide_core_node_grants(AccountInterface $account, $op) {
-  // Only run if the module permission by terms is enabled.
-  if (\Drupal::moduleHandler()->moduleExists('permissions_by_term')) {
-    if ($op === 'view') {
-      $view_unpublished_content_roles = array_keys(user_roles(TRUE, 'view any unpublished content'));
-      $account_roles = $account->getRoles();
-      if (!empty(array_intersect($account_roles, $view_unpublished_content_roles))) {
-        $grants = [];
-        $grants['tide_core'][] = 1;
+  if ($op === 'view') {
+    $view_unpublished_content_roles = array_keys(user_roles(TRUE, 'view any unpublished content'));
+    $account_roles = $account->getRoles();
+    if (!empty(array_intersect($account_roles, $view_unpublished_content_roles))) {
+      $grants = [];
+      $grants['tide_core'][] = 1;
 
-        return $grants;
-      }
+      return $grants;
     }
   }
   return [];
@@ -487,13 +496,11 @@ function tide_core_node_grants(AccountInterface $account, $op) {
  */
 function tide_core_node_access(NodeInterface $node, $op, AccountInterface $account) {
   // Only run if the module permission by terms is enabled.
-  if (\Drupal::moduleHandler()->moduleExists('permissions_by_term')) {
-    if (!$node->isPublished() && $op === 'view') {
-      $access_result = AccessResult::allowedIfHasPermission($account, 'view any unpublished content');
-      $access_result = $access_result->andIf(AccessResult::allowedIf($node->getOwnerId() == $account->id() || $node->getRevisionUserId() == $account->id()));
+  if (!$node->isPublished() && $op === 'view') {
+    $access_result = AccessResult::allowedIfHasPermission($account, 'view any unpublished content');
+    $access_result = $access_result->andIf(AccessResult::allowedIf($node->getOwnerId() == $account->id() || $node->getRevisionUserId() == $account->id()));
 
-      return $access_result->addCacheableDependency($node);
-    }
+    return $access_result->addCacheableDependency($node);
   }
   return AccessResult::neutral()->addCacheableDependency($node);
 }
@@ -522,4 +529,46 @@ function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchIn
       }
     }
   }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_core_node_presave(NodeInterface $node) {
+  $node_state = $node->get('moderation_state')->getValue()[0]['value'];
+
+  if ($node_state === 'published') {
+    $log = [
+      /*
+       * Term the 'type' => 'node' as 'type' => 'page'
+       * to improve log readability.
+       */
+      'type' => 'page',
+      'operation' => 'published',
+      'description' => t('%type: %title - New page created with workflow state %new_state', [
+        '%type' => $node->getType(),
+        '%title' => $node->getTitle(),
+        '%new_state' => $node_state,
+      ]),
+      'ref_numeric' => $node->id(),
+      'ref_char' => $node->getTitle(),
+    ];
+
+    // Add the log to the "admin_audit_trail" table.
+    if (function_exists('admin_audit_trail_insert')) {
+      admin_audit_trail_insert($log);
+    }
+  }
+}
+
+/**
+ * Implements hook_admin_audit_trail_handlers().
+ */
+function tide_core_admin_audit_trail_handlers() {
+  // Page event log handler.
+  $handlers = [];
+  $handlers['page'] = [
+    'title' => t('Page'),
+  ];
+  return $handlers;
 }
