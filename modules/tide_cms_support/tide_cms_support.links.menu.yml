@@ -1,0 +1,36 @@
+tide_cms_support.cms_guides:
+  title: 'CMS Support'
+  description: 'Access our content guides, find out where you can get further content support and training, and keep up to date by reading our latest CMS update release notes.'
+  parent: 'system.admin'
+  url: https://www.singledigitalpresence.vic.gov.au/content-cms-guides
+  weight: 100
+tide_cms_support.working_in_the_cms:
+  title: 'Working in the CMS'
+  description: 'Everything you need to know about working in the CMS throughout the content lifecycle – drafting, scheduling, publishing, archiving and more.'
+  parent: 'tide_cms_support.cms_guides'
+  url: https://www.singledigitalpresence.vic.gov.au/working-in-the-cms
+  weight: 0
+tide_cms_support.cms_content_templates:
+  title: 'Content templates'
+  description: 'How to use our content page templates or create specific types of content.'
+  parent: 'tide_cms_support.cms_guides'
+  url: https://www.singledigitalpresence.vic.gov.au/content-types-and-templates
+  weight: 0
+tide_cms_support.cms_components:
+  title: 'CMS components'
+  description: 'How and when to use the various components and features available for content pages in our content management system.'
+  parent: 'tide_cms_support.cms_guides'
+  url: https://www.singledigitalpresence.vic.gov.au/cms-components
+  weight: 0
+tide_cms_support.cms_media_items:
+  title: 'Media items'
+  description: 'Instructions on how to add and embed images, videos, audio files and documents onto your webpage.'
+  parent: 'tide_cms_support.cms_guides'
+  url: https://www.singledigitalpresence.vic.gov.au/images-video-audio-documents
+  weight: 0
+tide_cms_support.cms_content_support:
+  title: 'Content support'
+  description: 'Follow these steps if you have a question about using the Single Digital Presence content management system.'
+  parent: 'tide_cms_support.cms_guides'
+  url: https://www.singledigitalpresence.vic.gov.au/get-cms-content-support
+  weight: 0
