@@ -5,21 +5,21 @@
  * Contains tide_core.module.
  */
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Markup;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\node\Entity\Node;
-use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Breadcrumb\Breadcrumb;
-use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_views_data().
@@ -143,6 +143,21 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
     }
   }
+  if ($form_id === 'menu_edit_form') {
+    if (isset($form_state->getUserInput()['op'])) {
+      if ($form_state->getUserInput()['op'] === 'Save') {
+        $form['actions']['submit']['#submit'][] = '_tide_core_menu_submit_handler';
+      }
+    }
+  }
+}
+
+/**
+ * Redirect form upon saving to the Menu UI Module collection.
+ */
+function _tide_core_menu_submit_handler(&$form, FormStateInterface $form_state) {
+  $url = Url::fromRoute('entity.menu.collection');
+  $form_state->setRedirectUrl($url);
 }
 
 /**
@@ -256,12 +271,47 @@ function tide_core_preprocess_status_messages(&$variables) {
  */
 function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['revision_log'])) {
-    $form['#attached']['library'] = 'tide_core/content_moderation';
+    $form['#attached']['library'][] = 'tide_core/content_moderation';
+    $form['#attached']['library'][] = 'tide_core/node_revision_log';
     $form['revision_log']['#type'] = 'textarea';
-    $form['revision_log']['#title'] = t('Publishing instructions and comments');
-    $form['revision_log']['#description'] = t('All content will be published within 24 hours. State below if your content is embargoed or time critical.');
-    $form['new_state']['#title'] = t('Change status to');
+    $form['revision_log'] = _tide_core_revision_log_form_label_text() + $form['revision_log'];
+    $form['#validate'][] = '_tide_core_node_form_log_message_validate';
   }
+}
+
+/**
+ * Common revision log message form label text.
+ *
+ * @return array
+ *   Form API key values.
+ */
+function _tide_core_revision_log_form_label_text(): array {
+  return [
+    '#title' => t('Change request detail'),
+    '#description' => t('Use this field to specify details of changes made in this update. If content is embargoed or time specific, enter the scheduling details. <br /> <br />
+        Keep the content in <strong>Draft</strong> until you are ready to publish. Content publishing or archiving requests will be actioned within <strong>2 business days</strong>. <br /> <br />
+        Contact your department content team for urgent publishing requests.'),
+  ];
+}
+
+/**
+ * A validate handler on the moderation form.
+ *
+ * Check log message is required when status is needs_review or archive_pending.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _tide_core_node_form_log_message_validate(array &$form, FormStateInterface $form_state) {
+  $new_state = $form_state->getValue('new_state');
+  $require_logs = ['needs_review', 'archive_pending'];
+  $revision_log = $form_state->getValue('revision_log');
+  if (in_array($new_state, $require_logs) && empty($revision_log)) {
+    $form_state->setErrorByName('revision_log', t('The publisher comments field must not be blank'));
+  }
+
 }
 
 /**
@@ -288,6 +338,46 @@ function tide_core_editor_js_settings_alter(array &$settings) {
 function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#process'][] = '_tide_core_form_node_form_process';
+
+  // Add comment log message field.
+  $node = $form_state->getFormObject()->getEntity();
+  // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
+  if ($node->isNew()) {
+    return;
+  }
+  if (isset($form['revision_log']) && $form['revision_log']['#access']) {
+    $form['moderation_state']['comment_log_message'] = _tide_core_revision_log_form_label_text() + [
+      '#type' => 'textarea',
+      '#rows' => 3,
+      '#weight' => 9,
+    ];
+    $form['#validate'][] = '_tide_core_node_edit_form_log_message_validate';
+    $form['#attached']['library'][] = 'tide_core/node_revision_log';
+  }
+
+}
+
+/**
+ * A validate handler on the node form.
+ *
+ * Check log message ir required when status is needs_review or archive_pending.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _tide_core_node_edit_form_log_message_validate(array &$form, FormStateInterface $form_state) {
+  if (!$form['revision_log']['#access']) {
+    return;
+  }
+  $moderation_state = reset($form_state->getValue('moderation_state'));
+  $require_logs = ['needs_review', 'archive_pending'];
+  $revision_log = reset($form_state->getValue('revision_log'));
+  if (in_array($moderation_state['value'], $require_logs) && empty($revision_log['value'])) {
+    $form_state->setErrorByName('comment_log_message', t('The publisher comments field must not be blank'));
+  }
+
 }
 
 /**
@@ -439,4 +529,46 @@ function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchIn
       }
     }
   }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_core_node_presave(NodeInterface $node) {
+  $node_state = $node->get('moderation_state')->getValue()[0]['value'];
+
+  if ($node_state === 'published') {
+    $log = [
+      /*
+       * Term the 'type' => 'node' as 'type' => 'page'
+       * to improve log readability.
+       */
+      'type' => 'page',
+      'operation' => 'published',
+      'description' => t('%type: %title - New page created with workflow state %new_state', [
+        '%type' => $node->getType(),
+        '%title' => $node->getTitle(),
+        '%new_state' => $node_state,
+      ]),
+      'ref_numeric' => $node->id(),
+      'ref_char' => $node->getTitle(),
+    ];
+
+    // Add the log to the "admin_audit_trail" table.
+    if (function_exists('admin_audit_trail_insert')) {
+      admin_audit_trail_insert($log);
+    }
+  }
+}
+
+/**
+ * Implements hook_admin_audit_trail_handlers().
+ */
+function tide_core_admin_audit_trail_handlers() {
+  // Page event log handler.
+  $handlers = [];
+  $handlers['page'] = [
+    'title' => t('Page'),
+  ];
+  return $handlers;
 }
