@@ -1,0 +1,7 @@
+services:
+  logger.tide_logs:
+    class: Drupal\tide_logs\Logger\TideLogsLogger
+    factory: Drupal\tide_logs\Logger\TideLogsLoggerFactory::create
+    tags:
+      - { name: logger }
+    arguments: ['@config.factory', '@logger.log_message_parser', '@http_client']

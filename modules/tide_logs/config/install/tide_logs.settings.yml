@@ -1,0 +1,4 @@
+enable: true
+sumologic_collector_code: ''
+sumologic_category: ''
+debug: false

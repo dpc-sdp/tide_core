@@ -1,0 +1,18 @@
+# Schema for the configuration files of the tide_logs module.
+
+tide_logs.settings:
+  type: config_object
+  label: 'Tide logs settings'
+  mapping:
+    enable:
+      type: boolean
+      label: 'Enabled'
+    sumologic_collector_code:
+      type: string
+      label: 'Sumo Logic collector code'
+    sumologic_category:
+      type: string
+      label: 'Sumo Logic category'
+    debug:
+      type: boolean
+      label: 'Show debug messages'
