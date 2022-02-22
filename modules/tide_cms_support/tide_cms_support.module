@@ -8,7 +8,7 @@
 /**
  * Implements hook_toolbar_alter().
  *
- * Attach css library
+ * Attach css library.
  */
 function tide_cms_support_toolbar_alter(&$items) {
   $items['administration']['#attached']['library'][] = 'tide_cms_support/toolbar.icons';
