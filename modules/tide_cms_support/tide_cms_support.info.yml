@@ -4,7 +4,3 @@ type: module
 package: Tide
 version: 1.0
 core_version_requirement: ^8.9 || ^9
-dependencies:
-  - admin_toolbar:admin_toolbar
-  - admin_toolbar:admin_toolbar_tools
-  - drupal:toolbar
