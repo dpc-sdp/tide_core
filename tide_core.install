@@ -1333,15 +1333,15 @@ function tide_core_update_8054() {
 }
 
 /**
- * Changes the diff modules general_settings revision_pager_limit to 16.
+ * Changes the diff modules general_settings.revision_pager_limit to 16.
  */
 function tide_core_update_8056() {
   if (\Drupal::moduleHandler()->moduleExists('diff')) {
     $config = \Drupal::configFactory()
-      ->getEditable('diff.general_settings');
-    $value = $config->get('revision_pager_limit');
+      ->getEditable('diff.settings');
+    $value = $config->get('general_settings.revision_pager_limit');
     if ($value) {
-      $config->set('revision_pager_limit', 16);
+      $config->set('general_settings.revision_pager_limit', 16)->save();
     }
   }
 }
