@@ -50,7 +50,7 @@ class TideLogsLogger extends LagoonLogsLogger {
     $this->parser = $parser;
     $this->httpClient = $http_client;
     $this->moduleConfig = $module_config;
-    $this->showDebug = $module_config->get('debug');
+    $this->showDebug = (bool) $module_config->get('debug');
   }
 
   /**
