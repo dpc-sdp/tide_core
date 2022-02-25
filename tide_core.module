@@ -20,6 +20,8 @@ use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\user\Entity\Role;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\redirect\Entity\Redirect;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Implements hook_views_data().
@@ -451,6 +453,44 @@ function tide_core_menu_link_content_access(EntityInterface $menu_link_item, $op
         return AccessResult::neutral()->addCacheableDependency($menu_link_item);
       }
     }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for redirect entities.
+ */
+function tide_core_redirect_presave(Redirect $redirect) {
+  $cids = [];
+  $matches = [];
+  $redirect_node = [];
+
+  if (is_numeric($redirect->id())) {
+    array_push($cids, 'redirect:' . $redirect->id());
+  }
+
+  // Because of the field type the extraction of node id is in this way.
+  $source_alias = \Drupal::service('path_alias.manager')->getPathByAlias($redirect->getSourceUrl());
+  if ($source_alias && preg_match('/node\/(\d+)/', $source_alias, $matches)) {
+    if (isset($matches) && array_key_exists(1, $matches) && is_numeric($matches[1])) {
+      array_push($cids, 'node:' . $matches[1]);
+    }
+  }
+
+  // If internal route.
+  if ($redirect->getRedirectUrl()->isRouted()) {
+    // Get the Redirect node Id.
+    if (!is_bool($redirect->getRedirectUrl())) {
+      $redirect_node = $redirect->getRedirectUrl()->getRouteParameters();
+      if ($redirect_node && array_key_exists('node', $redirect_node)) {
+        if (is_numeric($redirect_node['node'])) {
+          array_push($cids, 'node:' . $redirect_node['node']);
+        }
+      }
+    }
+  }
+  // Invalidate the Cache tags.
+  if (!empty($cids)) {
+    Cache::invalidateTags($cids);
   }
 }
 
