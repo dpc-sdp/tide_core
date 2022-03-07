@@ -1387,7 +1387,7 @@ function tide_core_update_8057() {
   // Check if field already exported to config/sync.
   foreach ($configs as $config) {
     $config_read = _tide_read_config($config['location'], $config_location, TRUE);
-    $storage = \Drupal::entityTypeManager()->getStorage($config['field_storage_config']);
+    $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
     $id = $config['type'];
     if ($storage->load($id) == NULL) {
       $config_entity = $storage->createFromStorageRecord($config_read);
