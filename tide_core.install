@@ -1360,7 +1360,7 @@ function tide_core_update_8056() {
 }
 
 /**
- * Adds field_statistics_grid storage
+ * Adds field_statistics_grid storage.
  */
 function tide_core_update_8057() {
   $configs = [
