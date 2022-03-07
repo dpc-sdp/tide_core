@@ -1,0 +1,10 @@
+/**
+ * CMS Support icon.
+ */
+.toolbar-icon-tide-cms-support-cms-guides:before {
+    background-image: url(../images/icons/787878/question.svg);
+}
+.toolbar-icon-tide-cms-support-cms-guides:active:before,
+.toolbar-icon-tide-cms-support-cms-guides.is-active:before {
+    background-image: url(../images/icons/787878/question.svg);
+}
