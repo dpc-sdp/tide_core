@@ -1190,6 +1190,13 @@ function tide_core_update_8047() {
 }
 
 /**
+ * Set default home page and login redirect.
+ */
+function tide_core_update_8048() {
+  // Keeps the hook signature.
+}
+
+/**
  * Disable node preview for all content types.
  */
 function tide_core_update_8049() {
