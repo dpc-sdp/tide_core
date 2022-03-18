@@ -282,6 +282,17 @@ function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, 
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_editor_link_dialog_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Alter only the form with ID 'editor_link_dialog'.
+  if ($form_id !== 'editor_link_dialog') {
+    return;
+  }
+  $form['#attached']['library'][] = 'tide_core/editor_autolink';
+}
+
+/**
  * Common revision log message form label text.
  *
  * @return array

@@ -21,3 +21,9 @@ node_revision_log:
   dependencies:
     - core/jquery
     - core/drupal
+editor_autolink:
+  js:
+    js/editor_autolink.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
