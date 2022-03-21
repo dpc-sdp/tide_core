@@ -131,6 +131,11 @@ config_devel:
     - field.storage.paragraph.field_paragraph_link
     - field.storage.paragraph.field_paragraph_summary
     - field.storage.paragraph.field_paragraph_title
+    - field.storage.node.field_show_site_section_nav
+    - field.storage.paragraph.field_statistic_body
+    - field.storage.paragraph.field_statistic_block
+    - field.storage.paragraph.field_statistics_grid_theme
+    - field.storage.paragraph.field_statistic_heading
     - filter.format.admin_text
     - filter.format.rich_text
     - image.style.thumbnail
