@@ -32,7 +32,7 @@
       // address. Taken from: https://stackoverflow.com/questions/46155
       let emailRegEx = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-      $(inputSelector, context).on('change', function() {
+      $(inputSelector, context).on('change keyup', function() {
         if (emailRegEx.test(this.value)) {
           $(this).val(hrefScheme + $(this).val());
         }
