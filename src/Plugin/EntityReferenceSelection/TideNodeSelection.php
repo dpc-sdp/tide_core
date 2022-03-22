@@ -5,14 +5,7 @@ namespace Drupal\tide_core\Plugin\EntityReferenceSelection;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\tide_core\ContentEntitySortingTrait;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityRepositoryInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\node\Plugin\EntityReferenceSelection\NodeSelection;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides labels for the node entity type.
