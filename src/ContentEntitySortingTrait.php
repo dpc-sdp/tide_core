@@ -9,15 +9,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
  *
  * @package Drupal\tide_core
  */
-class TideEntityAutocomplete {
-
-  const MODERATION_STATE_RANKS = [
-    'published' => 0,
-    'editorial' => 1,
-    'feedback'  => 2,
-    'draft'     => 3,
-    'archived'  => 4,
-  ];
+trait ContentEntitySortingTrait {
 
   /**
    * Sort function to be used in usort or uasort.
@@ -30,11 +22,19 @@ class TideEntityAutocomplete {
    * @see \Drupal\tide_core\Plugin\EntityReferenceSelection\TideNodeSelection::getReferenceableEntities()
    */
   public function sortEntitiesByModerationState(ContentEntityInterface $a, ContentEntityInterface $b) {
+    $sortModerationStateRanks = [
+      'published' => 0,
+      'editorial' => 1,
+      'feedback'  => 2,
+      'draft'     => 3,
+      'archived'  => 4,
+    ];
+
     if (!$a->hasField('moderation_state') || !$b->hasField('moderation_state')) {
       return 0;
     }
-    $rank_a = self::MODERATION_STATE_RANKS[$a->get('moderation_state')->value];
-    $rank_b = self::MODERATION_STATE_RANKS[$b->get('moderation_state')->value];
+    $rank_a = $sortModerationStateRanks[$a->get('moderation_state')->value];
+    $rank_b = $sortModerationStateRanks[$b->get('moderation_state')->value];
     return $rank_a > $rank_b;
   }
 

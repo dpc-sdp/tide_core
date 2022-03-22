@@ -38,12 +38,11 @@ class EntityAutocompleteMatcher extends CoreEntityAutocompleteMatcher {
         $handler->singleTargetBundle = TRUE;
       }
 
-      $config = \Drupal::config('tide_entity_autocomplete.settings');
-      $limit = $config->get('limit');
+      $limit = 20;
 
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $limit ? $limit : 100);
+      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $limit);
 
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
