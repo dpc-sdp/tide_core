@@ -19,7 +19,7 @@ class TideCommonServices {
    * @param string $replacement
    *   Value to replace spaces in the filename.
    * @param bool $include_in_pattern
-   *   Flag to include replacement value in sanitise. Defaults to TRUE.
+   *   (optional) Flag to include replacement value in sanitise. Defaults to TRUE.
    *
    * @return string
    *   Sanitised filename.
