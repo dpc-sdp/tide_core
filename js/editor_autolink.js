@@ -62,13 +62,28 @@
       // https://www.rfc-editor.org/rfc/rfc2806
       let hrefScheme = 'tel:';
 
-      // This complex regex is meant to match on text that looks like a
-      // telephone number.
-      let telRegEx = /^([+]?[(]?[0-9]{1,4}[)]?)?[-\s\d\./#*pw]{7,}$/i;
+      // This complex regex is meant to match on text that looks like a user
+      // entered telephone number. It tolerates invalid separators like spaces
+      // and brackets.
+      let telRegEx = /^([+]?[(]?[0-9]{1,4}[)]?)?[\s\d\./#*,;-]{7,}$/i;
 
       $(inputSelector, context).on('change', function() {
         if (telRegEx.test(this.value)) {
-          $(this).val(hrefScheme + $(this).val().replace(/[^+\d\.#*pw-]+/g, ''));
+          // Valid telephone href characters are:
+          // - international prefix +
+          // - digits 0-9
+          // - pound #
+          // - asterisk *
+          // - pause ,
+          // - wait ;
+          // - separator -
+          // https://www.rfc-editor.org/rfc/rfc2806
+          let telVal = $(this).val()
+            // Replace separators.
+            .replace(/[\s\./-]+/g, '-')
+            // Remove other invalid characters.
+            .replace(/[^+\d#*,;-]+/g, '');
+          $(this).val(hrefScheme + telVal);
         }
       });
     }
