@@ -1,4 +1,5 @@
 enable: true
-sumologic_collector_code: ''
+host: sdp-logs.lagoon.svc
+port: 5514
 sumologic_category: ''
 debug: false

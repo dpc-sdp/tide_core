@@ -7,9 +7,12 @@ tide_logs.settings:
     enable:
       type: boolean
       label: 'Enabled'
-    sumologic_collector_code:
+    host:
       type: string
-      label: 'Sumo Logic collector code'
+      label: 'UDPLog host'
+    port:
+      type: integer
+      label: 'UDPLog port'
     sumologic_category:
       type: string
       label: 'Sumo Logic category'
