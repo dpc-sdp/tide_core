@@ -71,8 +71,8 @@ class TideLogsSettingsForm extends ConfigFormBase {
       '#markup' => $this->t(
         '<p>Current settings for the Tide Logs module. The defaults are set in configuration, this page is meant primarily for troubleshooting.</p>' .
         '<ul>' .
-          '<li><b>' . $this->t('Syslog host') . ':</b> ' . $config->get('host') . '</li>' .
-          '<li><b>' . $this->t('Syslog port') . ':</b> ' . $config->get('port') . '</li>' .
+          '<li><b>' . $this->t('UDPlog host') . ':</b> ' . $config->get('host') . '</li>' .
+          '<li><b>' . $this->t('UDPlog port') . ':</b> ' . $config->get('port') . '</li>' .
           '<li><b>' . $this->t('SumoLogic category') . ':</b> ' . $this->tideLogsLogger->getSumoLogicCategory() . '</li>' .
           '<li><b>' . $this->t('SumoLogic host') . ':</b> ' . $this->tideLogsLogger->getSumoLogicHost() . '</li>' .
         '</ul>'
