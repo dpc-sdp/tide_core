@@ -612,3 +612,12 @@ function tide_core_admin_audit_trail_handlers() {
   ];
   return $handlers;
 }
+
+/**
+ * Implements hook_entity_type_build().
+ */
+function tide_core_entity_type_build(array &$entity_types) {
+  if (isset($entity_types['key'])) {
+    $entity_types['key']->setClass('Drupal\tide_core\Entity\TideCoreKeys');
+  }
+}
