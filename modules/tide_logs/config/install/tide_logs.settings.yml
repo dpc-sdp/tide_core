@@ -1,5 +1,5 @@
 enable: true
-host: sdp-logs.lagoon.svc
+host: logs-forwarder.sdp-services.svc
 port: 5514
 sumologic_category: ''
 debug: false
