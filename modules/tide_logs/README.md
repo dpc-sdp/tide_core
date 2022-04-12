@@ -79,7 +79,7 @@ Provides a SumoLogic handler for Monolog.
           ```
           Everything is ready. Begin running and processing data.
           ```
-2. Enable the Tide Logs module. Go to `/admin/config/development/tide_logs` and ensure `UDPlog host` and `UDPlog port` correspond to the service's name and the port in the `config.yaml` respectively, if running with docker-compose. The module's default is `udp://sdp-logs.lagoon.svc:5514` (see the default config [here](config/install/tide_logs.settings.yml)).
+2. Enable the Tide Logs module. Go to `/admin/config/development/tide_logs` and ensure `UDPlog host` and `UDPlog port` correspond to the service's name and the port in the `config.yaml` respectively, if running with docker-compose. The module's default is `udp://logs-forwarder.sdp-services.svc:5514` (see the default config [here](config/install/tide_logs.settings.yml)).
 3. `SUMOLOGIC_CATEGORY` can also be set if a different category from the default (`sdp/dev/tide`) is required.
 4. The following search query can then be used in SumoLogic to view the logs:
    ```

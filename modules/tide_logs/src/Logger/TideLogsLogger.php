@@ -24,7 +24,7 @@ class TideLogsLogger extends LagoonLogsLogger {
   /**
    * Default udplog host.
    */
-  public const DEFAULT_UDPLOG_HOST = 'sdp-logs.lagoon.svc';
+  public const DEFAULT_UDPLOG_HOST = 'logs-forwarder.sdp-services.svc';
 
   /**
    * Default udplog port.
