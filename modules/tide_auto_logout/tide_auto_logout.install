@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Installation for tide_auto_logout.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function tide_auto_logout_install($is_syncing) {
+  $settings = \Drupal::configFactory()
+    ->getEditable('autologout.settings');
+  $settings->set('timeout', 72000)
+    ->save();
+}

@@ -1,0 +1,7 @@
+name: Tide Auto Logout
+type: module
+description: Tide Auto Logout integration
+core_version_requirement: ^8.9 || ^9
+package: tide
+dependencies:
+  - autologout:autologout

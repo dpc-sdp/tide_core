@@ -1,0 +1,5 @@
+{
+    "name": "dpc-sdp/tide_auto_logout",
+    "description": "Tide Auto Logout integration",
+    "type": "drupal-module"
+}
