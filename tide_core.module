@@ -175,6 +175,15 @@ function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormState
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_user_register_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['account']['mail']['#required'])) {
+    $form['account']['mail']['#required'] = true;
+  }
+}
+
+/**
  * Submit handler for altering updating status message.
  */
 function _tide_core_modified_update_adding_message(&$form, $form_state) {
