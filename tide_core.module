@@ -179,7 +179,7 @@ function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormState
  */
 function tide_core_form_user_register_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['account']['mail']['#required'])) {
-    $form['account']['mail']['#required'] = true;
+    $form['account']['mail']['#required'] = TRUE;
   }
 }
 
