@@ -13,7 +13,19 @@ if ($env_vars) {
   foreach ($env_vars as $var => $value) {
     if (str_contains($var, 'CKEDITOR_')) {
       $var = strtolower(trim(str_replace('CKEDITOR_', '', $var)));
-      $var = ($var == 'scayt_slang') ? 'scayt_sLang' : $var;
+      switch ($var) {
+        case 'scayt_slang':
+          $var = 'scayt_sLang';
+          break;
+
+        case 'forcepasteasplaintext':
+          $var = 'forcePasteAsPlainText';
+          break;
+
+        case 'pastefilter':
+          $var = 'pasteFilter';
+          break;
+      }
       $array_of_config[$var] = $value;
     }
   }
