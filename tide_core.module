@@ -290,6 +290,11 @@ function tide_core_form_editor_link_dialog_alter(&$form, FormStateInterface $for
     return;
   }
   $form['#attached']['library'][] = 'tide_core/editor_autolink';
+  // Updating the default title and description.
+  if (isset($form['attributes']['href'])) {
+    $form['attributes']['href']['#title'] = t('URL, phone number or email address');
+    $form['attributes']['href']['#description'] = t('External links must include https://. Type or paste a phone number or email address and click Enter to add the hyperlink. For more information read our <strong><a href="https://www.singledigitalpresence.vic.gov.au/hyperlinks">guide on hyperlinks</a></strong>.');
+  }
 }
 
 /**
