@@ -21,3 +21,9 @@ node_revision_log:
   dependencies:
     - core/jquery
     - core/drupal
+node_iframe:
+  js:
+    js/node_iframe.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
