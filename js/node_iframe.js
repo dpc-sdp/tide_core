@@ -24,13 +24,17 @@
         // Take the dialog name and its definition from the event data.
         var dialogName = ev.data.name;
         var dialogDefinition = ev.data.definition;
-        console.log(dialogName);
         if (dialogName == 'iframe') {
-          var infoTab = dialogDefinition.getContents( 'info' );
-          var name = infoTab.get( 'title' );
-          infoTab.remove( 'title' );
-          name['label'] = 'Title';
-          infoTab['elements'].unshift(name);
+          var info = dialogDefinition.getContents( 'info' );
+          // Get the title field.
+          var iframeTitle = info.get( 'title' );
+          // Remove it from the element array.
+          info.remove( 'title' );
+          iframeTitle['label'] = 'Title';
+          iframeTitle['required'] = true;
+          iframeTitle['validate'] = CKEDITOR.dialog.validate.notEmpty( 'Please type the iframe title' )
+          // Assign the title field at the beginning of the array.
+          info['elements'].unshift(iframeTitle);
         }
       });
     }
