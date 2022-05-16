@@ -1,2 +1,0 @@
-# Tide Auto Logout
-
