@@ -221,7 +221,7 @@
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
                 "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
-                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-13958618": "https://www.drupal.org/files/issues/2021-01-07/paragraphs-default-quantity-3089423-10.patch"
+                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-13914580": "https://www.drupal.org/files/issues/2020-11-24/3089423_9.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
