@@ -164,7 +164,7 @@ function tide_edit_protection_content_lock_timeout_message_alter(&$message, $con
 function tide_edit_protection_preprocess_status_messages(&$variables) {
   if ($variables && isset($variables['message_list']) && isset($variables['message_list']['status'])) {
     foreach ($variables['message_list']['status'] as $key => $message) {
-      if (strpos($message->__toString(), 'This content is now locked by you against simultaneous editing') !== FALSE) {
+      if (strpos((string) $message, 'This content is now locked by you against simultaneous editing') !== FALSE) {
         $variables['message_list']['status'][$key] = t('This content is locked against simultaneous editing. It will remain locked if you navigate away from this page without saving or unlocking it.');
       }
     }
