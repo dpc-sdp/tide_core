@@ -4,6 +4,7 @@ namespace Drupal\tide_block_inactive_users\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -14,6 +15,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  * @package Drupal\tide_block_inactive_users\Form
  */
 class SettingsForm extends ConfigFormBase {
+  use StringTranslationTrait;
 
   /**
    * A logger instance.
@@ -95,10 +97,10 @@ class SettingsForm extends ConfigFormBase {
       '#title' => $this->t('Time unit'),
       '#default_value' => $config->get('time_unit'),
       '#options' => [
-        'day' => 'Day(s)',
-        'week' => 'Week(s)',
-        'month' => 'Month(s)',
-        'hour' => 'Hour(s)',
+        'day' => $this->t('Day(s)'),
+        'week' => $this->t('Week(s)'),
+        'month' => $this->t('Month(s)'),
+        'hour' => $this->t('Hour(s)'),
       ],
       '#required' => TRUE,
     ];

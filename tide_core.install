@@ -796,7 +796,6 @@ function tide_core_update_8030() {
     ->getStorage('entity_view_display');
   $skipped_items = ['title', 'uuid', 'created'];
   foreach ($node_types as $node_type_id => $node_type) {
-    $order = [];
     $entity_view_display_id = 'node.' . $node_type_id . '.default';
     $field_name = 'field_' . $node_type_id . '_intro_text';
     // Some of fields named as field_{node_type_id}_intro_text,
@@ -921,7 +920,7 @@ function tide_core_update_8034() {
   $config = \Drupal::configFactory()
     ->getEditable('field.storage.paragraph.field_paragraph_accordion_style');
   $settings = $config->get('settings');
-  foreach ($settings['allowed_values'] as $key => &$allowed_value) {
+  foreach ($settings['allowed_values'] as &$allowed_value) {
     if ($allowed_value['label'] == 'Basic') {
       $allowed_value['label'] = 'Standard';
     }
@@ -1003,7 +1002,7 @@ function tide_core_update_8038() {
     }
     $updated_rows = [];
 
-    foreach ($rows as $key => $row) {
+    foreach ($rows as $row) {
       if ($row['name'] === 'Media' && !in_array('TideCallout', $row['items'])) {
         // Insert tide_callout inside Media group toolbar.
         array_splice($row['items'], 1, 0, 'TideCallout');
@@ -1106,7 +1105,7 @@ function tide_core_update_8043() {
     }
     $updated_rows = [];
 
-    foreach ($rows as $key => $row) {
+    foreach ($rows as $row) {
       if ($row['name'] === 'Tools' && !in_array('Maximize', $row['items'])) {
         // Insert Maximise inside Tools group toolbar.
         array_splice($row['items'], 3, 0, 'Maximize');

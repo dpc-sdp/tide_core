@@ -8,6 +8,7 @@ namespace Drupal\tide_core\Plugin\CKEditorPlugin;
  */
 
 use Drupal\ckeditor\CKEditorPluginBase;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\editor\Entity\Editor;
 
 /**
@@ -23,6 +24,7 @@ use Drupal\editor\Entity\Editor;
  * )
  */
 class TideEmbeddedGoogleMapsButton extends CKEditorPluginBase {
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -36,7 +38,7 @@ class TideEmbeddedGoogleMapsButton extends CKEditorPluginBase {
     // the CKEditor plugin you are implementing.
     return [
       'wenzgmap' => [
-        'label' => t('Embedded Google Maps'),
+        'label' => $this->t('Embedded Google Maps'),
         'image' => drupal_get_path('module', 'tide_core') . '/js/plugins/wenzgmap/icons/wenzgmap.png',
       ],
     ];
