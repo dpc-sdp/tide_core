@@ -1386,7 +1386,7 @@ function tide_core_update_8058() {
 }
 
 /**
- * Changes the diff modules general_settings.revision_pager_limit to 16.
+ * Add storage for new timeline component field.
  */
 function tide_core_update_8059() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
