@@ -277,11 +277,9 @@ class TideJiraAPI {
    */
   private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
     return <<<EOT
-Hi Support,
-
 This page is ready for review.
 
-Editor information
+*Editor information*
 
 Editor name:   $name
 
@@ -289,15 +287,15 @@ Editor email:   $email
 
 Department:   $department
 
-Page information
+*Page information*
 
 Page name:     $title
 
-CMS URL:         https://content.vic.gov.au/node/$id
+CMS URL:         https://content.vic.gov.au/node/$id/revisions
 
 Status:             $moderation_state
 
-Live URL:         $preview_links
+Preview URL:         $preview_links
 
 Template:        $bundle
 
