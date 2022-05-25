@@ -237,7 +237,7 @@ class TideJiraAPI {
         $result = [
           'email' => $email,
           'account_id' => '',
-          'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
+          'name' => $node->getRevisionUser()->get('field_name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
           'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
           'project' => $project,
         ];
