@@ -15,7 +15,7 @@ function tide_cms_support_install() {
   // Create Tide CMS Help block.
   $block = Block::create([
     'id' => 'admin_tide_cms_help',
-    'theme' => empty(\Drupal::config('system.theme')->get('admin')) ?? 'seven',
+    'theme' => \Drupal::config('system.theme')->get('admin') ?? 'seven',
     'region' => 'help',
     'weight' => -100,
     'provider' => NULL,
@@ -38,7 +38,7 @@ function tide_cms_support_install() {
 function tide_cms_support_update_8001() {
   $block = Block::create([
     'id' => 'admin_tide_cms_help',
-    'theme' => empty(\Drupal::config('system.theme')->get('admin')) ?? 'seven',
+    'theme' => \Drupal::config('system.theme')->get('admin') ?? 'seven',
     'region' => 'help',
     'weight' => -100,
     'provider' => NULL,
