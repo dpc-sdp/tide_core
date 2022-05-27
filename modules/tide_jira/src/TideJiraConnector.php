@@ -107,7 +107,7 @@ class TideJiraConnector {
           $cached_data,
           CacheBackendInterface::CACHE_PERMANENT,
           ['tide_jira:jira_account_ids']
-            );
+        );
       return $user->accountId;
     }
   }
@@ -132,13 +132,18 @@ class TideJiraConnector {
    * @throws \JiraRestApi\JiraException
    * @throws \JsonMapper_Exception
    */
-  public function createTicket($title, $email, $account_id, $description, $project) {
+  public function createTicket($title, $bundle, $id, $email, $account_id, $description, $project, $site, $site_section, $page_department) {
     $request_type = strtolower($project) . '/' . $this->config->get('customer_request_type_id');
     $issueField = new IssueField();
     $issueField->setProjectKey($project)
       ->setSummary($title)
       ->setIssueType($this->config->get('issue_type'))
       ->addCustomField($this->config->get('customer_request_type_field_id'), $request_type)
+      ->addCustomField('customfield_10114', $bundle) // content type field
+      ->addCustomField('customfield_10120', $id) //node ID field
+      ->addCustomField('customfield_10121', $site) //site field
+      ->addCustomField('customfield_10122', $site_section) //site section field
+      ->addCustomField('customfield_10119', $page_department) //page department field
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);

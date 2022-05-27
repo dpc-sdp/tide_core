@@ -133,7 +133,17 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
    *   Raised when the response from JIRA cannot be processed.
    */
   protected function createTicket(TideJiraTicketModel $ticket) {
-    $this->tideJiraConnector->createTicket($ticket->getSummary(), $ticket->getEmail(), $ticket->getAccountId(), $ticket->getDescription(), $ticket->getProject());
+    $this->tideJiraConnector->createTicket($ticket->getSummary(),
+      $ticket->getBundle(),
+      $ticket->getId(),
+      $ticket->getEmail(),
+      $ticket->getAccountId(),
+      $ticket->getDescription(),
+      $ticket->getProject(),
+      $ticket->getSite(),
+      $ticket->getSiteSection(),
+      $ticket->getPageDepartment()
+    );
   }
 
   /**

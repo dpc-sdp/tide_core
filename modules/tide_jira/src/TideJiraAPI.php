@@ -112,8 +112,37 @@ class TideJiraAPI {
     if (!empty($author)) {
       $revision = $this->getRevisionInfo($node);
       $summary = $this->getSummary($revision);
-      $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $revision['notes'], $revision['preview_links']);
-      $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project'], $revision['preview_links']);
+      $description = $this->templateDescription(
+        $author['name'],
+        $author['email'],
+        $author['department'],
+        $revision['title'],
+        $revision['id'],
+        $revision['moderation_state'],
+        $revision['bundle'],
+        $revision['is_new'],
+        $revision['updated_date'],
+        $revision['notes'],
+        $revision['preview_links']
+      );
+      $request = new TideJiraTicketModel(
+        $author['name'],
+        $author['email'],
+        $author['department'],
+        $revision['title'],
+        $summary,
+        $revision['id'],
+        $revision['moderation_state'],
+        $revision['bundle'],
+        $revision['is_new'],
+        $revision['updated_date'],
+        $author['account_id'],
+        $description,
+        $author['project'],
+        $revision['site'],
+        $revision['site_section'],
+        $revision['page_department']
+      );
       $this->queueBackend->createItem($request);
       $this->logger->debug('Queued support request for user ' . $node->getRevisionUser()->getDisplayName() . ' for page ' . $revision['title']);
     }
@@ -181,7 +210,7 @@ class TideJiraAPI {
   /**
    * Generates a ticket summary based on moderation state.
    *
-   * @param string $revision
+   * @param array $revision
    *   The moderation state.
    *
    * @return string
@@ -216,7 +245,35 @@ class TideJiraAPI {
       'is_new' => $node->isNew() ? 'New page' : 'Content update',
       'notes' => $node->getRevisionLogMessage(),
       'preview_links' => $this->getPreviewLinks($node, TRUE),
+      'site' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_node_site')->first()->getValue()['target_id'])->getName(),
+      'site_section' => $this->listSiteSections($node),
+      'page_department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
     ];
+  }
+
+  private function listSiteSections(NodeInterface $node) {
+    $sites = $node->get('field_node_site')->getValue();
+    $sections = [];
+
+    $sites_count = count($sites);
+
+    for ($i = 1; $i < $sites_count; $i++) {
+      array_push($sections, $this->entityTypeManager->getStorage('taxonomy_term')->load($sites[$i]['target_id'])->getName());
+    }
+
+    sort($sections);
+
+    $result = '';
+    foreach ($sections as $key => $value) {
+      if (!($key === array_key_last($sections))) {
+        $result .= $value . ', ';
+      }
+      else {
+        $result .= $value;
+      }
+    }
+    return $result;
+
   }
 
   /**
