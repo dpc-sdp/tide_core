@@ -7,3 +7,5 @@ services:
     class: Drupal\tide_core\TideEntityUpdateHelper
     arguments:
       [ '@entity_type.manager', '@entity_field.manager', '@entity.last_installed_schema.repository', '@field_storage_definition.listener' ]
+  tide_core.common_services:
+    class: Drupal\tide_core\TideCommonServices
