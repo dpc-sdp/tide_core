@@ -162,7 +162,7 @@ class TideJiraAPI {
    * @return array|string
    *   Preview links.
    */
-  private function getPreviewLinks(NodeInterface $node, $stringify = FALSE) {
+  private function getPreviewLinks(NodeInterface $node, bool $stringify = FALSE) {
     $results = [];
     $sites = $this->tideSiteHelper->getEntitySites($node);
     $sites = $sites['ids'];
@@ -174,16 +174,7 @@ class TideJiraAPI {
     }
 
     if ($stringify) {
-      $temp = '';
-      foreach ($results as $key => $result) {
-        if (!($key === array_key_last($results))) {
-          $temp .= $result . ', ';
-        }
-        else {
-          $temp .= $result;
-        }
-      }
-      $results = $temp;
+      $results = $this->stringifyArray($results);
     }
     return $results;
   }
@@ -197,7 +188,7 @@ class TideJiraAPI {
    * @return string
    *   Returns value of field_jira_project.
    */
-  private function getProjectInfo($tid) {
+  private function getProjectInfo(int $tid) {
     $dept = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
     $project = $dept->get('field_jira_project')->getValue();
     $result = NULL;
@@ -216,7 +207,7 @@ class TideJiraAPI {
    * @return string
    *   Ticket summary.
    */
-  private function getSummary($revision) {
+  private function getSummary(array $revision) {
     $moderation_state = $revision['moderation_state'];
     if ($moderation_state == 'needs_review') {
       return 'Review of web content required: ' . $revision['title'];
@@ -236,6 +227,9 @@ class TideJiraAPI {
    *   Metadata for ticket creation.
    */
   private function getRevisionInfo(NodeInterface $node) {
+    $this->logger->error(print_r($node->get('field_node_site')->getValue(), TRUE));
+
+    $sites = $this->sortSiteOrSiteSection($node);
     return [
       'id' => $node->id(),
       'title' => $node->getTitle(),
@@ -245,35 +239,48 @@ class TideJiraAPI {
       'is_new' => $node->isNew() ? 'New page' : 'Content update',
       'notes' => $node->getRevisionLogMessage(),
       'preview_links' => $this->getPreviewLinks($node, TRUE),
-      'site' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_node_site')->first()->getValue()['target_id'])->getName(),
-      'site_section' => $this->listSiteSections($node),
+      'site' => $sites['site'],
+      'site_section' => $sites['site_section'],
       'page_department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
     ];
   }
 
-  private function listSiteSections(NodeInterface $node) {
+  private function sortSiteOrSiteSection(NodeInterface $node) {
     $sites = $node->get('field_node_site')->getValue();
-    $sections = [];
+    $result = [
+      'site' => [],
+      'site_section' => [],
+    ];
 
-    $sites_count = count($sites);
+    foreach ($sites as $site) {
+      // Figure out whether this site is a sub-site based on if it has parents.
+      $parents = $this->entityTypeManager->getStorage('taxonomy_term')->loadParents($site['target_id']);
 
-    for ($i = 1; $i < $sites_count; $i++) {
-      array_push($sections, $this->entityTypeManager->getStorage('taxonomy_term')->load($sites[$i]['target_id'])->getName());
+      if (count($parents)) { // is a sub-site
+        array_push($result['site_section'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
+      } else {
+        array_push($result['site'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
+      }
     }
+    sort($result['site']);
+    sort($result['site_section']);
 
-    sort($sections);
+    $result['site'] = $this->stringifyArray($result['site']);
+    $result['site_section'] = $this->stringifyArray($result['site_section']);
+    return $result;
+  }
 
-    $result = '';
-    foreach ($sections as $key => $value) {
-      if (!($key === array_key_last($sections))) {
-        $result .= $value . ', ';
+  private function stringifyArray(array $strings) {
+    $results = '';
+    foreach ($strings as $key => $result) {
+      if (!($key === array_key_last($strings))) {
+        $results .= $result . ', ';
       }
       else {
-        $result .= $value;
+        $results .= $result;
       }
     }
-    return $result;
-
+    return $results;
   }
 
   /**
