@@ -132,7 +132,7 @@ class TideJiraConnector {
    * @throws \JiraRestApi\JiraException
    * @throws \JsonMapper_Exception
    */
-  public function createTicket($title, $bundle, $id, $email, $account_id, $description, $project, $site, $site_section, $page_department) {
+  public function createTicket($title, $bundle, $id, $email, $account_id, $description, $project, $site, $site_section, $page_department, $editor_department) {
     $request_type = strtolower($project) . '/' . $this->config->get('customer_request_type_id');
     $issueField = new IssueField();
     $issueField->setProjectKey($project)
@@ -144,6 +144,7 @@ class TideJiraConnector {
       ->addCustomField('customfield_10121', $site) //site field
       ->addCustomField('customfield_10122', $site_section) //site section field
       ->addCustomField('customfield_10119', $page_department) //page department field
+      ->addCustomField('customfield_10116', $editor_department) //editor department field
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);

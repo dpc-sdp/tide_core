@@ -142,7 +142,8 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
       $ticket->getProject(),
       $ticket->getSite(),
       $ticket->getSiteSection(),
-      $ticket->getPageDepartment()
+      $ticket->getPageDepartment(),
+      $ticket->getDepartment()
     );
   }
 

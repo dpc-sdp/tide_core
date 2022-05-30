@@ -115,7 +115,6 @@ class TideJiraAPI {
       $description = $this->templateDescription(
         $author['name'],
         $author['email'],
-        $author['department'],
         $revision['title'],
         $revision['id'],
         $revision['moderation_state'],
@@ -339,7 +338,7 @@ class TideJiraAPI {
    * @return string
    *   Templated ticket body as a Heredoc.
    */
-  private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
+  private function templateDescription($name, $email, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
     return <<<EOT
 This page is ready for review.
 
@@ -348,8 +347,6 @@ This page is ready for review.
 Editor name:   $name
 
 Editor email:   $email
-
-Department:   $department
 
 *Page information*
 
