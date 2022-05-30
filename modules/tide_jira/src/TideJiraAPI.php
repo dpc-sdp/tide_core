@@ -226,7 +226,6 @@ class TideJiraAPI {
    *   Metadata for ticket creation.
    */
   private function getRevisionInfo(NodeInterface $node) {
-    $this->logger->error(print_r($node->get('field_node_site')->getValue(), TRUE));
 
     $sites = $this->sortSiteOrSiteSection($node);
     return [
@@ -255,7 +254,7 @@ class TideJiraAPI {
       // Figure out whether this site is a sub-site based on if it has parents.
       $parents = $this->entityTypeManager->getStorage('taxonomy_term')->loadParents($site['target_id']);
 
-      if (count($parents)) { // is a sub-site
+      if (count($parents)) {
         array_push($result['site_section'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
       } else {
         array_push($result['site'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());

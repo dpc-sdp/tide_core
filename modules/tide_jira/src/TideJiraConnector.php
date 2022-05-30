@@ -139,12 +139,12 @@ class TideJiraConnector {
       ->setSummary($title)
       ->setIssueType($this->config->get('issue_type'))
       ->addCustomField($this->config->get('customer_request_type_field_id'), $request_type)
-      ->addCustomField('customfield_10114', $bundle) // content type field
-      ->addCustomField('customfield_10120', $id) //node ID field
-      ->addCustomField('customfield_10121', $site) //site field
-      ->addCustomField('customfield_10122', $site_section) //site section field
-      ->addCustomField('customfield_10119', $page_department) //page department field
-      ->addCustomField('customfield_10116', $editor_department) //editor department field
+      ->addCustomField($this->config->get('content_type'), $bundle)
+      ->addCustomField($this->config->get('node_id'), $id)
+      ->addCustomField($this->config->get('site'), $site)
+      ->addCustomField($this->config->get('site_section'), $site_section)
+      ->addCustomField($this->config->get('page_department'), $page_department)
+      ->addCustomField($this->config->get('editor_department'), $editor_department)
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);
