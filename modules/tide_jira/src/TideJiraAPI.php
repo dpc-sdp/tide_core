@@ -243,6 +243,15 @@ class TideJiraAPI {
     ];
   }
 
+  /**
+   * Sorts field_node_site into a list of sites/site sections.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   *
+   * @return string
+   *   Sorted list of sites/site sections.
+   */
   private function sortSiteOrSiteSection(NodeInterface $node) {
     $sites = $node->get('field_node_site')->getValue();
     $result = [
@@ -256,7 +265,8 @@ class TideJiraAPI {
 
       if (count($parents)) {
         array_push($result['site_section'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
-      } else {
+      }
+      else {
         array_push($result['site'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
       }
     }
@@ -268,6 +278,15 @@ class TideJiraAPI {
     return $result;
   }
 
+  /**
+   * Turns an array of strings into a single string separated by a comma.
+   *
+   * @param array $strings
+   *   Array of strings.
+   *
+   * @return string
+   *   Single string of array items separated by a comma.
+   */
   private function stringifyArray(array $strings) {
     $results = '';
     foreach ($strings as $key => $result) {
@@ -315,8 +334,6 @@ class TideJiraAPI {
    *   User's name.
    * @param string $email
    *   User's email.
-   * @param string $department
-   *   User's department.
    * @param string $title
    *   Ticket title.
    * @param string $id

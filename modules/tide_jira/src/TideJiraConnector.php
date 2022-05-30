@@ -117,6 +117,10 @@ class TideJiraConnector {
    *
    * @param string $title
    *   Ticket title.
+   * @param string $bundle
+   *   Content type.
+   * @param string $id
+   *   ID of the node.
    * @param string $email
    *   User email.
    * @param string $account_id
@@ -125,6 +129,14 @@ class TideJiraConnector {
    *   Ticket description.
    * @param string $project
    *   The Jira project.
+   * @param string $site
+   *   Main site.
+   * @param string $site_section
+   *   Site section.
+   * @param string $page_department
+   *   Department taxonomy of the page.
+   * @param string $editor_department
+   *   Department taxonomy of the editor.
    *
    * @return string
    *   The ID of the created ticket.
