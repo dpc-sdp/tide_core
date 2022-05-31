@@ -226,8 +226,6 @@ class TideJiraAPI {
    *   Metadata for ticket creation.
    */
   private function getRevisionInfo(NodeInterface $node) {
-
-    $sites = $this->sortSiteOrSiteSection($node);
     return [
       'id' => $node->id(),
       'title' => $node->getTitle(),
@@ -237,8 +235,8 @@ class TideJiraAPI {
       'is_new' => $node->isNew() ? 'New page' : 'Content update',
       'notes' => $node->getRevisionLogMessage(),
       'preview_links' => $this->getPreviewLinks($node, TRUE),
-      'site' => $sites['site'],
-      'site_section' => $sites['site_section'],
+      'site' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_node_primary_site')->getValue()[0]['target_id'])->getName(),
+      'site_section' => $this->getSiteSections($node),
       'page_department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
     ];
   }
@@ -252,30 +250,20 @@ class TideJiraAPI {
    * @return string
    *   Sorted list of sites/site sections.
    */
-  private function sortSiteOrSiteSection(NodeInterface $node) {
+  private function getSiteSections(NodeInterface $node) {
     $sites = $node->get('field_node_site')->getValue();
-    $result = [
-      'site' => [],
-      'site_section' => [],
-    ];
+    $result = [];
 
     foreach ($sites as $site) {
       // Figure out whether this site is a sub-site based on if it has parents.
       $parents = $this->entityTypeManager->getStorage('taxonomy_term')->loadParents($site['target_id']);
 
       if (count($parents)) {
-        array_push($result['site_section'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
-      }
-      else {
-        array_push($result['site'], $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
+        array_push($result, $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
       }
     }
-    sort($result['site']);
-    sort($result['site_section']);
-
-    $result['site'] = $this->stringifyArray($result['site']);
-    $result['site_section'] = $this->stringifyArray($result['site_section']);
-    return $result;
+    sort($result);
+    return $this->stringifyArray($result);
   }
 
   /**
