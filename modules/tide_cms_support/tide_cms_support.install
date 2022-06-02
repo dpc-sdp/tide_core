@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Installation functions for Tide CMS Support.
+ */
+
+use Drupal\block\Entity\Block;
+use Drupal\Core\Utility\UpdateException;
+
+/**
+ * Implements hook_install().
+ */
+function tide_cms_support_install() {
+  // Create Tide CMS Help block.
+  $block = Block::create([
+    'id' => 'admin_tide_cms_help',
+    'theme' => \Drupal::config('system.theme')->get('admin'),
+    'region' => 'help',
+    'weight' => -100,
+    'provider' => NULL,
+    'plugin' => 'tide_help_block',
+    'settings' => [
+      'id' => 'tide_help_block',
+      'label' => 'Tide CMS Help',
+      'label_display' => FALSE,
+      'provider' => 'tide_cms_support',
+    ],
+    'visibility' => [],
+  ]);
+
+  $block->save();
+}
+
+/**
+ * Create Tide CMS Help block.
+ */
+function tide_cms_support_update_8001() {
+  $block = Block::create([
+    'id' => 'admin_tide_cms_help',
+    'theme' => \Drupal::config('system.theme')->get('admin'),
+    'region' => 'help',
+    'weight' => -100,
+    'provider' => NULL,
+    'plugin' => 'tide_help_block',
+    'settings' => [
+      'id' => 'tide_help_block',
+      'label' => 'Tide CMS Help',
+      'label_display' => FALSE,
+      'provider' => 'tide_cms_support',
+    ],
+    'visibility' => [],
+  ]);
+
+  try {
+    $block->save();
+  }
+  catch (\Exception $e) {
+    throw new UpdateException("Cannot save Tide CMS Help block: " . $e->getMessage(), $e->getCode(), $e);
+  }
+}

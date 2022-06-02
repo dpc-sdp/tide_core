@@ -24,6 +24,9 @@ node_revision_log:
 node_iframe:
   js:
     js/node_iframe.js: {}
+editor_autolink:
+  js:
+    js/editor_autolink.js: {}
   dependencies:
     - core/jquery
     - core/drupal
