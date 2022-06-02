@@ -1384,3 +1384,27 @@ function tide_core_update_8058() {
     }
   }
 }
+
+/**
+ * Changes allowed HTML list.
+ */
+function tide_core_update_8059() {
+  // Update allowed HTML list.
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+    'filter.format.summary_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    if ($filter->isNew()) {
+      continue;
+    }
+
+    $value = $filter->get('filters.filter_html.settings.allowed_html');
+    $replaced = str_replace('<iframe frameborder height scrolling src width>', '<iframe frameborder height scrolling src width title>', $value);
+    $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+    $filter->save();
+  }
+}
