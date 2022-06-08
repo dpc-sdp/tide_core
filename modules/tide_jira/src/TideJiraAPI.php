@@ -10,6 +10,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\tide_site_preview\TideSitePreviewHelper;
 use Drupal\tide_site\TideSiteHelper;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Tide Jira helper functions.
@@ -20,12 +21,6 @@ class TideJiraAPI {
    * Name of the worker queue.
    */
   const QUEUE_NAME = 'TIDE_JIRA';
-  /**
-   * Block plugin manager.
-   *
-   * @var \Drupal\Core\Block\BlockManager
-   */
-  private $blockPluginManager;
   /**
    * Drupal queueing system.
    *
@@ -68,6 +63,12 @@ class TideJiraAPI {
    * @var \Drupal\Core\Config\ConfigFactory
    */
   protected $config;
+  /**
+   * The current request.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $request;
 
   /**
    * Instantiates a new TideJiraAPI.
@@ -86,8 +87,10 @@ class TideJiraAPI {
    *   Drupal Logger Factory.
    * @param \Drupal\Core\Config\ConfigFactory $config_factory
    *   Drupal config factory.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request
+   *   The current request.
    */
-  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger, ConfigFactory $config_factory) {
+  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger, ConfigFactory $config_factory, RequestStack $request) {
     $this->tideSitePreviewHelper = $site_preview_helper;
     $this->tideSiteHelper = $site_helper;
     $this->queueBackend = $queue_backend->get(self::QUEUE_NAME);
@@ -95,6 +98,7 @@ class TideJiraAPI {
     $this->dateFormatter = $date_formatter;
     $this->logger = $logger->get('tide_jira');
     $this->config = $config_factory->get('tide_jira.settings');
+    $this->request = $request;
   }
 
   /**
@@ -122,7 +126,8 @@ class TideJiraAPI {
         $revision['is_new'],
         $revision['updated_date'],
         $revision['notes'],
-        $revision['preview_links']
+        $revision['preview_links'],
+        $this->request->getCurrentRequest()->getSchemeAndHttpHost()
       );
       $request = new TideJiraTicketModel(
         $author['name'],
@@ -342,7 +347,7 @@ class TideJiraAPI {
    * @return string
    *   Templated ticket body as a Heredoc.
    */
-  private function templateDescription($name, $email, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
+  private function templateDescription($name, $email, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links, $host) {
     return <<<EOT
 This page is ready for review.
 
@@ -356,7 +361,7 @@ Editor email:   $email
 
 Page name:     $title
 
-CMS URL:         https://content.vic.gov.au/node/$id/revisions
+CMS URL:         $host/node/$id/revisions
 
 Status:             $moderation_state
 
