@@ -343,6 +343,8 @@ class TideJiraAPI {
    *   Revision log notes.
    * @param string $preview_links
    *   Frontend preview links.
+   * @param string $host
+   *   Drupal's current hostname.
    *
    * @return string
    *   Templated ticket body as a Heredoc.
