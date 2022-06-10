@@ -1428,7 +1428,7 @@ function tide_core_update_8060() {
 /**
  * Update and Add new options for "Show table of contents" "Display heading".
  */
-function tide_core_update_8060() {
+function tide_core_update_8061() {
   $field_storage = FieldStorageConfig::loadByName('node',
     'field_node_display_headings');
   $allowed_values = $field_storage->getSettings()['allowed_values'];
