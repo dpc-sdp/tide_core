@@ -12,10 +12,16 @@ settings:
   allowed_values:
     -
       value: showH2
-      label: 'Show H2'
+      label: 'Show Heading 2s only.'
     -
       value: showH2AndH3
-      label: 'Show H2 and H3'
+      label: 'Show Heading 2s and heading 3s.'
+    -
+      value: showH2AndAccordionTitle
+      label: 'Show Heading 2s and accordion titles.'
+    -
+      value: showH2AndH3AndAccordionTitle
+      label: 'Show Heading 2s, accordion titles and Heading 3s.'
   allowed_values_function: ''
 module: options
 locked: false
