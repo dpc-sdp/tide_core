@@ -1371,3 +1371,76 @@ function tide_core_update_8057() {
     }
   }
 }
+
+/**
+ * Changes the diff modules general_settings.revision_pager_limit to 16.
+ */
+function tide_core_update_8058() {
+  if (\Drupal::moduleHandler()->moduleExists('diff')) {
+    $config = \Drupal::configFactory()
+      ->getEditable('diff.settings');
+    if (!$config->isNew() && !empty($config->get('general_settings.revision_pager_limit'))) {
+      $config->set('general_settings.revision_pager_limit', 16)->save();
+    }
+  }
+}
+
+/**
+ * Add storage for new timeline component field.
+ */
+function tide_core_update_8059() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $field_storage = 'field.storage.paragraph.field_current_milestone';
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  if (empty($storage->load('paragraph.field_current_milestone'))) {
+    $config_read = _tide_read_config($field_storage, $config_location, TRUE);
+    // Obtain the storage manager for field storage bases.
+    // Create a new field from the yaml configuration and save.
+    $storage->createFromStorageRecord($config_read)->save();
+  }
+}
+
+/**
+ * Changes allowed HTML list.
+ */
+function tide_core_update_8060() {
+  // Update allowed HTML list.
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+    'filter.format.summary_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    if ($filter->isNew()) {
+      continue;
+    }
+
+    $value = $filter->get('filters.filter_html.settings.allowed_html');
+    $replaced = str_replace('<iframe frameborder height scrolling src width>', '<iframe frameborder height scrolling src width title>', $value);
+    $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+    $filter->save();
+  }
+}
+
+/**
+ * Update and Add new options for "Show table of contents" "Display heading".
+ */
+function tide_core_update_8061() {
+  $field_storage = FieldStorageConfig::loadByName('node',
+    'field_node_display_headings');
+  $allowed_values = $field_storage->getSettings()['allowed_values'];
+
+  // Rename values for existing keys.
+  $allowed_values['showH2'] = t('Show Heading 2s only.');
+  $allowed_values['showH2AndH3'] = t('Show Heading 2s and heading 3s.');
+  // Add two new options.
+  $allowed_values['showH2AndAccordionTitle'] = t('Show Heading 2s and accordion titles.');
+  $allowed_values['showH2AndH3AndAccordionTitle'] = t('Show Heading 2s, accordion titles and Heading 3s.');
+
+  // Save updated options.
+  $field_storage->setSetting('allowed_values', $allowed_values);
+  $field_storage->save();
+}

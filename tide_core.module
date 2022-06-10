@@ -175,6 +175,15 @@ function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormState
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_user_register_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['account']['mail']['#required'])) {
+    $form['account']['mail']['#required'] = TRUE;
+  }
+}
+
+/**
  * Submit handler for altering updating status message.
  */
 function _tide_core_modified_update_adding_message(&$form, $form_state) {
@@ -282,6 +291,22 @@ function tide_core_form_content_moderation_entity_moderation_form_alter(&$form, 
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_editor_link_dialog_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Alter only the form with ID 'editor_link_dialog'.
+  if ($form_id !== 'editor_link_dialog') {
+    return;
+  }
+  $form['#attached']['library'][] = 'tide_core/editor_autolink';
+  // Updating the default title and description.
+  if (isset($form['attributes']['href'])) {
+    $form['attributes']['href']['#title'] = t('URL, phone number or email address');
+    $form['attributes']['href']['#description'] = t('External links must include https://. Type or paste a phone number or email address and click Enter to add the hyperlink. For more information read our <strong><a href="https://www.singledigitalpresence.vic.gov.au/hyperlinks" target="_blank">guide on hyperlinks</a></strong>.');
+  }
+}
+
+/**
  * Common revision log message form label text.
  *
  * @return array
@@ -338,6 +363,7 @@ function tide_core_editor_js_settings_alter(array &$settings) {
  * Move some core fields to Node form Sidebar.
  */
 function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#process'][] = '_tide_core_form_node_form_process';
 
