@@ -4,7 +4,7 @@ dependencies: {  }
 id: jira_rest_default
 label: 'Migrated Endpoint'
 description: null
-instanceurl: 'https://digital-engagement.atlassian.net'
+instanceurl: 'https://digital-vic.atlassian.net'
 credential_provider: key
 credentials:
   key:
