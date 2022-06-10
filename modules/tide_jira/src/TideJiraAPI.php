@@ -10,6 +10,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\tide_site_preview\TideSitePreviewHelper;
 use Drupal\tide_site\TideSiteHelper;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Tide Jira helper functions.
@@ -20,12 +21,6 @@ class TideJiraAPI {
    * Name of the worker queue.
    */
   const QUEUE_NAME = 'TIDE_JIRA';
-  /**
-   * Block plugin manager.
-   *
-   * @var \Drupal\Core\Block\BlockManager
-   */
-  private $blockPluginManager;
   /**
    * Drupal queueing system.
    *
@@ -68,6 +63,12 @@ class TideJiraAPI {
    * @var \Drupal\Core\Config\ConfigFactory
    */
   protected $config;
+  /**
+   * The current request.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $request;
 
   /**
    * Instantiates a new TideJiraAPI.
@@ -86,8 +87,10 @@ class TideJiraAPI {
    *   Drupal Logger Factory.
    * @param \Drupal\Core\Config\ConfigFactory $config_factory
    *   Drupal config factory.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request
+   *   The current request.
    */
-  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger, ConfigFactory $config_factory) {
+  public function __construct(TideSitePreviewHelper $site_preview_helper, TideSiteHelper $site_helper, QueueFactory $queue_backend, EntityTypeManagerInterface $entity_manager, DateFormatter $date_formatter, LoggerChannelFactoryInterface $logger, ConfigFactory $config_factory, RequestStack $request) {
     $this->tideSitePreviewHelper = $site_preview_helper;
     $this->tideSiteHelper = $site_helper;
     $this->queueBackend = $queue_backend->get(self::QUEUE_NAME);
@@ -95,6 +98,7 @@ class TideJiraAPI {
     $this->dateFormatter = $date_formatter;
     $this->logger = $logger->get('tide_jira');
     $this->config = $config_factory->get('tide_jira.settings');
+    $this->request = $request;
   }
 
   /**
@@ -112,8 +116,37 @@ class TideJiraAPI {
     if (!empty($author)) {
       $revision = $this->getRevisionInfo($node);
       $summary = $this->getSummary($revision);
-      $description = $this->templateDescription($author['name'], $author['email'], $author['department'], $revision['title'], $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $revision['notes'], $revision['preview_links']);
-      $request = new TideJiraTicketModel($author['name'], $author['email'], $author['department'], $revision['title'], $summary, $revision['id'], $revision['moderation_state'], $revision['bundle'], $revision['is_new'], $revision['updated_date'], $author['account_id'], $description, $author['project'], $revision['preview_links']);
+      $description = $this->templateDescription(
+        $author['name'],
+        $author['email'],
+        $revision['title'],
+        $revision['id'],
+        $revision['moderation_state'],
+        $revision['bundle'],
+        $revision['is_new'],
+        $revision['updated_date'],
+        $revision['notes'],
+        $revision['preview_links'],
+        $this->request->getCurrentRequest()->getSchemeAndHttpHost()
+      );
+      $request = new TideJiraTicketModel(
+        $author['name'],
+        $author['email'],
+        $author['department'],
+        $revision['title'],
+        $summary,
+        $revision['id'],
+        $revision['moderation_state'],
+        $revision['bundle'],
+        $revision['is_new'],
+        $revision['updated_date'],
+        $author['account_id'],
+        $description,
+        $author['project'],
+        $revision['site'],
+        $revision['site_section'],
+        $revision['page_department']
+      );
       $this->queueBackend->createItem($request);
       $this->logger->debug('Queued support request for user ' . $node->getRevisionUser()->getDisplayName() . ' for page ' . $revision['title']);
     }
@@ -133,7 +166,7 @@ class TideJiraAPI {
    * @return array|string
    *   Preview links.
    */
-  private function getPreviewLinks(NodeInterface $node, $stringify = FALSE) {
+  private function getPreviewLinks(NodeInterface $node, bool $stringify = FALSE) {
     $results = [];
     $sites = $this->tideSiteHelper->getEntitySites($node);
     $sites = $sites['ids'];
@@ -145,16 +178,7 @@ class TideJiraAPI {
     }
 
     if ($stringify) {
-      $temp = '';
-      foreach ($results as $key => $result) {
-        if (!($key === array_key_last($results))) {
-          $temp .= $result . ', ';
-        }
-        else {
-          $temp .= $result;
-        }
-      }
-      $results = $temp;
+      $results = $this->stringifyArray($results);
     }
     return $results;
   }
@@ -168,7 +192,7 @@ class TideJiraAPI {
    * @return string
    *   Returns value of field_jira_project.
    */
-  private function getProjectInfo($tid) {
+  private function getProjectInfo(int $tid) {
     $dept = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
     $project = $dept->get('field_jira_project')->getValue();
     $result = NULL;
@@ -181,13 +205,13 @@ class TideJiraAPI {
   /**
    * Generates a ticket summary based on moderation state.
    *
-   * @param string $revision
+   * @param array $revision
    *   The moderation state.
    *
    * @return string
    *   Ticket summary.
    */
-  private function getSummary($revision) {
+  private function getSummary(array $revision) {
     $moderation_state = $revision['moderation_state'];
     if ($moderation_state == 'needs_review') {
       return 'Review of web content required: ' . $revision['title'];
@@ -216,7 +240,57 @@ class TideJiraAPI {
       'is_new' => $node->isNew() ? 'New page' : 'Content update',
       'notes' => $node->getRevisionLogMessage(),
       'preview_links' => $this->getPreviewLinks($node, TRUE),
+      'site' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_node_primary_site')->getValue()[0]['target_id'])->getName(),
+      'site_section' => $this->getSiteSections($node),
+      'page_department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
     ];
+  }
+
+  /**
+   * Sorts field_node_site into a list of sites/site sections.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   *
+   * @return string
+   *   Sorted list of sites/site sections.
+   */
+  private function getSiteSections(NodeInterface $node) {
+    $sites = $node->get('field_node_site')->getValue();
+    $result = [];
+
+    foreach ($sites as $site) {
+      // Figure out whether this site is a sub-site based on if it has parents.
+      $parents = $this->entityTypeManager->getStorage('taxonomy_term')->loadParents($site['target_id']);
+
+      if (count($parents)) {
+        array_push($result, $this->entityTypeManager->getStorage('taxonomy_term')->load($site['target_id'])->getName());
+      }
+    }
+    sort($result);
+    return $this->stringifyArray($result);
+  }
+
+  /**
+   * Turns an array of strings into a single string separated by a comma.
+   *
+   * @param array $strings
+   *   Array of strings.
+   *
+   * @return string
+   *   Single string of array items separated by a comma.
+   */
+  private function stringifyArray(array $strings) {
+    $results = '';
+    foreach ($strings as $key => $result) {
+      if (!($key === array_key_last($strings))) {
+        $results .= $result . ', ';
+      }
+      else {
+        $results .= $result;
+      }
+    }
+    return $results;
   }
 
   /**
@@ -237,7 +311,7 @@ class TideJiraAPI {
         $result = [
           'email' => $email,
           'account_id' => '',
-          'name' => $node->getRevisionUser()->get('name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
+          'name' => $node->getRevisionUser()->get('field_name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
           'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
           'project' => $project,
         ];
@@ -253,8 +327,6 @@ class TideJiraAPI {
    *   User's name.
    * @param string $email
    *   User's email.
-   * @param string $department
-   *   User's department.
    * @param string $title
    *   Ticket title.
    * @param string $id
@@ -271,33 +343,31 @@ class TideJiraAPI {
    *   Revision log notes.
    * @param string $preview_links
    *   Frontend preview links.
+   * @param string $host
+   *   Drupal's current hostname.
    *
    * @return string
    *   Templated ticket body as a Heredoc.
    */
-  private function templateDescription($name, $email, $department, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links) {
+  private function templateDescription($name, $email, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links, $host) {
     return <<<EOT
-Hi Support,
-
 This page is ready for review.
 
-Editor information
+*Editor information*
 
 Editor name:   $name
 
 Editor email:   $email
 
-Department:   $department
-
-Page information
+*Page information*
 
 Page name:     $title
 
-CMS URL:         https://content.vic.gov.au/node/$id
+CMS URL:         $host/node/$id/revisions
 
 Status:             $moderation_state
 
-Live URL:         $preview_links
+Preview URL:         $preview_links
 
 Template:        $bundle
 
