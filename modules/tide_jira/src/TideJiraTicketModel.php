@@ -85,6 +85,24 @@ class TideJiraTicketModel {
    * @var string
    */
   private string $project;
+  /**
+   * Main site.
+   *
+   * @var string
+   */
+  private string $site;
+  /**
+   * Site sections.
+   *
+   * @var string
+   */
+  private string $siteSection;
+  /**
+   * Page department.
+   *
+   * @var string
+   */
+  private string $pageDepartment;
 
   /**
    * Constructs a new TideJiraTicketModel.
@@ -115,8 +133,14 @@ class TideJiraTicketModel {
    *   Ticket description.
    * @param string $project
    *   Jira project.
+   * @param string $site
+   *   Main site.
+   * @param string $site_section
+   *   Site sections.
+   * @param string $page_department
+   *   Page department.
    */
-  public function __construct($name, $email, $department, $title, $summary, $id, $moderation_state, $bundle, $is_new, $updated_date, $account_id, $description, $project) {
+  public function __construct($name, $email, $department, $title, $summary, $id, $moderation_state, $bundle, $is_new, $updated_date, $account_id, $description, $project, $site, $site_section, $page_department) {
     $this->name = $name;
     $this->email = $email;
     $this->department = $department;
@@ -130,6 +154,9 @@ class TideJiraTicketModel {
     $this->accountID = $account_id;
     $this->description = $description;
     $this->project = $project;
+    $this->site = $site;
+    $this->siteSection = $site_section;
+    $this->pageDepartment = $page_department;
   }
 
   /**
@@ -390,6 +417,66 @@ class TideJiraTicketModel {
    */
   public function setSummary(string $summary): void {
     $this->summary = $summary;
+  }
+
+  /**
+   * Get the primary site.
+   *
+   * @return string
+   *   The primary site.
+   */
+  public function getSite(): string {
+    return $this->site;
+  }
+
+  /**
+   * Set the primary site.
+   *
+   * @param string $site
+   *   The primary site.
+   */
+  public function setSite(string $site): void {
+    $this->site = $site;
+  }
+
+  /**
+   * Get the site section.
+   *
+   * @return string
+   *   The site section.
+   */
+  public function getSiteSection(): string {
+    return $this->siteSection;
+  }
+
+  /**
+   * Set the site section.
+   *
+   * @param string $site_section
+   *   The site section.
+   */
+  public function setSiteSection(string $site_section): void {
+    $this->siteSection = $site_section;
+  }
+
+  /**
+   * Get the page department.
+   *
+   * @return string
+   *   The page department.
+   */
+  public function getPageDepartment(): string {
+    return $this->pageDepartment;
+  }
+
+  /**
+   * Set the site section.
+   *
+   * @param string $page_department
+   *   The page department.
+   */
+  public function setPageDepartment(string $page_department): void {
+    $this->pageDepartment = $page_department;
   }
 
 }

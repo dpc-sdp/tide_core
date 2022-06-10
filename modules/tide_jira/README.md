@@ -26,6 +26,12 @@ REQUIREMENTS
 * [JIRA Rest] (https://www.drupal.org/project/jira_rest)
 * [php-jira-rest-client] (https://github.com/lesstif/php-jira-rest-client)
 
+REQUIREMENTS
+------------
+This module requires some additional fields to be configured.
+
+1) The field_department_agency entity reference field needs to be configured on user profiles.
+2) The field_department_agency entity reference field needs to be configured on all content types.
 
 INSTALLATION
 ------------

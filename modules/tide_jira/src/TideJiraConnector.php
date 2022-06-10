@@ -107,7 +107,7 @@ class TideJiraConnector {
           $cached_data,
           CacheBackendInterface::CACHE_PERMANENT,
           ['tide_jira:jira_account_ids']
-            );
+        );
       return $user->accountId;
     }
   }
@@ -117,6 +117,10 @@ class TideJiraConnector {
    *
    * @param string $title
    *   Ticket title.
+   * @param string $bundle
+   *   Content type.
+   * @param string $id
+   *   ID of the node.
    * @param string $email
    *   User email.
    * @param string $account_id
@@ -125,6 +129,14 @@ class TideJiraConnector {
    *   Ticket description.
    * @param string $project
    *   The Jira project.
+   * @param string $site
+   *   Main site.
+   * @param string $site_section
+   *   Site section.
+   * @param string $page_department
+   *   Department taxonomy of the page.
+   * @param string $editor_department
+   *   Department taxonomy of the editor.
    *
    * @return string
    *   The ID of the created ticket.
@@ -132,13 +144,19 @@ class TideJiraConnector {
    * @throws \JiraRestApi\JiraException
    * @throws \JsonMapper_Exception
    */
-  public function createTicket($title, $email, $account_id, $description, $project) {
+  public function createTicket($title, $bundle, $id, $email, $account_id, $description, $project, $site, $site_section, $page_department, $editor_department) {
     $request_type = strtolower($project) . '/' . $this->config->get('customer_request_type_id');
     $issueField = new IssueField();
     $issueField->setProjectKey($project)
       ->setSummary($title)
       ->setIssueType($this->config->get('issue_type'))
       ->addCustomField($this->config->get('customer_request_type_field_id'), $request_type)
+      ->addCustomField($this->config->get('content_type'), $bundle)
+      ->addCustomField($this->config->get('node_id'), $id)
+      ->addCustomField($this->config->get('site'), $site)
+      ->addCustomField($this->config->get('site_section'), $site_section)
+      ->addCustomField($this->config->get('page_department'), $page_department)
+      ->addCustomField($this->config->get('editor_department'), $editor_department)
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);
