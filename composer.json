@@ -255,9 +255,6 @@
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
-            "drupal/jquery_ui_touch_punch": {
-                "jQuery UI Touch Punch library - https://www.drupal.org/project/jquery_ui_touch_punch/issues/3159222#comment-14011939": "https://www.drupal.org/files/issues/2021-02-26/jquery_ui_touch_punch.patch"
-            },
             "lesstif/php-jira-rest-client": {
                 "Supports email lookup" : "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
             }
