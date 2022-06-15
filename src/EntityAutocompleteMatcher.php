@@ -4,6 +4,7 @@ namespace Drupal\tide_core;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Tags;
+use Drupal\Core\Entity\Plugin\EntityReferenceSelection\Broken;
 use Drupal\Core\Entity\EntityAutocompleteMatcher as CoreEntityAutocompleteMatcher;
 
 /**
@@ -26,6 +27,12 @@ class EntityAutocompleteMatcher extends CoreEntityAutocompleteMatcher {
     ];
 
     $handler = $this->selectionManager->getInstance($options);
+
+    // If the handler cannot be found, returns the default one.
+    if ($handler instanceof Broken) {
+      $options['handler'] = 'default';
+      $handler = $this->selectionManager->getInstance($options);
+    }
 
     // Add a flag for our EntityReferenceSelection plugin.
     // @see TideNodeSelection::getReferenceableEntities()
