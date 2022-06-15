@@ -17,7 +17,7 @@ class EntityAutocompleteMatcher extends CoreEntityAutocompleteMatcher {
   public function getMatches($target_type, $selection_handler, $selection_settings, $string = '') {
     // Match the selection handler for either 'default' or 'default:node'.
     if ($target_type == 'node' && $selection_handler == 'default') {
-      $selection_handler = 'tide_core';
+      $selection_handler = 'tide:node';
     }
     $matches = [];
     $options = $selection_settings + [
