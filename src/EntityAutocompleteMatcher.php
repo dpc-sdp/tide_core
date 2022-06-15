@@ -4,7 +4,6 @@ namespace Drupal\tide_core;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Tags;
-use Drupal\Core\Entity\Plugin\EntityReferenceSelection\Broken;
 use Drupal\Core\Entity\EntityAutocompleteMatcher as CoreEntityAutocompleteMatcher;
 
 /**
