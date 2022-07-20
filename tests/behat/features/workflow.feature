@@ -278,11 +278,6 @@ Feature: Workflow states and transitions
     And I should see the text "[TEST] Editor Test title"
     And I should see the text "Unpublished" in the "[TEST] Editor Test title" row
 
-    When I go to "admin/content/moderated"
-    And the response status code should be 200
-    And I should see the text "[TEST] Editor Test title"
-    And I should see the text "Needs Review" in the "[TEST] Editor Test title" row
-
     # Approver sends back to Draft.
     When I edit test "[TEST] Editor Test title"
     Then the response status code should be 200
