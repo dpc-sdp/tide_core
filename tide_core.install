@@ -1446,3 +1446,53 @@ function tide_core_update_8061() {
   $field_storage->setSetting('allowed_values', $allowed_values);
   $field_storage->save();
 }
+
+/**
+ * Changes Linkit profile
+ */
+function tide_core_update_8062() {
+  // Update allowed HTML list.
+  $config_factory = \Drupal::configFactory();
+  $editor_ids = [
+    'editor.editor.admin_text',
+    'editor.editor.rich_text',
+    'editor.editor.summary_text',
+  ];
+  foreach ($editor_ids as $editor_id) {
+    $editor = $config_factory->getEditable($editor_id);
+    if ($editor->isNew()) {
+      continue;
+    }
+
+    $value = $editor->get('settings.plugins.drupallink.linkit_profile');
+    $replaced = str_replace('content', 'site_content', $value);
+    $editor->set('settings.plugins.drupallink.linkit_profile', $replaced);
+    $editor->save();
+  }
+}
+/**
+ * Changes to filter weights
+ */
+function tide_core_update_8063() {
+  // Update allowed HTML list.
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+    'filter.format.summary_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    if ($filter->isNew()) {
+      continue;
+    }
+
+    $align_weight = $filter->get('filters.filter_align.weight');
+    $caption_weight = $filter->get('filters.filter_caption.weight');
+    $replaced_align = str_replace('-47', '-50', $align_weight);
+    $replaced_caption = str_replace('-46', '-49', $caption_weight);
+    $filter->set('filters.filter_align.weight', $replaced_align);
+    $filter->set('filters.filter_caption.weight', $replaced_caption);
+    $filter->save();
+  }
+}
