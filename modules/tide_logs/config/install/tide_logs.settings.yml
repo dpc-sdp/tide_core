@@ -1,5 +1,5 @@
 enable: true
-host: logs-forwarder.sdp-services.svc
+host: sumologic-otel-collector.sdp-services
 port: 5514
 sumologic_category: ''
 debug: false
