@@ -1463,10 +1463,7 @@ function tide_core_update_8062() {
     if ($editor->isNew()) {
       continue;
     }
-
-    $value = $editor->get('settings.plugins.drupallink.linkit_profile');
-    $replaced = str_replace('content', 'site_content', $value);
-    $editor->set('settings.plugins.drupallink.linkit_profile', $replaced);
+    $editor->set('settings.plugins.drupallink.linkit_profile', 'site_content');
     $editor->save();
   }
 }
