@@ -1490,10 +1490,13 @@ function tide_core_update_8063() {
 
     $align_weight = $filter->get('filters.filter_align.weight');
     $caption_weight = $filter->get('filters.filter_caption.weight');
+    $linkit_weight = $filter->get('filters.linkit.weight');
     $replaced_align = str_replace('-47', '-50', $align_weight);
     $replaced_caption = str_replace('-46', '-49', $caption_weight);
+    $replaced_linkit = str_replace('-50', '-48', $linkit_weight);
     $filter->set('filters.filter_align.weight', $replaced_align);
     $filter->set('filters.filter_caption.weight', $replaced_caption);
+    $filter->set('filters.linkit.weight', $replaced_linkit);
     $filter->save();
   }
 }
