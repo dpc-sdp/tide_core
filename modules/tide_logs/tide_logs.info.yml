@@ -1,0 +1,9 @@
+name: Tide Logs
+description: Simple monolog wrapper for Sumo Logic.
+package: Tide
+configure: tide_logs.settings
+type: module
+core_version_requirement: ^8 || ^9
+
+dependencies:
+  - lagoon_logs:lagoon_logs

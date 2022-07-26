@@ -1,0 +1,5 @@
+system.tide_logs_settings:
+  title: 'Tide Logs settings'
+  parent: system.admin_config_development
+  description: 'Configure Tide Logs.'
+  route_name: tide_logs.settings

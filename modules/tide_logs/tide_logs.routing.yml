@@ -1,0 +1,7 @@
+tide_logs.settings:
+  path: '/admin/config/development/tide_logs'
+  defaults:
+    _form: '\Drupal\tide_logs\Form\TideLogsSettingsForm'
+    _title: 'Tide Logs configuration'
+  requirements:
+    _permission: 'administer site configuration'
