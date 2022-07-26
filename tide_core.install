@@ -1448,7 +1448,7 @@ function tide_core_update_8061() {
 }
 
 /**
- * Changes Linkit profile
+ * Changes Linkit profile.
  */
 function tide_core_update_8062() {
   // Update allowed HTML list.
@@ -1470,8 +1470,9 @@ function tide_core_update_8062() {
     $editor->save();
   }
 }
+
 /**
- * Changes to filter weights
+ * Changes to filter weights.
  */
 function tide_core_update_8063() {
   // Update allowed HTML list.
