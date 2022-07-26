@@ -93,7 +93,7 @@ filters:
     id: linkit
     provider: linkit
     status: true
-    weight: -50
+    weight: -48
     settings:
       title: true
   media_embed:
