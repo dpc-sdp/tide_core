@@ -5,6 +5,7 @@ namespace Drupal\tide_core\Plugin\CKEditorPlugin;
 use Drupal\ckeditor\CKEditorPluginInterface;
 use Drupal\ckeditor\CKEditorPluginButtonsInterface;
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\editor\Entity\Editor;
 
 /**
@@ -16,6 +17,7 @@ use Drupal\editor\Entity\Editor;
  * )
  */
 class TideCallout extends PluginBase implements CKEditorPluginInterface, CKEditorPluginButtonsInterface {
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -55,7 +57,7 @@ class TideCallout extends PluginBase implements CKEditorPluginInterface, CKEdito
     // Return the CKEditor plugin button details.
     return [
       'TideCallout' => [
-        'label' => t('Callout template'),
+        'label' => $this->t('Callout template'),
         'image' => $iconImage,
       ],
     ];

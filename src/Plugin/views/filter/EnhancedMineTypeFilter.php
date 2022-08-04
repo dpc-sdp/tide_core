@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core\Plugin\views\filter;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\views\Plugin\views\filter\InOperator;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -14,13 +15,14 @@ use Drupal\views\Plugin\views\display\DisplayPluginBase;
  * @ViewsFilter("tide_enhanced_mime_type_filter")
  */
 class EnhancedMineTypeFilter extends InOperator {
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
    */
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
-    $this->valueTitle = t('Enhanced MIME Type Filter');
+    $this->valueTitle = $this->t('Enhanced MIME Type Filter');
     $this->definition['options callback'] = [$this, 'generateOptions'];
   }
 

@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core\Plugin\Field\FieldWidget;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\paragraphs\Plugin\Field\FieldWidget\ParagraphsWidget;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
@@ -26,6 +27,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class PresetParagraphsWidget extends ParagraphsWidget {
+  use StringTranslationTrait;
 
   /**
    * Indicates whether the current widget instance is in translation.
@@ -52,7 +54,7 @@ class PresetParagraphsWidget extends ParagraphsWidget {
     $form['preset_number'] = [
       '#type' => 'number',
       '#title' => 'Default number of paragraphs',
-      '#description' => t('Set the default number of paragraphs.'),
+      '#description' => $this->t('Set the default number of paragraphs.'),
       '#min' => 1,
       '#default_value' => $this->getSetting('preset_number'),
     ];
@@ -65,7 +67,7 @@ class PresetParagraphsWidget extends ParagraphsWidget {
    */
   public function settingsSummary() {
     $summary = parent::settingsSummary();
-    $summary[] = t('Number of paragraphs: @number', ['@number' => $this->getSetting('preset_number')]);
+    $summary[] = $this->t('Number of paragraphs: @number', ['@number' => $this->getSetting('preset_number')]);
 
     return $summary;
   }

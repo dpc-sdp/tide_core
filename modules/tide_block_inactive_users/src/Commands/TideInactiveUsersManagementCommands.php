@@ -4,9 +4,10 @@ namespace Drupal\tide_block_inactive_users\Commands;
 
 use Drupal\block_inactive_users\InactiveUsersHandler;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\KeyValueStore\KeyValueFactory;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -73,9 +74,23 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
   protected $queue;
 
   /**
+   * KeyValue service.
+   *
+   * @var \Drupal\Core\KeyValueStore\KeyValueFactory
+   */
+  protected $keyvalue;
+
+  /**
+   * KeyValue service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $configFactory, InactiveUsersHandler $handler, LoggerChannelFactory $logger, QueueFactory $queueFactory) {
+  public function __construct(ConfigFactoryInterface $configFactory, InactiveUsersHandler $handler, LoggerChannelFactory $logger, QueueFactory $queueFactory, KeyValueFactory $keyValueFactory, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct();
     $this->config = $configFactory;
     $this->blockUserhandler = $handler;
@@ -85,6 +100,8 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
     $this->includeNeverAccessed = $this->blockInactiveUsers->get('block_inactive_users_include_never_accessed');
     $this->excludeUserRoles = $this->blockInactiveUsers->get('block_inactive_users_exclude_roles');
     $this->queue = $queueFactory->get('tide_block_inactive_users_queue');
+    $this->keyvalue = $keyValueFactory;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -102,8 +119,7 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
         if ($last_access != 0 && !$user->hasRole('administrator')) {
           if ($this->blockUserhandler->timestampdiff($last_access, $current_time) >= $this->idleTime) {
             // Ensure the email only send once.
-            if (!\Drupal::keyValue('tide_inactive_users_management')
-              ->get($user->id())) {
+            if (!$this->keyvalue->get('tide_inactive_users_management')->get($user->id())) {
               $item = new \stdClass();
               $item->uid = $user->id();
               $this->queue->createItem($item);
@@ -112,8 +128,7 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
         }
         if ($this->includeNeverAccessed == 1 && $last_access == 0) {
           if ($this->blockUserhandler->timestampdiff($user->getCreatedTime(), $current_time) >= $this->idleTime) {
-            if (!\Drupal::keyValue('tide_inactive_users_management')
-              ->get($user->id())) {
+            if (!$this->keyvalue->get('tide_inactive_users_management')->get($user->id())) {
               $item = new \stdClass();
               $item->uid = $user->id();
               $this->queue->createItem($item);
@@ -131,14 +146,14 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
    * @aliases inactive-block
    */
   public function block() {
-    $tide_inactive_users_management_results = \Drupal::keyValue('tide_inactive_users_management');
+    $tide_inactive_users_management_results = $this->keyvalue->get('tide_inactive_users_management');
     if ($times = $tide_inactive_users_management_results->getAll()) {
       foreach ($times as $uid => $time) {
-        $user = User::load($uid);
+        $user = $this->entityTypeManager->getStorage('user')->load($uid);
         if ($user && time() > $time) {
           $user->block();
           $user->save();
-          \Drupal::keyValue('tide_inactive_users_management')
+          $this->keyvalue->get('tide_inactive_users_management')
             ->delete($user->id());
         }
       }
@@ -149,13 +164,13 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
    * Gets users.
    */
   public function getUsers() {
-    $query = \Drupal::entityQuery('user')->condition('status', 1);
+    $query = $this->entityTypeManager->getStorage('user')->getQuery()->condition('status', 1);
     if (!empty($this->excludeUserRoles)) {
       $query->condition('roles.target_id', $this->excludeUserRoles, 'NOT IN');
     }
     $user_ids = $query->execute();
     if ($user_ids) {
-      return User::loadMultiple($user_ids);
+      return $this->entityTypeManager->getStorage('user')->loadMultiple($user_ids);
     }
     return [];
   }

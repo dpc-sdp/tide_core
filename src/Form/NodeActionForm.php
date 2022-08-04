@@ -8,6 +8,7 @@ use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides nodes deletion confirmation form.
  */
 class NodeActionForm extends ConfirmFormBase {
+  use StringTranslationTrait;
 
   /**
    * The current user.
@@ -133,7 +135,7 @@ class NodeActionForm extends ConfirmFormBase {
       $ops[] = [get_class($this) . '::doAction', [$ids, $this->action]];
     }
     $batch = [
-      'title' => t('Processing selected content'),
+      'title' => $this->t('Processing selected content'),
       'operations' => $ops,
       'finished' => [get_class($this), 'finishBatch'],
     ];

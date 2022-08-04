@@ -7,6 +7,7 @@ use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceLabelFormatter;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Plugin implementation of the 'entity_reference_revisions_label' formatter.
@@ -21,6 +22,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class EntityReferenceRevisionsLabelFormatter extends EntityReferenceLabelFormatter {
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -37,7 +39,7 @@ class EntityReferenceRevisionsLabelFormatter extends EntityReferenceLabelFormatt
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $elements = parent::settingsForm($form, $form_state);
     $elements['show_revision_number'] = [
-      '#title' => t('Show revision number of the referenced entity'),
+      '#title' => $this->t('Show revision number of the referenced entity'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('show_revision_number'),
     ];
@@ -51,7 +53,7 @@ class EntityReferenceRevisionsLabelFormatter extends EntityReferenceLabelFormatt
   public function settingsSummary() {
     $summary = parent::settingsSummary();
     if ($this->getSetting('show_revision_number')) {
-      $summary[] = t('Show revision number of the referenced entity');
+      $summary[] = $this->t('Show revision number of the referenced entity');
     }
 
     return $summary;
