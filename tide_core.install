@@ -1451,7 +1451,7 @@ function tide_core_update_8061() {
  * Changes Linkit profile.
  */
 function tide_core_update_8062() {
-  // Update linkit profile for each filter
+  // Update linkit profile for each filter.
   $config_factory = \Drupal::configFactory();
   $editor_ids = [
     'editor.editor.admin_text',
@@ -1472,7 +1472,7 @@ function tide_core_update_8062() {
  * Changes to filter weights.
  */
 function tide_core_update_8063() {
-  // Update filter weights
+  // Update filter weights.
   $config_factory = \Drupal::configFactory();
   $filter_ids = [
     'filter.format.admin_text',
