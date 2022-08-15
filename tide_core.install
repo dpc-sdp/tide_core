@@ -1476,7 +1476,7 @@ function tide_core_update_8063() {
   // Update field_show_table_of_content and display headings.
   $field_configs = [
     'field_show_table_of_content' => [
-      'label' => '[Checbox] Show table of contents',
+      'label' => 'Show table of contents',
       'description' => 'The table of contents displays a page’s heading structure (i.e. H2 and H3), with anchor links to jump down to the content.',
     ], 
     'field_node_display_headings' => [
