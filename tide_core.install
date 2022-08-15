@@ -1452,7 +1452,10 @@ function tide_core_update_8061() {
  */
 function tide_core_update_8063() {
   // Remove redundant existing listing key values from DB.
-  $display_headings_tables = ['node__field_node_display_headings', 'node_revision__field_node_display_headings'];
+  $display_headings_tables = [
+    'node__field_node_display_headings',
+    'node_revision__field_node_display_headings',
+  ];
   foreach ($display_headings_tables as $table) {
     $query = \Drupal::database();
     if ($query->schema()->tableExists($table)) {
@@ -1465,8 +1468,9 @@ function tide_core_update_8063() {
     }
   }
   // Rename values for existing keys and remove the redundant options.
-  $field_storage = FieldStorageConfig::loadByName('node','field_node_display_headings');
+  $field_storage = FieldStorageConfig::loadByName('node', 'field_node_display_headings');
   if (!empty($field_storage)) {
+    $allowed_values = [];
     $allowed_values['showH2'] = t('Show level 2 (H2) only.');
     $allowed_values['showH2AndH3'] = t('Show level 2 (H2) and level 3 (H3).');
     $field_storage->setSetting('allowed_values', $allowed_values);
@@ -1478,11 +1482,11 @@ function tide_core_update_8063() {
     'field_show_table_of_content' => [
       'label' => 'Show table of contents',
       'description' => "The table of contents displays a page's heading structure (i.e. H2 and H3), with anchor links to jump down to the content.",
-    ], 
+    ],
     'field_node_display_headings' => [
       'label' => 'Choose headings to display',
       'description' => '',
-    ]
+    ],
   ];
   foreach ($field_configs as $field_config => $config) {
     $field_storage = FieldStorageConfig::loadByName('node', $field_config);
