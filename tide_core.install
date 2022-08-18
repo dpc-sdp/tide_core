@@ -1446,3 +1446,48 @@ function tide_core_update_8061() {
   $field_storage->setSetting('allowed_values', $allowed_values);
   $field_storage->save();
 }
+
+/**
+ * Changes Linkit profile.
+ */
+function tide_core_update_8062() {
+  // Update linkit profile for each filter.
+  $config_factory = \Drupal::configFactory();
+  $editor_ids = [
+    'editor.editor.admin_text',
+    'editor.editor.rich_text',
+    'editor.editor.summary_text',
+  ];
+  foreach ($editor_ids as $editor_id) {
+    $editor = $config_factory->getEditable($editor_id);
+    if ($editor->isNew()) {
+      continue;
+    }
+    $editor->set('settings.plugins.drupallink.linkit_profile', 'site_content');
+    $editor->save();
+  }
+}
+
+/**
+ * Changes to filter weights.
+ */
+function tide_core_update_8063() {
+  // Update filter weights.
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+    'filter.format.summary_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    if ($filter->isNew()) {
+      continue;
+    }
+
+    $filter->set('filters.filter_align.weight', '-50');
+    $filter->set('filters.filter_caption.weight', '-49');
+    $filter->set('filters.linkit.weight', '-48');
+    $filter->save();
+  }
+}
