@@ -27,6 +27,7 @@
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
         "drupal/core": "9.4.x",
+        "drupal/ctools": "^3.11",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^2.0",
         "drupal/entity_browser": "^2.6",
