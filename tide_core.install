@@ -44,7 +44,7 @@ function tide_core_install() {
     $plain_text = FilterFormat::load('plain_text');
     if ($plain_text) {
       module_load_include('inc', 'tide_core', 'includes/helpers');
-      $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+      $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
       _tide_import_single_config('filter.format.plain_text', $config_location);
     }
   }
@@ -218,7 +218,7 @@ function tide_core_update_dependencies() {
  */
 function tide_core_update_8001() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   _tide_import_single_config('field.storage.node.field_show_related_content', $config_location);
   _tide_import_single_config('field.storage.node.field_show_social_sharing', $config_location);
 }
@@ -228,7 +228,7 @@ function tide_core_update_8001() {
  */
 function tide_core_update_8002() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   _tide_import_single_config('field.storage.node.field_featured_image', $config_location);
 }
 
@@ -240,7 +240,7 @@ function tide_core_update_8003() {
   $module_installer = \Drupal::service('module_installer');
   $module_installer->install(['pathauto']);
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
   _tide_import_single_config('pathauto.pattern.content_title', $config_location);
 }
 
@@ -249,7 +249,7 @@ function tide_core_update_8003() {
  */
 function tide_core_update_8004() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
   _tide_import_single_config('clamav.settings', $config_location);
 }
 
@@ -261,7 +261,7 @@ function tide_core_update_8005() {
   $module_installer = \Drupal::service('module_installer');
   $module_installer->install(['prlp']);
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
   _tide_import_single_config('prlp.settings', $config_location);
 }
 
@@ -636,7 +636,7 @@ function tide_core_update_8020() {
  */
 function tide_core_update_8021() {
   $view = 'views.view.tide_core_moderated_content_filters';
-  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $config_path = \Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install';
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
   if ($source->read($view)) {
@@ -781,7 +781,7 @@ function tide_core_update_8029() {
     'system.action.tide_core_archive',
     'system.action.tide_core_publish',
   ];
-  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $config_path = \Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install';
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
   foreach ($actions as $action) {
@@ -944,7 +944,7 @@ function tide_core_update_8035() {
     'editor.editor.summary_text' => 'editor',
   ];
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
   // Check if field already exported to config/sync.
   foreach ($configs as $config => $type) {
     $config_read = _tide_read_config($config, $config_location, TRUE);
@@ -974,7 +974,7 @@ function tide_core_update_8036() {
  */
 function tide_core_update_8037() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   $field_storage = 'field.storage.node.field_node_display_headings';
   $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
   if (empty($storage->load('node.field_node_display_headings'))) {
@@ -1126,7 +1126,7 @@ function tide_core_update_8043() {
  */
 function tide_core_update_8044() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/optional'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
   $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
   $storage = \Drupal::entityTypeManager()->getStorage('view');
   if ($storage->load('enhanced_files') == NULL) {
@@ -1173,7 +1173,7 @@ function tide_core_update_8046() {
  */
 function tide_core_update_8047() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $icon_dir = drupal_get_path('module', 'tide_core') . DIRECTORY_SEPARATOR . 'icons';
+  $icon_dir = \Drupal::service('extension.list.module')->getPath('tide_core') . DIRECTORY_SEPARATOR . 'icons';
 
   $paragraphs = [
     'accordion' => 'Add a list of headings that can be clicked on to show or hide content.',
@@ -1315,7 +1315,7 @@ function tide_core_update_8054() {
  */
 function tide_core_update_8055() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   // Check if field already exported to config/sync.
   $config_read = _tide_read_config('field.storage.node.field_show_site_section_nav', $config_location, TRUE);
   $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
@@ -1361,7 +1361,7 @@ function tide_core_update_8057() {
   ];
 
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   // Check if field already exported to config/sync.
   foreach ($configs as $config) {
     $config_read = _tide_read_config($config['location'], $config_location, TRUE);
@@ -1392,7 +1392,7 @@ function tide_core_update_8058() {
  */
 function tide_core_update_8059() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   $field_storage = 'field.storage.paragraph.field_current_milestone';
   $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
   if (empty($storage->load('paragraph.field_current_milestone'))) {
