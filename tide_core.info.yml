@@ -76,6 +76,7 @@ dependencies:
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
   - admin_audit_trail:admin_audit_trail
+  - field_permissions:field_permissions
 themes:
   - seven
 config_devel:
@@ -159,6 +160,9 @@ config_devel:
     - wysiwyg_template.wysiwyg_template.secondary_button
     - field.storage.block_content.field_tags
     - field.storage.block_content.field_topic
+    - field.storage.user.field_business_contact_number
+    - field.storage.user.field_business_name
+    - field.storage.user.field_notes
   optional:
     - block.block.seven_breadcrumbs
     - block.block.seven_content
