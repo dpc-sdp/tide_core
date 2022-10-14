@@ -82,9 +82,6 @@
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta"
     },
-    "provide": {
-        "drupal/ckeditor": "*"
-    },
     "repositories": {
         "drupal": {
             "type": "composer",
