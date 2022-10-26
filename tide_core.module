@@ -353,7 +353,7 @@ function tide_core_preprocess_page(&$variables) {
  */
 function tide_core_editor_js_settings_alter(array &$settings) {
   foreach (array_keys($settings['editor']['formats']) as $text_format_id) {
-    $settings['editor']['formats'][$text_format_id]['editorSettings']['contentsCss'][] = '/' . drupal_get_path('module', 'tide_core') . '/css/ckeditor_overrides.css';
+    $settings['editor']['formats'][$text_format_id]['editorSettings']['contentsCss'][] = '/' . \Drupal::service('extension.list.module')->getPath('tide_core') . '/css/ckeditor_overrides.css';
   }
 }
 
@@ -363,6 +363,7 @@ function tide_core_editor_js_settings_alter(array &$settings) {
  * Move some core fields to Node form Sidebar.
  */
 function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#process'][] = '_tide_core_form_node_form_process';
 
@@ -382,6 +383,17 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     $form['#attached']['library'][] = 'tide_core/node_revision_log';
   }
 
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_revision_overview_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Adding headers to unlabelled radio button options.
+  if (isset($form['node_revisions_table'])) {
+    $form['node_revisions_table']['#header']['select_column_one'] = "Compare From";
+    $form['node_revisions_table']['#header']['select_column_two'] = "Compare To";
+  }
 }
 
 /**

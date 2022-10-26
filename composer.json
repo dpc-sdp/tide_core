@@ -26,7 +26,8 @@
         "drupal/config_ignore": "^2.1",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/core": "9.2.x",
+        "drupal/core": "9.4.x",
+        "drupal/ctools": "^3.11",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^2.0",
         "drupal/entity_browser": "^2.6",
@@ -213,10 +214,13 @@
     },
     "extra": {
         "patches": {
+            "drupal/admin_audit_trail": {
+                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
+            },
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875#comment-14018213": "https://www.drupal.org/files/issues/2021-03-03/contextual_links_should-2898875-16.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
-                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
+                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-14464093": "https://www.drupal.org/files/issues/2022-03-31/2791693-63.remove-sample-date.patch",
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
@@ -226,7 +230,7 @@
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
             },
             "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2021-12-21/metatag-data-type-support-2945817-132.patch"
+                "Support json api - https://www.drupal.org/project/metatag/issues/2945817#comment-14716597": "https://www.drupal.org/files/issues/2022-10-03/metatag-data-type-support-2945817-152_0.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
@@ -243,9 +247,6 @@
             "drupal/tablefield": {
                 "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
             },
-            "drupal/inline_entity_form": {
-                "Preventing multiple submissions - https://www.drupal.org/project/inline_entity_form/issues/3160683#comment-13758454": "https://www.drupal.org/files/issues/2020-07-22/3160683-1.0-rc-6.patch"
-            },
             "ckeditor/liststyle": {
                 "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
             },
@@ -254,9 +255,6 @@
             },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
-            },
-            "drupal/jquery_ui_touch_punch": {
-                "jQuery UI Touch Punch library - https://www.drupal.org/project/jquery_ui_touch_punch/issues/3159222#comment-14011939": "https://www.drupal.org/files/issues/2021-02-26/jquery_ui_touch_punch.patch"
             },
             "lesstif/php-jira-rest-client": {
                 "Supports email lookup" : "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"

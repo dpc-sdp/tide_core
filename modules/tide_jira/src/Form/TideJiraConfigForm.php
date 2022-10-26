@@ -69,6 +69,47 @@ class TideJiraConfigForm extends ConfigFormBase {
       '#title' => $this->t('Issue Type'),
     ];
 
+    $form['field_mappings'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Jira field mappings'),
+    ];
+
+    $form['field_mappings']['content_type'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('content_type'),
+      '#title' => $this->t('Content Type Field ID'),
+    ];
+
+    $form['field_mappings']['node_id'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('node_id'),
+      '#title' => $this->t('Node ID Field ID'),
+    ];
+
+    $form['field_mappings']['site'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('site'),
+      '#title' => $this->t('Site Field ID'),
+    ];
+
+    $form['field_mappings']['site_section'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('site_section'),
+      '#title' => $this->t('Site Section Field ID'),
+    ];
+
+    $form['field_mappings']['page_department'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('page_department'),
+      '#title' => $this->t('Page Department Field ID'),
+    ];
+
+    $form['field_mappings']['editor_department'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('editor_department'),
+      '#title' => $this->t('Editor Department Field ID'),
+    ];
+
     $form['no_account_email'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Email to use when user does not have an active JIRA account.'),
@@ -99,6 +140,12 @@ class TideJiraConfigForm extends ConfigFormBase {
     $config->set('customer_request_type_id', $form_state->getValue('customer_request_type_id'));
     $config->set('no_account_email', $form_state->getValue('no_account_email_value'));
     $config->set('issue_type', $form_state->getValue('issue_type'));
+    $config->set('content_type', $form_state->getValue('content_type'));
+    $config->set('node_id', $form_state->getValue('node_id'));
+    $config->set('site', $form_state->getValue('site'));
+    $config->set('site_section', $form_state->getValue('site_section'));
+    $config->set('page_department', $form_state->getValue('page_department'));
+    $config->set('editor_department', $form_state->getValue('editor_department'));
     $config->save();
 
   }

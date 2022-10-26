@@ -101,9 +101,20 @@ function _tide_reload_default_config($module) {
  * @param bool $prioritise_sync
  *   Whether to prioritise the same config in CONFIG_SYNC.
  *
+ * @deprecated in tide_core:3.1.0 and is removed from tide_core:4.0.0. Use
+ *   ConfigEntityStorageInterface::createFromStorageRecord instead.
+ *
+ * @see https://www.drupal.org/project/tide_core/issues/3274963
+ * @example
+ * @code
+ * $Storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+ * $storage->createFromStorageRecord({array value});
+ * @endcode
+ *
  * @throws \Exception
  */
 function _tide_import_single_config($config_name, array $locations = [], $prioritise_sync = TRUE) {
+  @trigger_error(__METHOD__ . ' is deprecated in drupal:9.0.0 and is removed from drupal:10.0.0. Use ConfigEntityStorageInterface::createFromStorageRecord instead. See https://www.drupal.org/project/tide_core/issues/3274963', E_USER_DEPRECATED);
   $config_data = _tide_read_config($config_name, $locations, $prioritise_sync);
 
   $config_storage = \Drupal::service('config.storage');
