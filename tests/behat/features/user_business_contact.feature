@@ -29,8 +29,8 @@ Feature: Data Driven Fields for the user account
   Scenario: The user administrator role can see business name, phone and notes fields.
     Given I am logged in as a user with the "Administrator" role
     When I visit "/user"
-    Then I should see "Edit profile"
-    And I click "Edit profile"
+    Then I should see "Edit"
+    And I click "Edit"
     And I should see an "input#edit-field-business-name-0-value" element
     And I should see an "input#edit-field-business-name-0-value" element
     And I should see an "textarea#edit-field-notes-0-value" element
