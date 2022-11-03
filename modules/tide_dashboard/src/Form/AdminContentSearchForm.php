@@ -97,7 +97,7 @@ class AdminContentSearchForm extends FormBase {
     foreach ($tree as $term) {
       $sites[$term->id()] = $term->depth ? (str_repeat('-', $term->depth) . ' ' . $term->label()) : $term->label();
     }
-    $form['search']['field_node_site_target_id'] = [
+    $form['search']['field_node_primary_site_target_id'] = [
       '#type' => 'select',
       '#title' => $this->t('Site'),
       '#title_display' => 'invisible',
@@ -131,9 +131,9 @@ class AdminContentSearchForm extends FormBase {
     if ($type && $type !== '_') {
       $options['query']['type'] = $type;
     }
-    $site = $form_state->getValue('field_node_site_target_id');
+    $site = $form_state->getValue('field_node_primary_site_target_id');
     if ($site && $site !== '_') {
-      $options['query']['field_node_site_target_id'] = [$site];
+      $options['query']['field_node_primary_site_target_id'] = [$site];
     }
 
     $form_state->setRedirect($route, [], $options);
