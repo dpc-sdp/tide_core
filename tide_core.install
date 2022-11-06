@@ -1562,7 +1562,7 @@ function tide_core_update_8065() {
 }
 
 /**
- * Editor should not have access to redirects.
+ * Editor should not have access to content moderation.
  */
 function tide_core_update_8066() {
   $role = 'editor';
