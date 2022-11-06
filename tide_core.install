@@ -1560,12 +1560,3 @@ function tide_core_update_8065() {
     $config->save();
   }
 }
-
-/**
- * Editor should not have access to content moderation.
- */
-function tide_core_update_8066() {
-  $role = 'editor';
-  $permissions = ['view any unpublished content'];
-  user_role_revoke_permissions($role, $permissions);
-}
