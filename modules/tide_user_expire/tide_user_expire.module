@@ -100,6 +100,7 @@ function tide_user_expire_mail_alter(&$message) {
     $token = Drupal::token();
     $body = $token->replace($config->get('tide_user_expire_email_content'), $token_data);
 
-    $message['body'] = $body;
+    unset($message['body']);
+    $message['body'][] = $body;
   }
 }
