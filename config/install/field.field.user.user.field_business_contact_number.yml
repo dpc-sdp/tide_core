@@ -11,7 +11,7 @@ field_name: field_business_contact_number
 entity_type: user
 bundle: user
 label: 'Business contact number'
-description: ''
+description: 'Specify the business contact number for any non-VPS users'
 required: false
 translatable: false
 default_value: {  }

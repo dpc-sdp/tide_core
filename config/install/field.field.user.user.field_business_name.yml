@@ -10,7 +10,7 @@ field_name: field_business_name
 entity_type: user
 bundle: user
 label: 'Business name'
-description: ''
+description: 'Specify the business name for any non-VPS users'
 required: false
 translatable: false
 default_value: {  }

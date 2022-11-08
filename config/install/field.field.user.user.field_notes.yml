@@ -16,7 +16,7 @@ field_name: field_notes
 entity_type: user
 bundle: user
 label: Notes
-description: ''
+description: 'This field is only visible to admins and site admins.'
 required: false
 translatable: false
 default_value: {  }
