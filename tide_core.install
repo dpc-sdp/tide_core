@@ -1569,3 +1569,13 @@ function tide_core_update_8066() {
   $permissions = ['view any unpublished content'];
   user_role_revoke_permissions($role, $permissions);
 }
+
+/**
+ * Enable tide_user_expire module.
+ */
+function tide_core_update_8069() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_user_expire')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_user_expire']);
+  }
+}

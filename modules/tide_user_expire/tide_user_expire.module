@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_user_expire.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_user_expire_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Validate user expire date.
+  if (($form_id === "user_form") || ($form_id === 'user_register_form')) {
+    $form['#validate'][] = '_tide_user_expire_validate';
+  }
+
+  // Alter user expire form.
+  if ($form_id === 'user_expire_form') {
+    $config = \Drupal::configFactory()->get('tide_user_expire.settings');
+    $form['email_settings'] = [
+      '#type' => 'details',
+      '#title' => t('Email notification'),
+    ];
+    $form['email_settings']['tide_user_expire_from_email'] = [
+      '#title' => t('From'),
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => $config->get('tide_user_expire_from_email'),
+      '#description' => t('Email "from" email address configuration.'),
+    ];
+
+    $form['email_settings']['tide_user_expire_email_subject'] = [
+      '#title' => t('Email subject'),
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => $config->get('tide_user_expire_email_subject'),
+      '#description' => t('Email subject text.'),
+    ];
+
+    $form['email_settings']['tide_user_expire_email_content'] = [
+      '#title' => t('Email template'),
+      '#type' => 'textarea',
+      '#required' => TRUE,
+      '#default_value' => $config->get('tide_user_expire_email_content'),
+      '#description' => t('Notify inactive users.'),
+    ];
+
+    // Add extra settings fields.
+    $form['#submit'][] = 'tide_user_expire_submit';
+  }
+}
+
+/**
+ * Tide user expire validate function.
+ */
+function _tide_user_expire_validate($form, &$form_state) {
+  if ($form_state->hasValue('user_expiration_date')) {
+    $expiration_date = $form_state->getValue('user_expiration_date');
+    if ($expiration_date instanceof DrupalDateTime) {
+      $expire_date = $expiration_date->getTimestamp();
+      $now = new DrupalDateTime('now');
+      $now->setTimezone(new \DateTimeZone(DateTimeItemInterface::STORAGE_TIMEZONE));
+      $now = $now->getTimestamp();
+      if ($expire_date <= $now) {
+        $form_state->setErrorByName('user_expiration_date', t('Please select a date in the future'));
+      }
+    }
+  }
+}
+
+/**
+ * Additional fields handler for user_expire settings form submit.
+ */
+function tide_user_expire_submit($form, &$form_state) {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('tide_user_expire.settings');
+  $config->set('tide_user_expire_from_email', $form_state->getValue('tide_user_expire_from_email'));
+  $config->set('tide_user_expire_email_subject', $form_state->getValue('tide_user_expire_email_subject'));
+  $config->set('tide_user_expire_email_content', $form_state->getValue('tide_user_expire_email_content'));
+  $config->save(TRUE);
+}
+
+/**
+ * Implements hook_mail_alter().
+ */
+function tide_user_expire_mail_alter(&$message) {
+  // Use email template setting in the config.
+  if ($message['id'] === 'user_expire_expiration_warning') {
+    $config = \Drupal::configFactory()->get('tide_user_expire.settings');
+    $params = $message['params'];
+    $token_data = [
+      'user' => $params['account'],
+    ];
+    $message['from'] = $config->get('tide_user_expire_from_email');
+    $message['subject'] = $config->get('tide_user_expire_email_subject');
+    $message['subject'] = $config->get('tide_user_expire_email_subject');
+    $token = Drupal::token();
+    $body = $token->replace($config->get('tide_user_expire_email_content'), $token_data);
+
+    $message['body'][] = $body;
+  }
+}

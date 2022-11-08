@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Tide User Expire.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_user_expire_uninstall() {
+  \Drupal::configFactory()->getEditable('tide_tide_user_expire.settings')->delete();
+}

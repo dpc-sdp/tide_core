@@ -1,0 +1,3 @@
+tide_user_expire_from_email: 'sdp.siteadmin@dpc.vic.gov.au'
+tide_user_expire_email_subject: 'Login required: SDP CMS account'
+tide_user_expire_email_content: "Hi [user:name],\r\n\r\nOur records show that you have not accessed your Single Digital Presence CMS account for the past five months. To comply with our user policy please login to your account within the next 30 days or your account with be automatically blocked.\r\n\r\nIf you still use this site, please log in [site:login-url] to avoid having your account blocked.\r\n\r\nKind regards,\r\n\r\nThe Single Digital Presence team"
