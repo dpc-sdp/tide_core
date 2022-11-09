@@ -79,6 +79,7 @@
         "drupal/jquery_ui_touch_punch": "^1.0",
         "drupal/admin_audit_trail": "^1.0",
         "drupal/block_inactive_users": "^2.0",
+        "drupal/user_expire": "^1.1",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta"
     },

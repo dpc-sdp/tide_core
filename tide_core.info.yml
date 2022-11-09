@@ -78,6 +78,7 @@ dependencies:
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
   - admin_audit_trail:admin_audit_trail
+  - user_expire:user_expire
 themes:
   - seven
 config_devel:

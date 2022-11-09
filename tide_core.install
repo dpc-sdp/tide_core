@@ -1560,3 +1560,22 @@ function tide_core_update_8065() {
     $config->save();
   }
 }
+
+/**
+ * Editor should not have access to content moderation.
+ */
+function tide_core_update_8066() {
+  $role = 'editor';
+  $permissions = ['view any unpublished content'];
+  user_role_revoke_permissions($role, $permissions);
+}
+
+/**
+ * Enable tide_user_expire module.
+ */
+function tide_core_update_8069() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_user_expire')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_user_expire']);
+  }
+}
