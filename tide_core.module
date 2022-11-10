@@ -22,6 +22,8 @@ use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\Core\Cache\Cache;
+use Drupal\tide_core\Render\Element\AdminToolbar;
+use Drupal\Component\Utility\Html;
 
 /**
  * Implements hook_views_data().
@@ -689,4 +691,47 @@ function tide_core_admin_audit_trail_handlers() {
     'title' => t('Page'),
   ];
   return $handlers;
+}
+
+/**
+ * Adds toolbar-specific attributes to the menu link tree.
+ *
+ * @param \Drupal\Core\Menu\MenuLinkTreeElement[] $tree
+ *   The menu link tree to manipulate.
+ *
+ * @return \Drupal\Core\Menu\MenuLinkTreeElement[]
+ *   The manipulated menu link tree.
+ */
+function tide_core_menu_navigation_links(array $tree) {
+  foreach ($tree as $element) {
+    // Remove menu and taxonomy subtree.
+    if (($element->link->getPluginId() === 'entity.menu.collection') || ($element->link->getPluginId() === 'entity.taxonomy_vocabulary.collection')) {
+      unset($element->subtree);
+    }
+    if (($element->link->getPluginId() != 'entity.menu.collection')
+      && ($element->link->getPluginId() != 'entity.taxonomy_vocabulary.collection')
+      && $element->subtree) {
+      tide_core_menu_navigation_links($element->subtree);
+    }
+    $link = $element->link;
+    // Get the non-localized title to make the icon class.
+    $definition = $link->getPluginDefinition();
+    $element->options['attributes']['class'][] = 'toolbar-icon';
+    $string = strtolower(str_replace(['.', ' ', '_'], ['-', '-', '-'], $definition['id']));
+    $element->options['attributes']['class'][] = Html::cleanCssIdentifier('toolbar-icon-' . $string);
+    $element->options['attributes']['title'] = $link->getDescription();
+  }
+  return $tree;
+}
+
+/**
+ * Implements hook_toolbar_alter().
+ */
+function tide_core_toolbar_alter(&$items) {
+  $items['administration']['tray']['toolbar_administration']['#pre_render'] = [
+    [
+      AdminToolbar::class,
+      'preRenderTray',
+    ],
+  ];
 }
