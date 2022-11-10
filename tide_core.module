@@ -154,6 +154,28 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       }
     }
   }
+  // Re-order the user_form field.
+  if ($form_id === 'user_form') {
+    $form['account']['name']['#weight'] = 2;
+    $form['account']['field_business_name'] = $form['field_business_name'];
+    $form['account']['field_business_name']['#weight'] = 3;
+    unset($form['field_business_name']);
+    $form['account']['field_business_contact_number'] = $form['field_business_contact_number'];
+    $form['account']['field_business_contact_number']['#weight'] = 4;
+    unset($form['field_business_contact_number']);
+    $form['account']['field_notes'] = $form['field_notes'];
+    $form['account']['field_notes']['#weight'] = 5;
+    unset($form['field_notes']);
+    $form['account']['pass']['#weight'] = 6;
+    $form['account']['status']['#weight'] = 7;
+    $form['account']['roles']['#weight'] = 8;
+    if (isset($form['account']['notify'])) {
+      $form['account']['notify']['#weight'] = 9;
+    }
+    if (isset($form['account']['password_policy_status'])) {
+      $form['account']['password_policy_status']['#weight'] = 10;
+    }
+  }
 }
 
 /**
@@ -182,6 +204,25 @@ function tide_core_form_scheduled_transition_delete_form_alter(&$form, FormState
 function tide_core_form_user_register_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['account']['mail']['#required'])) {
     $form['account']['mail']['#required'] = TRUE;
+  }
+  $form['account']['name']['#weight'] = 2;
+  $form['account']['field_business_name'] = $form['field_business_name'];
+  $form['account']['field_business_name']['#weight'] = 3;
+  unset($form['field_business_name']);
+  $form['account']['field_business_contact_number'] = $form['field_business_contact_number'];
+  $form['account']['field_business_contact_number']['#weight'] = 4;
+  unset($form['field_business_contact_number']);
+  $form['account']['field_notes'] = $form['field_notes'];
+  $form['account']['field_notes']['#weight'] = 5;
+  unset($form['field_notes']);
+  $form['account']['pass']['#weight'] = 6;
+  $form['account']['status']['#weight'] = 7;
+  $form['account']['roles']['#weight'] = 8;
+  if (isset($form['account']['notify'])) {
+    $form['account']['notify']['#weight'] = 9;
+  }
+  if (isset($form['account']['password_policy_status'])) {
+    $form['account']['password_policy_status']['#weight'] = 10;
   }
 }
 
