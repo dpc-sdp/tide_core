@@ -1,0 +1,13 @@
+tide_user_expire.settings:
+  type: config_object
+  label: 'Tide User Expire Module settings'
+  mapping:
+    tide_user_expire_from_email:
+      type: text
+      label: 'The from email address'
+    tide_user_expire_email_content:
+      type: text
+      label: 'The message content'
+    tide_user_expire_email_subject:
+      type: text
+      label: 'The email subject'
