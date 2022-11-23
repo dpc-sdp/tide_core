@@ -1560,3 +1560,119 @@ function tide_core_update_8065() {
     $config->save();
   }
 }
+
+/**
+ * Install field permission module.
+ */
+function tide_core_update_8066() {
+  if (\Drupal::moduleHandler()->moduleExists('field_permissions') === FALSE) {
+    \Drupal::service('module_installer')->install(['field_permissions']);
+  }
+}
+
+/**
+ * Editor should not have access to content moderation.
+ */
+function tide_core_update_8067() {
+  $role = 'editor';
+  $permissions = ['view any unpublished content'];
+  user_role_revoke_permissions($role, $permissions);
+}
+
+/**
+ * Add contact field to user account(business name, phone, notes).
+ */
+function tide_core_update_8068() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $configs = [
+    'field.storage.user.field_business_contact_number' => 'field_storage_config',
+    'field.storage.user.field_business_name' => 'field_storage_config',
+    'field.storage.user.field_notes' => 'field_storage_config',
+    'field.field.user.user.field_business_contact_number' => 'field_config',
+    'field.field.user.user.field_business_name' => 'field_config',
+    'field.field.user.user.field_notes' => 'field_config',
+  ];
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+}
+
+/**
+ * Update user form display and authenticated user permission.
+ */
+function tide_core_update_8069() {
+  $permissons = [
+    [
+      'create field_business_contact_number',
+      'create field_business_name',
+      'create field_notes',
+      'edit field_business_contact_number',
+      'edit field_business_name',
+      'edit field_notes',
+      'view field_business_contact_number',
+      'view field_business_name',
+      'view field_notes',
+    ],
+    [
+      'edit own field_business_contact_number',
+      'edit own field_business_name',
+      'view own field_business_contact_number',
+      'view own field_business_name',
+    ],
+  ];
+
+  $updated_roles = [
+    'site_admin',
+    'authenticated',
+  ];
+
+  foreach ($updated_roles as $index => $role) {
+    user_role_grant_permissions($role, $permissons[$index]);
+  }
+}
+
+/**
+ * Add contact field to user account form display.
+ */
+function tide_core_update_8070() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('core.entity_form_display.user.user.default');
+  $config->set('content.field_notes.weight', 12);
+  $config->set('content.field_notes.type', 'text_textarea');
+  $config->set('content.field_notes.region', 'content');
+  $config->set('content.field_notes.settings.rows', 5);
+  $config->set('content.field_notes.settings.placeholder', '');
+  $config->set('content.field_notes.third_party_settings', []);
+
+  $config->set('content.field_business_name.weight', 10);
+  $config->set('content.field_business_name.type', 'string_textfield');
+  $config->set('content.field_business_name.region', 'content');
+  $config->set('content.field_business_name.settings.size', 60);
+  $config->set('content.field_business_name.settings.placeholder', '');
+  $config->set('content.field_business_name.third_party_settings', []);
+
+  $config->set('content.field_business_contact_number.weight', 11);
+  $config->set('content.field_business_contact_number.type', 'telephone_default');
+  $config->set('content.field_business_contact_number.region', 'content');
+  $config->set('content.field_business_contact_number.settings.placeholder', '');
+  $config->set('content.field_business_contact_number.third_party_settings', []);
+
+  $config->save();
+}
+
+/**
+ * Enable tide_user_expire module.
+ */
+function tide_core_update_8071() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_user_expire')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_user_expire']);
+  }
+}
