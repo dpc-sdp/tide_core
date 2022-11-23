@@ -286,15 +286,6 @@ Feature: Workflow states and transitions
     Then I should see the success message "[TEST] Editor Test title has been updated."
     And I should see a "article.node--unpublished" element
 
-    # Editor send for Review.
-    Given I am logged in as a user with the Editor role
-    When I edit test "[TEST] Editor Test title"
-    Then the response status code should be 200
-    And I select "Needs Review" from "Change to"
-    And I press "Save"
-    Then I should see the success message "[TEST] Editor Test title has been updated."
-    And I should see a "article.node--unpublished" element
-
     # Approver reviews and publishes.
     Given I am logged in as a user with the Approver role
     When I edit test "[TEST] Editor Test title"
@@ -303,15 +294,6 @@ Feature: Workflow states and transitions
     And I press "Save"
     Then I should see the success message "[TEST] Editor Test title has been updated."
     And I should not see a "article.node--unpublished" element
-
-    # Editor send request to archive content.
-    Given I am logged in as a user with the Editor role
-    When I edit test "[TEST] Editor Test title"
-    Then the response status code should be 200
-    And I select "Archive pending" from "Change to"
-    And I press "Save"
-    Then I should see the success message "[TEST] Editor Test title has been updated."
-    And I should see a "article.node--unpublished" element
 
     # Approver reviews and archive.
     Given I am logged in as a user with the Approver role
