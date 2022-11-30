@@ -248,7 +248,8 @@
                 "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch"
             },
             "drupal/tablefield": {
-                "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
+                "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch",
+                "dragable table - https://www.drupal.org/project/tablefield/issues/3040358#comment-14114916": "https://www.drupal.org/files/issues/2021-05-26/3040358-tabledrag-support-28.patch"
             },
             "ckeditor/liststyle": {
                 "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
