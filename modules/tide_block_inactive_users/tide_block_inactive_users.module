@@ -83,7 +83,7 @@ function tide_block_inactive_users_mail($key, &$message, $params) {
 /**
  * Helper function to send emails.
  */
-function tide_inactive_users_management_sending_email(User $user) {
+function tide_block_inactive_users_management_sending_email(User $user) {
   // Settings.
   $logger = \Drupal::service('logger.factory')
     ->get(InactiveUsersHandler::LOGGER_CHANNEL);
