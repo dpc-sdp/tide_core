@@ -54,7 +54,7 @@
         "drupal/redirect": "^1.3",
         "drupal/role_delegation": "^1.0-alpha1",
         "drupal/seckit": "^1.1",
-        "drupal/simple_oauth": "^5.0",
+        "drupal/simple_oauth": "^5.2",
         "drupal/simple_sitemap": "^3.0",
         "drupal/smart_trim": "^1.1",
         "drupal/smtp": "^1.0@RC",
@@ -227,7 +227,8 @@
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
-                "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch"
+                "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
+                "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch"
             },
             "drupal/ckeditor_config": {
                 "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
@@ -249,7 +250,8 @@
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-13525843": "https://www.drupal.org/files/issues/2020-03-27/password_policy-move-password-validation-to-user-entity-2941526-8-D8.patch"
             },
             "drupal/simple_oauth": {
-                "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch"
+                "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
+                "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch"
             },
             "drupal/tablefield": {
                 "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
