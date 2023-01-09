@@ -80,6 +80,7 @@ dependencies:
   - admin_audit_trail:admin_audit_trail
   - user_expire:user_expire
   - field_permissions:field_permissions
+  - content_lock:content_lock
 themes:
   - seven
 config_devel:
