@@ -1676,3 +1676,14 @@ function tide_core_update_8071() {
     $module_installer->install(['tide_user_expire']);
   }
 }
+
+/**
+ * Adds break content lock permission to approvers.
+ */
+function tide_core_update_8072() {
+  $role = Role::load('approver');
+  if ($role && \Drupal::moduleHandler()->moduleExists('content_lock')) {
+    $role->grantPermission('break content lock');
+    $role->save();
+  }
+}
