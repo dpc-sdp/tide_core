@@ -11,20 +11,20 @@ use Drupal\node\NodeInterface;
  * Implements hook_ENTITY_TYPE_insert().
  */
 function tide_jira_node_insert(NodeInterface $node) {
-  handle_save($node);
+  tide_jira_handle_save($node);
 }
 
 /**
  * Implements hook_ENTITY_TYPE_update().
  */
 function tide_jira_node_update(NodeInterface $node) {
-  handle_save($node);
+  tide_jira_handle_save($node);
 }
 
 /**
  * Handle the node save operation.
  */
-function handle_save(NodeInterface $node) {
+function tide_jira_handle_save(NodeInterface $node) {
   // Never let an error working with JIRA stop content from being saved.
   try {
     $moderation_state = $node->get('moderation_state')->value;
