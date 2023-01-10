@@ -655,7 +655,7 @@ function tide_core_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchIn
  * Implements hook_ENTITY_TYPE_presave().
  */
 function tide_core_node_presave(NodeInterface $node) {
-  $node_state = $node->get('moderation_state')->getValue()[0]['value'];
+  $node_state = isset($node->get('moderation_state')->getValue()[0]) ? $node->get('moderation_state')->getValue()[0]['value'] : '';
 
   if ($node_state === 'published') {
     $log = [
