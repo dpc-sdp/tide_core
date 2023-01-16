@@ -12,10 +12,10 @@ settings:
   allowed_values:
     -
       value: showH2
-      label: 'Show H2'
+      label: 'Show level 2 (H2) only.'
     -
       value: showH2AndH3
-      label: 'Show H2 and H3'
+      label: 'Show level 2 (H2) and level 3 (H3).'
   allowed_values_function: ''
 module: options
 locked: false

@@ -1,0 +1,5 @@
+{
+    "name": "dpc-sdp/tide_spell_checker",
+    "description": "Tide Spell Checker integration",
+    "type": "drupal-module"
+}

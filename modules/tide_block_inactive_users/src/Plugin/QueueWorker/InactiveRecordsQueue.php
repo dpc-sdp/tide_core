@@ -24,7 +24,7 @@ class InactiveRecordsQueue extends QueueWorkerBase {
     if ($user) {
       if (!\Drupal::keyValue('tide_inactive_users_management')
         ->get($user->id())) {
-        _tide_inactive_users_management_sending_email($user);
+        tide_block_inactive_users_management_sending_email($user);
         $current_time = time();
         $block_time = strtotime('+1 month', $current_time);
         $config = \Drupal::configFactory()

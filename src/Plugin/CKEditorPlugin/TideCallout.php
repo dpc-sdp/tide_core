@@ -43,14 +43,14 @@ class TideCallout extends PluginBase implements CKEditorPluginInterface, CKEdito
    */
   public function getFile() {
     // Provide the JS plugin path.
-    return drupal_get_path('module', 'tide_core') . '/js/plugins/tide_callout/plugin.js';
+    return \Drupal::service('extension.list.module')->getPath('tide_core') . '/js/plugins/tide_callout/plugin.js';
   }
 
   /**
    * {@inheritdoc}
    */
   public function getButtons() {
-    $iconImage = drupal_get_path('module', 'tide_core') . '/js/plugins/tide_callout/images/icon.png';
+    $iconImage = \Drupal::service('extension.list.module')->getPath('tide_core') . '/js/plugins/tide_callout/images/icon.png';
 
     // Return the CKEditor plugin button details.
     return [

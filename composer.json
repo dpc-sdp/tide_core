@@ -18,20 +18,23 @@
         "drupal/address": "^1.4",
         "drupal/allowed_formats": "^1.1",
         "drupal/better_exposed_filters": "^5.0-beta3",
+        "drupal/ckeditor_config": "^3.2",
         "drupal/ckeditor_iframe": "^2.0-beta1",
         "drupal/ckeditor_liststyle": "^1.4",
+        "drupal/ckeditor_scayt": "^1.3",
         "drupal/clamav": "^2.0",
         "drupal/config_ignore": "^2.1",
         "drupal/config_perms": "^2.0",
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
-        "drupal/core": "9.2.x",
+        "drupal/core": "9.4.x",
+        "drupal/ctools": "^3.11",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^2.0",
         "drupal/entity_browser": "^2.6",
         "drupal/entity_reference_revisions": "^1.9",
         "drupal/entity_embed": "^1.1",
-        "drupal/environment_indicator": "^3.5",
+        "drupal/environment_indicator": "^4.0",
         "drupal/fakeobjects": "^1.0",
         "drupal/fast_404": "^2.0",
         "drupal/field_group": "^3.1",
@@ -52,7 +55,7 @@
         "drupal/redirect": "^1.3",
         "drupal/role_delegation": "^1.0-alpha1",
         "drupal/seckit": "^1.1",
-        "drupal/simple_oauth": "^4.5",
+        "drupal/simple_oauth": "^5.2",
         "drupal/simple_sitemap": "^3.0",
         "drupal/smart_trim": "^1.1",
         "drupal/smtp": "^1.0@RC",
@@ -76,7 +79,11 @@
         "drupal/inline_entity_form": "^1.0",
         "drupal/jquery_ui_touch_punch": "^1.0",
         "drupal/admin_audit_trail": "^1.0",
-        "drupal/block_inactive_users": "^2.0"
+        "drupal/block_inactive_users": "^2.0",
+        "drupal/user_expire": "^1.1",
+        "drupal/field_permissions": "^1.2",
+        "lesstif/php-jira-rest-client": "2.6.0",
+        "drupal/jira_rest": "^4.0@beta"
     },
     "repositories": {
         "drupal": {
@@ -210,49 +217,60 @@
     },
     "extra": {
         "patches": {
+            "drupal/admin_audit_trail": {
+                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch",
+                "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
+            },
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875#comment-14018213": "https://www.drupal.org/files/issues/2021-03-03/contextual_links_should-2898875-16.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
-                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-13024583": "https://www.drupal.org/files/issues/2019-03-16/2791693-38.patch",
+                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-14464093": "https://www.drupal.org/files/issues/2022-03-31/2791693-63.remove-sample-date.patch",
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
-                "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch"
+                "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
+                "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
+                "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch"
+            },
+            "drupal/ckeditor_config": {
+                "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
             },
             "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817": "https://www.drupal.org/files/issues/2021-02-22/metatag-data-type-support-2945817-112_0.patch"
+                "Support json api - https://www.drupal.org/project/metatag/issues/2945817#comment-14716597": "https://www.drupal.org/files/issues/2022-10-03/metatag-data-type-support-2945817-152_0.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
             },
             "drupal/field_group": {
-                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch"
-            },
-            "drupal/permissions_by_term": {
-                "scheduled_transitions module integration issue - https://www.drupal.org/project/permissions_by_term/issues/3065986#comment-13171384": "https://www.drupal.org/files/issues/2019-07-05/permissions_by_term-issue-3065986-D8.6.16.patch"
+                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
+                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
             },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-13525843": "https://www.drupal.org/files/issues/2020-03-27/password_policy-move-password-validation-to-user-entity-2941526-8-D8.patch"
             },
             "drupal/simple_oauth": {
-                "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch"
+                "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
+                "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch"
             },
             "drupal/tablefield": {
                 "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
             },
-            "drupal/inline_entity_form": {
-                "Preventing multiple submissions - https://www.drupal.org/project/inline_entity_form/issues/3160683#comment-13758454": "https://www.drupal.org/files/issues/2020-07-22/3160683-1.0-rc-6.patch"
-            },
             "ckeditor/liststyle": {
                 "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
+            },
+            "drupal/paragraphs": {
+                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch"
             },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
-            "drupal/jquery_ui_touch_punch": {
-                "jQuery UI Touch Punch library - https://www.drupal.org/project/jquery_ui_touch_punch/issues/3159222#comment-14011939": "https://www.drupal.org/files/issues/2021-02-26/jquery_ui_touch_punch.patch"
+            "lesstif/php-jira-rest-client": {
+                "Supports email lookup" : "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
+            },
+            "drupal/user_expire": {
+                "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
             }
         }
     }
