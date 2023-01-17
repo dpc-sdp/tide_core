@@ -8,3 +8,7 @@
   background: #fff;
   padding-left: 1em;
 }
+
+.entity-moderation-form__item {
+  width: 50%
+}

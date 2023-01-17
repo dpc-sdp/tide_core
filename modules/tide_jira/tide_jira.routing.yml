@@ -1,0 +1,7 @@
+tide_jira.config:
+  path: /admin/config/development/tide_jira
+  defaults:
+    _title: 'Tide JIRA Settings'
+    _form: 'Drupal\tide_jira\Form\TideJiraConfigForm'
+  requirements:
+    _permission: 'administer site configuration'

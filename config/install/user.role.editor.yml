@@ -126,7 +126,6 @@ permissions:
   - 'use text format summary_text'
   - 'view alert revisions'
   - 'view all revisions'
-  - 'view any unpublished content'
   - 'view any webform submission'
   - 'view image_gallery revisions'
   - 'view landing_page revisions'

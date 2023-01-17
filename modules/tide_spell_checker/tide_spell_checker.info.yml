@@ -1,0 +1,8 @@
+name: Tide Spell Checker
+type: module
+description: Tide Spell Checker integration
+core_version_requirement: ^8.9 || ^9
+package: tide
+dependencies:
+  - ckeditor_scayt:ckeditor_scayt
+  - ckeditor_config:ckeditor_config

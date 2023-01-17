@@ -29,6 +29,7 @@ permissions:
   - 'administer webform'
   - 'administer webform element access'
   - 'administer webform submission'
+  - 'break content lock'
   - 'create alert content'
   - 'create image_gallery content'
   - 'create landing_page content'

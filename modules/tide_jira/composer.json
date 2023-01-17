@@ -1,0 +1,6 @@
+{
+    "name": "dpc-sdp/tide_jira",
+    "description": "Tide JIRA integration",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later"
+}

@@ -37,7 +37,7 @@ class TideEmbeddedGoogleMapsButton extends CKEditorPluginBase {
     return [
       'wenzgmap' => [
         'label' => t('Embedded Google Maps'),
-        'image' => drupal_get_path('module', 'tide_core') . '/js/plugins/wenzgmap/icons/wenzgmap.png',
+        'image' => \Drupal::service('extension.list.module')->getPath('tide_core') . '/js/plugins/wenzgmap/icons/wenzgmap.png',
       ],
     ];
   }
@@ -48,7 +48,7 @@ class TideEmbeddedGoogleMapsButton extends CKEditorPluginBase {
   public function getFile() {
     // Make sure that the path to the plugin.js matches the file structure of
     // the CKEditor plugin you are implementing.
-    return drupal_get_path('module', 'tide_core') . '/js/plugins/wenzgmap/plugin.js';
+    return \Drupal::service('extension.list.module')->getPath('tide_core') . '/js/plugins/wenzgmap/plugin.js';
   }
 
   /**

@@ -5,6 +5,7 @@ dependencies:
     - editor
     - entity_embed
     - linkit
+    - media
     - token_filter
     - wysiwyg_template_core
 name: 'Rich Text'
@@ -15,13 +16,13 @@ filters:
     id: filter_align
     provider: filter
     status: true
-    weight: -47
+    weight: -50
     settings: {  }
   filter_caption:
     id: filter_caption
     provider: filter
     status: true
-    weight: -46
+    weight: -49
     settings: {  }
   filter_htmlcorrector:
     id: filter_htmlcorrector
@@ -47,7 +48,7 @@ filters:
     status: true
     weight: -49
     settings:
-      allowed_html: '<a href hreflang title class id target rel data-entity-substitution data-entity-type data-entity-uuid> <em> <strong> <cite> <blockquote cite class> <code> <ul type class> <ol start type class> <li> <dl> <dt> <dd> <footer> <h2 id> <h3 id> <h4 id> <h5 id> <s> <span class> <sup> <sub> <img src alt data-entity-type data-entity-uuid data-align data-caption> <table> <caption> <tbody> <thead> <tfoot> <th colspan rowspan align class> <td colspan rowspan align class> <tr> <hr> <br> <pre> <drupal-entity data-* title alt><p class="wysiwyg-callout text-align-left text-align-center text-align-right text-align-justify quotation__quote"><div class><iframe frameborder height scrolling src width>'
+      allowed_html: '<a href hreflang title id target rel data-entity-substitution data-entity-type data-entity-uuid class=""> <em> <strong> <cite> <blockquote cite class=""> <code> <li> <dl> <dt> <dd> <footer> <h2 id> <h3 id> <h4 id> <h5 id> <s> <span class=""> <sup> <sub> <img src alt data-entity-type data-entity-uuid data-align data-caption> <table> <caption> <tbody> <thead> <tfoot> <th colspan rowspan align class=""> <td colspan rowspan align class=""> <tr> <hr> <br> <pre> <p class="wysiwyg-callout text-align-left text-align-center text-align-right text-align-justify quotation__quote"> <div class=""> <iframe frameborder height scrolling src width title> <ol start type style class=" wysiwyg-callout"> <ul type style class=" wysiwyg-callout"> <drupal-entity data-* title alt data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-langcode>'
       filter_html_help: true
       filter_html_nofollow: false
   filter_autop:
@@ -92,6 +93,15 @@ filters:
     id: linkit
     provider: linkit
     status: true
-    weight: -50
+    weight: -48
     settings:
       title: true
+  media_embed:
+    id: media_embed
+    provider: media
+    status: false
+    weight: 100
+    settings:
+      default_view_mode: default
+      allowed_media_types: {  }
+      allowed_view_modes: {  }
