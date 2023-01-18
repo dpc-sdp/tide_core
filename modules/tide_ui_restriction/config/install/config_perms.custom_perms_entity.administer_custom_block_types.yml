@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: administer_custom_block_types
+label: 'Administer custom block types'
+route: "block_content.type_add\r\nentity.block_content_type.edit_form\r\nentity.block_content_type.delete_form\r\nentity.block_content_type.collection"

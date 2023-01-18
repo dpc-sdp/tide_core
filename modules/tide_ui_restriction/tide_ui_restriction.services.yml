@@ -3,3 +3,12 @@ services:
     class: Drupal\tide_ui_restriction\EventSubscriber\TideAdminUIRedirectAlter
     tags:
       - { name: event_subscriber }
+  tide_ui_restriction.access_check.admin_config:
+    class: Drupal\tide_ui_restriction\Access\AdminConfigAccessCheck
+    tags:
+      - { name: access_check, applies_to: _admin_config_access_check }
+  tide_ui_restriction.route_subscriber:
+    class: Drupal\tide_ui_restriction\Routing\RouteSubscriber
+    arguments: ['@module_handler']
+    tags:
+      - { name: event_subscriber }
