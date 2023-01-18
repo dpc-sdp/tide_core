@@ -705,8 +705,8 @@ function tide_core_admin_audit_trail_handlers() {
 function tide_core_menu_navigation_links(array $tree) {
   foreach ($tree as $element) {
     // Remove menu and taxonomy subtree.
-    if (($element->link->getPluginId() === 'entity.menu.collection') || ($element->link->getPluginId() === 'entity.taxonomy_vocabulary.collection')) {
-      unset($element->subtree);
+    if (($element->link->getPluginId() === 'entity.menu.collection' || $element->link->getPluginId() === 'entity.taxonomy_vocabulary.collection') && isset($element->subtree)) {
+      $element->subtree = [];
     }
     if (($element->link->getPluginId() != 'entity.menu.collection')
       && ($element->link->getPluginId() != 'entity.taxonomy_vocabulary.collection')
