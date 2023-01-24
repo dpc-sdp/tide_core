@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: bulk_update_url_aliases
+label: 'Bulk update url aliases'
+route: pathauto.bulk.update.form

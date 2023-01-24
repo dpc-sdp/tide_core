@@ -12,6 +12,31 @@ function tide_ui_restriction_menu_links_discovered_alter(&$links) {
   if (isset($links['system.modules_list'])) {
     unset($links['system.modules_list']);
   }
+
+  if (isset($links['entity.user.collection'])) {
+    if (\Drupal::moduleHandler()->moduleExists('admin_audit_trail')) {
+      $links['tide_ui_restriction.admin_audit_trail.report_form'] = [
+        'title' => t('Admin audit trail'),
+        'description' => t('Get report about cud operation performed by the user on the website.'),
+        'provider' => 'tide_ui_restriction',
+        'route_name' => 'admin_audit_trail.report_form',
+        'menu_name' => 'admin',
+        'parent' => 'entity.user.collection',
+        'weight' => 100,
+      ];
+    }
+    if (\Drupal::moduleHandler()->moduleExists('event_log_track')) {
+      $links['tide_ui_restriction.event_log_track.report_form'] = [
+        'title' => t('Events Log Track'),
+        'description' => t('Get report about cud operation performed by the user on the website.'),
+        'provider' => 'tide_ui_restriction',
+        'route_name' => 'event_log_track.report_form',
+        'menu_name' => 'admin',
+        'parent' => 'entity.user.collection',
+        'weight' => 101,
+      ];
+    }
+  }
 }
 
 /**
@@ -21,4 +46,31 @@ function tide_ui_restriction_local_tasks_alter(&$local_tasks) {
   if (isset($local_tasks['system.modules_uninstall'])) {
     unset($local_tasks['system.modules_uninstall']);
   }
+}
+
+/**
+ * Implements hook_admin_config_access_check_exclude().
+ */
+function tide_ui_restriction_admin_config_access_check_exclude($path) : bool {
+  // Exclude URL Aliases and Redirects from _admin_config_access_check.
+  $paths = [
+    '/admin/config/search',
+    '/admin/config/search/path',
+    '/admin/config/search/redirect',
+  ];
+  if (in_array($path, $paths, TRUE)) {
+    return TRUE;
+  }
+
+  $prefixes = [
+    '/admin/config/search/path/',
+    '/admin/config/search/redirect/',
+  ];
+  foreach ($prefixes as $prefix) {
+    if (strpos($path, $prefix) === 0) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }
