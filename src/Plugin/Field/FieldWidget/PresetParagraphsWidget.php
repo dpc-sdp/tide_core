@@ -210,7 +210,7 @@ class PresetParagraphsWidget extends ParagraphsWidget {
       '#required' => $this->fieldDefinition->isRequired(),
       '#field_name' => $field_name,
       '#cardinality' => $cardinality,
-      '#max_delta' => $max - 1,
+      '#max_delta' => is_int($max) ? ($max - 1) : '',
     ];
 
     if ($this->realItemCount > 0) {
