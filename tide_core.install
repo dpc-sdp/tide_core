@@ -32,12 +32,9 @@ function tide_core_install() {
   // Disable views.view.files in favour of views.view.enhanced_files.
   try {
     $config = \Drupal::configFactory()->getEditable('views.view.files');
-    $view = View::load('files');
-    if ($view) {
-      if ($view->status() == TRUE) {
-        $view->setStatus(FALSE);
-        $view->save();
-      }
+    if ($config) {
+      $config->set('status', FALSE);
+      $config->save();
     }
   }
   catch (Exception $e) {
