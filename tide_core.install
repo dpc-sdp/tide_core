@@ -29,7 +29,7 @@ function tide_core_install() {
   $user->roles[] = 'administrator';
   $user->save();
 
-  // Disable views.view.files in favour of views.view.enhanced_files.
+  // Install but disable views.view.files in favour of views.view.enhanced_files.
   try {
     module_load_include('inc', 'tide_core', 'includes/helpers');
     $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
