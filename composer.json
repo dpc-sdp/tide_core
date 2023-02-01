@@ -222,7 +222,7 @@
                 "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
             },
             "drupal/core": {
-                "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875#comment-14018213": "https://www.drupal.org/files/issues/2021-03-03/contextual_links_should-2898875-16.patch",
+                "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875": "https://www.drupal.org/files/issues/2021-07-15/2898875-18.patch",
                 "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
                 "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-14464093": "https://www.drupal.org/files/issues/2022-03-31/2791693-63.remove-sample-date.patch",
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
