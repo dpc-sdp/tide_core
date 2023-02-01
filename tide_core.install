@@ -1692,16 +1692,11 @@ function tide_core_update_8072() {
  * Make Related link field mandatory and adds help text.
  */
 function tide_core_update_8073() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
-  $config_id = 'field.field.paragraph.related_links.field_paragraph_link';
-  $link_config = \Drupal::configFactory()->getEditable($config_id);
-  $link_config_read = _tide_read_config($config_id, $config_location, FALSE);
-  $link_description = $link_config_read['description'];
-  $systems = $link_config_read['settings']['title'];
-  if ($link_config) {
-    $link_config->set('description', $link_description);
-    $link_config->set('settings.title', $systems);
-    $link_config->save();
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.field.paragraph.related_links.field_paragraph_link');
+  if ($config) {
+    $config->set('description', 'Add a descriptive title for your link. This is what displays on the live website.');
+    $config->set('settings.title', 2);
+    $config->save();
   }
 }
