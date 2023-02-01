@@ -29,8 +29,11 @@ class TideSiteAlertBlock extends SiteAlertBlock {
       if ($value && strpos($value, 'site_alert:') !== FALSE) {
         preg_match('#[0-9]+$#', $value, $match);
         $site_alert = SiteAlert::load(reset($match));
-        $build[$key]['#alert']['start'] = date('d/m/Y H:i:s', strtotime($site_alert->getStartTime()));
-        $build[$key]['#alert']['end'] = date('d/m/Y H:i:s', strtotime($site_alert->getEndTime()));
+        $dateTimeImmutable = new \DateTimeImmutable();
+        $build[$key]['#alert']['start'] = $dateTimeImmutable->modify($site_alert->getStartTime())
+          ->format('d/m/Y H:i:s');
+        $build[$key]['#alert']['end'] = $dateTimeImmutable->modify($site_alert->getEndTime())
+          ->format('d/m/Y H:i:s');
       }
     }
     foreach ($build['#attached']['library'] as $id => $value) {
