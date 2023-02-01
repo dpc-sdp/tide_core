@@ -1687,3 +1687,16 @@ function tide_core_update_8072() {
     $role->save();
   }
 }
+
+/**
+ * Make Related link field mandatory and adds help text.
+ */
+function tide_core_update_8073() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.field.paragraph.related_links.field_paragraph_link');
+  if ($config) {
+    $config->set('description', 'Add a descriptive title for your link. This is what displays on the live website.');
+    $config->set('settings.title', 2);
+    $config->save();
+  }
+}
