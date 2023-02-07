@@ -29,11 +29,16 @@ function tide_core_install() {
   $user->roles[] = 'administrator';
   $user->save();
 
-  // Disable views.view.files in favour of views.view.enhanced_files.
+  // Install and disable views.view.files. Will use views.view.enhanced_files.
   try {
-    $config = \Drupal::configFactory()->getEditable('views.view.files');
-    $config->set('status', FALSE);
-    $config->save();
+    module_load_include('inc', 'tide_core', 'includes/helpers');
+    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+    $config_read = _tide_read_config('views.view.files', $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage('view');
+    if ($storage->load('files') == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
   }
   catch (Exception $e) {
     watchdog_exception('tide_core', $e);
