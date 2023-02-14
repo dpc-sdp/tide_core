@@ -1,0 +1,21 @@
+{% set site_alert_classes = [
+    'js-site-alert',
+    ('severity-' ~ alert.severity)|clean_class,
+    alert.dismissible ? 'hidden' : ''
+] %}
+
+<div{{ attributes.setAttribute('data-site-alert-id', alert.id).addClass(site_alert_classes) }}>
+    <div class="text">
+        <div class="first-line">
+        </div>
+        <div class="message">
+            {{ alert.label }} {{ alert.message }}
+        </div>
+        {% if alert.dismissible %}
+            <button type="button" value="{{ alert.id }}" class="js-site-alert-dismiss site-alert__dismiss">
+                <span class="site-alert__dismiss-icon" aria-hidden="true">&times;</span>
+                <span class="visually-hidden">{{ 'Dismiss @label alert'|t({ '@label': alert.label }) }}</span>
+            </button>
+        {% endif %}
+    </div>
+</div>
