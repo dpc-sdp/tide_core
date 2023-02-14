@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_site_alert.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function tide_site_alert_theme() {
+  return [
+    'site_alert' => [
+      'template' => 'tide-site-alert',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_site_alert_form_site_alert_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $options = [
+    'Upcoming release notice:'          => 'Upcoming release notice:',
+    'Upcoming hotfix notice:'           => 'Upcoming hotfix notice:',
+    'Upcoming site maintenance notice:' => 'Upcoming site maintenance notice:',
+    'Upcoming planned outage notice:'   => 'Upcoming planned outage notice:',
+    'Hotfix in progress:'               => 'Hotfix in progress:',
+    'Site maintenance in progress:'     => 'Site maintenance in progress:',
+    'Outage in progress:'               => 'Outage in progress:',
+    'Content freeze in progress:'       => 'Content freeze in progress:',
+    'Successful post-release notice:'   => 'Successful post-release notice:',
+    'Unsuccessful post-release notice:' => 'Unsuccessful post-release notice:',
+    'Post-outage notice:'               => 'Post-outage notice:',
+    'Custom notice:'                    => 'Custom notice:',
+  ];
+  $form['suggested_labels'] = [
+    '#type'         => 'select',
+    '#title'        => t('Suggested labels'),
+    '#options'      => $options,
+    '#empty_option' => t('- Select -'),
+    '#ajax'         => [
+      'callback' => 'tide_site_alert_textfield_callback',
+      'wrapper'  => 'suggested-labels',
+      'effect'   => 'fade',
+    ],
+  ];
+  $form['severity']['#access'] = FALSE;
+  $form['severity']['widget']['#default_value'] = 'medium';
+  $form['label']['widget'][0]['value']['#prefix']
+    = '<div id="suggested-labels">';
+  $form['label']['widget'][0]['value']['#suffix'] = '</div>';
+}
+
+/**
+ * The callback for the form alter above.
+ */
+function tide_site_alert_textfield_callback(&$form, FormStateInterface $form_state) {
+  $selected = $form_state->getValue('suggested_labels');
+  if ($selected != 'Other') {
+    $form['label']['widget'][0]['value']['#value'] = $form_state->getValue('suggested_labels');
+  }
+  else {
+    $form['label']['widget'][0]['value']['#value'] = '';
+  }
+  return $form['label'];
+}

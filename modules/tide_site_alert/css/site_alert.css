@@ -1,0 +1,59 @@
+/* Site alert theming */
+.site-alert {
+  width: 100%;
+}
+
+.site-alert .text {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 10px;
+  align-items: flex-start;
+}
+
+.site-alert .text p {
+  margin: 0;
+}
+
+.message {
+  padding-left: 5px;
+  flex-grow: 1;
+  overflow-wrap: anywhere;
+}
+
+.first-line:before {
+  content: '';
+  display: inline-block;
+  background: url('icon-alert.png') no-repeat;
+  background-size: contain;
+  width: 1rem;
+  height: 1rem;
+}
+
+.site-alert .severity-low,
+.site-alert .severity-medium,
+.site-alert .severity-high {
+  color: #000000;
+  border: 1px solid #cccccc;
+  background: #f3eaac;
+  position: relative;
+  margin-bottom: 1.5em;
+  background-repeat: no-repeat;
+  background-position: 1% 50%;
+  background-size: 30px 30px;
+}
+
+.site-alert .site-alert__dismiss {
+  cursor: pointer;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.site-alert .site-alert__dismiss:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.site-alert .site-alert__dismiss-icon {
+  color: #000;
+  text-decoration: none;
+}
