@@ -1,5 +1,5 @@
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import {Plugin} from 'ckeditor5/src/core';
+import {ButtonView} from 'ckeditor5/src/ui';
 import icon from '../../../../icons/callout.svg';
 
 export default class CalloutUI extends Plugin {
@@ -14,7 +14,7 @@ export default class CalloutUI extends Plugin {
         tooltip: true,
       });
       buttonView.bind('isOn', 'isEnabled').to(command, 'value', 'isEnabled');
-      this.listenTo(buttonView, 'execute', ()=>editor.execute( 'CalloutCommand' ));
+      this.listenTo(buttonView, 'execute', () => editor.execute('CalloutCommand'));
       return buttonView;
     });
   }

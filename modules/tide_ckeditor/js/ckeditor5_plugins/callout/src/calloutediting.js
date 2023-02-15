@@ -1,12 +1,12 @@
-import { Plugin } from 'ckeditor5/src/core';
-import { Paragraph } from 'ckeditor5/src/paragraph';
-import { priorities } from 'ckeditor5/src/utils';
+import {Plugin} from 'ckeditor5/src/core';
+import {Paragraph} from 'ckeditor5/src/paragraph';
+import {priorities} from 'ckeditor5/src/utils';
 import CalloutCommand from "./calloutcommand";
 
 export default class CalloutEditing extends Plugin {
 
-  constructor( editor ) {
-    super( editor );
+  constructor(editor) {
+    super(editor);
   }
 
   static get requires() {
@@ -15,7 +15,7 @@ export default class CalloutEditing extends Plugin {
 
   init() {
     const editor = this.editor;
-    editor.model.schema.register('tidecallout',{
+    editor.model.schema.register('tidecallout', {
       inheritAllFrom: '$block'
     });
     editor.conversion.elementToElement({
@@ -30,11 +30,11 @@ export default class CalloutEditing extends Plugin {
   }
 
   _addDivConversion(editor) {
-    editor.conversion.for( 'upcast' ).elementToElement( {
+    editor.conversion.for('upcast').elementToElement({
       model: 'tidecallout',
       view: 'div',
-      converterPriority: priorities.get( 'low' ) + 1
-    } );
+      converterPriority: priorities.get('low') + 1
+    });
   }
 
 }
