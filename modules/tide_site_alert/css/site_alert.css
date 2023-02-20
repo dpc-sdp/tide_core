@@ -32,14 +32,29 @@
 .site-alert .severity-low,
 .site-alert .severity-medium,
 .site-alert .severity-high {
-  color: #000000;
-  border: 1px solid #cccccc;
-  background: #f3eaac;
   position: relative;
   margin-bottom: 1.5em;
   background-repeat: no-repeat;
   background-position: 1% 50%;
   background-size: 30px 30px;
+}
+
+.site-alert .severity-low {
+  color: #31708f;
+  background-color: #d9edf7;
+  border: 1px solid #bce8f1;
+}
+
+.site-alert .severity-medium {
+  color: #8a6d3b;
+  background-color: #f3eaac;
+  border: 1px solid #faebcc;
+}
+
+.site-alert .severity-high {
+  color: #a94442;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
 }
 
 .site-alert .site-alert__dismiss {
