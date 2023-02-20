@@ -46,7 +46,7 @@
         "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch"
       },
       "drupal/site_alert": {
-        "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14924665": "https://www.drupal.org/files/issues/2023-02-15/3156557-63.patch"
+        "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
       },
       "drupal/tablefield": {
         "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
