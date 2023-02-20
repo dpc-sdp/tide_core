@@ -274,7 +274,7 @@
                 "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
             },
             "drupal/site_alert": {
-                "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14924665": "https://www.drupal.org/files/issues/2023-02-15/3156557-63.patch"
+                "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
             }
         }
     }
