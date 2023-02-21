@@ -47,8 +47,6 @@ function tide_site_alert_form_site_alert_form_alter(&$form, FormStateInterface $
       'effect'   => 'fade',
     ],
   ];
-  $form['severity']['#access'] = FALSE;
-  $form['severity']['widget']['#default_value'] = 'medium';
   $form['label']['widget'][0]['value']['#prefix']
     = '<div id="suggested-labels">';
   $form['label']['widget'][0]['value']['#suffix'] = '</div>';
