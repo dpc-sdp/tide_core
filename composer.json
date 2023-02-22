@@ -40,7 +40,7 @@
         "drupal/field_group": "^3.1",
         "drupal/google_analytics": "^2.3",
         "drupal/hotjar": "^2.2",
-        "drupal/linkit": "^6.0.0",
+        "drupal/linkit": "dev-6.0.x as 6.0.0-beta3",
         "drupal/login_redirect_per_role": "^1.7",
         "drupal/m4032404": "^1.0-alpha4",
         "drupal/maxlength": "^1.0-beta2",
@@ -271,6 +271,9 @@
             },
             "drupal/user_expire": {
                 "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
+            },
+            "drupal/linkit": {
+                "CKEditor 5 readiness - https://www.drupal.org/project/linkit/issues/3232190#comment-14824246": "https://www.drupal.org/files/issues/2022-12-14/3232190-113.patch"
             }
         }
     }
