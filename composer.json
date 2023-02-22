@@ -83,7 +83,9 @@
         "drupal/user_expire": "^1.1",
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
-        "drupal/jira_rest": "^4.0@beta"
+        "drupal/jira_rest": "^4.0@beta",
+        "respect/validation": "dev-master",
+        "giggsey/libphonenumber-for-php": "^8.13"
     },
     "repositories": {
         "drupal": {
