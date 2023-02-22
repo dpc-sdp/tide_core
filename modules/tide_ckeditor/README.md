@@ -1,5 +1,6 @@
 # Tide ckeditor
-tide_ckeditor is a submodule of tide_core, it contains ckeditor functions, plugins that provided by tide project. 
+tide_ckeditor is a submodule of tide_core, it contains ckeditor functions, 
+plugins that provided by tide project. 
 
 ## Development process
  - Install [node](https://nodejs.org/en/) running environment.
