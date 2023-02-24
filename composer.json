@@ -39,7 +39,7 @@
         "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch"
       },
       "drupal/password_policy": {
-        "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-13525843": "https://www.drupal.org/files/issues/2020-03-27/password_policy-move-password-validation-to-user-entity-2941526-8-D8.patch"
+        "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
       },
       "drupal/simple_oauth": {
         "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch",
