@@ -1555,21 +1555,9 @@ function tide_core_update_8064() {
 }
 
 /**
- * Prevent new entity reference creation.
+ * tide_core_update_8065 is removed.
+ * See ticket SDPAP-7108 for more details.
  */
-function tide_core_update_8065() {
-  /*
-  This should not be here as this field is provided by tide_landing_page.
-  It creates issues for the module that are depending on tide_core but
-  does not depends on tide_landing_page.
-  $config_factory = \Drupal::configFactory();
-  $config = $config_factory->getEditable('field.field.block_content.media_gallery.field_topic');
-  if ($config) {
-  $config->set('settings.handler_settings.auto_create', FALSE);
-  $config->save();
-  }
-   */
-}
 
 /**
  * Install field permission module.
