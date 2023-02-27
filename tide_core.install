@@ -1555,8 +1555,7 @@ function tide_core_update_8064() {
 }
 
 /**
- * tide_core_update_8065 is removed.
- * See ticket SDPAP-7108 for more details.
+ * See ticket SDPAP-7108, tide_core_update_8065 is removed.
  */
 
 /**
