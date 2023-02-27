@@ -1558,12 +1558,17 @@ function tide_core_update_8064() {
  * Prevent new entity reference creation.
  */
 function tide_core_update_8065() {
-  $config_factory = \Drupal::configFactory();
-  $config = $config_factory->getEditable('field.field.block_content.media_gallery.field_topic');
-  if ($config) {
-    $config->set('settings.handler_settings.auto_create', FALSE);
-    $config->save();
-  }
+  /*
+    This should not be here as this field is provided by tide_landing_page.
+    It creates issues for the module that are depending on tide_core but
+    does not depends on tide_landing_page.
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('field.field.block_content.media_gallery.field_topic');
+    if ($config) {
+      $config->set('settings.handler_settings.auto_create', FALSE);
+      $config->save();
+    }
+  */
 }
 
 /**
