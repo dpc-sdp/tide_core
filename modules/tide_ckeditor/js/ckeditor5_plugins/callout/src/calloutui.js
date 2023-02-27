@@ -3,18 +3,27 @@ import {ButtonView} from 'ckeditor5/src/ui';
 import icon from '../../../../icons/callout.svg';
 
 export default class CalloutUI extends Plugin {
+
+  /**
+   * @inheritDoc
+   */
   init() {
     const editor = this.editor;
-    editor.ui.componentFactory.add('Callout', (locale) => {
+    const t = editor.t;
+    editor.ui.componentFactory.add('Callout', locale => {
       const command = editor.commands.get('CalloutCommand');
       const buttonView = new ButtonView(locale);
       buttonView.set({
-        label: editor.t('Callout'),
-        icon,
+        label: t('Callout'),
+        icon: icon,
         tooltip: true,
+        isToggleable: true
       });
       buttonView.bind('isOn', 'isEnabled').to(command, 'value', 'isEnabled');
-      this.listenTo(buttonView, 'execute', () => editor.execute('CalloutCommand'));
+      this.listenTo(buttonView, 'execute', () => {
+        editor.execute('CalloutCommand');
+        editor.editing.view.focus();
+      });
       return buttonView;
     });
   }
