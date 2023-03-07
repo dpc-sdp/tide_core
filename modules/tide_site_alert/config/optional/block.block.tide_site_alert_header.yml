@@ -5,8 +5,11 @@ dependencies:
     - tide_site_alert
   theme:
     - seven
+    - claro
 id: tide_site_alert_header
-theme: seven
+theme: 
+  - seven
+  - claro
 region: header
 weight: -100
 provider: null
