@@ -24,7 +24,8 @@
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
                 "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
-                "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188":"https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch"
+                "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188":"https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
+                "Autocomplete widget in node sidebar causes overflow-https://www.drupal.org/project/drupal/issues/3268619#comment-14955369": "https://www.drupal.org/files/issues/2023-03-07/3268619_autocomplete_overflow_5.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
