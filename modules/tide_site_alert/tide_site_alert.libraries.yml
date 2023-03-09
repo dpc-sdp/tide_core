@@ -1,0 +1,6 @@
+drupal.tide_site_alert:
+  version: VERSION
+  css:
+    theme:
+      css/site_alert.css: {}
+
