@@ -4,8 +4,6 @@ namespace Drupal\tide_site_alert\Plugin\Block;
 
 use Drupal\site_alert\Plugin\Block\SiteAlertBlock;
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Cache\CacheBackendInterface;
 
 /**
  * Implements TideSiteAlertBlock class.
