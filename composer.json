@@ -1,281 +1,285 @@
 {
-    "name": "dpc-sdp/tide_core",
-    "description": "Core functionality for Tide Drupal 8 distribution",
-    "type": "drupal-module",
-    "license": "GPL-2.0-or-later",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {
-        "ckeditor/fakeobjects": "4.16.1",
-        "ckeditor/iframe": "4.5.11",
-        "ckeditor/liststyle": "4.8.0",
-        "ckeditor/autogrow": "4.16.1",
-        "ckeditor/codemirror": "v1.17.12",
-        "ckeditor/image": "4.16.1",
-        "ckeditor/link": "4.16.1",
-        "jquery/timepicker": "1.13.14",
-        "jquery/textcounter": "0.9.0",
-        "drupal/address": "^1.4",
-        "drupal/allowed_formats": "^1.1",
-        "drupal/better_exposed_filters": "^5.0-beta3",
-        "drupal/ckeditor_config": "^3.2",
-        "drupal/ckeditor_iframe": "^2.0-beta1",
-        "drupal/ckeditor_liststyle": "^1.4",
-        "drupal/ckeditor_scayt": "^1.3",
-        "drupal/clamav": "^2.0",
-        "drupal/config_ignore": "^2.1",
-        "drupal/config_perms": "^2.0",
-        "drupal/config_split": "^1.4",
-        "drupal/config_update": "^1.6",
-        "drupal/core": "9.4.x",
-        "drupal/ctools": "^3.11",
-        "drupal/diff": "^1.0-RC2",
-        "drupal/editor_advanced_link": "^2.0",
-        "drupal/entity_browser": "^2.6",
-        "drupal/entity_reference_revisions": "^1.9",
-        "drupal/entity_embed": "^1.1",
-        "drupal/environment_indicator": "^4.0",
-        "drupal/fakeobjects": "^1.0",
-        "drupal/fast_404": "^2.0",
-        "drupal/field_group": "^3.1",
-        "drupal/google_analytics": "^2.3",
-        "drupal/hotjar": "^2.2",
-        "drupal/linkit": "^6.0.0",
-        "drupal/login_redirect_per_role": "^1.7",
-        "drupal/m4032404": "^1.0-alpha4",
-        "drupal/maxlength": "^1.0-beta2",
-        "drupal/media_entity_audio": "^3.0",
-        "drupal/metatag": "^1.7",
-        "drupal/override_node_options": "^2.4",
-        "drupal/paragraphs": "^1.5",
-        "drupal/password_policy": "dev-3.x",
-        "drupal/password_strength": "^2.0-alpha2",
-        "drupal/pathauto": "^1.3",
-        "drupal/prlp": "^1.3",
-        "drupal/redirect": "^1.3",
-        "drupal/role_delegation": "^1.0-alpha1",
-        "drupal/seckit": "^1.1",
-        "drupal/simple_oauth": "^5.2",
-        "drupal/simple_sitemap": "^3.0",
-        "drupal/smart_trim": "^1.1",
-        "drupal/smtp": "^1.0@RC",
-        "drupal/stage_file_proxy": "^1.1",
-        "drupal/tablefield": "2.2",
-        "drupal/token_conditions": "dev-compatible-with-drupal-9",
-        "drupal/token_filter": "^1.1",
-        "drupal/twig_field_value": "^2.0",
-        "drupal/views_menu_children_filter": "^1.0-beta2",
-        "drupal/viewsreference": "2.0-beta2",
-        "drupal/workbench": "^1.3",
-        "drupal/wysiwyg_template": "^3.0",
-        "drupal/dynamic_entity_reference": "^1.7",
-        "drupal/scheduled_transitions": "^2.1",
-        "drupal/link_field_autocomplete_filter": "^1.8",
-        "drupal/queue_mail": "^1.0",
-        "drupal/token": "^1.7",
-        "drupal/username_enumeration_prevention": "^1.1",
-        "drupal/quick_node_clone": "^1.13",
-        "drupal/content_lock": "^2.2",
-        "drupal/inline_entity_form": "^1.0",
-        "drupal/jquery_ui_touch_punch": "^1.0",
-        "drupal/admin_audit_trail": "^1.0",
-        "drupal/block_inactive_users": "^2.0",
-        "drupal/user_expire": "^1.1",
-        "drupal/field_permissions": "^1.2",
-        "lesstif/php-jira-rest-client": "2.6.0",
-        "drupal/jira_rest": "^4.0@beta",
-        "drupal/site_alert": "1.x-dev@dev"
+  "name": "dpc-sdp/tide_core",
+  "description": "Core functionality for Tide Drupal 8 distribution",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "ckeditor/fakeobjects": "4.16.1",
+    "ckeditor/iframe": "4.5.11",
+    "ckeditor/liststyle": "4.8.0",
+    "ckeditor/autogrow": "4.16.1",
+    "ckeditor/codemirror": "v1.17.12",
+    "ckeditor/image": "4.16.1",
+    "ckeditor/link": "4.16.1",
+    "jquery/timepicker": "1.13.14",
+    "jquery/textcounter": "0.9.0",
+    "drupal/address": "^1.4",
+    "drupal/allowed_formats": "^1.1",
+    "drupal/better_exposed_filters": "^5.0-beta3",
+    "drupal/ckeditor_config": "^3.2",
+    "drupal/ckeditor_iframe": "^2.0-beta1",
+    "drupal/ckeditor_liststyle": "^1.4",
+    "drupal/ckeditor_scayt": "^1.3",
+    "drupal/clamav": "^2.0",
+    "drupal/config_ignore": "^2.1",
+    "drupal/config_perms": "^2.0",
+    "drupal/config_split": "^1.4",
+    "drupal/config_update": "^1.6",
+    "drupal/core": "9.4.x",
+    "drupal/ctools": "^3.11",
+    "drupal/diff": "^1.0-RC2",
+    "drupal/editor_advanced_link": "^2.0",
+    "drupal/entity_browser": "^2.6",
+    "drupal/entity_reference_revisions": "^1.9",
+    "drupal/entity_embed": "^1.1",
+    "drupal/environment_indicator": "^4.0",
+    "drupal/fakeobjects": "^1.0",
+    "drupal/fast_404": "^2.0",
+    "drupal/field_group": "^3.1",
+    "drupal/google_analytics": "^2.3",
+    "drupal/hotjar": "^2.2",
+    "drupal/linkit": "^6.0.0",
+    "drupal/login_redirect_per_role": "^1.7",
+    "drupal/m4032404": "^1.0-alpha4",
+    "drupal/maxlength": "^1.0-beta2",
+    "drupal/media_entity_audio": "^3.0",
+    "drupal/metatag": "^1.7",
+    "drupal/override_node_options": "^2.4",
+    "drupal/paragraphs": "^1.5",
+    "drupal/password_policy": "dev-3.x",
+    "drupal/password_strength": "^2.0-alpha2",
+    "drupal/pathauto": "^1.3",
+    "drupal/prlp": "^1.3",
+    "drupal/redirect": "^1.3",
+    "drupal/role_delegation": "^1.0-alpha1",
+    "drupal/seckit": "^1.1",
+    "drupal/simple_oauth": "^5.2",
+    "drupal/simple_sitemap": "^3.0",
+    "drupal/smart_trim": "^1.1",
+    "drupal/smtp": "^1.0@RC",
+    "drupal/stage_file_proxy": "^1.1",
+    "drupal/tablefield": "2.2",
+    "drupal/token_conditions": "dev-compatible-with-drupal-9",
+    "drupal/token_filter": "^1.1",
+    "drupal/twig_field_value": "^2.0",
+    "drupal/views_menu_children_filter": "^1.0-beta2",
+    "drupal/viewsreference": "2.0-beta2",
+    "drupal/workbench": "^1.3",
+    "drupal/wysiwyg_template": "^3.0",
+    "drupal/dynamic_entity_reference": "^1.7",
+    "drupal/scheduled_transitions": "^2.1",
+    "drupal/link_field_autocomplete_filter": "^1.8",
+    "drupal/queue_mail": "^1.0",
+    "drupal/token": "^1.7",
+    "drupal/username_enumeration_prevention": "^1.1",
+    "drupal/quick_node_clone": "^1.13",
+    "drupal/content_lock": "^2.2",
+    "drupal/inline_entity_form": "^1.0",
+    "drupal/jquery_ui_touch_punch": "^1.0",
+    "drupal/admin_audit_trail": "^1.0",
+    "drupal/block_inactive_users": "^2.0",
+    "drupal/user_expire": "^1.1",
+    "drupal/field_permissions": "^1.2",
+    "lesstif/php-jira-rest-client": "2.6.0",
+    "drupal/jira_rest": "^4.0@beta",
+    "drupal/site_alert": "1.x-dev@dev"
+  },
+  "repositories": {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
     },
-    "repositories": {
-        "drupal": {
-            "type": "composer",
-            "url": "https://packages.drupal.org/8"
+    "ckeditor.autogrow": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "ckeditor/autogrow",
+        "version": "4.16.1",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://download.ckeditor.com/autogrow/releases/autogrow_4.16.1.zip",
+          "type": "zip"
         },
-        "ckeditor.autogrow": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "ckeditor/autogrow",
-                "version": "4.16.1",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://download.ckeditor.com/autogrow/releases/autogrow_4.16.1.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "ckeditor.codemirror": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "ckeditor/codemirror",
-                "version": "v1.17.12",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/w8tcha/CKEditor-CodeMirror-Plugin/releases/download/v1.17.12/CKEditor-CodeMirror-Plugin.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "ckeditor.fakeobjects": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "ckeditor/fakeobjects",
-                "version": "4.16.1",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://download.ckeditor.com/fakeobjects/releases/fakeobjects_4.16.1.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "ckeditor.image": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "ckeditor/image",
-                "version": "4.16.1",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://download.ckeditor.com/image/releases/image_4.16.1.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "ckeditor.link": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "ckeditor/link",
-                "version": "4.16.1",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://download.ckeditor.com/link/releases/link_4.16.1.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "jquery.timepicker": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "jquery/timepicker",
-                "version": "1.13.14",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "jquery.timepicker"
-                },
-                "dist": {
-                    "url": "https://github.com/jonthornton/jquery-timepicker/archive/1.13.14.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "jquery.textcounter": {
-            "_webform": true,
-            "type": "package",
-            "package": {
-                "name": "jquery/textcounter",
-                "version": "0.9.0",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "jquery.textcounter"
-                },
-                "dist": {
-                    "url": "https://github.com/ractoon/jQuery-Text-Counter/archive/0.9.0.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        "drupal/token_conditions": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/token_conditions.git",
-            "exclude": ["dev-1.x", "1.x-dev"]
+        "require": {
+          "composer/installers": "~1.0"
         }
+      }
     },
-    "extra": {
-        "patches": {
-            "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch",
-                "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
-            },
-            "drupal/core": {
-                "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875#comment-14018213": "https://www.drupal.org/files/issues/2021-03-03/contextual_links_should-2898875-16.patch",
-                "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
-                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-14464093": "https://www.drupal.org/files/issues/2022-03-31/2791693-63.remove-sample-date.patch",
-                "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
-                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
-                "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
-                "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
-                "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch"
-            },
-            "drupal/ckeditor_config": {
-                "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
-            },
-            "drupal/entity_embed": {
-                "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
-            },
-            "drupal/metatag": {
-                "Support json api - https://www.drupal.org/project/metatag/issues/2945817#comment-14716597": "https://www.drupal.org/files/issues/2022-10-03/metatag-data-type-support-2945817-152_0.patch"
-            },
-            "drupal/token": {
-                "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
-            },
-            "drupal/field_group": {
-                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
-                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
-            },
-            "drupal/password_policy": {
-                "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
-            },
-            "drupal/simple_oauth": {
-                "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
-                "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch"
-            },
-            "drupal/tablefield": {
-                "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
-            },
-            "ckeditor/liststyle": {
-                "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
-            },
-            "drupal/paragraphs": {
-                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch"
-            },
-            "drupal/content_lock": {
-                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
-            },
-            "lesstif/php-jira-rest-client": {
-                "Supports email lookup" : "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
-            },
-            "drupal/user_expire": {
-                "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
-            },
-            "drupal/site_alert": {
-                "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
-            }
+    "ckeditor.codemirror": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "ckeditor/codemirror",
+        "version": "v1.17.12",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://github.com/w8tcha/CKEditor-CodeMirror-Plugin/releases/download/v1.17.12/CKEditor-CodeMirror-Plugin.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
         }
+      }
+    },
+    "ckeditor.fakeobjects": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "ckeditor/fakeobjects",
+        "version": "4.16.1",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://download.ckeditor.com/fakeobjects/releases/fakeobjects_4.16.1.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        }
+      }
+    },
+    "ckeditor.image": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "ckeditor/image",
+        "version": "4.16.1",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://download.ckeditor.com/image/releases/image_4.16.1.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        }
+      }
+    },
+    "ckeditor.link": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "ckeditor/link",
+        "version": "4.16.1",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://download.ckeditor.com/link/releases/link_4.16.1.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        }
+      }
+    },
+    "jquery.timepicker": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "jquery/timepicker",
+        "version": "1.13.14",
+        "type": "drupal-library",
+        "extra": {
+          "installer-name": "jquery.timepicker"
+        },
+        "dist": {
+          "url": "https://github.com/jonthornton/jquery-timepicker/archive/1.13.14.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        }
+      }
+    },
+    "jquery.textcounter": {
+      "_webform": true,
+      "type": "package",
+      "package": {
+        "name": "jquery/textcounter",
+        "version": "0.9.0",
+        "type": "drupal-library",
+        "extra": {
+          "installer-name": "jquery.textcounter"
+        },
+        "dist": {
+          "url": "https://github.com/ractoon/jQuery-Text-Counter/archive/0.9.0.zip",
+          "type": "zip"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        }
+      }
+    },
+    "drupal/token_conditions": {
+      "type": "vcs",
+      "no-api": true,
+      "url": "https://github.com/dpc-sdp/token_conditions.git",
+      "exclude": [
+        "dev-1.x",
+        "1.x-dev"
+      ]
     }
+  },
+  "extra": {
+    "patches": {
+      "drupal/admin_audit_trail": {
+        "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch",
+        "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
+      },
+      "drupal/core": {
+        "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875#comment-14018213": "https://www.drupal.org/files/issues/2021-03-03/contextual_links_should-2898875-16.patch",
+        "Custom blocks are no longer displayed and no longer appear in the custom block library - https://www.drupal.org/project/drupal/issues/2997898#comment-12832813": "https://www.drupal.org/files/issues/2018-10-27/2997898-21.patch",
+        "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-14464093": "https://www.drupal.org/files/issues/2022-03-31/2791693-63.remove-sample-date.patch",
+        "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
+        "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
+        "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
+        "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
+        "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch"
+      },
+      "drupal/ckeditor_config": {
+        "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
+      },
+      "drupal/entity_embed": {
+        "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
+      },
+      "drupal/metatag": {
+        "Support json api - https://www.drupal.org/project/metatag/issues/2945817#comment-14716597": "https://www.drupal.org/files/issues/2022-10-03/metatag-data-type-support-2945817-152_0.patch"
+      },
+      "drupal/token": {
+        "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
+      },
+      "drupal/field_group": {
+        "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
+        "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
+      },
+      "drupal/password_policy": {
+        "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
+      },
+      "drupal/simple_oauth": {
+        "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
+        "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch"
+      },
+      "drupal/tablefield": {
+        "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
+      },
+      "ckeditor/liststyle": {
+        "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
+      },
+      "drupal/paragraphs": {
+        "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch"
+      },
+      "drupal/content_lock": {
+        "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
+      },
+      "lesstif/php-jira-rest-client": {
+        "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
+      },
+      "drupal/user_expire": {
+        "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
+      },
+      "drupal/site_alert": {
+        "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch",
+        "Clear cache upon activation/deactivation of site alerts - https://www.drupal.org/project/site_alert/issues/2990906": "https://www.drupal.org/files/issues/2019-03-04/site-alert-cache-2990906-4.patch"
+      }
+    }
+  }
 }
