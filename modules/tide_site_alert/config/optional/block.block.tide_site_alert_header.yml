@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - tide_site_alert
+  theme:
+    - seven
+id: tide_site_alert_header
+theme: seven
+region: header
+weight: -100
+provider: null
+plugin: tide_site_alert_block
+settings:
+  id: tide_site_alert_block
+  label: 'Tide Site Alert'
+  label_display: '0'
+  provider: tide_site_alert
+  timeout: '5'
+visibility: {  }

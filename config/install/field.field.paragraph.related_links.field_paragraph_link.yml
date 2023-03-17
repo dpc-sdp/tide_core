@@ -11,12 +11,12 @@ field_name: field_paragraph_link
 entity_type: paragraph
 bundle: related_links
 label: Link
-description: ''
+description: 'Add a descriptive title for your link. This is what displays on the live website.'
 required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
   link_type: 17
-  title: 1
+  title: 2
 field_type: link

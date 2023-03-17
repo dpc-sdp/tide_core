@@ -1,0 +1,7 @@
+name: 'Tide site alert'
+type: module
+description: 'The extension of Site alert module.'
+core_version_requirement: ^9.4 || ^10
+package: Tide
+dependencies:
+  - site_alert:site_alert
