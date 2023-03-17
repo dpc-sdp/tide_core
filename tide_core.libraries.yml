@@ -30,3 +30,9 @@ editor_autolink:
   dependencies:
     - core/jquery
     - core/drupal
+
+claro_layout:
+  version: VERSION
+  css:
+    theme:
+      css/claro_layout.css: {}
