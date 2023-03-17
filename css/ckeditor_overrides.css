@@ -1,9 +1,9 @@
-.cke_button__tide_media_label {
-  display: inline !important;
+button.ck.ck-button[data-cke-tooltip-text="Media"] span {
+  display: block;
 }
 
-.cke_button__tide_media_icon {
-  display: none !important;
+button.ck.ck-button[data-cke-tooltip-text="Media"] svg {
+  display: none;
 }
 
 .callout-wrapper {
