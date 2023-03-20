@@ -3,4 +3,7 @@
   .layout-region--node-footer .layout-region__content {
     max-width: 100rem !important;
   }
+  .layout-region--node-secondary {
+    margin-top: unset !important;
+  }
 }
