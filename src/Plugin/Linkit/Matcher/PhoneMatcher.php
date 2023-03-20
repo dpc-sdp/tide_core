@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\linkit\MatcherBase;
 use Drupal\linkit\Suggestion\DescriptionSuggestion;
 use Drupal\linkit\Suggestion\SuggestionCollection;
+use Respect\Validation\Validator as v;
 
 /**
  * Provides specific linkit matchers for Phone number.
@@ -22,8 +23,7 @@ class PhoneMatcher extends MatcherBase {
    */
   public function execute($string) {
     $suggestions = new SuggestionCollection();
-    $regex = ["options" => ["regexp" => "/^(\+?\(61\)|\(\+?61\)|\+?61|\(0[1-9]\)|0[1-9])?( ?-?[0-9]){7,9}$/"]];
-    if (filter_var($string, FILTER_VALIDATE_REGEXP, $regex)) {
+    if (v::phone('AU')->validate($string)) {
       $suggestion = new DescriptionSuggestion();
       $suggestion->setLabel($this->t('Phone number: @tel', ['@tel' => $string]))
         ->setPath('tel:' . Html::escape($string))
