@@ -278,6 +278,7 @@
     "drupal/wysiwyg_template": "^3.0",
     "jquery/textcounter": "0.9.0",
     "jquery/timepicker": "1.13.14",
+    "lcobucci/clock": "3.0.0",
     "lesstif/php-jira-rest-client": "2.6.0"
   },
   "type": "drupal-module"
