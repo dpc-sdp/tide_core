@@ -57,7 +57,7 @@
         "drupal/seckit": "^1.1",
         "drupal/simple_oauth": "^5.2",
         "drupal/simple_sitemap": "^3.0",
-        "drupal/smart_trim": "^1.1",
+        "drupal/smart_trim": "^2.0",
         "drupal/smtp": "^1.0@RC",
         "drupal/stage_file_proxy": "^1.1",
         "drupal/tablefield": "2.2",
