@@ -84,7 +84,8 @@
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
-        "drupal/site_alert": "1.x-dev@dev"
+        "drupal/site_alert": "1.x-dev@dev",
+        "lcobucci/clock": "3.0.0"
     },
     "repositories": {
         "drupal": {
