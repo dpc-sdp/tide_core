@@ -3,7 +3,7 @@
 namespace Drupal\tide_site_alert\Plugin\Block;
 
 use Drupal\site_alert\Plugin\Block\SiteAlertBlock;
-
+use Drupal\Core\Cache\Cache;
 /**
  * Implements TideSiteAlertBlock class.
  *
