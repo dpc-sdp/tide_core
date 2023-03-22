@@ -28,4 +28,13 @@ class TideSiteAlertBlock extends SiteAlertBlock {
     return $build;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags()
+  {
+    // The block should be invalidated whenever any site alert changes.
+    $list_cache_tags = $this->entityTypeManager->getDefinition('tide_site_alert')->getListCacheTags();
+    return Cache::mergeTags(parent::getCacheTags(), $list_cache_tags);
+  }
 }
