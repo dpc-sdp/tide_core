@@ -56,7 +56,8 @@
     "drupal/role_delegation": "^1.0-alpha1",
     "drupal/seckit": "^1.1",
     "drupal/simple_oauth": "^5.2",
-    "drupal/simple_sitemap": "^3.0",
+    "drupal/simple_sitemap": "^4.0",
+    "drupal/site_alert": "1.x-dev@dev",
     "drupal/smart_trim": "^1.1",
     "drupal/smtp": "^1.0@RC",
     "drupal/stage_file_proxy": "^1.1",
@@ -82,12 +83,12 @@
     "drupal/block_inactive_users": "^2.0",
     "drupal/user_expire": "^1.1",
     "drupal/field_permissions": "^1.2",
-    "lesstif/php-jira-rest-client": "2.6.0",
     "drupal/jira_rest": "^4.0@beta",
-    "drupal/site_alert": "1.x-dev@dev",
     "drupal/ckeditor5_embedded_content": "^1.0@alpha",
     "respect/validation": "dev-master",
-    "giggsey/libphonenumber-for-php": "^8.13"
+    "giggsey/libphonenumber-for-php": "^8.13",
+    "lcobucci/clock": "3.0.0",
+    "lesstif/php-jira-rest-client": "2.6.0"
   },
   "repositories": {
     "drupal": {
