@@ -241,7 +241,8 @@
                 "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188":"https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
                 "Autocomplete widget in node sidebar causes overflow-https://www.drupal.org/project/drupal/issues/3268619#comment-14955369": "https://www.drupal.org/files/issues/2023-03-07/3268619_autocomplete_overflow_5.patch",
                 "Claro preprocessing of field multiple value form table header cell removes potential changes by others - https://www.drupal.org/project/drupal/issues/3099026#comment-14940311": "https://www.drupal.org/files/issues/2023-02-24/3099026-51.patch",
-                "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch"
+                "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
+                "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch"
             },
             "drupal/ckeditor_config": {
                 "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
