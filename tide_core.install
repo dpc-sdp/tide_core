@@ -1699,7 +1699,7 @@ function tide_core_update_8073() {
 }
 
 /**
- * Enable addition of a second contact block on screen sidebar.
+ * Sets unlimited contact us paragraph.
  */
 function tide_core_update_8074() {
   $config_factory = \Drupal::configFactory();
