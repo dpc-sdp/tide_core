@@ -231,7 +231,8 @@
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-14098404": "https://www.drupal.org/files/issues/2021-05-10/refactor_xss_attributes-3109650-33.patch",
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
                 "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
-                "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch"
+                "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch",
+                "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch"
             },
             "drupal/ckeditor_config": {
                 "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
