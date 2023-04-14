@@ -1697,3 +1697,14 @@ function tide_core_update_8073() {
     $config->save();
   }
 }
+
+/**
+ * Import roles's list in user profile.
+ */
+function tide_core_update_8074() {
+  $view = 'views.view.roles_view';
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($view, $source->read($view));
+}
