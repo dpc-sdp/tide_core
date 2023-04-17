@@ -1697,3 +1697,16 @@ function tide_core_update_8073() {
     $config->save();
   }
 }
+
+/**
+ * Sets unlimited contact us paragraph.
+ */
+function tide_core_update_8074() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
+  if ($config->isNew()) {
+    return;
+  }
+  $config->set('cardinality', -1);
+  $config->save();
+}
