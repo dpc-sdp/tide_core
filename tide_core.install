@@ -1712,7 +1712,7 @@ function tide_core_update_8074() {
 }
 
 /**
- * rule out next role to all projects
+ * Rule out next role to all projects.
  */
 function tide_core_update_8075() {
   $external_editor = 'user.role.external_editor';
