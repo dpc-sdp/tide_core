@@ -1,9 +1,9 @@
 langcode: en
 status: true
 dependencies: {  }
-id: editor
-label: Editor
-weight: 4
+id: external_editor
+label: External Editor
+weight: 10
 is_admin: null
 permissions:
   - 'access administration pages'
