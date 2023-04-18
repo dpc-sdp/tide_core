@@ -14,6 +14,7 @@ Feature: Access permissions
       | authenticated user | admin/structure/block | 404      |
       | administrator      | admin/structure/block | 200      |
       | site_admin         | admin/structure/block | 200      |
+      | external_editor    | admin/structure/block | 200      |
       | editor             | admin/structure/block | 200      |
       | approver           | admin/structure/block | 200      |
       | previewer          | admin/structure/block | 404      |
@@ -21,6 +22,7 @@ Feature: Access permissions
       | authenticated user | admin/structure/menu  | 404      |
       | administrator      | admin/structure/menu  | 200      |
       | site_admin         | admin/structure/menu  | 200      |
+      | external_editor    | admin/structure/block | 200      |
       | editor             | admin/structure/menu  | 200      |
       | approver           | admin/structure/menu  | 200      |
       | previewer          | admin/structure/menu  | 404      |
@@ -28,6 +30,7 @@ Feature: Access permissions
       | authenticated user | admin/people          | 404      |
       | administrator      | admin/people          | 200      |
       | site_admin         | admin/people          | 200      |
+      | external_editor    | admin/people          | 404      |
       | editor             | admin/people          | 404      |
       | approver           | admin/people          | 404      |
       | previewer          | admin/people          | 404      |
@@ -42,6 +45,7 @@ Feature: Access permissions
     And I select "Add the Approver role to the selected user(s)" from "edit-action"
     And I select "Remove the Site Admin role from the selected user(s)" from "edit-action"
     And I select "Remove the Previewer role from the selected user(s)" from "edit-action"
+    And I select "Remove the External Editor role from the selected user(s)" from "edit-action"
     And I select "Remove the Editor role from the selected user(s)" from "edit-action"
     And I select "Remove the Approver role from the selected user(s)" from "edit-action"
 

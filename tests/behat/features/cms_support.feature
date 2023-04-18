@@ -6,8 +6,9 @@ Feature: CMS Support
     Given I am logged in as a user with the "<role>" role
     Then I should find menu item text matching "CMS Support"
     Examples:
-      | role          |
-      | administrator |
-      | site_admin    |
-      | approver      |
-      | editor        |
+      | role            |
+      | administrator   |
+      | site_admin      |
+      | approver        |
+      | external_editor |
+      | editor          |
