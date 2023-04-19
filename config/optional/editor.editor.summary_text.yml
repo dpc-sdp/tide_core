@@ -32,24 +32,11 @@ settings:
       - blockQuote
       - code
       - codeBlock
-      - Callout
-      - style
   plugins:
     ckeditor5_heading:
       enabled_headings:
         - heading4
         - heading5
-    ckeditor5_style:
-      styles:
-        -
-          label: Callout
-          element: '<p class="wysiwyg-callout">'
-        -
-          label: 'Callout (Ordered list)'
-          element: '<ol class="wysiwyg-callout">'
-        -
-          label: 'Callout (Unordered list)'
-          element: '<ul class="wysiwyg-callout">'
     ckeditor5_sourceEditing:
       allowed_tags:
         - '<cite>'
@@ -62,16 +49,15 @@ settings:
         - '<img src alt data-entity-type data-entity-uuid data-align data-caption>'
         - '<div class>'
         - '<iframe frameborder height scrolling src width title>'
-        - '<a hreflang target>'
+        - '<drupal-entity data-* title alt>'
+        - '<a hreflang target data-entity-substitution data-entity-type data-entity-uuid>'
         - '<ul type>'
         - '<ol type>'
         - '<h4 id>'
         - '<h5 id>'
-        - '<drupal-entity data-* title>'
     ckeditor5_list:
       reversed: false
       startIndex: true
-      styles: false
     ckeditor5_alignment:
       enabled_alignments:
         - left

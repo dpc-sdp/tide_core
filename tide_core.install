@@ -1709,17 +1709,17 @@ function tide_core_update_8074() {
   if (is_null($default_theme) || $default_theme === 'classy' || $default_theme === 'stark' || $default_theme === 'seven') {
     \Drupal::service('theme_installer')->install(['claro']);
     \Drupal::configFactory()
-      ->getEditable('system.theme')
-      ->set('default', 'claro')
-      ->set('admin', 'claro')
-      ->save(TRUE);
+           ->getEditable('system.theme')
+           ->set('default', 'claro')
+           ->set('admin', 'claro')
+           ->save(TRUE);
   }
 }
 
 /**
  * Enable ckeditor5, tide_ckeditor.
  */
-function tide_core_update_8078() {
+function tide_core_update_8075() {
   if (!\Drupal::moduleHandler()->moduleExists('ckeditor5')) {
     $module_installer = \Drupal::service('module_installer');
     $module_installer->install(['ckeditor5']);
@@ -1741,7 +1741,7 @@ function tide_core_update_8078() {
  *   - filter.format.rich_text
  *   - filter.format.summary_text
  */
-function tide_core_update_8075() {
+function tide_core_update_8086() {
   $configs = [
     'filter.format.summary_text' => 'filter_format',
     'filter.format.admin_text' => 'filter_format',
@@ -1760,22 +1760,10 @@ function tide_core_update_8075() {
     if ($config_entity !== NULL){
       $storage->delete([$config_entity]);
     }
-    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $config_read = _tide_read_config($config, $config_location, FALSE);
     $new_config_entity = $storage->createFromStorageRecord($config_read);
     $new_config_entity->save();
   }
-}
-
-/**
- * Disable drupal/wysiwyg_template and drupal/wysiwyg_template_core.
- */
-function tide_core_update_8076() {
-  $modules = [
-    'wysiwyg_template',
-    'wysiwyg_template_core',
-  ];
-  $module_installer = \Drupal::service('module_installer');
-  $module_installer->uninstall($modules);
 }
 
 /**
@@ -1803,7 +1791,7 @@ function tide_core_update_8077() {
     if ($config_entity !== NULL){
       $storage->delete([$config_entity]);
     }
-    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $config_read = _tide_read_config($config, $config_location, FALSE);
     $new_config_entity = $storage->createFromStorageRecord($config_read);
     $new_config_entity->save();
   }

@@ -2,11 +2,11 @@ langcode: en
 status: true
 dependencies:
   module:
-    - ckeditor5_embedded_content
     - editor
     - entity_embed
     - linkit
     - token_filter
+    - wysiwyg_template_core
 name: 'Summary Text'
 format: summary_text
 weight: -10
@@ -47,7 +47,7 @@ filters:
     status: true
     weight: -49
     settings:
-      allowed_html: '<br> <p class="wysiwyg-callout text-align-left text-align-center text-align-right text-align-justify"> <h4 id class="text-align-left text-align-center text-align-right text-align-justify"> <h5 id class="text-align-left text-align-center text-align-right text-align-justify"> <ol class="wysiwyg-callout" type start> <ul class="wysiwyg-callout" type> <cite> <dl> <dt> <dd> <footer> <blockquote cite class> <span class> <img src alt data-entity-type data-entity-uuid data-align data-caption> <div class> <iframe frameborder height scrolling src width title> <a hreflang target href title class id rel data-entity-type data-entity-uuid data-entity-substitution> <drupal-entity data-* title alt data-embed-button="node tide_media" data-entity-type="node media"> <strong> <em> <code class="language-*"> <pre class="text-align-left text-align-center text-align-right text-align-justify"> <s> <sub> <sup> <li> <embedded-content data-plugin-config data-plugin-id>'
+      allowed_html: '<br> <p class="text-align-left text-align-center text-align-right text-align-justify"> <h4 id class="text-align-left text-align-center text-align-right text-align-justify"> <h5 id class="text-align-left text-align-center text-align-right text-align-justify"> <cite> <dl> <dt> <dd> <footer> <blockquote cite class> <span class> <img src alt data-entity-type data-entity-uuid data-align data-caption> <div class> <iframe frameborder height scrolling src width title> <drupal-entity data-* title alt data-entity-type="node tide_media"> <a hreflang target data-entity-substitution data-entity-type data-entity-uuid href title class id rel> <ul type> <ol type start> <strong> <em> <code class="language-*"> <pre class="text-align-left text-align-center text-align-right text-align-justify"> <s> <sub> <sup> <li>'
       filter_html_help: true
       filter_html_nofollow: false
   filter_autop:
@@ -95,9 +95,3 @@ filters:
     weight: -48
     settings:
       title: true
-  ckeditor5_embedded_content:
-    id: ckeditor5_embedded_content
-    provider: ckeditor5_embedded_content
-    status: true
-    weight: 100
-    settings: {  }
