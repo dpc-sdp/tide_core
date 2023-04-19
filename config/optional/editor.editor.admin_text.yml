@@ -38,7 +38,6 @@ settings:
       - '|'
       - code
       - codeBlock
-      - Callout
   plugins:
     ckeditor5_heading:
       enabled_headings:
@@ -68,7 +67,8 @@ settings:
         - '<img src alt data-entity-type data-entity-uuid data-align data-caption>'
         - '<div class>'
         - '<iframe frameborder height scrolling src width title>'
-        - '<a hreflang target>'
+        - '<drupal-entity data-* title alt>'
+        - '<a hreflang target data-entity-substitution data-entity-type data-entity-uuid>'
         - '<blockquote cite class>'
         - '<ul type class>'
         - '<ol type class>'
@@ -79,11 +79,9 @@ settings:
         - '<th align class>'
         - '<td align class>'
         - '<p class="quotation__quote">'
-        - '<drupal-entity data-* title>'
     ckeditor5_list:
       reversed: false
       startIndex: true
-      styles: false
     ckeditor5_alignment:
       enabled_alignments:
         - left

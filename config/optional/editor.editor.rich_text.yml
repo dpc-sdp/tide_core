@@ -15,12 +15,13 @@ settings:
       - strikethrough
       - style
       - superscript
+      - Callout
+      - embeddedContent
+      - tide_media
+      - ckeditorTemplates
       - subscript
       - removeFormat
       - '|'
-      - embeddedContent
-      - tide_media
-      - Callout
       - link
       - '|'
       - bulletedList
@@ -42,6 +43,16 @@ settings:
       - code
       - codeBlock
   plugins:
+    editor_advanced_link_link:
+      enabled_attributes:
+        - class
+        - id
+        - rel
+        - target
+        - title
+    linkit_extension:
+      linkit_enabled: true
+      linkit_profile: site_content
     ckeditor5_heading:
       enabled_headings:
         - heading2
@@ -70,7 +81,8 @@ settings:
         - '<img src alt data-entity-type data-entity-uuid data-align data-caption>'
         - '<div class>'
         - '<iframe frameborder height scrolling src width title>'
-        - '<a hreflang target>'
+        - '<drupal-entity data-* title alt>'
+        - '<a hreflang target data-entity-substitution data-entity-type data-entity-uuid>'
         - '<blockquote cite class>'
         - '<ul type class>'
         - '<ol type class>'
@@ -81,27 +93,18 @@ settings:
         - '<th align class>'
         - '<td align class>'
         - '<p class="quotation__quote">'
-        - '<drupal-entity data-* title>'
     ckeditor5_list:
-      reversed: false
+      reversed: true
       startIndex: true
-      styles: false
+      styles: true
     ckeditor5_alignment:
       enabled_alignments:
         - left
         - center
         - right
         - justify
-    editor_advanced_link_link:
-      enabled_attributes:
-        - class
-        - id
-        - rel
-        - target
-        - title
-    linkit_extension:
-      linkit_enabled: true
-      linkit_profile: site_content
+    ckeditor_templates_plugin:
+      replace_content: false
 image_upload:
   status: true
   scheme: public
