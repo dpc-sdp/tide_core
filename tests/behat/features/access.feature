@@ -22,7 +22,7 @@ Feature: Access permissions
       | authenticated user | admin/structure/menu  | 404      |
       | administrator      | admin/structure/menu  | 200      |
       | site_admin         | admin/structure/menu  | 200      |
-      | external_editor    | admin/structure/block | 200      |
+      | external_editor    | admin/structure/menu  | 200      |
       | editor             | admin/structure/menu  | 200      |
       | approver           | admin/structure/menu  | 200      |
       | previewer          | admin/structure/menu  | 404      |
