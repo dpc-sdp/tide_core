@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies: {  }
+id: primary_button
+label: 'Primary Button'
+description: ''
+thumb: {  }
+code: '<p><a class="button" href="Primary-button-link">Primary button text</a></p>'
+formats:
+  rich_text: rich_text
+  summary_text: summary_text
+  admin_text: admin_text
+weight: 1
