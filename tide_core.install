@@ -1700,19 +1700,20 @@ function tide_core_update_8073() {
 
 /**
  * Disable seven theme, and enable claro.
+ *
  * - Disable Seven theme
  * - Enable Claro theme
- * - sets Claro theme to the default admin theme - system.theme
+ * - sets Claro theme to the default admin theme - system.theme.
  */
 function tide_core_update_8074() {
   $default_theme = \Drupal::service('theme_handler')->getDefault();
   if (is_null($default_theme) || $default_theme === 'classy' || $default_theme === 'stark' || $default_theme === 'seven') {
     \Drupal::service('theme_installer')->install(['claro']);
     \Drupal::configFactory()
-           ->getEditable('system.theme')
-           ->set('default', 'claro')
-           ->set('admin', 'claro')
-           ->save(TRUE);
+      ->getEditable('system.theme')
+      ->set('default', 'claro')
+      ->set('admin', 'claro')
+      ->save(TRUE);
   }
 }
 
@@ -1731,7 +1732,8 @@ function tide_core_update_8075() {
 }
 
 /**
- * Update and re-import
+ * Update and re-import configs below.
+ *
  *   - editor.editor.admin_text
  *   - editor.editor.summary_text
  *   - editor.editor.rich_text
@@ -1739,7 +1741,7 @@ function tide_core_update_8075() {
  *   - filter.format.admin_text
  *   - filter.format.plain_text
  *   - filter.format.rich_text
- *   - filter.format.summary_text
+ *   - filter.format.summary_text.
  */
 function tide_core_update_8086() {
   $configs = [
@@ -1757,7 +1759,7 @@ function tide_core_update_8086() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     $id = substr($config, strrpos($config, '.') + 1);
     $config_entity = $storage->load($id);
-    if ($config_entity !== NULL){
+    if ($config_entity !== NULL) {
       $storage->delete([$config_entity]);
     }
     $config_read = _tide_read_config($config, $config_location, FALSE);
@@ -1767,10 +1769,11 @@ function tide_core_update_8086() {
 }
 
 /**
- * Enable ckeditor_templates and import
+ * Enable ckeditor_templates and import blow.
+ *
  * 1. ckeditor_templates.ckeditor_templates.blockquote
  * 2. ckeditor_templates.ckeditor_templates.primary_button
- * 3. ckeditor_templates.ckeditor_templates.secondary_button
+ * 3. ckeditor_templates.ckeditor_templates.secondary_button.
  */
 function tide_core_update_8077() {
   if (!\Drupal::moduleHandler()->moduleExists('ckeditor_templates')) {
@@ -1788,7 +1791,7 @@ function tide_core_update_8077() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     $id = substr($config, strrpos($config, '.') + 1);
     $config_entity = $storage->load($id);
-    if ($config_entity !== NULL){
+    if ($config_entity !== NULL) {
       $storage->delete([$config_entity]);
     }
     $config_read = _tide_read_config($config, $config_location, FALSE);
