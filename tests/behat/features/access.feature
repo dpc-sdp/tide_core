@@ -41,6 +41,7 @@ Feature: Access permissions
     When I go to "admin/people"
     Then I select "Add the Site Admin role to the selected user(s)" from "edit-action"
     And I select "Add the Previewer role to the selected user(s)" from "edit-action"
+    And I select "Add the External Editor role to the selected user(s)" from "edit-action"
     And I select "Add the Editor role to the selected user(s)" from "edit-action"
     And I select "Add the Approver role to the selected user(s)" from "edit-action"
     And I select "Remove the Site Admin role from the selected user(s)" from "edit-action"
