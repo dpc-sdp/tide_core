@@ -1743,7 +1743,7 @@ function tide_core_update_8075() {
  *   - filter.format.rich_text
  *   - filter.format.summary_text.
  */
-function tide_core_update_8086() {
+function tide_core_update_8076() {
   $configs = [
     'filter.format.summary_text' => 'filter_format',
     'filter.format.admin_text' => 'filter_format',
@@ -1798,4 +1798,21 @@ function tide_core_update_8077() {
     $new_config_entity = $storage->createFromStorageRecord($config_read);
     $new_config_entity->save();
   }
+}
+
+/**
+ * Reassign text permissions to editors.
+ */
+function tide_core_update_8078() {
+  $roles = ['approver', 'site_admin'];
+  foreach ($roles as $role) {
+    user_role_grant_permissions(Role::load($role)->id(),
+      [
+        'use text format admin_text',
+        'use text format rich_text',
+        'use text format summary_text',
+      ]);
+  }
+  user_role_grant_permissions(Role::load('editor')->id(),
+    ['use text format rich_text', 'use text format summary_text']);
 }
