@@ -1,36 +1,6 @@
 langcode: en
 status: true
-dependencies:
-  config:
-    - filter.format.rich_text
-    - filter.format.summary_text
-    - node.type.alert
-    - node.type.event
-    - node.type.landing_page
-    - node.type.news
-    - node.type.publication
-    - node.type.publication_page
-    - workflows.workflow.editorial
-  module:
-    - block
-    - content_moderation
-    - entity_browser
-    - entity_hierarchy
-    - entity_usage
-    - filter
-    - media
-    - node
-    - override_node_options
-    - path
-    - quick_node_clone
-    - simple_oauth
-    - system
-    - tablefield
-    - tide_share_link
-    - tide_site_preview
-    - toolbar
-    - webform
-    - workbench
+dependencies: {}
 id: external_editor
 label: External Editor
 weight: 10
