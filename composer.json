@@ -58,6 +58,7 @@
     "drupal/simple_oauth": "^5.2",
     "drupal/simple_sitemap": "^4.0",
     "drupal/site_alert": "1.x-dev@dev",
+    "drupal/ckeditor_templates": "1.x-dev",
     "drupal/smart_trim": "^1.1",
     "drupal/smtp": "^1.0@RC",
     "drupal/stage_file_proxy": "^1.1",
@@ -68,7 +69,6 @@
     "drupal/views_menu_children_filter": "^1.0-beta2",
     "drupal/viewsreference": "2.0-beta2",
     "drupal/workbench": "^1.3",
-    "drupal/wysiwyg_template": "^3.0",
     "drupal/dynamic_entity_reference": "^1.7",
     "drupal/scheduled_transitions": "^2.1",
     "drupal/link_field_autocomplete_filter": "^1.8",
@@ -295,6 +295,10 @@
       },
       "drupal/user_expire": {
         "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
+      },
+      "drupal/ckeditor_templates": {
+        "CKEditor 5 support for Content Templates - https://www.drupal.org/project/ckeditor_templates/issues/3273358#comment-14963779": "https://git.drupalcode.org/project/ckeditor_templates/-/merge_requests/4/diffs.patch",
+        "Add a br to the end of the element - https://www.drupal.org/project/ckeditor_templates/issues/3273358#comment-14975729": "https://www.drupal.org/files/issues/2023-03-21/ckeditor_templates_3273358_38.patch"
       }
     }
   }
