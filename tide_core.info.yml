@@ -73,14 +73,13 @@ dependencies:
   - twig_field_value:twig_field_value
   - views_menu_children_filter:views_menu_children_filter
   - viewsreference:viewsreference
-  - wysiwyg_template:wysiwyg_template
-  - wysiwyg_template:wysiwyg_template_core
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
   - admin_audit_trail:admin_audit_trail
   - user_expire:user_expire
   - field_permissions:field_permissions
   - content_lock:content_lock
+  - ckeditor_templates:ckeditor_templates
 themes:
   - seven
 config_devel:
@@ -97,6 +96,9 @@ config_devel:
     - core.entity_view_display.paragraph.accordion.preview
     - core.entity_view_display.paragraph.accordion_content.default
     - core.entity_view_display.paragraph.accordion_content.preview
+    - ckeditor_templates.ckeditor_templates.blockquote
+    - ckeditor_templates.ckeditor_templates.primary_button
+    - ckeditor_templates.ckeditor_templates.secondary_button
     - field.field.paragraph.accordion.field_paragraph_accordion
     - field.field.paragraph.accordion.field_paragraph_accordion_style
     - field.field.paragraph.accordion.field_paragraph_title
@@ -159,9 +161,6 @@ config_devel:
     - user.role.previewer
     - user.role.site_admin
     - workflows.workflow.editorial
-    - wysiwyg_template.wysiwyg_template.blockquote
-    - wysiwyg_template.wysiwyg_template.primary_button
-    - wysiwyg_template.wysiwyg_template.secondary_button
     - field.storage.block_content.field_tags
     - field.storage.block_content.field_topic
     - field.storage.user.field_business_contact_number

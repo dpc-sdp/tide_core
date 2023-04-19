@@ -1697,3 +1697,114 @@ function tide_core_update_8073() {
     $config->save();
   }
 }
+
+/**
+ * Disable seven theme, and enable claro.
+ * - Disable Seven theme
+ * - Enable Claro theme
+ * - sets Claro theme to the default admin theme - system.theme
+ */
+function tide_core_update_8074() {
+  $default_theme = \Drupal::service('theme_handler')->getDefault();
+  if (is_null($default_theme) || $default_theme === 'classy' || $default_theme === 'stark' || $default_theme === 'seven') {
+    \Drupal::service('theme_installer')->install(['claro']);
+    \Drupal::configFactory()
+      ->getEditable('system.theme')
+      ->set('default', 'claro')
+      ->set('admin', 'claro')
+      ->save(TRUE);
+  }
+}
+
+/**
+ * Enable ckeditor5, tide_ckeditor.
+ */
+function tide_core_update_8078() {
+  if (!\Drupal::moduleHandler()->moduleExists('ckeditor5')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['ckeditor5']);
+  }
+  if (!\Drupal::moduleHandler()->moduleExists('tide_ckeditor')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_ckeditor']);
+  }
+}
+
+/**
+ * Update and re-import
+ *   - editor.editor.admin_text
+ *   - editor.editor.summary_text
+ *   - editor.editor.rich_text
+ *   check if the target site has the filters below, if it has, reimport it.
+ *   - filter.format.admin_text
+ *   - filter.format.plain_text
+ *   - filter.format.rich_text
+ *   - filter.format.summary_text
+ */
+function tide_core_update_8075() {
+  $configs = [
+    'filter.format.summary_text' => 'filter_format',
+    'filter.format.admin_text' => 'filter_format',
+    'filter.format.plain_text'  => 'filter_format',
+    'filter.format.rich_text' => 'filter_format',
+    'editor.editor.summary_text' => 'editor',
+    'editor.editor.admin_text' => 'editor',
+    'editor.editor.rich_text' => 'editor',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  foreach ($configs as $config => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = substr($config, strrpos($config, '.') + 1);
+    $config_entity = $storage->load($id);
+    if ($config_entity !== NULL){
+      $storage->delete([$config_entity]);
+    }
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $new_config_entity = $storage->createFromStorageRecord($config_read);
+    $new_config_entity->save();
+  }
+}
+
+/**
+ * Disable drupal/wysiwyg_template and drupal/wysiwyg_template_core.
+ */
+function tide_core_update_8076() {
+  $modules = [
+    'wysiwyg_template',
+    'wysiwyg_template_core',
+  ];
+  $module_installer = \Drupal::service('module_installer');
+  $module_installer->uninstall($modules);
+}
+
+/**
+ * Enable ckeditor_templates and import
+ * 1. ckeditor_templates.ckeditor_templates.blockquote
+ * 2. ckeditor_templates.ckeditor_templates.primary_button
+ * 3. ckeditor_templates.ckeditor_templates.secondary_button
+ */
+function tide_core_update_8077() {
+  if (!\Drupal::moduleHandler()->moduleExists('ckeditor_templates')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['ckeditor_templates']);
+  }
+  $configs = [
+    'ckeditor_templates.ckeditor_templates.blockquote' => 'ckeditor_templates',
+    'ckeditor_templates.ckeditor_templates.primary_button' => 'ckeditor_templates',
+    'ckeditor_templates.ckeditor_templates.secondary_button'  => 'ckeditor_templates',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  foreach ($configs as $config => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = substr($config, strrpos($config, '.') + 1);
+    $config_entity = $storage->load($id);
+    if ($config_entity !== NULL){
+      $storage->delete([$config_entity]);
+    }
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $new_config_entity = $storage->createFromStorageRecord($config_read);
+    $new_config_entity->save();
+  }
+}
