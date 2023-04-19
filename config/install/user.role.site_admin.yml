@@ -35,6 +35,7 @@ permissions:
   - 'administer webform submission'
   - 'assign approver role'
   - 'assign editor role'
+  - 'assign external editor role'
   - 'assign previewer role'
   - 'assign site_admin role'
   - 'bypass node access'
