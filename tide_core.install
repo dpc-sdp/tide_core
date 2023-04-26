@@ -1816,3 +1816,16 @@ function tide_core_update_8078() {
   user_role_grant_permissions(Role::load('editor')->id(),
     ['use text format rich_text', 'use text format summary_text']);
 }
+
+/**
+ * Sets unlimited contact us paragraph.
+ */
+function tide_core_update_8079() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
+  if ($config->isNew()) {
+    return;
+  }
+  $config->set('cardinality', -1);
+  $config->save();
+}
