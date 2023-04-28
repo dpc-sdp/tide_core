@@ -1,8 +1,8 @@
 langcode: en
 status: true
 dependencies: {}
-id: external_editor
-label: External Editor
+id: contributor
+label: Contributor
 weight: 10
 is_admin: null
 permissions:

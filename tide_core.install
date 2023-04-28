@@ -1715,9 +1715,9 @@ function tide_core_update_8074() {
  * Rule out next role to all projects.
  */
 function tide_core_update_8075() {
-  $external_editor = 'user.role.external_editor';
+  $external_editor = 'user.role.contributor';
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
-  $config_storage->write($external_editor, $source->read($external_editor));
+  $config_storage->write($contributor, $source->read($contributor));
 }

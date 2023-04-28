@@ -10,5 +10,5 @@ Feature: CMS Support
       | administrator   |
       | site_admin      |
       | approver        |
-      | external_editor |
+      | contributor     |
       | editor          |

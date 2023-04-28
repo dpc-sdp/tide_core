@@ -13,6 +13,6 @@ Feature: Roles
       | administrator   |
       | site_admin      |
       | approver        |
-      | external_editor |
+      | contributor     |
       | editor          |
       | previewer       |
