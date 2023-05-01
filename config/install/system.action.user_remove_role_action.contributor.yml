@@ -6,7 +6,7 @@ dependencies:
   module:
     - user
 id: user_remove_role_action.contributor
-label: 'Remove the contributor role from the selected user(s)'
+label: 'Remove the Contributor role from the selected user(s)'
 type: user
 plugin: user_remove_role_action
 configuration:
