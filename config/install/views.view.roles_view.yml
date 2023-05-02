@@ -2,9 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.user.field_department_agency
-    - field.storage.user.field_last_name
-    - field.storage.user.field_name
     - user.role.authenticated
   module:
     - tide_core
