@@ -52,7 +52,6 @@ class SortedRolesViewsField extends FieldPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    // First check whether the field should be hidden if the value(hide_alter_empty = TRUE) /the rewrite is empty (hide_alter_empty = FALSE).
     $options['hide_alter_empty'] = ['default' => FALSE];
     return $options;
   }
@@ -78,4 +77,5 @@ class SortedRolesViewsField extends FieldPluginBase {
       '#items' => $rolesSorted,
     ];
   }
+
 }

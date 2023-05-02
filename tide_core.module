@@ -39,6 +39,14 @@ function tide_core_views_data() {
     ],
   ];
 
+  $data['views']['sorted_roles_views_field'] = [
+    'title' => t('Sorted Roles'),
+    'help' => t('The list of user roles sorted alphabetically.'),
+    'field' => [
+      'id' => 'sorted_roles_views_field',
+    ],
+  ];
+
   return $data;
 }
 
@@ -734,18 +742,4 @@ function tide_core_toolbar_alter(&$items) {
       'preRenderTray',
     ],
   ];
-}
-
-/**
- * Implements hook_views_data().
- */
-function tide_core_views_roles_data() {
-  $data['views']['sorted_roles_views_field'] = [
-    'title' => t('Sorted Roles'),
-    'help' => t('The list of user roles sorted alphabetically.'),
-    'field' => [
-      'id' => 'sorted_roles_views_field',
-    ],
-  ];
-  return $data;
 }
