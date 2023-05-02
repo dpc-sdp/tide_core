@@ -1720,4 +1720,4 @@ function tide_core_update_8075() {
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
-  }
+}
