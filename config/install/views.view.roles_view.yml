@@ -2,8 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.user.field_department_agency
+    - field.storage.user.field_last_name
+    - field.storage.user.field_name
     - user.role.authenticated
   module:
+    - tide_core
     - user
 id: roles_view
 label: 'Roles view'
@@ -277,16 +281,14 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        roles_target_id:
-          id: roles_target_id
-          table: user__roles
-          field: roles_target_id
+        sorted_roles_views_field:
+          id: sorted_roles_views_field
+          table: views
+          field: sorted_roles_views_field
           relationship: none
           group_type: group
           admin_label: ''
-          entity_type: user
-          entity_field: roles
-          plugin_id: user_roles
+          plugin_id: sorted_roles_views_field
           label: Roles
           exclude: false
           alter:
@@ -327,9 +329,7 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: true
-          type: ul
-          separator: ', '
+          hide_alter_empty: false
       pager:
         type: some
         options:

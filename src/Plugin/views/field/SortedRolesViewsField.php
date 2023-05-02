@@ -66,6 +66,9 @@ class SortedRolesViewsField extends FieldPluginBase {
       $roles = $user->getRoles();
       asort($roles);
       foreach ($roles as $roleId) {
+        if ($roleId === 'authenticated') {
+          continue;
+        }
         $roleEntity = Role::load($roleId);
         $rolesSorted[] = $roleEntity->label();
       }
