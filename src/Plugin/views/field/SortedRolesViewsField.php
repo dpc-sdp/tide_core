@@ -13,7 +13,7 @@ use Drupal\user\Plugin\views\field\Roles;
  */
 class SortedRolesViewsField extends Roles {
 
- /**
+  /**
   * Prerender user roles.
   *
   * @param array $values
