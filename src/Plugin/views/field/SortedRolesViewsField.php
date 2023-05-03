@@ -2,83 +2,44 @@
 
 namespace Drupal\tide_core\Plugin\views\field;
 
-use Drupal\views\Plugin\views\field\FieldPluginBase;
-use Drupal\views\ResultRow;
-use Drupal\views\Plugin\views\display\DisplayPluginBase;
-use Drupal\views\ViewExecutable;
-use Drupal\user\Entity\User;
-use Drupal\user\Entity\Role;
+use Drupal\user\Plugin\views\field\Roles;
 
 /**
- * A handler to provide a field that is completely custom by the administrator.
+ * A handler to provide a list of roles sorted alphabetically.
  *
  * @ingroup views_field_handlers
  *
  * @ViewsField("sorted_roles_views_field")
  */
-class SortedRolesViewsField extends FieldPluginBase {
-  /**
-   * The current display.
-   *
-   * @var string
-   *   The current display of the view.
-   */
-  protected $currentDisplay;
+class SortedRolesViewsField extends Roles
+{
+  public function preRender(&$values)
+  {
+    $uids = [];
+    $this->items = [];
 
-  /**
-   * {@inheritdoc}
-   */
-  public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
-    parent::init($view, $display, $options);
-    $this->currentDisplay = $view->current_display;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function usesGroupBy() {
-    return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function query() {
-    // Do nothing -- to override the parent query.
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function defineOptions() {
-    $options = parent::defineOptions();
-    $options['hide_alter_empty'] = ['default' => FALSE];
-    return $options;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function render(ResultRow $values) {
-    $user = $values->_entity;
-    $rolesSorted = [];
-    if ($user instanceof User) {
-      $roles = $user->getRoles();
-      asort($roles);
-      foreach ($roles as $roleId) {
-        if ($roleId === 'authenticated') {
-          continue;
-        }
-        $roleEntity = Role::load($roleId);
-        $rolesSorted[] = $roleEntity->label();
-      }
+    foreach ($values as $result) {
+      $uids[] = $this->getValue($result);
     }
 
-    return [
-      '#theme' => 'item_list',
-      '#list_type' => 'ul',
-      '#items' => $rolesSorted,
-    ];
+    if ($uids) {
+      $roles = user_roles();
+      asort($roles);
+      $result = $this->database->query('SELECT [u].[entity_id] AS [uid], [u].[roles_target_id] AS [rid] FROM {user__roles} [u] WHERE [u].[entity_id] IN ( :uids[] ) AND [u].[roles_target_id] IN ( :rids[] )', [':uids[]' => $uids, ':rids[]' => array_keys($roles)]);
+      foreach ($result as $role) {
+        $this->items[$role->uid][$role->rid]['role'] = $roles[$role->rid]->label();
+        $this->items[$role->uid][$role->rid]['rid'] = $role->rid;
+      }
+      // Sort the roles for each user by role weight.
+      $ordered_roles = array_flip(array_keys($roles));
+      //dump($ordered_roles);
+      foreach ($this->items as &$user_roles) {
+        // Create an array of rids that the user has in the role weight order.
+        $sorted_keys = array_intersect_key($ordered_roles, $user_roles);
+        // Merge with the unsorted array of role information which has the
+        // effect of sorting it.
+        $user_roles = array_merge($sorted_keys, $user_roles);
+      }
+    }
   }
-
 }
