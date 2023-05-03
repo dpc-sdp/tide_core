@@ -11,10 +11,9 @@ use Drupal\user\Plugin\views\field\Roles;
  *
  * @ViewsField("sorted_roles_views_field")
  */
-class SortedRolesViewsField extends Roles
-{
-  public function preRender(&$values)
-  {
+class SortedRolesViewsField extends Roles {
+
+  public function preRender(&$values) {
     $uids = [];
     $this->items = [];
 
