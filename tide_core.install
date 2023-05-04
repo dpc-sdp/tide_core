@@ -1712,7 +1712,7 @@ function tide_core_update_8074() {
 }
 
 /**
- * Rule out next role to all projects.
+ * Roll out next role to all projects.
  */
 function tide_core_update_8075() {
   $contributor = 'user.role.contributor';
