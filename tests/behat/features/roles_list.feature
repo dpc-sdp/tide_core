@@ -15,6 +15,4 @@ Feature: Roles
       | approver      |
       | editor        |
       | previewer     |
-      | event_author  |
-      | grant_author  |
       | site_auditor  |
