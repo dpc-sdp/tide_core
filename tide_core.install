@@ -1715,9 +1715,15 @@ function tide_core_update_8074() {
  * Roll out next role to all projects.
  */
 function tide_core_update_8075() {
-  $contributor = 'user.role.contributor';
+  $roles = [
+    'user.role.contributor',
+    'user.role.site_admin'
+  ];
+
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
   $config_storage = \Drupal::service('config.storage');
-  $config_storage->write($contributor, $source->read($contributor));
+  foreach ($roles as $role) {
+    $config_storage->write($role, $source->read($role));
+  }
 }
