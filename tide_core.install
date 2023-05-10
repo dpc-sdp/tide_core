@@ -1717,7 +1717,7 @@ function tide_core_update_8074() {
 function tide_core_update_8075() {
   $roles = [
     'user.role.contributor',
-    'user.role.site_admin'
+    'user.role.site_admin',
   ];
 
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
