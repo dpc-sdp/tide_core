@@ -254,6 +254,9 @@
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
             },
+            "drupal/path_redirect_import": {
+                "Warning messages appear when the CSV's header are not following the suggested headers - https://www.drupal.org/project/path_redirect_import/issues/3359286": "https://www.drupal.org/files/issues/2023-05-10/3359286-handling-warning-messages.patch"
+            },
             "drupal/simple_oauth": {
                 "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
                 "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch"
