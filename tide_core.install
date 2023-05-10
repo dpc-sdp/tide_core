@@ -1710,3 +1710,13 @@ function tide_core_update_8074() {
   $config->set('cardinality', -1);
   $config->save();
 }
+
+/**
+ * Enable path_redirect_import module.
+ */
+function tide_core_update_8075() {
+  if (!\Drupal::moduleHandler()->moduleExists('path_redirect_import')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['path_redirect_import']);
+  }
+}
