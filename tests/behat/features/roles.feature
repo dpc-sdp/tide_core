@@ -9,9 +9,10 @@ Feature: Roles
     And I go to the homepage
     And I save screenshot
     Examples:
-      | role          |
-      | administrator |
-      | site_admin    |
-      | approver      |
-      | editor        |
-      | previewer     |
+      | role            |
+      | administrator   |
+      | site_admin      |
+      | approver        |
+      | contributor     |
+      | editor          |
+      | previewer       |
