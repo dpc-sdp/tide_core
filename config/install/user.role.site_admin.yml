@@ -22,7 +22,6 @@ permissions:
   - 'access toolbar'
   - 'access webform overview'
   - 'access webform submission log'
-  - 'access workbench'
   - 'administer blocks'
   - 'administer menu'
   - 'administer nodes'
