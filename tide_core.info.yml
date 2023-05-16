@@ -80,7 +80,7 @@ dependencies:
   - content_lock:content_lock
   - ckeditor_templates:ckeditor_templates
 themes:
-  - seven
+  - claro
 config_devel:
   install:
     - core.entity_form_display.paragraph.accordion.default

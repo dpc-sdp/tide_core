@@ -1829,3 +1829,27 @@ function tide_core_update_8080() {
   $config->set('cardinality', -1);
   $config->save();
 }
+
+/**
+ * Uninstall ck4 related modules.
+ */
+function tide_core_update_8081() {
+  $modules = [
+    'tide_spell_checker',
+    'ckeditor_config',
+    'ckeditor_iframe',
+    'ckeditor_liststyle',
+    'ckeditor_scayt',
+    'fakeobjects',
+    'wysiwyg_template'
+  ];
+  $module_installer = \Drupal::service('module_installer');
+  $module_installer->uninstall($modules);
+}
+
+/**
+ * Uninstall seven.
+ */
+function tide_core_update_8082(){
+  \Drupal::service('theme_installer')->uninstall(['seven']);
+}
