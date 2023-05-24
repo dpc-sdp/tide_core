@@ -1,11 +1,19 @@
 <?php
+
+/**
+ * @file
+ * Install file for Tide Jira.
+ */
+
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\monitoring\Entity\SensorConfig;
 
-function tide_jira_update_8002()
-{
+/**
+ * Configure sensor if monitoring module is present.
+ */
+function tide_jira_update_8002() {
   if (\Drupal::service('module_handler')->moduleExists('monitoring')) {
-    $sensor = SensorConfig::create(array(
+    $sensor = SensorConfig::create([
       'id' => 'tide_jira',
       'label' => 'Tide Jira',
       'description' => 'Connectivity Status of the Jira Service Desk API',
@@ -13,12 +21,14 @@ function tide_jira_update_8002()
       'value_label' => 'Tide Jira',
       'category' => 'Baywatch',
       'status' => TRUE,
-      'caching_time' => 300
-    ));
+      'caching_time' => 300,
+    ]);
     try {
       $sensor->save();
-    } catch (EntityStorageException $e) {
+    }
+    catch (EntityStorageException $e) {
       \Drupal::messenger()->addMessage("tide_jira sensor already configured.");
     }
+
   }
 }
