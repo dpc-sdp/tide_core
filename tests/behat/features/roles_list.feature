@@ -1,4 +1,4 @@
-@tide
+@tide @roles
 Feature: Roles
 
   Ensure that users's role are listed in the profile page
@@ -6,8 +6,8 @@ Feature: Roles
   @api
   Scenario Outline: User with assigned roles visits profile page
     Given I am logged in as a user with the "<role>" role
-    And I go to the "/user" path
-    Then I should see the text "Roles"
+    And I visit "/user"
+    Then the ".views-label-sorted-roles-views-field" element should contain "Roles"
     Examples:
       | role          |
       | administrator |
