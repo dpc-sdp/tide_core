@@ -1,4 +1,4 @@
-@tide @roles
+@tide
 Feature: Roles
 
   Ensure that users's role are listed in the profile page
