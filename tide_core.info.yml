@@ -30,6 +30,7 @@ dependencies:
   - drupal:telephone
   - drupal:text
   - drupal:user
+  - drupal:views
   - drupal:workflows
   - drupal:hal
   - drupal:token
