@@ -1724,3 +1724,14 @@ function tide_core_update_8075() {
   $permissions = ['assign contributor role'];
   user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
 }
+
+/**
+ * Import roles's list in user profile.
+ */
+function tide_core_update_8076() {
+  $view = 'views.view.roles_view';
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($view, $source->read($view));
+}
