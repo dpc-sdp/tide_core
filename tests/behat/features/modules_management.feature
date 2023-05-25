@@ -12,11 +12,13 @@ Feature: Module management permissions
       | role               | path                     | response |
       | administrator      | admin/modules            | 404      |
       | site_admin         | admin/modules            | 404      |
+      | contributor        | admin/modules            | 404      |
       | editor             | admin/modules            | 404      |
       | approver           | admin/modules            | 404      |
       | previewer          | admin/modules            | 404      |
       | administrator      | admin/modules/uninstall  | 404      |
       | site_admin         | admin/modules/uninstall  | 404      |
+      | contributor        | admin/modules/uninstall  | 404      |
       | editor             | admin/modules/uninstall  | 404      |
       | approver           | admin/modules/uninstall  | 404      |
       | previewer          | admin/modules/uninstall  | 404      |
