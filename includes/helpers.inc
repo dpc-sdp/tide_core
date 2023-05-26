@@ -251,3 +251,37 @@ function _tide_set_paragraph_type_icon($paragraph_type, string $icon_file) {
     $paragraph_type->save();
   }
 }
+
+/**
+ * Extracts config id from a given string.
+ *
+ * @param string $target
+ *   The start of the string.
+ * @param string $config
+ *   The full length of config id.
+ * @param bool $include
+ *   Whether to include $target.
+ *
+ * @example
+ * @code
+ * $config = 'field.field.paragraph.compact_card_collection.field_paragraph_title
+ * $field_id = _tide_extract_id_for_storage_usage('paragraph',$config,true);
+ * returns ['paragraph.compact_card_collection.field_paragraph_title'];
+ * $field_id = _tide_extract_id_for_storage_usage('paragraph',$config,false);
+ * returns ['compact_card_collection.field_paragraph_title'];
+ * @endcode
+ */
+function _tide_extract_id_for_storage_usage($target, $config, $include) {
+  $pattern = '/(' . $target . '\.[^\s]+)/';
+  $matches = [];
+  preg_match($pattern, $config, $match);
+  if (!empty($match[1])) {
+    if ($include) {
+      $matches[] = $match[1];
+    }
+    else {
+      $matches[] = str_replace($target . '.', '', $match[1]);
+    }
+  }
+  return $matches;
+}
