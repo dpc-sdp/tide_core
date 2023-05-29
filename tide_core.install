@@ -271,19 +271,6 @@ function tide_core_update_8005() {
 }
 
 /**
- * Enable the blockquote template available to all Node types.
- */
-function tide_core_update_8006() {
-  if ($wysiwyg_template = \Drupal::entityTypeManager()
-    ->getStorage('wysiwyg_template')
-    ->load('blockquote')) {
-    if (count($wysiwyg_template->getNodeTypes()) > 0) {
-      $wysiwyg_template->set('node_types', [])->save();
-    }
-  }
-}
-
-/**
  * Delete and uninstall all scheduled_update entities.
  */
 function tide_core_update_8007() {
