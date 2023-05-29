@@ -1821,56 +1821,73 @@ function tide_core_update_8080() {
  * Uninstall tide_spell_checker.
  */
 function tide_core_update_8081() {
-  \Drupal::service('module_installer')->uninstall(['tide_spell_checker']);
+  if (\Drupal::moduleHandler()->moduleExists('tide_spell_checker')) {
+    \Drupal::service('module_installer')->uninstall(['tide_spell_checker']);
+  }
 }
 
 /**
  * Uninstall ckeditor_config.
  */
 function tide_core_update_8082() {
-  \Drupal::service('module_installer')->uninstall(['ckeditor_config']);
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_config')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_config']);
+  }
 }
 
 /**
  * Uninstall ckeditor_iframe.
  */
 function tide_core_update_8083() {
-  \Drupal::service('module_installer')->uninstall(['ckeditor_iframe']);
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_iframe')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_iframe']);
+  }
 }
 
 /**
  * Uninstall ckeditor_liststyle.
  */
 function tide_core_update_8084() {
-  \Drupal::service('module_installer')->uninstall(['ckeditor_liststyle']);
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_liststyle')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_liststyle']);
+  }
 }
 
 /**
  * Uninstall ckeditor_scayt.
  */
 function tide_core_update_8085() {
-  \Drupal::service('module_installer')->uninstall(['ckeditor_scayt']);
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_scayt')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_scayt']);
+  }
 }
 
 /**
  * Uninstall fakeobjects.
  */
 function tide_core_update_8086() {
-  \Drupal::service('module_installer')->uninstall(['fakeobjects']);
+  if (\Drupal::moduleHandler()->moduleExists('fakeobjects')) {
+    \Drupal::service('module_installer')->uninstall(['fakeobjects']);
+  }
 }
 
 /**
  * Uninstall wysiwyg_template.
  */
 function tide_core_update_8087() {
-  \Drupal::service('module_installer')->uninstall(['wysiwyg_template']);
+  if (\Drupal::moduleHandler()->moduleExists('wysiwyg_template')) {
+    \Drupal::service('module_installer')->uninstall(['wysiwyg_template']);
+  }
+
 }
 
 /**
  * Uninstall seven.
  */
-function tide_core_update_8088(){
-  \Drupal::service('theme_installer')->uninstall(['seven']);
+function tide_core_update_8088() {
+  if (\Drupal::service('theme_handler')->themeExists('seven')) {
+    \Drupal::service('theme_installer')->uninstall(['seven']);
+  }
 }
 
 /**
