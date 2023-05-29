@@ -7,7 +7,6 @@ dependencies:
     - entity_embed
     - linkit
     - token_filter
-    - wysiwyg_template_core
 name: 'Admin Text'
 format: admin_text
 weight: -9
@@ -83,12 +82,6 @@ filters:
     weight: -42
     settings:
       replace_empty: ''
-  filter_wysiwyg_cleanup:
-    id: filter_wysiwyg_cleanup
-    provider: wysiwyg_template_core
-    status: false
-    weight: -38
-    settings: {  }
   linkit:
     id: linkit
     provider: linkit
