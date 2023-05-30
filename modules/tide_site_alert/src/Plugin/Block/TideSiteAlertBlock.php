@@ -2,7 +2,9 @@
 
 namespace Drupal\tide_site_alert\Plugin\Block;
 
+use Drupal\Core\Block\BlockBase;
 use Drupal\site_alert\Plugin\Block\SiteAlertBlock;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Implements TideSiteAlertBlock class.
@@ -29,3 +31,12 @@ class TideSiteAlertBlock extends SiteAlertBlock {
   }
 
 }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags() {
+    // The block should be invalidated whenever any site alert changes.
+    $list_cache_tags = $this->entityTypeManager->getDefinition('tide_site_alert')->getListCacheTags();
+    return Cache::mergeTags(parent::getCacheTags(), $list_cache_tags);
+  }
