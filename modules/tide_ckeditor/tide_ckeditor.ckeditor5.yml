@@ -1,0 +1,14 @@
+tide_ckeditor_callout:
+  ckeditor5:
+    plugins:
+      - callout.Callout
+  drupal:
+    label: Callout
+    library: tide_ckeditor/callout
+    toolbar_items:
+      Callout:
+        label: Callout
+    elements:
+      - <div>
+      - <p>
+      - <div class="callout-wrapper">
