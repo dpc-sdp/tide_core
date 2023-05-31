@@ -414,6 +414,7 @@ function tide_core_editor_js_settings_alter(array &$settings) {
  * Move some core fields to Node form Sidebar.
  */
 function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'][] = 'tide_core/claro_layout';
   $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#process'][] = '_tide_core_form_node_form_process';
