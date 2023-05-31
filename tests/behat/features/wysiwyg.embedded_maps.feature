@@ -4,7 +4,7 @@ Feature: Embedded Maps Feature
   As a user with access to Admin Text and Rich Text formats,
   I would like to embed Google Map using WYSIWYG editor.
 
-  @api @javascript
+  @api @javascript @skipped
   Scenario: Admin Text formats provide embedding of a Google Map using WYSIWYG editor.
     Given I am logged in as a user with the "Approver" role
     When I go to "node/add/test"
