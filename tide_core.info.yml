@@ -2,12 +2,11 @@ name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
-core_version_requirement: ^8.9 || ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
   - better_exposed_filters:better_exposed_filters
-  - ckeditor_iframe:ckeditor_iframe
   - clamav:clamav
   - config_split:config_split
   - config_update:config_update
@@ -17,6 +16,7 @@ dependencies:
   - drupal:block_content
   - drupal:content_moderation
   - drupal:ckeditor
+  - drupal:ckeditor5
   - drupal:datetime_range
   - drupal:dynamic_page_cache
   - drupal:entity_embed
@@ -50,7 +50,6 @@ dependencies:
   - admin_audit_trail:admin_audit_trail_workflows
   - admin_audit_trail:admin_audit_trail_block_content
   - admin_audit_trail:admin_audit_trail_redirect
-  - fakeobjects:fakeobjects
   - fast_404:fast404
   - link_field_autocomplete_filter:link_field_autocomplete_filter
   - linkit:linkit
@@ -74,16 +73,15 @@ dependencies:
   - twig_field_value:twig_field_value
   - views_menu_children_filter:views_menu_children_filter
   - viewsreference:viewsreference
-  - wysiwyg_template:wysiwyg_template
-  - wysiwyg_template:wysiwyg_template_core
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
   - admin_audit_trail:admin_audit_trail
   - user_expire:user_expire
   - field_permissions:field_permissions
   - content_lock:content_lock
+  - ckeditor_templates:ckeditor_templates
 themes:
-  - seven
+  - claro
 config_devel:
   install:
     - core.entity_form_display.paragraph.accordion.default
@@ -98,6 +96,9 @@ config_devel:
     - core.entity_view_display.paragraph.accordion.preview
     - core.entity_view_display.paragraph.accordion_content.default
     - core.entity_view_display.paragraph.accordion_content.preview
+    - ckeditor_templates.ckeditor_templates.blockquote
+    - ckeditor_templates.ckeditor_templates.primary_button
+    - ckeditor_templates.ckeditor_templates.secondary_button
     - field.field.paragraph.accordion.field_paragraph_accordion
     - field.field.paragraph.accordion.field_paragraph_accordion_style
     - field.field.paragraph.accordion.field_paragraph_title
@@ -160,23 +161,19 @@ config_devel:
     - user.role.previewer
     - user.role.site_admin
     - workflows.workflow.editorial
-    - wysiwyg_template.wysiwyg_template.blockquote
-    - wysiwyg_template.wysiwyg_template.primary_button
-    - wysiwyg_template.wysiwyg_template.secondary_button
     - field.storage.block_content.field_tags
     - field.storage.block_content.field_topic
     - field.storage.user.field_business_contact_number
     - field.storage.user.field_business_name
     - field.storage.user.field_notes
   optional:
-    - block.block.seven_breadcrumbs
-    - block.block.seven_content
-    - block.block.seven_local_actions
-    - block.block.seven_login
-    - block.block.seven_messages
-    - block.block.seven_page_title
-    - block.block.seven_primary_local_tasks
-    - block.block.seven_secondary_local_tasks
+    - block.block.claro_breadcrumbs
+    - block.block.claro_content
+    - block.block.claro_local_actions
+    - block.block.claro_messages
+    - block.block.claro_page_title
+    - block.block.claro_primary_local_tasks
+    - block.block.claro_secondary_local_tasks
     - clamav.settings
     - editor.editor.admin_text
     - editor.editor.rich_text

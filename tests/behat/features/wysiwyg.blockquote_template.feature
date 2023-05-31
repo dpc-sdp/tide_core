@@ -6,7 +6,7 @@ Feature: WYSIWYG Blockquote template
   @api
   Scenario: User with permission can see WYSIWYG Blockquote template.
     Given I am logged in as a user with the "administrator" role
-    And I visit "admin/config/content/wysiwyg-templates"
+    And I visit "admin/config/content/ckeditor-templates"
     Then I should see "Blockquote"
 
   @api @javascript @skipped
