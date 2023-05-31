@@ -1736,7 +1736,7 @@ function tide_core_update_8076() {
   $config_storage->write($view, $source->read($view));
 }
 
-/*
+/**
  * Enable path_redirect_import module.
  */
 function tide_core_update_8077() {
