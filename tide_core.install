@@ -1914,3 +1914,13 @@ function tide_core_update_8090() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Enable path_redirect_import module.
+ */
+function tide_core_update_8077() {
+  if (!\Drupal::moduleHandler()->moduleExists('path_redirect_import')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['path_redirect_import']);
+  }
+}
