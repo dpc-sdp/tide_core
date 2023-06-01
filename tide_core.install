@@ -271,19 +271,6 @@ function tide_core_update_8005() {
 }
 
 /**
- * Enable the blockquote template available to all Node types.
- */
-function tide_core_update_8006() {
-  if ($wysiwyg_template = \Drupal::entityTypeManager()
-    ->getStorage('wysiwyg_template')
-    ->load('blockquote')) {
-    if (count($wysiwyg_template->getNodeTypes()) > 0) {
-      $wysiwyg_template->set('node_types', [])->save();
-    }
-  }
-}
-
-/**
  * Delete and uninstall all scheduled_update entities.
  */
 function tide_core_update_8007() {
@@ -1699,9 +1686,128 @@ function tide_core_update_8073() {
 }
 
 /**
+ * Disable seven theme, and enable claro.
+ *
+ * - Disable Seven theme
+ * - Enable Claro theme
+ * - sets Claro theme to the default admin theme - system.theme.
+ */
+function tide_core_update_8075() {
+  $default_theme = \Drupal::service('theme_handler')->getDefault();
+  if (is_null($default_theme) || $default_theme === 'classy' || $default_theme === 'stark' || $default_theme === 'seven') {
+    \Drupal::service('theme_installer')->install(['claro']);
+    \Drupal::configFactory()
+      ->getEditable('system.theme')
+      ->set('default', 'claro')
+      ->set('admin', 'claro')
+      ->save(TRUE);
+  }
+}
+
+/**
+ * Enable ckeditor5, tide_ckeditor.
+ */
+function tide_core_update_8076() {
+  if (!\Drupal::moduleHandler()->moduleExists('ckeditor5')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['ckeditor5']);
+  }
+  if (!\Drupal::moduleHandler()->moduleExists('tide_ckeditor')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_ckeditor']);
+  }
+}
+
+/**
+ * Update and re-import configs below.
+ *
+ *   - editor.editor.admin_text
+ *   - editor.editor.summary_text
+ *   - editor.editor.rich_text
+ *   check if the target site has the filters below, if it has, reimport it.
+ *   - filter.format.admin_text
+ *   - filter.format.plain_text
+ *   - filter.format.rich_text
+ *   - filter.format.summary_text.
+ */
+function tide_core_update_8077() {
+  $configs = [
+    'filter.format.summary_text' => 'filter_format',
+    'filter.format.admin_text' => 'filter_format',
+    'filter.format.plain_text'  => 'filter_format',
+    'filter.format.rich_text' => 'filter_format',
+    'editor.editor.summary_text' => 'editor',
+    'editor.editor.admin_text' => 'editor',
+    'editor.editor.rich_text' => 'editor',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  foreach ($configs as $config => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = substr($config, strrpos($config, '.') + 1);
+    $config_entity = $storage->load($id);
+    if ($config_entity !== NULL) {
+      $storage->delete([$config_entity]);
+    }
+    $config_read = _tide_read_config($config, $config_location, FALSE);
+    $new_config_entity = $storage->createFromStorageRecord($config_read);
+    $new_config_entity->save();
+  }
+}
+
+/**
+ * Enable ckeditor_templates and import blow.
+ *
+ * 1. ckeditor_templates.ckeditor_templates.blockquote
+ * 2. ckeditor_templates.ckeditor_templates.primary_button
+ * 3. ckeditor_templates.ckeditor_templates.secondary_button.
+ */
+function tide_core_update_8078() {
+  if (!\Drupal::moduleHandler()->moduleExists('ckeditor_templates')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['ckeditor_templates']);
+  }
+  $configs = [
+    'ckeditor_templates.ckeditor_templates.blockquote' => 'ckeditor_templates',
+    'ckeditor_templates.ckeditor_templates.primary_button' => 'ckeditor_templates',
+    'ckeditor_templates.ckeditor_templates.secondary_button'  => 'ckeditor_templates',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  foreach ($configs as $config => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = substr($config, strrpos($config, '.') + 1);
+    $config_entity = $storage->load($id);
+    if ($config_entity !== NULL) {
+      $storage->delete([$config_entity]);
+    }
+    $config_read = _tide_read_config($config, $config_location, FALSE);
+    $new_config_entity = $storage->createFromStorageRecord($config_read);
+    $new_config_entity->save();
+  }
+}
+
+/**
+ * Reassign text permissions to editors.
+ */
+function tide_core_update_8079() {
+  $roles = ['approver', 'site_admin'];
+  foreach ($roles as $role) {
+    user_role_grant_permissions(Role::load($role)->id(),
+      [
+        'use text format admin_text',
+        'use text format rich_text',
+        'use text format summary_text',
+      ]);
+  }
+  user_role_grant_permissions(Role::load('editor')->id(),
+    ['use text format rich_text', 'use text format summary_text']);
+}
+
+/**
  * Sets unlimited contact us paragraph.
  */
-function tide_core_update_8074() {
+function tide_core_update_8080() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('field.storage.node.field_landing_page_contact');
   if ($config->isNew()) {
@@ -1712,9 +1818,82 @@ function tide_core_update_8074() {
 }
 
 /**
+ * Uninstall tide_spell_checker.
+ */
+function tide_core_update_8081() {
+  if (\Drupal::moduleHandler()->moduleExists('tide_spell_checker')) {
+    \Drupal::service('module_installer')->uninstall(['tide_spell_checker']);
+  }
+}
+
+/**
+ * Uninstall ckeditor_config.
+ */
+function tide_core_update_8082() {
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_config')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_config']);
+  }
+}
+
+/**
+ * Uninstall ckeditor_iframe.
+ */
+function tide_core_update_8083() {
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_iframe')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_iframe']);
+  }
+}
+
+/**
+ * Uninstall ckeditor_liststyle.
+ */
+function tide_core_update_8084() {
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_liststyle')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_liststyle']);
+  }
+}
+
+/**
+ * Uninstall ckeditor_scayt.
+ */
+function tide_core_update_8085() {
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_scayt')) {
+    \Drupal::service('module_installer')->uninstall(['ckeditor_scayt']);
+  }
+}
+
+/**
+ * Uninstall fakeobjects.
+ */
+function tide_core_update_8086() {
+  if (\Drupal::moduleHandler()->moduleExists('fakeobjects')) {
+    \Drupal::service('module_installer')->uninstall(['fakeobjects']);
+  }
+}
+
+/**
+ * Uninstall wysiwyg_template.
+ */
+function tide_core_update_8087() {
+  if (\Drupal::moduleHandler()->moduleExists('wysiwyg_template')) {
+    \Drupal::service('module_installer')->uninstall(['wysiwyg_template']);
+  }
+
+}
+
+/**
+ * Uninstall seven.
+ */
+function tide_core_update_8088() {
+  if (\Drupal::service('theme_handler')->themeExists('seven')) {
+    \Drupal::service('theme_installer')->uninstall(['seven']);
+  }
+}
+
+/**
  * Roll out next role to all projects.
  */
-function tide_core_update_8075() {
+function tide_core_update_8089() {
   $contributor = 'user.role.contributor';
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
@@ -1728,7 +1907,7 @@ function tide_core_update_8075() {
 /**
  * Import roles's list in user profile.
  */
-function tide_core_update_8076() {
+function tide_core_update_8090() {
   $view = 'views.view.roles_view';
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);

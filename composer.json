@@ -6,13 +6,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "ckeditor/fakeobjects": "4.16.1",
-        "ckeditor/iframe": "4.5.11",
-        "ckeditor/liststyle": "4.8.0",
-        "ckeditor/autogrow": "4.16.1",
-        "ckeditor/codemirror": "v1.17.12",
-        "ckeditor/image": "4.16.1",
-        "ckeditor/link": "4.16.1",
         "jquery/timepicker": "1.13.14",
         "jquery/textcounter": "0.9.0",
         "drupal/address": "^1.4",
@@ -28,19 +21,19 @@
         "drupal/config_split": "^1.4",
         "drupal/config_update": "^1.6",
         "drupal/core": "9.5.x",
+        "drupal/ckeditor_templates": "1.x-dev",
         "drupal/ctools": "^3.11",
         "drupal/diff": "^1.0-RC2",
         "drupal/editor_advanced_link": "^2.0",
         "drupal/entity_browser": "^2.6",
         "drupal/entity_reference_revisions": "^1.9",
-        "drupal/entity_embed": "^1.1",
+        "drupal/entity_embed": "dev-3272732-drupal-10- as 1.3.0",
         "drupal/environment_indicator": "^4.0",
-        "drupal/fakeobjects": "^1.0",
         "drupal/fast_404": "^2.0",
         "drupal/field_group": "^3.1",
         "drupal/google_analytics": "^2.3",
         "drupal/hotjar": "^2.2",
-        "drupal/linkit": "^6.0.0",
+        "drupal/linkit": "^6.0@beta",
         "drupal/login_redirect_per_role": "^1.7",
         "drupal/m4032404": "^1.0-alpha4",
         "drupal/maxlength": "^1.0-beta2",
@@ -85,13 +78,21 @@
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
+        "drupal/ckeditor5_embedded_content": "^1.0@alpha",
+        "respect/validation": "dev-master",
+        "giggsey/libphonenumber-for-php": "^8.13",
         "drupal/site_alert": "1.x-dev@dev",
         "lcobucci/clock": "3.0.0"
     },
     "repositories": {
         "drupal": {
             "type": "composer",
-            "url": "https://packages.drupal.org/8"
+            "url": "https://packages.drupal.org/8",
+            "canonical": false
+        },
+        "drupal/entity_embed": {
+            "type": "git",
+            "url": "https://git.drupalcode.org/issue/entity_embed-3272732.git"
         },
         "ckeditor.autogrow": {
             "_webform": true,
@@ -236,6 +237,10 @@
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
                 "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
                 "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch",
+                "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188":"https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
+                "Autocomplete widget in node sidebar causes overflow-https://www.drupal.org/project/drupal/issues/3268619#comment-14955369": "https://www.drupal.org/files/issues/2023-03-07/3268619_autocomplete_overflow_5.patch",
+                "Claro preprocessing of field multiple value form table header cell removes potential changes by others - https://www.drupal.org/project/drupal/issues/3099026#comment-14940311": "https://www.drupal.org/files/issues/2023-02-24/3099026-51.patch",
+                "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch"
             },
@@ -269,8 +274,11 @@
                 "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
             },
             "drupal/paragraphs": {
-                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch"
-            },
+                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
+                "Nested paragraphs title gets cut off - https://www.drupal.org/project/paragraphs/issues/3246140#comment-14698713": "https://www.drupal.org/files/issues/2022-09-20/3246140-11-fix_paragraph_title_cutoff.patch",
+                "Paragraph with long label name gets cut off -https://www.drupal.org/project/paragraphs/issues/3350521#comment-14984824": "https://www.drupal.org/files/issues/2023-03-27/paragraph-long-label-cut-off-3350521-2.patch",
+                "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
+              },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
@@ -282,6 +290,9 @@
             },
             "drupal/site_alert": {
                 "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
+            },
+            "drupal/ckeditor_templates": {
+                "CKEditor 5 support for Content Templates - https://www.drupal.org/project/ckeditor_templates/issues/3273358#comment-14963779": "./patches/ckeditor_templates/ckeditor_templates_4.patch"
             }
         }
     }
