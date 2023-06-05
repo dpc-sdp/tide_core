@@ -37,7 +37,7 @@
         "drupal/override_node_options": "^2.7",
         "drupal/paragraphs": "^1.15",
         "drupal/password_policy": "^4.0",
-        "drupal/password_strength": "^2.0@beta",
+        "drupal/password_strength": "dev-compatible-with-d10",
         "drupal/pathauto": "^1.11",
         "drupal/prlp": "^1.10",
         "drupal/redirect": "^1.8",
@@ -197,6 +197,15 @@
                 "dev-1.x",
                 "1.x-dev"
             ]
+        },
+        "drupal/password_strength": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/password_strength.git",
+            "exclude": [
+                "dev-default",
+                "default-dev"
+            ]
         }
     },
     "extra": {
@@ -236,9 +245,6 @@
             },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
-            },
-            "drupal/password_strength": {
-                "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/password_strength/issues/3329409#comment-14843005": "https://www.drupal.org/files/issues/2022-12-24/password_strength.2.x-dev.rector.patch"
             },
             "drupal/simple_oauth": {
                 "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
