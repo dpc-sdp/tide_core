@@ -16,7 +16,7 @@
         "drupal/config_perms": "2.x-dev@dev",
         "drupal/config_split": "^1.9",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/core": "10.0.x",
+        "drupal/core": "10.0.9",
         "drupal/ctools": "^3.14",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "^2.0",
@@ -237,9 +237,6 @@
                 "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
                 "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
             },
-            "drupal/fast_404": {
-                "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/fast_404/issues/3287465#comment-15039363": "https://www.drupal.org/files/issues/2023-05-07/3287465-automated-drupal-10-compatibility-fixes-26.patch"
-            },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
@@ -252,9 +249,6 @@
             },
             "drupal/tablefield": {
                 "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
-            },
-            "drupal/token_conditions": {
-                "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/token_conditions/issues/3299328#comment-14622370": "https://www.drupal.org/files/issues/2022-07-23/token_conditions.1.x-dev.rector.patch"
             },
             "drupal/paragraphs": {
                 "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
