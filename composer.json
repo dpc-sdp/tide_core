@@ -17,7 +17,7 @@
         "drupal/config_split": "^1.9",
         "drupal/config_update": "^2.0@alpha",
         "drupal/core": "10.0.9",
-        "drupal/ckeditor_templates": "1.x-dev",
+        "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
         "drupal/ctools": "^3.14",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "^2.0",
@@ -202,6 +202,15 @@
                 "dev-default",
                 "default-dev"
             ]
+        },
+        "drupal/ckeditor_templates": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/ckeditor_templates.git",
+            "exclude": [
+                "dev-1.x",
+                "1.x-dev"
+            ]
         }
     },
     "extra": {
@@ -265,9 +274,6 @@
             },
             "drupal/site_alert": {
                 "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
-            },
-            "drupal/ckeditor_templates": {
-                "CKEditor 5 support for Content Templates - https://www.drupal.org/project/ckeditor_templates/issues/3273358#comment-14963779": "./patches/ckeditor_templates/ckeditor_templates_4.patch"
             }
         }
     }
