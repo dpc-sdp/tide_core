@@ -206,11 +206,7 @@
         "drupal/ckeditor_templates": {
             "type": "vcs",
             "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git",
-            "exclude": [
-                "dev-1.x",
-                "1.x-dev"
-            ]
+            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         }
     },
     "extra": {
@@ -230,8 +226,7 @@
                 "Claro preprocessing of field multiple value form table header cell removes potential changes by others - https://www.drupal.org/project/drupal/issues/3099026#comment-14940311": "https://www.drupal.org/files/issues/2023-02-24/3099026-51.patch",
                 "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
-                "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
-                "Update to Symfony 6.3 - https://www.drupal.org/project/drupal/issues/3363222": "https://www.drupal.org/files/issues/2023-05-30/3363222-4.patch"
+                "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
