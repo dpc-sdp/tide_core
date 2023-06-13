@@ -8,7 +8,6 @@ is_admin: null
 permissions:
   - 'access administration pages'
   - 'access content overview'
-  - 'access event log track'
   - 'access files overview'
   - 'access media overview'
   - 'administer blocks'
@@ -23,7 +22,6 @@ permissions:
   - 'assign contributor role'
   - 'assign editor role'
   - 'assign previewer role'
-  - 'assign site_admin role'
   - 'bypass node access'
   - 'create media'
   - 'create url aliases'
