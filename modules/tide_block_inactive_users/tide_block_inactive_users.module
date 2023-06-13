@@ -5,8 +5,8 @@
  * Contains tide_block_inactive_users.module.
  */
 
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\block_inactive_users\InactiveUsersHandler;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 
