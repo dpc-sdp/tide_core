@@ -5,8 +5,8 @@
  * Installation functions for tide_edit_protection.
  */
 
-use Drupal\views\Entity\View;
 use Drupal\user\Entity\Role;
+use Drupal\views\Entity\View;
 
 /**
  * Updates locked_content view.

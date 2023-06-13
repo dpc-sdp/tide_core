@@ -2,14 +2,14 @@
 
 namespace Drupal\tide_jira\Plugin\QueueWorker;
 
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Queue\QueueWorkerBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\tide_jira\TideJiraConnector;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\State\StateInterface;
-use Drupal\Core\Config\ConfigFactory;
+use Drupal\tide_jira\TideJiraConnector;
 use Drupal\tide_jira\TideJiraTicketModel;
 
 /**
