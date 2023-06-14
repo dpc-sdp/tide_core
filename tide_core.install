@@ -5,20 +5,20 @@
  * Installation functions for Tide Core.
  */
 
-use Drupal\filter\Entity\FilterFormat;
-use Drupal\paragraphs\Entity\ParagraphsType;
-use Drupal\pathauto\Entity\PathautoPattern;
-use Drupal\taxonomy\Entity\Term;
-use Drupal\user\Entity\User;
-use Drupal\workflows\Entity\Workflow;
 use Drupal\Core\Config\FileStorage;
-use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
-use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
-use Drupal\user\Entity\Role;
-use Drupal\user\UserInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\filter\Entity\FilterFormat;
 use Drupal\node\Entity\NodeType;
+use Drupal\pathauto\Entity\PathautoPattern;
+use Drupal\paragraphs\Entity\ParagraphsType;
+use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\user\Entity\Role;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 use Drupal\views\Entity\View;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Implements hook_install().

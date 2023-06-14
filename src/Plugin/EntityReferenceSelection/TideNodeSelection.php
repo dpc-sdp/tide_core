@@ -3,9 +3,9 @@
 namespace Drupal\tide_core\Plugin\EntityReferenceSelection;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\tide_core\ContentEntitySortingTrait;
 use Drupal\Component\Utility\Html;
 use Drupal\node\Plugin\EntityReferenceSelection\NodeSelection;
+use Drupal\tide_core\ContentEntitySortingTrait;
 
 /**
  * Provides labels for the node entity type.
