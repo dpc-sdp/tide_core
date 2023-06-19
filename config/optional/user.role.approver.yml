@@ -9,6 +9,7 @@ permissions:
   - 'access administration pages'
   - 'access content overview'
   - 'access media overview'
+  - 'access toolbar'
   - 'administer blocks'
   - 'administer menu'
   - 'administer redirect settings'

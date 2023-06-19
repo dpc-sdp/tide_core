@@ -231,9 +231,9 @@ function _tide_set_paragraph_type_icon($paragraph_type, string $icon_file) {
     if (@file_exists($icon_file)) {
       $icon_data = base64_encode(file_get_contents($icon_file));
 
-      /** @var \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser $mime_guesser */
+      /** @var \Symfony\Component\Mime\MimeTypeGuesserInterface $mime_type_guesser */
       $mime_guesser = \Drupal::service('file.mime_type.guesser');
-      $icon_mime = $mime_guesser->guess($icon_file);
+      $icon_mime = $mime_guesser->guessMimeType($icon_file);
       if (!$icon_mime) {
         $icon_mime = 'image/png';
       }

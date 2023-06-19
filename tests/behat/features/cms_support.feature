@@ -1,4 +1,4 @@
-@tide @install:toolbar
+@tide
 Feature: CMS Support
 
   @api
