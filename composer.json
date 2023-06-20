@@ -75,7 +75,6 @@
         "drupal/block_inactive_users": "^2.0",
         "drupal/user_expire": "^1.1",
         "drupal/field_permissions": "^1.2",
-        "drupal/views_data_export": "1.1",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
         "drupal/ckeditor5_embedded_content": "^1.0@alpha",
@@ -286,10 +285,6 @@
             },
             "drupal/ckeditor_templates": {
                 "CKEditor 5 support for Content Templates - https://www.drupal.org/project/ckeditor_templates/issues/3273358#comment-14963779": "./patches/ckeditor_templates/ckeditor_templates_4.patch"
-            },
-            "drupal/views_data_export": {
-                "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-13997402": "https://www.drupal.org/files/issues/2021-02-12/3173296-9-batch-query-alter.patch",
-                "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450": "https://www.drupal.org/files/issues/2022-02-24/vde-drush-with-output-location-2887450.patch"
             }
         }
     }
