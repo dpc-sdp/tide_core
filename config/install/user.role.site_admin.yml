@@ -14,7 +14,6 @@ dependencies:
   module:
     - admin_audit_trail
     - block
-    - config_perms
     - content_moderation
     - file
     - filter
@@ -33,7 +32,6 @@ label: 'Site Admin'
 weight: 3
 is_admin: null
 permissions:
-  - 'Bulk update url aliases'
   - 'access admin audit trail'
   - 'access administration pages'
   - 'access content overview'
@@ -41,7 +39,6 @@ permissions:
   - 'access media overview'
   - 'access taxonomy overview'
   - 'access toolbar'
-  - 'add scheduled transitions node test'
   - 'administer blocks'
   - 'administer menu'
   - 'administer nodes'
@@ -55,7 +52,6 @@ permissions:
   - 'assign contributor role'
   - 'assign editor role'
   - 'assign previewer role'
-  - 'assign site_admin role'
   - 'assign site_auditor role'
   - 'bypass node access'
   - 'create field_business_contact_number'
@@ -89,6 +85,7 @@ permissions:
   - 'update media'
   - 'use editorial transition archive'
   - 'use editorial transition archived_draft'
+  - 'use editorial transition archive_pending'
   - 'use editorial transition archived_published'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition needs_review'
@@ -105,5 +102,4 @@ permissions:
   - 'view field_notes'
   - 'view latest version'
   - 'view own unpublished content'
-  - 'view scheduled transitions node test'
   - 'view the administration theme'

@@ -8,7 +8,7 @@
   title: 'Create field_notes'
   description: 'Allows user to create field notes in user profile.'
 'edit field_business_contact_number':
-  title: 'Edit field_business_contact_number':
+  title: 'Edit field_business_contact_number'
   description: 'Allows user to edit field business contact number in user profile.'
 'edit field_business_name':
   title: 'Edit field_business_name'
