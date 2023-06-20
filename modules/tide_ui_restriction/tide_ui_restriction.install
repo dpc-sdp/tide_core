@@ -15,38 +15,6 @@ function tide_ui_restriction_install($is_syncing) {
 }
 
 /**
- * Tighten permissions.
- */
-function tide_ui_restriction_update_8001() {
-  if (!\Drupal::moduleHandler()->moduleExists('config_perms')) {
-    \Drupal::service('module_installer')->install(['config_perms']);
-  }
-
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [
-    drupal_get_path('module', 'tide_ui_restriction') . '/config/install',
-  ];
-  $configs = [
-    'config_perms.custom_perms_entity.administer_custom_block_types',
-    'config_perms.custom_perms_entity.bulk_update_url_aliases',
-  ];
-  foreach ($configs as $config) {
-    try {
-      $config_read = _tide_read_config($config, $config_location, TRUE);
-      $storage = \Drupal::entityTypeManager()
-        ->getStorage('custom_perms_entity');
-      $config_entity = $storage->createFromStorageRecord($config_read);
-      $config_entity->save();
-    }
-    catch (\Exception $exception) {
-      watchdog_exception('tide_ui_restriction', $exception);
-    }
-  }
-
-  _tide_ui_restriction_tighten_permissions();
-}
-
-/**
  * Tighten the default permissions.
  *
  * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException

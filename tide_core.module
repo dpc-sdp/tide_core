@@ -303,7 +303,9 @@ function tide_core_entity_bundle_create($entity_type_id, $bundle) {
       $permissions[] = ScheduledTransitionsPermissions::viewScheduledTransitionsPermission($entity_type_id, $bundle);
       $permissions[] = ScheduledTransitionsPermissions::addScheduledTransitionsPermission($entity_type_id, $bundle);
       $permissions[] = 'view all scheduled transitions';
-      user_role_grant_permissions(Role::load($role)->id(), $permissions);
+      if (Role::load($role) && !is_null(Role::load($role))) {
+        user_role_grant_permissions(Role::load($role)->id(), $permissions);
+      }
     }
   }
 }
