@@ -5,34 +5,47 @@ dependencies:
     - filter.format.admin_text
     - filter.format.rich_text
     - filter.format.summary_text
+    - taxonomy.vocabulary.audience
+    - taxonomy.vocabulary.department
+    - taxonomy.vocabulary.location
+    - taxonomy.vocabulary.tags
     - taxonomy.vocabulary.topic
     - workflows.workflow.editorial
   module:
+    - admin_audit_trail
     - block
+    - config_perms
     - content_moderation
     - file
     - filter
     - media
     - node
     - path
+    - pathauto
     - redirect
     - role_delegation
     - scheduled_transitions
     - system
     - taxonomy
+    - toolbar
 id: site_admin
 label: 'Site Admin'
 weight: 3
 is_admin: null
 permissions:
+  - 'Bulk update url aliases'
+  - 'access admin audit trail'
   - 'access administration pages'
   - 'access content overview'
   - 'access files overview'
   - 'access media overview'
+  - 'access taxonomy overview'
   - 'access toolbar'
+  - 'add scheduled transitions node test'
   - 'administer blocks'
   - 'administer menu'
   - 'administer nodes'
+  - 'administer pathauto'
   - 'administer redirect settings'
   - 'administer redirects'
   - 'administer taxonomy'
@@ -42,14 +55,34 @@ permissions:
   - 'assign contributor role'
   - 'assign editor role'
   - 'assign previewer role'
+  - 'assign site_admin role'
   - 'assign site_auditor role'
   - 'bypass node access'
+  - 'create field_business_contact_number'
+  - 'create field_business_name'
+  - 'create field_notes'
   - 'create media'
+  - 'create terms in audience'
+  - 'create terms in department'
+  - 'create terms in location'
+  - 'create terms in tags'
+  - 'create terms in topic'
   - 'create url aliases'
   - 'delete all revisions'
   - 'delete any media'
   - 'delete media'
+  - 'delete terms in audience'
+  - 'delete terms in department'
+  - 'delete terms in location'
+  - 'delete terms in tags'
   - 'delete terms in topic'
+  - 'edit field_business_contact_number'
+  - 'edit field_business_name'
+  - 'edit field_notes'
+  - 'edit terms in audience'
+  - 'edit terms in department'
+  - 'edit terms in location'
+  - 'edit terms in tags'
   - 'edit terms in topic'
   - 'revert all revisions'
   - 'update any media'
@@ -67,6 +100,10 @@ permissions:
   - 'view all revisions'
   - 'view all scheduled transitions'
   - 'view any unpublished content'
+  - 'view field_business_contact_number'
+  - 'view field_business_name'
+  - 'view field_notes'
   - 'view latest version'
   - 'view own unpublished content'
+  - 'view scheduled transitions node test'
   - 'view the administration theme'
