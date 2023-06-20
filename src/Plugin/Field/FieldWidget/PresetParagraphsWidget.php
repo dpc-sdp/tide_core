@@ -2,13 +2,13 @@
 
 namespace Drupal\tide_core\Plugin\Field\FieldWidget;
 
-use Drupal\paragraphs\Plugin\Field\FieldWidget\ParagraphsWidget;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FieldFilteredMarkup;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\paragraphs\Plugin\Field\FieldWidget\ParagraphsWidget;
 
 /**
  * Plugin implementation of the 'entity_reference paragraphs' widget.

@@ -5,10 +5,10 @@
  * Contains tide_block_inactive_users.module.
  */
 
-use Drupal\user\UserInterface;
-use Drupal\user\Entity\User;
 use Drupal\block_inactive_users\InactiveUsersHandler;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_module_implements_alter().
