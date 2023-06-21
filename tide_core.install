@@ -1914,3 +1914,14 @@ function tide_core_update_8090() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Import user list data.
+ */
+function tide_core_update_8091() {
+  $view = 'views.view.user_list_data_export';
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($view, $source->read($view));
+}
