@@ -161,7 +161,6 @@ config_devel:
     - user.role.editor
     - user.role.previewer
     - user.role.site_admin
-    - user.role.administrator
     - workflows.workflow.editorial
     - field.storage.block_content.field_tags
     - field.storage.block_content.field_topic
@@ -192,5 +191,6 @@ config_devel:
     - prlp.settings
     - system.action.pathauto_update_alias_node
     - system.action.pathauto_update_alias_user
+    - user.role.administrator
     - user.role.anonymous
     - views.view.enhanced_files

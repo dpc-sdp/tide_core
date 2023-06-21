@@ -7,7 +7,6 @@ dependencies:
     - field.storage.user.field_business_name
     - field.storage.user.field_notes
     - system.menu.admin
-    - user.role.administrator
     - user.role.site_admin
   module:
     - csv_serialization
@@ -689,7 +688,6 @@ display:
         type: role
         options:
           role:
-            administrator: administrator
             site_admin: site_admin
       cache:
         type: tag
