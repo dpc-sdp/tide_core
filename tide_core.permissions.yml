@@ -1,3 +1,6 @@
+'assign editor role':
+  title: 'Assign editor role'
+  description: 'Allows user to assign editor role.'
 'create field_business_contact_number':
   title: 'Create field_business_contact_number'
   description: 'Allows user to create field business contact number in user profile.'
@@ -40,6 +43,9 @@
 'use editorial transition archived_published':
   title: 'Use editorial transition archived_published'
   description: 'Allows user to use editorial transition archived_published.'
+'use editorial transition create_archive_pending':
+  title: 'use editorial transition create_archive_pending'
+  description: 'Allows user to use editorial transition create_archive_pending.'
 'use editorial transition create_new_draft':
   title: 'Use editorial transition create_new_draft'
   description: 'Allows user to use editorial transition create_new_draft.'
@@ -52,9 +58,6 @@
 'use editorial transition publish':
   title: 'Use editorial transition publish'
   description: 'Allows user to use editorial transition publish.'
-'use editorial transition archive_pending':
-  title: 'Use editorial transition archive_pending'
-  description: 'Allows user to use editorial transition archive_pending.'
 'use editorial transition archive_pending':
   title: 'Use editorial transition archive_pending'
   description: 'Allows user to use editorial transition archive_pending.'

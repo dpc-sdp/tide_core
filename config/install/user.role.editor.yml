@@ -36,6 +36,7 @@ permissions:
   - 'update any media'
   - 'update media'
   - 'use editorial transition archive_pending'
+  - 'use editorial transition create_archive_pending'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition needs_review'
   - 'use editorial transition needs_review_draft'

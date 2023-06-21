@@ -86,6 +86,7 @@ permissions:
   - 'use editorial transition archive'
   - 'use editorial transition archived_draft'
   - 'use editorial transition archive_pending'
+  - 'use editorial transition create_archive_pending'
   - 'use editorial transition archived_published'
   - 'use editorial transition create_new_draft'
   - 'use editorial transition needs_review'

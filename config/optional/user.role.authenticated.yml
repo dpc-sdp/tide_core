@@ -4,6 +4,7 @@ dependencies:
   module:
     - media
     - system
+    - tide_core
 id: authenticated
 label: 'Authenticated user'
 weight: 1
@@ -15,4 +16,3 @@ permissions:
   - 'view media'
   - 'view own field_business_contact_number'
   - 'view own field_business_name'
-  - 'view published share link token entities'

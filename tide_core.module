@@ -751,13 +751,14 @@ function tide_core_toolbar_alter(&$items) {
 /**
  * Implements hook_ENTITY_TYPE_insert().
  *
- * This is necessary because of a circular dependency between the 'site_admin' role and the 'assign site_admin role' permission.
+ * This is necessary because of a circular dependency between the 'site_admin'
+ * role and the 'assign site_admin role' permission.
+ *
  * @see https://www.drupal.org/project/role_delegation/issues/3354012
  */
-function tide_core_user_role_insert(RoleInterface $role): void
-{
-    if ($role->id() === 'site_admin') {
-        $role->grantPermission('assign site_admin role');
-        $role->save();
-    }
+function tide_core_user_role_insert(RoleInterface $role): void {
+  if ($role->id() === 'site_admin') {
+    $role->grantPermission('assign site_admin role');
+    $role->save();
+  }
 }

@@ -74,6 +74,9 @@ function tide_core_install() {
   // Update default Editorial workflow of Content Moderation.
   _tide_core_update_editorial_workflow();
 
+  // Update authenticated user permission.
+  _tide_core_update_authenticated_user_permission();
+
   // Temporary until hooks are cleaned up for d10.
   $excluded = [
     'tide_core_update_8012',
@@ -217,6 +220,21 @@ function _tide_core_update_editorial_workflow() {
     ];
     $editorial_workflow->set('type_settings', $type_settings);
     $editorial_workflow->save();
+  }
+}
+
+/**
+ * Update authenticated user permission.
+ */
+function _tide_core_update_authenticated_user_permission() {
+  $permissions = [
+    'edit own field_business_contact_number',
+    'edit own field_business_name',
+    'view own field_business_contact_number',
+    'view own field_business_name',
+  ];
+  if (Role::load('authenticated') && !is_null(Role::load('authenticated'))) {
+    user_role_grant_permissions(Role::load('authenticated')->id(), $permissions);
   }
 }
 
@@ -451,22 +469,7 @@ function tide_core_update_8015() {
  * Fix permissions for to access video entity browser.
  */
 function tide_core_update_8016() {
-  // Moved to tide_media, ok to remove.
-  // $role = Role::load('approver');
-  // if ($role) {
-  //   $role->grantPermission('access tide_embedded_video_browser entity browser pages');
-  //   $role->save();
-  // }
-  // $role = Role::load('editor');
-  // if ($role) {
-  //   $role->grantPermission('access tide_embedded_video_browser entity browser pages');
-  //   $role->save();
-  // }
-  // $role = Role::load('site_admin');
-  // if ($role) {
-  //   $role->grantPermission('access tide_embedded_video_browser entity browser pages');
-  //   $role->save();
-  // }
+  echo 'skip';
 }
 
 /**
@@ -508,123 +511,7 @@ function tide_core_update_8018() {
  * Update workflow to add archive pending SDPA-3781.
  */
 function tide_core_update_8019() {
-  $config_factory = \Drupal::configFactory();
-
-  // Updating the workflow states & transitions.
-  $base_states = 'type_settings.states.';
-  $base_transitions = 'type_settings.transitions.';
-  $config = $config_factory->getEditable('workflows.workflow.editorial');
-  if (!$config->isNew()) {
-
-    $from_fields = [
-      'archive.from',
-      'archived_published.from',
-      'create_new_draft.from',
-      'needs_review.from',
-    ];
-
-    foreach ($from_fields as $field) {
-      $form_value = [];
-      $form_value = $config->get($base_transitions . $field);
-      $form_value[] = 'archive_pending';
-      $config->set($base_transitions . $field, $form_value);
-    }
-
-    $config->set($base_states . 'archive_pending', [
-      'label' => 'Archive pending',
-      'published' => FALSE,
-      'default_revision' => FALSE,
-      'weight' => -6,
-    ]);
-
-    $config->set($base_transitions . 'archive_pending', [
-      'label' => 'Archive pending',
-      'from' => [
-        'draft',
-        'published',
-        'needs_review',
-      ],
-      'to' => 'archive_pending',
-      'weight' => -11,
-    ]);
-
-    $config->save();
-  }
-
-  // Updating the tide_workflow_notification.
-  $notification_status = [
-    'draft_needs_review',
-    'draft_published',
-    'needs_review_draft',
-    'needs_review_published',
-    'published_archived',
-  ];
-
-  $current_string = [
-    '([node:url])',
-    '(https://www.vic.gov.au/how-publish-content-vicgovau).',
-  ];
-  $replacement_string = [
-    ' - [node:url]',
-    ' https://www.vic.gov.au/how-publish-content-vicgovau',
-  ];
-
-  $notification_fields = [
-    'draft_archive_pending',
-    'needs_review_archive_pending',
-    'published_archive_pending',
-    'archive_pending_archived',
-  ];
-
-  if (\Drupal::moduleHandler()->moduleExists('tide_workflow_notification')) {
-    $config_notification = $config_factory->getEditable('tide_workflow_notification.settings');
-    if (!$config_notification->isNew()) {
-
-      // Update existing email template to fix link issue SDPSUP-1309.
-      foreach ($notification_status as $status) {
-        $current_status_message = $config_notification->get()['notifications'][$status]['message'];
-        $updated_status_message = str_replace($current_string,
-          $replacement_string, $current_status_message);
-        $config_notification->set('notifications.' . $status . '.message',
-          $updated_status_message);
-      }
-
-      // Add new email templates SDPA-3781.
-      foreach ($notification_fields as $field) {
-        $status = '';
-        if ($field == 'draft_archive_pending') {
-          $status = 'Draft';
-        }
-        if ($field == 'needs_review_archive_pending') {
-          $status = 'Needs Review';
-        }
-        if ($field == 'published_archive_pending') {
-          $status = 'Published';
-        }
-        $common_message = "Hi, [workflow-notification:recipient:display-name],\n\nThe status of the web content [node:title] - [node:url] has changed from " . $status . " to Archive pending.\n\nRemember to remove all menu links and navigation links to the page as well.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
-        $archive_pending_message = "Hi [workflow-notification:recipient:display-name],\n\nThe status of your web content at [node:title] - [node:url] has changed from Archive pending to Archived. This is because:\n• your approver approved your request to archive it\n• the content had a scheduled archive date\n\nWhen a page is archived, it is no longer available to view on the internet, but SDP CMS users can still find it. If you have reason to make sure noone can access a page, you should request to have the content deleted from the CMS.\n\nNeed help? Read about workflow and roles https://www.vic.gov.au/publishing-workflow-Drupal-CMS\n";
-
-        $config_notification->set('notifications.' . $field, [
-          'enabled' => 1,
-          'subject' => ($field !== 'archive_pending_archived') ? 'Archive of web content required: [node:title]' : 'Your web content has been archived: [node:title]',
-          'message' => ($field !== 'archive_pending_archived') ? $common_message : $archive_pending_message,
-        ]);
-      }
-      $config_notification->save();
-    }
-  }
-
-  // Add required permissions.
-  $role = Role::load('editor');
-  if ($role) {
-    $role->grantPermission('use editorial transition archive_pending');
-    $role->save();
-  }
-  $role = Role::load('site_admin');
-  if ($role) {
-    $role->grantPermission('use editorial transition archive_pending');
-    $role->save();
-  }
+  echo 'skip';
 }
 
 /**
@@ -1028,38 +915,14 @@ function tide_core_update_8038() {
  * Enable ckeditor_liststyle module.
  */
 function tide_core_update_8039() {
-  // if (!\Drupal::moduleHandler()->moduleExists('ckeditor_liststyle')) {
-  //   $module_installer = \Drupal::service('module_installer');
-  //   $module_installer->install(['ckeditor_liststyle']);
-  // }
-
-  // Update allowed HTML list.
-  // $config_factory = \Drupal::configFactory();
-  // $filter_ids = [
-  //   'filter.format.admin_text',
-  //   'filter.format.rich_text',
-  // ];
-  // foreach ($filter_ids as $filter_id) {
-  //   $filter = $config_factory->getEditable($filter_id);
-  //   if ($filter->isNew()) {
-  //     continue;
-  //   }
-
-  //   $value = $filter->get('filters.filter_html.settings.allowed_html');
-  //   $replaced = str_replace('<ol start type class>', '<ol start type style class>', $value);
-  //   $replaced = str_replace('<ul type class>', '<ul type style class>', $replaced);
-  //   $filter->set('filters.filter_html.settings.allowed_html', $replaced);
-  //   $filter->save();
-  // }
+  echo 'skip';
 }
 
 /**
  * Editor should not have access to redirects.
  */
 function tide_core_update_8040() {
-  $role = 'editor';
-  $permissions = ['administer redirect settings', 'administer redirects'];
-  user_role_revoke_permissions($role, $permissions);
+  echo 'skip';
 }
 
 /**
@@ -1269,18 +1132,7 @@ function tide_core_update_8051() {
  * Create new role and assign audit trail permission.
  */
 function tide_core_update_8052() {
-  $role = Role::load('site_auditor');
-  if (!$role) {
-    $auditor_role = Role::create([
-      'id' => 'site_auditor',
-      'label' => 'Site Auditor',
-      'permissions' => [
-        'access admin audit trail',
-        'access site reports',
-      ],
-    ]);
-    $auditor_role->save();
-  }
+  echo 'skip';
 }
 
 /**
@@ -1606,34 +1458,7 @@ function tide_core_update_8068() {
  * Update user form display and authenticated user permission.
  */
 function tide_core_update_8069() {
-  $permissons = [
-    [
-      'create field_business_contact_number',
-      'create field_business_name',
-      'create field_notes',
-      'edit field_business_contact_number',
-      'edit field_business_name',
-      'edit field_notes',
-      'view field_business_contact_number',
-      'view field_business_name',
-      'view field_notes',
-    ],
-    [
-      'edit own field_business_contact_number',
-      'edit own field_business_name',
-      'view own field_business_contact_number',
-      'view own field_business_name',
-    ],
-  ];
-
-  $updated_roles = [
-    'site_admin',
-    'authenticated',
-  ];
-
-  foreach ($updated_roles as $index => $role) {
-    user_role_grant_permissions($role, $permissons[$index]);
-  }
+  echo 'skip';
 }
 
 /**
@@ -1746,28 +1571,7 @@ function tide_core_update_8076() {
  *   - filter.format.summary_text.
  */
 function tide_core_update_8077() {
-  $configs = [
-    'filter.format.summary_text' => 'filter_format',
-    'filter.format.admin_text' => 'filter_format',
-    'filter.format.plain_text'  => 'filter_format',
-    'filter.format.rich_text' => 'filter_format',
-    'editor.editor.summary_text' => 'editor',
-    'editor.editor.admin_text' => 'editor',
-    'editor.editor.rich_text' => 'editor',
-  ];
-  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
-  foreach ($configs as $config => $type) {
-    $storage = \Drupal::entityTypeManager()->getStorage($type);
-    $id = substr($config, strrpos($config, '.') + 1);
-    $config_entity = $storage->load($id);
-    if ($config_entity !== NULL) {
-      $storage->delete([$config_entity]);
-    }
-    $config_read = _tide_read_config($config, $config_location, FALSE);
-    $new_config_entity = $storage->createFromStorageRecord($config_read);
-    $new_config_entity->save();
-  }
+  echo 'skip';
 }
 
 /**
