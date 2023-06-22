@@ -1903,16 +1903,16 @@ function tide_core_update_8089() {
   $permissions = ['assign contributor role'];
   user_role_grant_permissions(Role::load('site_admin')->id(), $permissions);
 }
-// /**
-//  * Enable views_data_export module.
-//  */
-// function tide_core_update_8090() {
-//   if (!\Drupal::moduleHandler()->moduleExists('views_data_export')) {
-//     $module_installer = \Drupal::service('module_installer');
-//     $module_installer->install(['views_data_export']);
-//   }
-// }
 
+/**
+ * Enable views_data_export module.
+ */
+function tide_core_update_8090() {
+  if (!\Drupal::moduleHandler()->moduleExists('views_data_export')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['views_data_export']);
+  }
+}
 // /**
 //  * Import user list data.
 //  */
