@@ -222,7 +222,7 @@
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
                 "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
                 "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch",
-                "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188":"https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
+                "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
                 "Autocomplete widget in node sidebar causes overflow-https://www.drupal.org/project/drupal/issues/3268619#comment-14955369": "https://www.drupal.org/files/issues/2023-03-07/3268619_autocomplete_overflow_5.patch",
                 "Claro preprocessing of field multiple value form table header cell removes potential changes by others - https://www.drupal.org/project/drupal/issues/3099026#comment-14940311": "https://www.drupal.org/files/issues/2023-02-24/3099026-51.patch",
                 "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
@@ -258,7 +258,7 @@
                 "Nested paragraphs title gets cut off - https://www.drupal.org/project/paragraphs/issues/3246140#comment-14698713": "https://www.drupal.org/files/issues/2022-09-20/3246140-11-fix_paragraph_title_cutoff.patch",
                 "Paragraph with long label name gets cut off -https://www.drupal.org/project/paragraphs/issues/3350521#comment-14984824": "https://www.drupal.org/files/issues/2023-03-27/paragraph-long-label-cut-off-3350521-2.patch",
                 "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
-              },
+            },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
