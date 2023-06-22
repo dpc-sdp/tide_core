@@ -1,4 +1,4 @@
-@tide
+@tide @install:tide_cms_support
 Feature: CMS Support
 
   @api

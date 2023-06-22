@@ -68,6 +68,7 @@ dependencies:
   - seckit:seckit
   - simple_sitemap:simple_sitemap
   - tablefield:tablefield
+  - tide_ckeditor:tide_ckeditor
   - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value
@@ -76,7 +77,7 @@ dependencies:
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
   - admin_audit_trail:admin_audit_trail
-  - user_expire:user_expire
+  - username_enumeration_prevention:username_enumeration_prevention
   - field_permissions:field_permissions
   - content_lock:content_lock
   - ckeditor_templates:ckeditor_templates
@@ -106,6 +107,9 @@ config_devel:
     - field.field.paragraph.accordion_content.field_paragraph_accordion_name
     - field.field.paragraph.links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_link
+    - field.field.user.user.field_business_contact_number
+    - field.field.user.user.field_business_name
+    - field.field.user.user.field_notes
     - field.storage.node.field_audience
     - field.storage.node.field_featured_image
     - field.storage.node.field_landing_page_intro_text
