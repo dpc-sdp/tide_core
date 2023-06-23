@@ -1,7 +1,7 @@
 # Tide Core
-Core functionality of [Tide](https://github.com/dpc-sdp/tide) distribution for [Drupal 8](https://github.com/dpc-sdp)
+Core functionality of [Tide](https://github.com/dpc-sdp/tide) distribution for [Drupal 10](https://github.com/dpc-sdp)
 
-Tide is a Drupal 8 distribution focused on delivering an API first, headless Drupal content administration site.
+Tide is a Drupal 10 distribution focused on delivering an API first, headless Drupal content administration site.
 
 [![CircleCI](https://circleci.com/gh/dpc-sdp/tide_core.svg?style=shield&circle-token=2a0e49166724ac193636fba5b458024e00342dce)](https://circleci.com/gh/dpc-sdp/tide_core)
 [![Release](https://img.shields.io/github/release/dpc-sdp/tide_core.svg)](https://github.com/dpc-sdp/tide_core/releases/latest)
