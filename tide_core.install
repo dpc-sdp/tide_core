@@ -21,21 +21,6 @@ function tide_core_install() {
   $user->roles[] = 'administrator';
   $user->save();
 
-  // Install and disable views.view.files. Will use views.view.enhanced_files.
-  try {
-    module_load_include('inc', 'tide_core', 'includes/helpers');
-    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
-    $config_read = _tide_read_config('views.view.files', $config_location, TRUE);
-    $storage = \Drupal::entityTypeManager()->getStorage('view');
-    if ($storage->load('files') == NULL) {
-      $config_entity = $storage->createFromStorageRecord($config_read);
-      $config_entity->save();
-    }
-  }
-  catch (Exception $e) {
-    watchdog_exception('tide_core', $e);
-  }
-
   // Don't do anything else during config sync.
   if (\Drupal::isConfigSyncing()) {
     return;
