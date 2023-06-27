@@ -231,7 +231,7 @@
     "drupal/ctools": "^3.11",
     "drupal/diff": "^1.0-RC2",
     "drupal/dynamic_entity_reference": "^1.7",
-    "drupal/editor_advanced_link": "^2.0",
+    "drupal/editor_advanced_link": "2.1.1",
     "drupal/entity_browser": "^2.6",
     "drupal/entity_embed": "dev-1.x",
     "drupal/entity_reference_revisions": "^1.9",
