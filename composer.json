@@ -21,7 +21,7 @@
         "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
         "drupal/ctools": "^3.14",
         "drupal/diff": "^1.1",
-        "drupal/editor_advanced_link": "^2.0",
+        "drupal/editor_advanced_link": "2.1.1",
         "drupal/entity_browser": "^2.9",
         "drupal/entity_reference_revisions": "^1.10",
         "drupal/entity_embed": "1.x-dev@dev",
@@ -224,7 +224,6 @@
                 "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch",
                 "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
                 "Autocomplete widget in node sidebar causes overflow-https://www.drupal.org/project/drupal/issues/3268619#comment-14955369": "https://www.drupal.org/files/issues/2023-03-07/3268619_autocomplete_overflow_5.patch",
-                "Claro preprocessing of field multiple value form table header cell removes potential changes by others - https://www.drupal.org/project/drupal/issues/3099026#comment-14940311": "https://www.drupal.org/files/issues/2023-02-24/3099026-51.patch",
                 "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch"
