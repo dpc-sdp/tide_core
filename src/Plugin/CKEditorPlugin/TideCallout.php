@@ -2,8 +2,8 @@
 
 namespace Drupal\tide_core\Plugin\CKEditorPlugin;
 
-use Drupal\ckeditor\CKEditorPluginInterface;
 use Drupal\ckeditor\CKEditorPluginButtonsInterface;
+use Drupal\ckeditor\CKEditorPluginInterface;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\editor\Entity\Editor;
 

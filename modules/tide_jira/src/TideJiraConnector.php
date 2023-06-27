@@ -3,10 +3,10 @@
 namespace Drupal\tide_jira;
 
 use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
-use Drupal\Core\Config\ConfigFactory;
 
 /**
  * Tide JIRA Connector class.
