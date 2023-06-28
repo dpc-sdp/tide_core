@@ -24,7 +24,7 @@
         "drupal/ckeditor_templates": "1.x-dev",
         "drupal/ctools": "^3.11",
         "drupal/diff": "^1.0-RC2",
-        "drupal/editor_advanced_link": "2.1.1",
+        "drupal/editor_advanced_link": "^2.2.3",
         "drupal/entity_browser": "^2.6",
         "drupal/entity_reference_revisions": "^1.9",
         "drupal/entity_embed": "dev-1.x",
