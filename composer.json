@@ -21,7 +21,7 @@
         "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
         "drupal/ctools": "^3.14",
         "drupal/diff": "^1.1",
-        "drupal/editor_advanced_link": "2.1.1",
+        "drupal/editor_advanced_link": "^2.2.3",
         "drupal/entity_browser": "^2.9",
         "drupal/entity_reference_revisions": "^1.10",
         "drupal/entity_embed": "1.x-dev@dev",
