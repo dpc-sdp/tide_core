@@ -218,7 +218,7 @@
                 "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
             },
             "drupal/core": {
-                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-14973825": "https://www.drupal.org/files/issues/2023-03-20/2791693-85.patch",
+                "Make the DateTime input format and descriptive text consistent - https://www.drupal.org/project/drupal/issues/2791693#comment-15126668": "https://www.drupal.org/files/issues/2023-06-28/2791693-91.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15126604": "https://www.drupal.org/files/issues/2023-06-28/3109650-63.patch",
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
                 "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
