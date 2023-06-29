@@ -2,9 +2,9 @@
 
 namespace Drupal\tide_core\Plugin\views\filter;
 
+use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\views\Plugin\views\filter\InOperator;
 use Drupal\views\ViewExecutable;
-use Drupal\views\Plugin\views\display\DisplayPluginBase;
 
 /**
  * Enhanced MIME Type Filter.

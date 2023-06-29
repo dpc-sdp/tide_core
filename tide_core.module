@@ -5,8 +5,10 @@
  * Contains tide_core.module.
  */
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
@@ -15,15 +17,13 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use Drupal\redirect\Entity\Redirect;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
 use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
+use Drupal\tide_core\Render\Element\AdminToolbar;
 use Drupal\user\Entity\Role;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
-use Drupal\redirect\Entity\Redirect;
-use Drupal\Core\Cache\Cache;
-use Drupal\tide_core\Render\Element\AdminToolbar;
-use Drupal\Component\Utility\Html;
 
 /**
  * Implements hook_views_data().
