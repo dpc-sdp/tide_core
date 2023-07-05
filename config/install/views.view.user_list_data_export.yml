@@ -1,4 +1,3 @@
-uuid: null
 langcode: en
 status: true
 dependencies:
@@ -240,7 +239,7 @@ display:
           entity_type: user
           entity_field: roles
           plugin_id: user_roles
-          label: Roles
+          label: Role
           exclude: false
           alter:
             alter_text: false
