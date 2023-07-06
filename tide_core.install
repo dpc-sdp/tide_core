@@ -1919,27 +1919,45 @@ function tide_core_update_8090() {
  * Enable views_data_export module.
  */
 function tide_core_update_8091() {
-  if (!\Drupal::moduleHandler()->moduleExists('views_data_export')) {
-    $module_installer = \Drupal::service('module_installer');
-    $module_installer->install(['views_data_export']);
+  if (\Drupal::moduleHandler()->moduleExists('views_data_export') === FALSE) {
+    \Drupal::service('module_installer')->install(['views_data_export']);
   }
 }
 
 /**
  * Enable user_created_by_field module.
  */
-function tide_core_update_8092()
-{
-  if (!\Drupal::moduleHandler()->moduleExists('user_created_by_field')) {
-    $module_installer = \Drupal::service('module_installer');
-    $module_installer->install(['user_created_by_field']);
+function tide_core_update_8092() {
+  if (\Drupal::moduleHandler()->moduleExists('user_created_by_field') === FALSE) {
+    \Drupal::service('module_installer')->install(['user_created_by_field']);
+  }
+}
+
+/**
+ * Add user_created_by_field if doesn't exist.
+ */
+function tide_core_update_8093() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $configs = [
+    'field.storage.user.field_user_created_by_field' => 'field_storage_config',
+    'field.field.user.user.field_user_created_by_field' => 'field_config',
+  ];
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
   }
 }
 
 /**
  * Import user list data.
  */
-function tide_core_update_8093() {
+function tide_core_update_8094() {
   $view = 'views.view.user_list_data_export';
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
