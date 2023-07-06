@@ -168,6 +168,7 @@ config_devel:
     - field.storage.user.field_business_contact_number
     - field.storage.user.field_business_name
     - field.storage.user.field_notes
+    - field.storage.user.field_user_created_by_field
   optional:
     - block.block.claro_breadcrumbs
     - block.block.claro_content
