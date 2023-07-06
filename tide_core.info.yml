@@ -34,7 +34,6 @@ dependencies:
   - drupal:workflows
   - drupal:hal
   - drupal:token
-  - drupal:user_created_by_field
   - drupal:views_data_export
   - editor_advanced_link:editor_advanced_link
   - entity_browser:entity_browser
@@ -168,7 +167,6 @@ config_devel:
     - field.storage.user.field_business_contact_number
     - field.storage.user.field_business_name
     - field.storage.user.field_notes
-    - field.storage.user.field_user_created_by_field
   optional:
     - block.block.claro_breadcrumbs
     - block.block.claro_content
