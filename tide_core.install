@@ -1936,7 +1936,7 @@ function tide_core_update_8092() {
 /**
  * Add user_created_by_field if doesn't exist.
  */
-function tide_core_update_8093() {
+/* function tide_core_update_8093() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   $configs = [
@@ -1952,12 +1952,12 @@ function tide_core_update_8093() {
       $config_entity->save();
     }
   }
-}
+} */
 
 /**
  * Import user list data.
  */
-function tide_core_update_8094() {
+function tide_core_update_8093() {
   $view = 'views.view.user_list_data_export';
   $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
   $source = new FileStorage($config_path);
