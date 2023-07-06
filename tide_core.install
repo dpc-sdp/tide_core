@@ -1934,27 +1934,6 @@ function tide_core_update_8092() {
 }
 
 /**
- * Add user_created_by_field if doesn't exist.
- */
-/* function tide_core_update_8093() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
-  $configs = [
-    'field.storage.user.field_user_created_by_field' => 'field_storage_config',
-    'field.field.user.user.field_user_created_by_field' => 'field_config',
-  ];
-  foreach ($configs as $config => $type) {
-    $config_read = _tide_read_config($config, $config_location, TRUE);
-    $storage = \Drupal::entityTypeManager()->getStorage($type);
-    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
-    if ($storage->load($id) == NULL) {
-      $config_entity = $storage->createFromStorageRecord($config_read);
-      $config_entity->save();
-    }
-  }
-} */
-
-/**
  * Import user list data.
  */
 function tide_core_update_8093() {
