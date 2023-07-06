@@ -1935,3 +1935,14 @@ function tide_core_update_8092() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Enable user_created_by_field module.
+ */
+function tide_core_update_8093()
+{
+  if (!\Drupal::moduleHandler()->moduleExists('user_created_by_field')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['user_created_by_field']);
+  }
+}
