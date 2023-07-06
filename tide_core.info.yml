@@ -15,6 +15,7 @@ dependencies:
   - drupal:block
   - drupal:block_content
   - drupal:content_moderation
+  - drupal:user_created_by_field
   - drupal:ckeditor
   - drupal:ckeditor5
   - drupal:datetime_range
