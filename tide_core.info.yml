@@ -50,7 +50,6 @@ dependencies:
   - admin_audit_trail:admin_audit_trail_workflows
   - admin_audit_trail:admin_audit_trail_block_content
   - admin_audit_trail:admin_audit_trail_redirect
-  - fast_404:fast404
   - link_field_autocomplete_filter:link_field_autocomplete_filter
   - linkit:linkit
   - m4032404:m4032404
