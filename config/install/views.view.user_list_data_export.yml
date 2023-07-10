@@ -1,4 +1,3 @@
-uuid: null
 langcode: en
 status: true
 dependencies:
@@ -9,7 +8,6 @@ dependencies:
     - field.storage.user.field_notes
     - field.storage.user.field_user_created_by_field
     - system.menu.admin
-    - user.role.administrator
     - user.role.site_admin
   module:
     - csv_serialization
