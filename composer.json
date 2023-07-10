@@ -52,7 +52,7 @@
         "drupal/simple_sitemap": "^4.0",
         "drupal/smart_trim": "^1.1",
         "drupal/smtp": "^1.0@RC",
-        "drupal/stage_file_proxy": "^1.1",
+        "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.2",
         "drupal/token_conditions": "dev-compatible-with-drupal-9",
         "drupal/token_filter": "^1.1",
