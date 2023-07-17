@@ -20,6 +20,8 @@ permissions:
   - 'access tide_media_browser entity browser pages'
   - 'access tide_media_browser_iframe entity browser pages'
   - 'access toolbar'
+  - 'access site reports'
+  - 'access user report'
   - 'access webform overview'
   - 'access webform submission log'
   - 'administer blocks'
