@@ -26,8 +26,10 @@
         "drupal/entity_reference_revisions": "^1.10",
         "drupal/entity_embed": "1.x-dev@dev",
         "drupal/environment_indicator": "^4.0",
+        "drupal/fast_404": "^3.0",
         "drupal/field_group": "^3.4",
         "drupal/google_analytics": "^4.0",
+        "drupal/hotjar": "^3.1",
         "drupal/linkit": "^6.0.0",
         "drupal/login_redirect_per_role": "^1.9",
         "drupal/m4032404": "^1.0-alpha4",
@@ -47,6 +49,7 @@
         "drupal/simple_sitemap": "^4.1",
         "drupal/smart_trim": "^2.0",
         "drupal/smtp": "^1.2",
+        "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.4",
         "drupal/token_conditions": "dev-compatible-with-d10",
         "drupal/token_filter": "^2.0",
@@ -232,6 +235,9 @@
             },
             "drupal/token": {
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-12483697": "https://www.drupal.org/files/issues/tokens_body_with_summary-2924873-2.patch"
+            },
+            "drupal/fast_404": {
+                "Fast404 prevents css/js assets from generating when aggregation is enabled on Drupal 10.1 - https://www.drupal.org/project/fast_404/issues/3373845#comment-15152197": "https://www.drupal.org/files/issues/2023-07-17/fast_404_css_js_aggregation-3373845-7.patch"
             },
             "drupal/field_group": {
                 "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
