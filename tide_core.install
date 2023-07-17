@@ -1934,7 +1934,7 @@ function tide_core_update_8092() {
 }
 
 /**
- * Enable user_created_by_field module.
+ * Enable tide user report module.
  */
 function tide_core_update_8093() {
   if (\Drupal::moduleHandler()->moduleExists('tide_user_report') === FALSE) {
