@@ -5,10 +5,7 @@
  * Helper functions.
  */
 
-use Drupal\config\StorageReplaceDataWrapper;
-use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\FileStorage;
-use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Site\Settings;
 use Drupal\paragraphs\Entity\ParagraphsType;
@@ -89,81 +86,6 @@ function _tide_reload_default_config($module) {
   /** @var \Drupal\Core\Config\ConfigInstaller $config_installer */
   $config_installer = \Drupal::service('config.installer');
   $config_installer->installDefaultConfig('module', $module);
-}
-
-/**
- * Helper to import a single config item (in a quick and dirty way).
- *
- * @param string $config_name
- *   Config name.
- * @param array $locations
- *   Array of Locations.
- * @param bool $prioritise_sync
- *   Whether to prioritise the same config in CONFIG_SYNC.
- *
- * @deprecated in tide_core:3.1.0 and is removed from tide_core:4.0.0. Use
- *   ConfigEntityStorageInterface::createFromStorageRecord instead.
- *
- * @see https://www.drupal.org/project/tide_core/issues/3274963
- * @example
- * @code
- * $Storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
- * $storage->createFromStorageRecord({array value});
- * @endcode
- *
- * @throws \Exception
- */
-function _tide_import_single_config($config_name, array $locations = [], $prioritise_sync = TRUE) {
-  @trigger_error(__METHOD__ . ' is deprecated in drupal:9.0.0 and is removed from drupal:10.0.0. Use ConfigEntityStorageInterface::createFromStorageRecord instead. See https://www.drupal.org/project/tide_core/issues/3274963', E_USER_DEPRECATED);
-  $config_data = _tide_read_config($config_name, $locations, $prioritise_sync);
-
-  $config_storage = \Drupal::service('config.storage');
-  $event_dispatcher = \Drupal::service('event_dispatcher');
-  $config_manager = \Drupal::service('config.manager');
-  $lock_persistent = \Drupal::service('lock.persistent');
-  $config_typed = \Drupal::service('config.typed');
-  $module_handler = \Drupal::service('module_handler');
-  $module_installer = \Drupal::service('module_installer');
-  $theme_handler = \Drupal::service('theme_handler');
-  $string_translation = \Drupal::service('string_translation');
-  $module_extension_list = \Drupal::service('extension.list.module');
-
-  \Drupal::config($config_name);
-
-  $source_storage = new StorageReplaceDataWrapper($config_storage);
-  $source_storage->replaceData($config_name, $config_data);
-
-  $storage_comparer = new StorageComparer(
-    $source_storage,
-    $config_storage,
-  );
-
-  $storage_comparer->createChangelist();
-
-  $config_importer = new ConfigImporter(
-    $storage_comparer,
-    $event_dispatcher,
-    $config_manager,
-    $lock_persistent,
-    $config_typed,
-    $module_handler,
-    $module_installer,
-    $theme_handler,
-    $string_translation,
-    $module_extension_list
-  );
-
-  try {
-    $config_importer->import();
-    \Drupal::cache('config')->delete($config_name);
-  }
-  catch (Exception $exception) {
-    foreach ($config_importer->getErrors() as $error) {
-      \Drupal::logger('tide')->error($error);
-      \Drupal::messenger()->addError($error);
-    }
-    throw $exception;
-  }
 }
 
 /**
