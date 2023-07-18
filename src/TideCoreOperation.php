@@ -11,12 +11,13 @@ use Drupal\workflows\Entity\Workflow;
  * Helper class for install/update ops.
  */
 class TideCoreOperation {
+
   /**
    * Creates terms for Topic vocabulary.
    */
   public function createTopicTermsVocabulary() {
     $vid = 'topic';
-  
+
     $terms = [
       'Arts',
       'Business',
