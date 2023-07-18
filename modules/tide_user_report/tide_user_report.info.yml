@@ -1,5 +1,0 @@
-name: Tide User report
-type: module
-description: Access user list report
-core_version_requirement: ^8.9 || ^9
-package: Tide
