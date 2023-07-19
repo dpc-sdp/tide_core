@@ -21,6 +21,8 @@ function tide_ckeditor_update_9001() {
   $role_ids = ['editor', 'approver', 'site_admin', 'contributor'];
   foreach ($role_ids as $role_id) {
     $role = Role::load($role_id);
-    $role->grantPermission('use text format advanced')->save();
+    if ($role) {
+      $role->grantPermission('use text format advanced')->save();
+    }
   }
 }
