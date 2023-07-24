@@ -11,13 +11,6 @@ use Drupal\user\Entity\Role;
  * Install the tide_ckeditor module.
  */
 function tide_ckeditor_install() {
-  tide_ckeditor_update_9001();
-}
-
-/**
- * Assign `use text format advanced` to editor,approver and site_admin.
- */
-function tide_ckeditor_update_9001() {
   $role_ids = ['editor', 'approver', 'site_admin', 'contributor'];
   foreach ($role_ids as $role_id) {
     $role = Role::load($role_id);
