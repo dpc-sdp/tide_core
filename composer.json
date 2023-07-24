@@ -6,8 +6,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "jquery/timepicker": "1.13.14",
-        "jquery/textcounter": "0.9.0",
+        "jquery/timepicker": "1.14.0",
+        "jquery/textcounter": "0.9.1",
         "drupal/address": "^1.4",
         "drupal/allowed_formats": "^2.0",
         "drupal/better_exposed_filters": "^6.0",
@@ -73,7 +73,7 @@
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
-        "drupal/ckeditor5_embedded_content": "^1.0@alpha",
+        "drupal/ckeditor5_embedded_content": "1.0.0-alpha3",
         "respect/validation": "dev-master",
         "giggsey/libphonenumber-for-php": "^8.13",
         "drupal/site_alert": "^1.3",
@@ -154,13 +154,13 @@
             "type": "package",
             "package": {
                 "name": "jquery/timepicker",
-                "version": "1.13.14",
+                "version": "1.14.0",
                 "type": "drupal-library",
                 "extra": {
                     "installer-name": "jquery.timepicker"
                 },
                 "dist": {
-                    "url": "https://github.com/jonthornton/jquery-timepicker/archive/1.13.14.zip",
+                    "url": "https://github.com/jonthornton/jquery-timepicker/archive/refs/tags/1.14.0.zip",
                     "type": "zip"
                 },
                 "require": {
@@ -173,13 +173,13 @@
             "type": "package",
             "package": {
                 "name": "jquery/textcounter",
-                "version": "0.9.0",
+                "version": "0.9.1",
                 "type": "drupal-library",
                 "extra": {
                     "installer-name": "jquery.textcounter"
                 },
                 "dist": {
-                    "url": "https://github.com/ractoon/jQuery-Text-Counter/archive/0.9.0.zip",
+                    "url": "https://github.com/ractoon/jQuery-Text-Counter/archive/0.9.1.zip",
                     "type": "zip"
                 },
                 "require": {
