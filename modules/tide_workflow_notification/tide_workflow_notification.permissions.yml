@@ -4,6 +4,3 @@
 'use needs_review_draft transition':
   title: 'Use needs_review_draft transition'
   description: 'Allows user to use needs_review_draft transition.'
-'use needs_review_needs_review transition':
-  title: 'Use needs_review_needs_review transition'
-  description: 'Allows user to use needs_review_needs_review transition.'
