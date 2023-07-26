@@ -229,7 +229,6 @@
                 "Poor performance when using moderation state views filter - https://www.drupal.org/project/drupal/issues/3097303#comment-13559283": "https://www.drupal.org/files/issues/2020-04-17/3097303-9.patch",
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15044472": "https://www.drupal.org/files/issues/2023-05-10/3109650-62.patch",
                 "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
-                "Sort menu list by menu title - https://www.drupal.org/project/drupal/issues/3070721#comment-13918119": "https://www.drupal.org/files/issues/2020-11-26/sort_menu_list-3070721-9.patch",
                 "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749": "https://www.drupal.org/files/issues/2022-02-14/2685749-106.patch",
                 "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
                 "Autocomplete widget in node sidebar causes overflow-https://www.drupal.org/project/drupal/issues/3268619#comment-14955369": "https://www.drupal.org/files/issues/2023-03-07/3268619_autocomplete_overflow_5.patch",
@@ -238,7 +237,7 @@
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
                 "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
-                "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15165852": "https://www.drupal.org/files/issues/2023-07-26/3170906-menu-filter-7_0.patch"
+                "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15165852": "https://www.drupal.org/files/issues/2023-07-26/3170906-menu-filter-8.patch"
             },
             "drupal/ckeditor_config": {
                 "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
