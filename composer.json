@@ -247,7 +247,7 @@
                 "CKEditor5 support initial commit - https://www.drupal.org/project/entity_embed/issues/3272732#comment-15037680": "https://www.drupal.org/files/issues/2023-05-05/entity_embed-3272732-80.patch"
             },
             "drupal/metatag": {
-                "update Locale field help text in the metatags": "/patches/metatag/metatag_1.patch"
+                "update Locale field help text in the metatags": "./patches/metatag/metatag_1.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields": "https://www.drupal.org/files/issues/tokens.body-with-summary.patch"
