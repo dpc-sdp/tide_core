@@ -1922,7 +1922,7 @@ function tide_core_update_8091() {
   $metatag = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.global');
   $og_locale = $metatag->get('tags.og_locale');
   if (!$og_locale) {
-    $metatag->set('tags.og_locale', 'en-au')
+    $metatag->set('tags.og_locale', 'en-AU')
       ->save();
   }
 }
