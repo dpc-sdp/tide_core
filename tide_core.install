@@ -1914,3 +1914,17 @@ function tide_core_update_8090() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Remove deprecated modules before d10 upgrade.
+ */
+function tide_core_update_8091() {
+  $modules = ['ckeditor', 'wysiwyg_template_core', 'color', 'hal', 'tide_spell_checker'];
+  foreach ($modules as $module) {
+    // Check if queue_mail is both installed and enabled.
+    if (\Drupal::moduleHandler()->moduleExists($module)) {
+      // If exists, uninstall module.
+      \Drupal::service('module_installer')->uninstall([$module]);
+    }
+  }
+}
