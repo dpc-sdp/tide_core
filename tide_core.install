@@ -1914,3 +1914,12 @@ function tide_core_update_8090() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Import locale default text.
+ */
+function tide_core_update_8091() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  _tide_import_single_config('metatag.metatag_defaults.global', $config_location);
+}
