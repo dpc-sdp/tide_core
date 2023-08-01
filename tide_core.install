@@ -1916,10 +1916,14 @@ function tide_core_update_8090() {
 }
 
 /**
- * Import locale default text.
+ * Update og:locale metatag for node.
  */
-function tide_core_update_8091() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
-  _tide_import_single_config('metatag.metatag_defaults.global', $config_location);
+function tide_core_update_8091()
+{
+  $metatag = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.global');
+  $og_locale = $metatag->get('tags.og_locale');
+  if (!$og_locale) {
+    $metatag->set('tags.og_locale', 'en-au')
+      ->save();
+  }
 }
