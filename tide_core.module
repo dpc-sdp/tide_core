@@ -184,6 +184,23 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       $form['account']['password_policy_status']['#weight'] = 10;
     }
   }
+  // update description to og_locale
+  if (
+    isset($form['field_metatags'])
+    && isset($form['field_metatags']['widget'][0])
+    && isset($form['field_metatags']['widget'][0]['open_graph'])
+    && isset($form['field_metatags']['widget'][0]['open_graph']['og_locale'])
+  ) {
+    $url = Url::fromUri('https://digital-vic.atlassian.net/servicedesk/customer/portal/14/article/2272657746', [
+      'attributes' => [
+        'target' => '_blank',
+      ]
+    ]);
+    $language_code_list_link = Link::fromTextAndUrl(t('full list of language codes'), $url)->toString();
+    $form['field_metatags']['widget'][0]['open_graph']['og_locale']['#description'] = t("This field is used in SDP to set the page's language, display font and text direction. See our @language-code-list.", [
+      '@language-code-list' => $language_code_list_link,
+    ]);
+  }
 }
 
 /**
@@ -743,4 +760,18 @@ function tide_core_toolbar_alter(&$items) {
       'preRenderTray',
     ],
   ];
+}
+
+/**
+ * Implements hook_metatags_alter().
+ */
+function tide_core_metatag_alter(array &$metatag, array $context) {
+  $metatag['og_locale']['description'] = 'text1';
+  dump($metatag);
+  if (isset($context['entity']->node)) {
+    $metatag['og_locale']['description'] = 'text2';
+    dump($metatag);
+  }
+  dump($metatag);
+
 }
