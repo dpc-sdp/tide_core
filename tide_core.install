@@ -1920,10 +1920,10 @@ function tide_core_update_8090() {
  */
 function tide_core_update_8091() {
   $modules = [
-    'ckeditor', 
-    'wysiwyg_template_core', 
-    'color', 
-    'hal', 
+    'ckeditor',
+    'wysiwyg_template_core',
+    'color',
+    'hal',
     'tide_spell_checker',
   ];
   foreach ($modules as $module) {
