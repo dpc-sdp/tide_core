@@ -238,7 +238,8 @@
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-12483697": "https://www.drupal.org/files/issues/tokens_body_with_summary-2924873-2.patch"
             },
             "drupal/fast_404": {
-                "Fast404 prevents css/js assets from generating when aggregation is enabled on Drupal 10.1 - https://www.drupal.org/project/fast_404/issues/3373845#comment-15152197": "https://www.drupal.org/files/issues/2023-07-17/fast_404_css_js_aggregation-3373845-7.patch"
+                "Fast404 prevents css/js assets from generating when aggregation is enabled on Drupal 10.1 - https://www.drupal.org/project/fast_404/issues/3373845#comment-15152197": "https://www.drupal.org/files/issues/2023-07-17/fast_404_css_js_aggregation-3373845-7.patch",
+                "Fatal error : Class Fast404 not found - https://www.drupal.org/project/fast_404/issues/3374546": "https://www.drupal.org/files/issues/2023-08-08/fast_404_class_not_found_3374546-5.patch"
             },
             "drupal/field_group": {
                 "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
@@ -274,6 +275,9 @@
             },
             "drupal/site_alert": {
                 "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
+            },
+            "drupal/stage_file_proxy": {
+                "Stage file proxy attempts to fetch aggregated JS/CSS - https://www.drupal.org/project/stage_file_proxy/issues/3372105": "https://www.drupal.org/files/issues/2023-08-03/3372105-21.patch"
             }
         }
     },
