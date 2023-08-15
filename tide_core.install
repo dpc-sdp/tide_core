@@ -52,23 +52,3 @@ function tide_core_install() {
   $tideCoreOperation->chagneDiffSettings();
 
 }
-
-/**
- * Remove deprecated modules before d10 upgrade.
- */
-function tide_core_update_8091() {
-  $modules = [
-    'ckeditor',
-    'wysiwyg_template_core',
-    'color',
-    'hal',
-    'tide_spell_checker',
-  ];
-  foreach ($modules as $module) {
-    // Check if module is both installed and enabled.
-    if (\Drupal::moduleHandler()->moduleExists($module)) {
-      // If exists, uninstall module.
-      \Drupal::service('module_installer')->uninstall([$module]);
-    }
-  }
-}
