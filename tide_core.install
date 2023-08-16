@@ -1934,6 +1934,7 @@ function tide_core_update_8091() {
     }
   }
 }
+
 /**
  * Enable views_data_export module.
  */
