@@ -68,6 +68,10 @@
       "drupal/user_expire": {
         "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
       },
+      "drupal/views_data_export": {
+        "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-13997402": "https://www.drupal.org/files/issues/2021-02-12/3173296-9-batch-query-alter.patch",
+        "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450": "https://www.drupal.org/files/issues/2022-02-24/vde-drush-with-output-location-2887450.patch"
+      },
       "lesstif/php-jira-rest-client": {
         "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
       }
@@ -275,8 +279,10 @@
     "drupal/token_conditions": "dev-compatible-with-drupal-9",
     "drupal/token_filter": "^1.1",
     "drupal/twig_field_value": "^2.0",
+    "drupal/user_created_by_field": "^1.1",
     "drupal/user_expire": "^1.1",
     "drupal/username_enumeration_prevention": "^1.1",
+    "drupal/views_data_export": "1.1",
     "drupal/views_menu_children_filter": "^1.0-beta2",
     "drupal/viewsreference": "2.0-beta2",
     "drupal/workbench": "^1.3",
