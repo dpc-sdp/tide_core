@@ -1914,3 +1914,64 @@ function tide_core_update_8090() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write($view, $source->read($view));
 }
+
+/**
+ * Remove deprecated modules before d10 upgrade.
+ */
+function tide_core_update_8091() {
+  $modules = [
+    'ckeditor',
+    'wysiwyg_template_core',
+    'color',
+    'hal',
+    'tide_spell_checker',
+  ];
+  foreach ($modules as $module) {
+    // Check if module is both installed and enabled.
+    if (\Drupal::moduleHandler()->moduleExists($module)) {
+      // If exists, uninstall module.
+      \Drupal::service('module_installer')->uninstall([$module]);
+    }
+  }
+}
+
+/**
+ * Enable views_data_export module.
+ */
+function tide_core_update_8092() {
+  if (\Drupal::moduleHandler()->moduleExists('views_data_export') === FALSE) {
+    \Drupal::service('module_installer')->install(['views_data_export']);
+  }
+}
+
+/**
+ * Enable user_created_by_field module.
+ */
+function tide_core_update_8093() {
+  if (\Drupal::moduleHandler()->moduleExists('user_created_by_field') === FALSE) {
+    \Drupal::service('module_installer')->install(['user_created_by_field']);
+  }
+}
+
+/**
+ * Import user list data.
+ */
+function tide_core_update_8094() {
+  $view = 'views.view.user_list_data_export';
+  $config_path = drupal_get_path('module', 'tide_core') . '/config/install';
+  $source = new FileStorage($config_path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write($view, $source->read($view));
+}
+
+/**
+ * Update og:locale metatag for node.
+ */
+function tide_core_update_8095() {
+  $metatag = \Drupal::configFactory()->getEditable('metatag.metatag_defaults.global');
+  $og_locale = $metatag->get('tags.og_locale');
+  if (!$og_locale) {
+    $metatag->set('tags.og_locale', 'en-AU')
+      ->save();
+  }
+}
