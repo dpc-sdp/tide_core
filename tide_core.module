@@ -11,6 +11,7 @@ use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -182,6 +183,23 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     if (isset($form['account']['password_policy_status'])) {
       $form['account']['password_policy_status']['#weight'] = 10;
     }
+  }
+  // Update description for og_locale metatag.
+  if (
+    isset($form['field_metatags'])
+    && isset($form['field_metatags']['widget'][0])
+    && isset($form['field_metatags']['widget'][0]['open_graph'])
+    && isset($form['field_metatags']['widget'][0]['open_graph']['og_locale'])
+  ) {
+    $url = Url::fromUri('https://digital-vic.atlassian.net/servicedesk/customer/portal/14/article/2272657746', [
+      'attributes' => [
+        'target' => '_blank',
+      ],
+    ]);
+    $language_code_list_link = Link::fromTextAndUrl(t('full list of language codes'), $url)->toString();
+    $form['field_metatags']['widget'][0]['open_graph']['og_locale']['#description'] = t("This field is used in SDP to set the page's language, display font and text direction. See our @language-code-list.", [
+      '@language-code-list' => $language_code_list_link,
+    ]);
   }
 }
 
