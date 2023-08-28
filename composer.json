@@ -275,7 +275,7 @@
                 "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
             },
             "drupal/views_data_export": {
-                "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-13997402": "https://www.drupal.org/files/issues/2021-02-12/3173296-9-batch-query-alter.patch",
+                "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-14930767": "https://www.drupal.org/files/issues/2023-02-20/views_data_export-3173296-25.patch",
                 "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450": "https://www.drupal.org/files/issues/2022-02-24/vde-drush-with-output-location-2887450.patch"
             }
         }
