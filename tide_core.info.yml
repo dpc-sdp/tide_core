@@ -33,7 +33,7 @@ dependencies:
   - drupal:token
   - drupal:user
   - drupal:user_created_by_field
-  - drupal/user_expire
+  - drupal:user_expire
   - drupal:views
   - drupal:views_data_export
   - drupal:workflows
