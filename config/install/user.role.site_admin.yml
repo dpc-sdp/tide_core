@@ -107,5 +107,4 @@ permissions:
   - 'view latest version'
   - 'view own unpublished content'
   - 'view the administration theme'
-  - 'view timeline revisions'
   - 'view user created by field'
