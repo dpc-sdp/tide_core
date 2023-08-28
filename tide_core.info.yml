@@ -16,7 +16,6 @@ dependencies:
   - drupal:block
   - drupal:block_content
   - drupal:content_moderation
-  - drupal:user_created_by_field
   - drupal:ckeditor5
   - drupal:datetime_range
   - drupal:dynamic_page_cache
@@ -31,11 +30,13 @@ dependencies:
   - drupal:telephone
   - drupal:text
   - drupal:toolbar
-  - drupal:user
-  - drupal:views
-  - drupal:workflows
   - drupal:token
+  - drupal:user
+  - drupal:user_created_by_field
+  - drupal/user_expire
+  - drupal:views
   - drupal:views_data_export
+  - drupal:workflows
   - editor_advanced_link:editor_advanced_link
   - entity_browser:entity_browser
   - entity_browser:entity_browser_entity_form
