@@ -477,7 +477,7 @@ function tide_core_form_revision_overview_form_alter(&$form, FormStateInterface 
  *   The form state.
  */
 function _tide_core_node_edit_form_log_message_validate(array &$form, FormStateInterface $form_state) {
-  if (!$form['revision_log']['#access']) {
+  if (!$form['revision_log']['#access'] || $form_state->getValue('moderation_state') === NULL) {
     return;
   }
   $moderation_state = reset($form_state->getValue('moderation_state'));
