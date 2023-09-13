@@ -43,6 +43,7 @@
         "drupal/password_strength": "dev-compatible-with-d10",
         "drupal/pathauto": "^1.11",
         "drupal/prlp": "^1.10",
+        "drupal/real_aes": "^2.5",
         "drupal/redirect": "^1.8",
         "drupal/role_delegation": "^1.2",
         "drupal/seckit": "^2.0",
@@ -52,6 +53,7 @@
         "drupal/smtp": "^1.2",
         "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.4",
+        "drupal/tfa": "2.x-dev@dev",
         "drupal/token_conditions": "dev-compatible-with-d10",
         "drupal/token_filter": "^2.0",
         "drupal/twig_field_value": "^2.0",
@@ -278,6 +280,10 @@
             "drupal/views_data_export": {
                 "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-14930767": "https://www.drupal.org/files/issues/2023-02-20/views_data_export-3173296-25.patch",
                 "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450#comment-15199879": "https://www.drupal.org/files/issues/2023-08-21/vde-drush-with-output-location-2887450-85.patch"
+            },
+            "drupal/tfa": {
+                "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327": "https://www.drupal.org/files/issues/2023-02-28/3223327-implement-force_tfa_setup-16.patch",
+                "Authenticator links clean up - https://www.drupal.org/project/tfa/issues/3386910": "https://www.drupal.org/files/issues/2023-09-13/authenticator-links-3386910-3.patch"
             }
         }
     },

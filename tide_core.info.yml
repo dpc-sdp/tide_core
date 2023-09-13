@@ -27,9 +27,11 @@ dependencies:
   - drupal:node
   - drupal:options
   - drupal:path
+  - drupal:real_aes
   - drupal:taxonomy
   - drupal:telephone
   - drupal:text
+  - drupal:tfa
   - drupal:toolbar
   - drupal:token
   - drupal:user

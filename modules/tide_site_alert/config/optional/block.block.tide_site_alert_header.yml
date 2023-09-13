@@ -17,4 +17,8 @@ settings:
   label_display: '0'
   provider: tide_site_alert
   timeout: '600'
-visibility: {  }
+visibility:
+  request_path:
+    id: request_path
+    negate: true
+    pages: "/user/*/security/tfa\r\n/user/*/security/tfa/*"
