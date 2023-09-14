@@ -17,4 +17,4 @@ settings:
   label_display: '0'
   provider: tide_site_alert
   timeout: '600'
-visibility: { }
+visibility: {  }
