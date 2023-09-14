@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - file
+    - media
+    - system
+    - taxonomy
+    - tfa
+    - tide_core
+    - tide_share_link
+id: authenticated
+label: 'Authenticated user'
+weight: 1
+is_admin: false
+permissions:
+  - 'access content'
+  - 'access taxonomy overview'
+  - 'delete own files'
+  - 'edit own field_business_contact_number'
+  - 'edit own field_business_name'
+  - 'setup own tfa'
+  - 'view media'
+  - 'view own field_business_contact_number'
+  - 'view own field_business_name'
+  - 'view published share link token entities'

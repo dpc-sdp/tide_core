@@ -278,6 +278,8 @@ class TideCoreOperation {
     $config_files_optional = [
       'encrypt.settings',
       'tfa.settings',
+      'user.role.authenticated',
+      'user.role.site_admin',
     ];
 
     foreach ($configs_files_install as $install) {
