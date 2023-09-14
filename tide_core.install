@@ -54,6 +54,6 @@ function tide_core_install() {
   // Enable TFA necessary modules.
   $tideCoreOperation->enableTfaNecessaryModules();
 
-  // Disabled site alert for TFA routes
+  // Disabled site alert for TFA routes.
   $tideCoreOperation->disabledSiteAlertTfa();
 }
