@@ -53,7 +53,22 @@ function tide_core_install() {
 
   // Enable TFA necessary modules.
   $tideCoreOperation->enableTfaNecessaryModules();
+}
+
+/**
+ * Setup TFA.
+ */
+function tide_core_update_8201() {
+  $tideCoreOperation = new TideCoreOperation();
+
+  // Enable TFA necessary modules.
+  $tideCoreOperation->enableTfaNecessaryModules();
 
   // Disabled site alert for TFA routes.
   $tideCoreOperation->disabledSiteAlertTfa();
+
+  // Setup TFA settings.
+  $install = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $optional = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  $tideCoreOperation->updateTfaSettings($install, $optional);
 }

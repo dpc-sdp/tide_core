@@ -3,6 +3,7 @@
 namespace Drupal\tide_core;
 
 use Drupal\block\Entity\Block;
+use Drupal\Core\Config\FileStorage;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
@@ -268,22 +269,24 @@ class TideCoreOperation {
   /**
    * Update TFA settings.
    */
-  public static function updateTfaSettings(array $config_location) {
-    $configs = [
-      'encrypt.profile.tfa_encryption' => 'encrypt_profile',
-      'key.key.tfa_encryption_key.yml' => 'key_key',
+  public static function updateTfaSettings(array $config_install, array $config_optional) {
+    module_load_include('inc', 'tide_core', 'includes/helpers');
+    $configs_files_install = [
+      'encrypt.profile.tfa_encryption',
+      'key.key.tfa_encryption_key',
     ];
 
-    module_load_include('inc', 'tide_core', 'includes/helpers');
-    foreach ($configs as $config => $type) {
-      $config_read = _tide_read_config($config, $config_location, TRUE);
-      $storage = \Drupal::entityTypeManager()->getStorage($type);
-      $id = substr($config, strrpos($config, '.') + 1);
-      if ($storage->load($id) == NULL) {
-        error_log(" tide_core - importing config: " . $id);
-        $config_entity = $storage->createFromStorageRecord($config_read);
-        $config_entity->save();
-      }
+    $config_files_optional = [
+      'encrypt.settings',
+      'tfa.settings'
+    ];
+
+    foreach ($configs_files_install as $install) {
+      _tide_ensure_config($install, $config_install);
+    }
+
+    foreach ($config_files_optional as $optional) {
+      _tide_ensure_config($optional, $config_optional);
     }
   }
 

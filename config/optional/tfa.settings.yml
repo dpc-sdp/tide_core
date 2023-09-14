@@ -1,5 +1,5 @@
 langcode: en
-enabled: false
+enabled: true
 required_roles:
   authenticated: authenticated
   administrator: administrator
