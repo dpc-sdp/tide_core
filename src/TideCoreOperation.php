@@ -3,7 +3,6 @@
 namespace Drupal\tide_core;
 
 use Drupal\block\Entity\Block;
-use Drupal\Core\Config\FileStorage;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
@@ -278,7 +277,7 @@ class TideCoreOperation {
 
     $config_files_optional = [
       'encrypt.settings',
-      'tfa.settings'
+      'tfa.settings',
     ];
 
     foreach ($configs_files_install as $install) {
