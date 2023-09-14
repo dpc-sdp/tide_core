@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core;
 
+use Drupal\block\Entity\Block;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
@@ -223,12 +224,65 @@ class TideCoreOperation {
   /**
    * Changes the diff modules general_settings.revision_pager_limit to 16.
    */
-  public function chagneDiffSettings() {
+  public function changeDiffSettings() {
     if (\Drupal::moduleHandler()->moduleExists('diff')) {
       $config = \Drupal::configFactory()
         ->getEditable('diff.settings');
       if (!$config->isNew() && !empty($config->get('general_settings.revision_pager_limit'))) {
         $config->set('general_settings.revision_pager_limit', 16)->save();
+      }
+    }
+  }
+
+  /**
+   * Enable TFA.
+   */
+  public static function enableTfaNecessaryModules() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    // Enable Real AES.
+    if (!$moduleHandler->moduleExists('real_aes')) {
+      $moduleInstaller->install(['real_aes']);
+    }
+    // Enable Two-factor Authentication (TFA).
+    if (!$moduleHandler->moduleExists('tfa')) {
+      $moduleInstaller->install(['tfa']);
+    }
+  }
+
+  /**
+   * Disabled site alert for TFA routes.
+   */
+  public static function disabledSiteAlertTfa() {
+    $block = Block::load('tide_site_alert_header');
+    if ($block) {
+      $block->setVisibilityConfig('request_path', [
+        'id' => 'request_path',
+        'pages' => "/user/*/security/tfa\n/user/*/security/tfa/*",
+        'negate' => TRUE,
+      ]);
+      $block->save();
+    }
+  }
+
+  /**
+   * Update TFA settings.
+   */
+  public static function updateTfaSettings(array $config_location) {
+    $configs = [
+      'encrypt.profile.tfa_encryption' => 'encrypt_profile',
+      'key.key.tfa_encryption_key.yml' => 'key_key',
+    ];
+
+    module_load_include('inc', 'tide_core', 'includes/helpers');
+    foreach ($configs as $config => $type) {
+      $config_read = _tide_read_config($config, $config_location, TRUE);
+      $storage = \Drupal::entityTypeManager()->getStorage($type);
+      $id = substr($config, strrpos($config, '.') + 1);
+      if ($storage->load($id) == NULL) {
+        error_log(" tide_core - importing config: " . $id);
+        $config_entity = $storage->createFromStorageRecord($config_read);
+        $config_entity->save();
       }
     }
   }
