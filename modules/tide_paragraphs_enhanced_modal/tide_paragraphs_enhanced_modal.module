@@ -36,7 +36,7 @@ function tide_paragraphs_enhanced_modal_preprocess_paragraphs_add_dialog(&$varia
   if (isset($variables['buttons'])) {
     $variables['button_enhancements'] = [];
     $placeholder_icon_path = \Drupal::service('extension.list.module')->getPath('tide_paragraphs_enhanced_modal') . '/icons/placeholder.svg';
-    $placeholder_icon_url = file_create_url($placeholder_icon_path);
+    $placeholder_icon_url = \Drupal::service('file_url_generator')->generateAbsoluteString($placeholder_icon_path);
     foreach (Element::children($variables['buttons']) as $key) {
       $bundle_machine_name = $variables['buttons'][$key]['#bundle_machine_name'];
       /** @var \Drupal\paragraphs\Entity\ParagraphsType $paragraph_type */
