@@ -273,7 +273,7 @@
                 "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
             },
             "drupal/site_alert": {
-                "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
+                "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
             },
             "drupal/views_data_export": {
                 "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-14930767": "https://www.drupal.org/files/issues/2023-02-20/views_data_export-3173296-25.patch",
