@@ -7,3 +7,6 @@ paragraphs.enhanced_modal:
     js/paragraphs.enhanced_modal.js: {}
   dependencies:
     - paragraphs/drupal.paragraphs.modal
+    - core/drupal
+    - core/jquery
+    - core/once
