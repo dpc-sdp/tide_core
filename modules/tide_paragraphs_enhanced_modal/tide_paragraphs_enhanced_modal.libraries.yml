@@ -1,5 +1,5 @@
 paragraphs.enhanced_modal:
-  version: VERSION
+  version: 1.0
   css:
     theme:
       css/paragraphs.enhanced_modal.css: {}
