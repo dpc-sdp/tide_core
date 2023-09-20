@@ -16,3 +16,12 @@ function tide_site_alert_uninstall() {
     $storage->delete([$config_entity]);
   }
 }
+
+/**
+ * Update timeout to 10 mins.
+ */
+function tide_site_alert_update_10001() {
+  $tide_site_alert_header_block = \Drupal::configFactory()->getEditable('block.block.tide_site_alert_header');
+  $tide_site_alert_header_block->set('settings.timeout', 600)
+    ->save();
+}
