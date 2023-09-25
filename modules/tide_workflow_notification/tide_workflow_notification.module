@@ -8,7 +8,7 @@
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 
-module_load_include('inc', 'tide_workflow_notification', 'tide_workflow_notification.tokens');
+\Drupal::moduleHandler()->loadInclude('tide_workflow_notification', 'inc', 'tide_workflow_notification.tokens');
 
 /**
  * Implements hook_form_FORM_ID_alter().

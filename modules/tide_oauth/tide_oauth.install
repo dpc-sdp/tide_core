@@ -17,7 +17,7 @@ use Drupal\user\Entity\Role;
  * Add the field_long_description field to Consumer entity display.
  */
 function _tide_oauth_update_consumer_long_description_field() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
 
   // Update the UUID of field storage and field config.
   $field_name = 'field_long_description';
@@ -140,7 +140,7 @@ function _tide_oauth_update_consumer_long_description_field() {
  * Add the machine_name field to Consumer entity display.
  */
 function _tide_oauth_update_consumer_machine_name_field() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
 
   // Update the UUID of field storage and field config.
   $field_name = 'machine_name';
