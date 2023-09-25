@@ -1975,3 +1975,12 @@ function tide_core_update_8095() {
       ->save();
   }
 }
+
+/**
+ * Increase character limit of URLs.
+ */
+function tide_core_update_8096() {
+  $config = \Drupal::configFactory()->getEditable('pathauto.settings');
+  $config->set('max_length', 255);
+  $config->save();
+}
