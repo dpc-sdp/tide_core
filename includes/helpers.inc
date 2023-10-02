@@ -179,18 +179,10 @@ function _tide_import_single_config($config_name, array $locations = [], $priori
  */
 function _tide_retrieve_config_sync(string $config_name, string $key = NULL) {
   try {
-    if (version_compare(\Drupal::VERSION, '8.8.0', '<')) {
-      $config_sync = config_get_config_directory(CONFIG_SYNC_DIRECTORY);
-    }
-    else {
-      $config_sync = Settings::get('config_sync_directory');
-    }
-    if ($config_sync) {
-      $config_file = $config_sync . DIRECTORY_SEPARATOR . $config_name . '.yml';
-      if (file_exists($config_file)) {
-        $config = Yaml::decode(file_get_contents($config_file));
-        return ($key && array_key_exists($key, $config)) ? $config[$key] : $config;
-      }
+    $config_file = Settings::get('config_sync_directory') . DIRECTORY_SEPARATOR . $config_name . '.yml';
+    if (file_exists($config_file)) {
+      $config = Yaml::decode(file_get_contents($config_file));
+      return ($key && array_key_exists($key, $config)) ? $config[$key] : $config;
     }
   }
   catch (Exception $exception) {
