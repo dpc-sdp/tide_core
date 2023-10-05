@@ -6,8 +6,7 @@
         "Change code from styles to type - https://www.drupal.org/project/ckeditor_liststyle/issues/2874952": "https://www.drupal.org/files/issues/2019-01-02/ckeditor_liststyle-styles-to-type-2874952-4-do-not-test.patch"
       },
       "drupal/admin_audit_trail": {
-        "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch",
-        "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
+        "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
       },
       "drupal/ckeditor_config": {
         "[PHP 8.1] Deprecated function: strcasecmp(): Passing null to parameter #1 ($string1) of type string is deprecated - https://www.drupal.org/project/ckeditor_config/issues/3330938#comment-14852534": "https://www.drupal.org/files/issues/2023-01-04/php-8.1-deprecated-function-warnings-3330938-3.patch"
