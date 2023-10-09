@@ -52,3 +52,33 @@ function tide_core_install() {
   $tideCoreOperation->chagneDiffSettings();
 
 }
+
+/**
+ * Increase character limit of URLs.
+ */
+function tide_core_update_8096() {
+  $config = \Drupal::configFactory()->getEditable('pathauto.settings');
+  $config->set('max_length', 255);
+  $config->save();
+}
+
+/**
+ * Revokes `delete any media` and `delete media` from the editor role.
+ */
+function tide_core_update_8097() {
+  $editor = Role::load('editor');
+  if (!$editor) {
+    return;
+  }
+  $permissionsToRemove = ['delete any media', 'delete media'];
+  $changed = FALSE;
+  foreach ($permissionsToRemove as $permission) {
+    if ($editor->hasPermission($permission)) {
+      $editor->revokePermission($permission);
+      $changed = TRUE;
+    }
+  }
+  if ($changed) {
+    $editor->save();
+  }
+}
