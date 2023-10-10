@@ -49,7 +49,7 @@ function tide_core_install() {
   $tideCoreOperation->useCustomFilesView();
 
   // Changes the diff modules general_settings.revision_pager_limit to 16.
-  $tideCoreOperation->chagneDiffSettings();
+  $tideCoreOperation->changeDiffSettings();
 
 }
 

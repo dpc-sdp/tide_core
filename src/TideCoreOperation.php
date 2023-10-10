@@ -223,7 +223,7 @@ class TideCoreOperation {
   /**
    * Changes the diff modules general_settings.revision_pager_limit to 16.
    */
-  public function chagneDiffSettings() {
+  public function changeDiffSettings() {
     if (\Drupal::moduleHandler()->moduleExists('diff')) {
       $config = \Drupal::configFactory()
         ->getEditable('diff.settings');
