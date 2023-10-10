@@ -292,7 +292,7 @@ class TideCoreOperation {
   /**
    * Setup TFA role permissions.
    */
-  public static function  setupTfaRolePermissions() {
+  public static function setupTfaRolePermissions() {
     $permissions = ['setup own tfa'];
     $permissions = ['admin tfa settings'];
 
@@ -301,7 +301,7 @@ class TideCoreOperation {
       'Authenticated user' => ['setup own tfa'],
     ];
 
-    foreach($roles_permissions as $role_name => $permissions) {
+    foreach ($roles_permissions as $role_name => $permissions) {
       $role = user_role_load_by_name($role_name);
       user_role_grant_permissions($role->rid, $permissions);
     }
