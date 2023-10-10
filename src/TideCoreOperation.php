@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core;
 
+use Drupal\block\Entity\Block;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
@@ -230,6 +231,72 @@ class TideCoreOperation {
       if (!$config->isNew() && !empty($config->get('general_settings.revision_pager_limit'))) {
         $config->set('general_settings.revision_pager_limit', 16)->save();
       }
+    }
+  }
+
+  /**
+   * Enable TFA.
+   */
+  public static function enableTfaNecessaryModules() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    // Enable Real AES.
+    if (!$moduleHandler->moduleExists('real_aes')) {
+      $moduleInstaller->install(['real_aes']);
+    }
+    // Enable Two-factor Authentication (TFA).
+    if (!$moduleHandler->moduleExists('tfa')) {
+      $moduleInstaller->install(['tfa']);
+    }
+  }
+
+  /**
+   * Disabled site alert for TFA routes.
+   */
+  public static function disabledSiteAlertTfa() {
+    $block = Block::load('tide_site_alert_header');
+    if (\Drupal::service('module_handler')->moduleExists('tide_site_alert') && $block) {
+      $block->setVisibilityConfig('request_path', [
+        'id' => 'request_path',
+        'pages' => "/user/*/security/tfa\n/user/*/security/tfa/*",
+        'negate' => TRUE,
+      ]);
+      $block->save();
+    }
+  }
+
+  /**
+   * Update TFA settings.
+   */
+  public static function updateTfaSettings(array $config_install) {
+    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+    $configs_files_install = [
+      'key.key.tfa_encryption_key',
+      'encrypt.profile.tfa_encryption',
+      'encrypt.settings',
+      'tfa.settings',
+    ];
+
+    foreach ($configs_files_install as $install) {
+      _tide_ensure_config($install, $config_install);
+    }
+  }
+
+  /**
+   * Setup TFA role permissions.
+   */
+  public static function  setupTfaRolePermissions() {
+    $permissions = ['setup own tfa'];
+    $permissions = ['admin tfa settings'];
+
+    $roles_permissions = [
+      'Site Admin' => ['admin tfa settings'],
+      'Authenticated user' => ['setup own tfa'],
+    ];
+
+    foreach($roles_permissions as $role_name => $permissions) {
+      $role = user_role_load_by_name($role_name);
+      user_role_grant_permissions($role->rid, $permissions);
     }
   }
 

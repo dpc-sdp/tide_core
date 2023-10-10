@@ -51,6 +51,8 @@ function tide_core_install() {
   // Changes the diff modules general_settings.revision_pager_limit to 16.
   $tideCoreOperation->changeDiffSettings();
 
+  // Enable TFA necessary modules.
+  $tideCoreOperation->enableTfaNecessaryModules();
 }
 
 /**
@@ -81,4 +83,24 @@ function tide_core_update_8097() {
   if ($changed) {
     $editor->save();
   }
+}
+
+/**
+ * Setup TFA.
+ */
+function tide_core_update_8098() {
+  $tideCoreOperation = new TideCoreOperation();
+
+  // Enable TFA necessary modules.
+  $tideCoreOperation->enableTfaNecessaryModules();
+
+  // Disabled site alert for TFA routes.
+  $tideCoreOperation->disabledSiteAlertTfa();
+
+  // Setup TFA settings.
+  $install = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $tideCoreOperation->updateTfaSettings($install);
+
+  // Setup TFA role permissions.
+  $tideCoreOperation->setupTfaRolePermissions();
 }
