@@ -268,17 +268,24 @@ class TideCoreOperation {
   /**
    * Update TFA settings.
    */
-  public static function updateTfaSettings(array $config_install) {
+  public static function updateTfaSettings(array $config_install, array $config_optional) {
     \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
     $configs_files_install = [
       'key.key.tfa_encryption_key',
       'encrypt.profile.tfa_encryption',
+    ];
+
+    $config_files_optional = [
       'encrypt.settings',
       'tfa.settings',
     ];
 
     foreach ($configs_files_install as $install) {
       _tide_ensure_config($install, $config_install);
+    }
+
+    foreach ($config_files_optional as $optional) {
+      _tide_ensure_config($optional, $config_optional);
     }
   }
 

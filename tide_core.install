@@ -99,7 +99,8 @@ function tide_core_update_8098() {
 
   // Setup TFA settings.
   $install = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
-  $tideCoreOperation->updateTfaSettings($install);
+  $optional = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  $tideCoreOperation->updateTfaSettings($install, $optional);
 
   // Setup TFA role permissions.
   $tideCoreOperation->setupTfaRolePermissions();
