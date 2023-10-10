@@ -221,8 +221,7 @@
     "extra": {
         "patches": {
             "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch",
-                "Latest Release Breaks Pagination - https://www.drupal.org/project/admin_audit_trail/issues/3316835": "https://git.drupalcode.org/project/admin_audit_trail/-/merge_requests/9.diff"
+                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
             },
             "drupal/core": {
                 "Contextual links should not be added inside another link - https://www.drupal.org/project/drupal/issues/2898875#comment-14018213": "https://www.drupal.org/files/issues/2021-03-03/contextual_links_should-2898875-16.patch",
@@ -284,7 +283,7 @@
                 "3253423: Warnings are skipped for valid users - https://www.drupal.org/project/user_expire/issues/3253423": "https://www.drupal.org/files/issues/2021-12-08/3253423-2-test-for-non-existent-account.patch"
             },
             "drupal/site_alert": {
-                "Add ability to dismiss alert - https://www.drupal.org/project/site_alert/issues/3156557#comment-14930684": "https://www.drupal.org/files/issues/2023-02-19/3156557-67.patch"
+                "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
             },
             "drupal/ckeditor_templates": {
                 "CKEditor 5 support for Content Templates - https://www.drupal.org/project/ckeditor_templates/issues/3273358#comment-14963779": "./patches/ckeditor_templates/ckeditor_templates_4.patch"

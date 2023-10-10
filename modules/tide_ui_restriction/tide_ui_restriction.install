@@ -22,7 +22,7 @@ function tide_ui_restriction_update_8001() {
     \Drupal::service('module_installer')->install(['config_perms']);
   }
 
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [
     drupal_get_path('module', 'tide_ui_restriction') . '/config/install',
   ];
