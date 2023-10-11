@@ -297,13 +297,12 @@ class TideCoreOperation {
     $permissions = ['admin tfa settings'];
 
     $roles_permissions = [
-      'Site Admin' => ['admin tfa settings'],
-      'Authenticated user' => ['setup own tfa'],
+      'site_admin' => ['admin tfa settings'],
+      'authenticated' => ['setup own tfa'],
     ];
 
-    foreach ($roles_permissions as $role_name => $permissions) {
-      $role = user_role_load_by_name($role_name);
-      user_role_grant_permissions($role->rid, $permissions);
+    foreach ($roles_permissions as $rid => $permissions) {
+      user_role_grant_permissions($rid, $permissions);
     }
   }
 
