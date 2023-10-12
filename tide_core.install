@@ -89,7 +89,7 @@ function tide_core_update_8097() {
 /**
  * Setup TFA.
  */
-function tide_core_update_8098() {
+function tide_core_update_10001() {
   $tideCoreOperation = new TideCoreOperation();
 
   // Enable TFA necessary modules.
