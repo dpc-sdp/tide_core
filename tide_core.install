@@ -6,6 +6,7 @@
  */
 
 use Drupal\tide_core\TideCoreOperation;
+use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 
@@ -56,7 +57,7 @@ function tide_core_install() {
 /**
  * Increase character limit of URLs.
  */
-function tide_core_update_8096() {
+function tide_core_update_10000() {
   $config = \Drupal::configFactory()->getEditable('pathauto.settings');
   $config->set('max_length', 255);
   $config->save();
@@ -65,7 +66,7 @@ function tide_core_update_8096() {
 /**
  * Revokes `delete any media` and `delete media` from the editor role.
  */
-function tide_core_update_8097() {
+function tide_core_update_10001() {
   $editor = Role::load('editor');
   if (!$editor) {
     return;
