@@ -51,9 +51,6 @@ function tide_core_install() {
 
   // Changes the diff modules general_settings.revision_pager_limit to 16.
   $tideCoreOperation->changeDiffSettings();
-
-  // Enable TFA necessary modules.
-  $tideCoreOperation->enableTfaNecessaryModules();
 }
 
 /**
