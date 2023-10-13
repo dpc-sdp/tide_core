@@ -135,7 +135,7 @@ class TideTfaOperation {
     ];
 
     $tfa_settings = \Drupal::configFactory()->getEditable('tfa.settings');
-    $tfa_settings->set('enabled', true)
+    $tfa_settings->set('enabled', TRUE)
       ->set('required_roles', $tfa_required_roles)
       ->set('forced', 1)
       ->set('login_plugin_settings', $login_plugin_settings)
