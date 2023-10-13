@@ -5,9 +5,9 @@
  * Installation functions for Tide TFA.
  */
 
- use Drupal\tide_tfa\TideTfaOperation;
+use Drupal\tide_tfa\TideTfaOperation;
 
- /**
+/**
  * Setup TFA.
  */
 function tide_tfa_update_10001() {
