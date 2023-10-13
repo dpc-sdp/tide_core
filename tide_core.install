@@ -87,22 +87,13 @@ function tide_core_update_8097() {
 }
 
 /**
- * Setup TFA.
+ * Enable Tide TFA.
  */
 function tide_core_update_10001() {
-  $tideCoreOperation = new TideCoreOperation();
-
-  // Enable TFA necessary modules.
-  $tideCoreOperation->enableTfaNecessaryModules();
-
-  // Disabled site alert for TFA routes.
-  $tideCoreOperation->disabledSiteAlertTfa();
-
-  // Setup TFA settings.
-  $install = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
-  $optional = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
-  $tideCoreOperation->updateTfaSettings($install, $optional);
-
-  // Setup TFA role permissions.
-  $tideCoreOperation->setupTfaRolePermissions();
+  $moduleHandler = \Drupal::service('module_handler');
+  $moduleInstaller = \Drupal::service('module_installer');
+  // Enable Tide TFA.
+  if (!$moduleHandler->moduleExists('tide_tfa')) {
+    $moduleInstaller->install(['tide_tfa']);
+  }
 }

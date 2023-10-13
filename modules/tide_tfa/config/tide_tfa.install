@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Installation functions for Tide TFA.
+ */
+
+ use Drupal\tide_tfa\TideTfaOperation;
+
+ /**
+ * Setup TFA.
+ */
+function tide_tfa_update_10001() {
+  $tideTfaOperation = new TideTfaOperation();
+
+  // Enable TFA necessary modules.
+  $tideTfaOperation->enableTfaNecessaryModules();
+
+  // Disabled site alert for TFA routes.
+  $tideTfaOperation->disabledSiteAlertTfa();
+
+  // Setup key encryption profile.
+  $tideTfaOperation->setupKeyEncryptionProfile();
+
+  // Setup TFA settings.
+  $tideTfaOperation->setupTfaSettings();
+
+  // Setup TFA role permissions.
+  $tideTfaOperation->setupTfaRolePermissions();
+}

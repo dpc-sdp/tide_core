@@ -2,7 +2,6 @@
 
 namespace Drupal\tide_core;
 
-use Drupal\block\Entity\Block;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
@@ -231,84 +230,6 @@ class TideCoreOperation {
       if (!$config->isNew() && !empty($config->get('general_settings.revision_pager_limit'))) {
         $config->set('general_settings.revision_pager_limit', 16)->save();
       }
-    }
-  }
-
-  /**
-   * Enable TFA.
-   */
-  public static function enableTfaNecessaryModules() {
-    $moduleHandler = \Drupal::service('module_handler');
-    $moduleInstaller = \Drupal::service('module_installer');
-    // Enable Real AES.
-    if (!$moduleHandler->moduleExists('real_aes')) {
-      $moduleInstaller->install(['real_aes']);
-    }
-    // Enable Two-factor Authentication (TFA).
-    if (!$moduleHandler->moduleExists('tfa')) {
-      $moduleInstaller->install(['tfa']);
-    }
-  }
-
-  /**
-   * Disabled site alert for TFA routes.
-   */
-  public static function disabledSiteAlertTfa() {
-    $block = Block::load('tide_site_alert_header');
-    if (\Drupal::service('module_handler')->moduleExists('tide_site_alert') && $block) {
-      $block->setVisibilityConfig('request_path', [
-        'id' => 'request_path',
-        'pages' => "/user/*/security/tfa\n/user/*/security/tfa/*",
-        'negate' => TRUE,
-      ]);
-      $block->save();
-    }
-  }
-
-  /**
-   * Update TFA settings.
-   */
-  public static function updateTfaSettings(array $config_install, array $config_optional) {
-    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-    $configs_files_install = [
-      'key.key.tfa_encryption_key' => 'key',
-      'encrypt.profile.tfa_encryption' => 'encryption_profile',
-    ];
-
-    $config_files_optional = [
-      'encrypt.settings',
-      'tfa.settings',
-    ];
-
-    foreach ($configs_files_install as $config => $type) {
-      $config_read = _tide_read_config($config, $config_install, TRUE);
-      $storage = \Drupal::entityTypeManager()->getStorage($type);
-      $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
-      if ($storage->load($id) == NULL) {
-        $config_entity = $storage->createFromStorageRecord($config_read);
-        $config_entity->save();
-      }
-    }
-
-    foreach ($config_files_optional as $optional) {
-      _tide_ensure_config($optional, $config_optional);
-    }
-  }
-
-  /**
-   * Setup TFA role permissions.
-   */
-  public static function setupTfaRolePermissions() {
-    $permissions = ['setup own tfa'];
-    $permissions = ['admin tfa settings'];
-
-    $roles_permissions = [
-      'site_admin' => ['admin tfa settings'],
-      'authenticated' => ['setup own tfa'],
-    ];
-
-    foreach ($roles_permissions as $rid => $permissions) {
-      user_role_grant_permissions($rid, $permissions);
     }
   }
 
