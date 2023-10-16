@@ -6,3 +6,8 @@ package: Tide
 dependencies:
   - drupal:real_aes
   - drupal:tfa
+config_devel:
+  install:
+    - encrypt.profile.tfa_encryption
+    - key.key.tfa_encryption_key
+  optional: {  }

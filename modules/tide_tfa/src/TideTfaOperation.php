@@ -35,22 +35,6 @@ class TideTfaOperation {
   const ISSUER = 'content-reference';
 
   /**
-   * Enable TFA.
-   */
-  public static function enableTfaNecessaryModules() {
-    $moduleHandler = \Drupal::service('module_handler');
-    $moduleInstaller = \Drupal::service('module_installer');
-    // Enable Real AES.
-    if (!$moduleHandler->moduleExists('real_aes')) {
-      $moduleInstaller->install(['real_aes']);
-    }
-    // Enable Two-factor Authentication (TFA).
-    if (!$moduleHandler->moduleExists('tfa')) {
-      $moduleInstaller->install(['tfa']);
-    }
-  }
-
-  /**
    * Disabled site alert for TFA routes.
    */
   public static function disabledSiteAlertTfa() {
@@ -62,29 +46,6 @@ class TideTfaOperation {
         'negate' => TRUE,
       ]);
       $block->save();
-    }
-  }
-
-  /**
-   * Setup key encryption profile.
-   */
-  public static function setupKeyEncryptionProfile() {
-    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-    $configs_files_install = [
-      'key.key.tfa_encryption_key' => 'key',
-      'encrypt.profile.tfa_encryption' => 'encryption_profile',
-    ];
-
-    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_tfa') . '/config/optional'];
-
-    foreach ($configs_files_install as $config => $type) {
-      $config_read = _tide_read_config($config, $config_location, TRUE);
-      $storage = \Drupal::entityTypeManager()->getStorage($type);
-      $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
-      if ($storage->load($id) == NULL) {
-        $config_entity = $storage->createFromStorageRecord($config_read);
-        $config_entity->save();
-      }
     }
   }
 
