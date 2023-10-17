@@ -281,9 +281,9 @@
                 "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450#comment-15199879": "https://www.drupal.org/files/issues/2023-08-21/vde-drush-with-output-location-2887450-85.patch"
             },
             "drupal/tfa": {
-                "Replace TFA with 2FA in all user strings - https://www.drupal.org/project/tfa/issues/3337528#comment-15274772": "https://www.drupal.org/files/issues/2023-10-17/3337528-replace_tfa_to_2fa-4_0.patch",
+                "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15266621": "https://www.drupal.org/files/issues/2023-10-11/3223327-implement-force_tfa_setup-30.patch",
                 "Authenticator links clean up - https://www.drupal.org/project/tfa/issues/3386910#comment-15264404": "https://www.drupal.org/files/issues/2023-10-10/drupal.org_files_issues_2023-09-13_authenticator-links-3386910-5.patch",
-                "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15266621": "https://www.drupal.org/files/issues/2023-10-11/3223327-implement-force_tfa_setup-30.patch"
+                "Replace TFA with 2FA in all user strings - https://www.drupal.org/project/tfa/issues/3337528#comment-15275004": "https://www.drupal.org/files/issues/2023-10-17/3337528-replace_tfa_to_2fa-5.patch"
             }
         }
     },
