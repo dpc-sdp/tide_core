@@ -172,7 +172,7 @@ class NodeActionForm extends ConfirmFormBase {
    */
   public function access(AccountInterface $account) {
     return AccessResult::allowedIfHasPermission($this->currentUser, 'bypass node access')->orIf(
-      AccessResult::allowedIfHasPermission($this->currentUser, 'administer nodes')
+      AccessResult::allowedIfHasPermission($this->currentUser, 'administer nodes')->orIf(AccessResult::allowedIfHasPermission($this->currentUser, 'tide node bulk update'))
     );
   }
 
