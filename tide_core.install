@@ -2014,3 +2014,12 @@ function tide_core_update_8098() {
   $approver->grantPermission('tide node bulk update');
   $approver->save();
 }
+
+/**
+ * Revoke the permission of creating alerts from the approver role.
+ */
+function tide_core_update_8099() {
+  $approver = Role::load('approver');
+  $approver->revokePermission('create alert content');
+  $approver->save();
+}
