@@ -154,3 +154,4 @@ permissions:
   - 'view test revisions'
   - 'view the administration theme'
   - 'view timeline revisions'
+  - 'tide node bulk update'
