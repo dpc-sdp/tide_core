@@ -15,7 +15,7 @@ Feature: Bulk update
     Then I press "Apply to selected items"
     And I wait for 1 second
     Then I press "Confirm"
-    And I wait for the batch process to finish for 180 seconds
+    And I wait for 180 seconds
     Then I should see the text "Selected content has been processed"
 
     # Load a user without the permission.
