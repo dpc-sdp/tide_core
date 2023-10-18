@@ -83,3 +83,12 @@ function tide_core_update_10001() {
     $editor->save();
   }
 }
+
+/**
+ * Grants approver role with `tide node bulk update` permission.
+ */
+function tide_core_update_10002() {
+  $approver = Role::load('approver');
+  $approver->grantPermission('tide node bulk update');
+  $approver->save();
+}
