@@ -67,3 +67,6 @@
 'view own field_business_name':
   title: 'View own field_business_name'
   description: 'Allows user to view own field business name.'
+tide node bulk update:
+  title: 'Tide node bulk update'
+  description: 'Access bulk update for non-admin users.'

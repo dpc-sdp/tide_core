@@ -56,7 +56,7 @@ function tide_core_install() {
 /**
  * Increase character limit of URLs.
  */
-function tide_core_update_8096() {
+function tide_core_update_10000() {
   $config = \Drupal::configFactory()->getEditable('pathauto.settings');
   $config->set('max_length', 255);
   $config->save();
@@ -65,7 +65,7 @@ function tide_core_update_8096() {
 /**
  * Revokes `delete any media` and `delete media` from the editor role.
  */
-function tide_core_update_8097() {
+function tide_core_update_10001() {
   $editor = Role::load('editor');
   if (!$editor) {
     return;
@@ -84,13 +84,21 @@ function tide_core_update_8097() {
 }
 
 /**
+ * Grants approver role with `tide node bulk update` permission.
+ */
+function tide_core_update_10002() {
+  $approver = Role::load('approver');
+  $approver->grantPermission('tide node bulk update');
+  $approver->save();
+}
+
+/**
  * Enable Tide TFA.
  */
-function tide_core_update_10001() {
+function tide_core_update_10003() {
   $moduleHandler = \Drupal::service('module_handler');
   $moduleInstaller = \Drupal::service('module_installer');
   // Enable Tide TFA.
   if (!$moduleHandler->moduleExists('tide_tfa')) {
     $moduleInstaller->install(['tide_tfa']);
   }
-}
