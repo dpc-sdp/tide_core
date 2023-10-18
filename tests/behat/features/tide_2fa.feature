@@ -12,7 +12,7 @@ Feature: Force 2FA setup
       | role               | response |
       | authenticated user | 404      |
       | administrator      | 200      |
-      | site_admin         | 200      |
+      | site_admin         | 404      |
       | contributor        | 404      |
       | editor             | 404      |
       | approver           | 404      |
@@ -31,4 +31,3 @@ Feature: Force 2FA setup
     Examples:
       | role               |
       | administrator      |
-      | site_admin         |
