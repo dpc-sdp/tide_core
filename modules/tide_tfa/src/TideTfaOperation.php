@@ -96,7 +96,7 @@ class TideTfaOperation {
     ];
 
     $tfa_settings = \Drupal::configFactory()->getEditable('tfa.settings');
-    $tfa_settings->set('enabled', TRUE)
+    $tfa_settings->set('enabled', FALSE)
       ->set('required_roles', $tfa_required_roles)
       ->set('forced', 1)
       ->set('login_plugin_settings', $login_plugin_settings)
@@ -111,9 +111,6 @@ class TideTfaOperation {
    * Setup TFA role permissions.
    */
   public static function setupTfaRolePermissions() {
-    $permissions = ['setup own tfa'];
-    $permissions = ['admin tfa settings'];
-
     $roles_permissions = [
       'site_admin' => ['admin tfa settings'],
       'authenticated' => ['setup own tfa'],
