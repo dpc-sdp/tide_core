@@ -27,3 +27,13 @@ Feature: Force 2FA setup
     And I should see the text "Application verification code"
     And I see field "edit-code"
     And I save screenshot
+    Examples:
+      | role               |
+      # Content.
+      | authenticated user |
+      | administrator      |
+      | site_admin         |
+      | contributor        |
+      | editor             |
+      | approver           |
+      | previewer          |
