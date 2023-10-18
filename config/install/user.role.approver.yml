@@ -59,5 +59,4 @@ permissions:
   - 'view latest version'
   - 'view own unpublished content'
   - 'view the administration theme'
-  - 'view timeline revisions'
   - 'tide node bulk update'
