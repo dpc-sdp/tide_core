@@ -73,6 +73,7 @@ dependencies:
   - simple_sitemap:simple_sitemap
   - tablefield:tablefield
   - tide_ckeditor:tide_ckeditor
+  - tide_tfa:tide_tfa
   - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value
