@@ -102,3 +102,4 @@ function tide_core_update_10003() {
   if (!$moduleHandler->moduleExists('tide_tfa')) {
     $moduleInstaller->install(['tide_tfa']);
   }
+}
