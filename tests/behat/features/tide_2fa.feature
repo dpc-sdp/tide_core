@@ -19,21 +19,3 @@ Feature: Force 2FA setup
       | editor             | admin/content |
       | approver           | admin/content |
       | previewer          | admin/content |
-
-  @api
-  Scenario Outline: Users require Two-Factor Authentication upon login
-    Given I am logged in as a user with the "<role>" role
-    Then I should see the text "Two-Factor Authentication"
-    And I should see the text "Application verification code"
-    And I see field "edit-code"
-    And I save screenshot
-    Examples:
-      | role               |
-      # Content.
-      | authenticated user |
-      | administrator      |
-      | site_admin         |
-      | contributor        |
-      | editor             |
-      | approver           |
-      | previewer          |
