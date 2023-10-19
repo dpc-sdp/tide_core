@@ -233,4 +233,16 @@ class TideCoreOperation {
     }
   }
 
+  /**
+   * Enabled Tide TFA module.
+   */
+  public function enabledTideTfa() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    // Enable Tide TFA.
+    if (!$moduleHandler->moduleExists('tide_tfa')) {
+      $moduleInstaller->install(['tide_tfa']);
+    }
+  }
+
 }

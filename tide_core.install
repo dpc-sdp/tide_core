@@ -51,6 +51,9 @@ function tide_core_install() {
 
   // Changes the diff modules general_settings.revision_pager_limit to 16.
   $tideCoreOperation->changeDiffSettings();
+
+  // Enable Tide TFA.
+  $tideCoreOperation->enabledTideTfa();
 }
 
 /**
@@ -96,10 +99,8 @@ function tide_core_update_10002() {
  * Enable Tide TFA.
  */
 function tide_core_update_10003() {
-  $moduleHandler = \Drupal::service('module_handler');
-  $moduleInstaller = \Drupal::service('module_installer');
+  $tideCoreOperation = new TideCoreOperation();
+
   // Enable Tide TFA.
-  if (!$moduleHandler->moduleExists('tide_tfa')) {
-    $moduleInstaller->install(['tide_tfa']);
-  }
+  $tideCoreOperation->enabledTideTfa();
 }

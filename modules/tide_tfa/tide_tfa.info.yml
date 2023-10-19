@@ -6,6 +6,7 @@ package: Tide
 dependencies:
   - drupal:real_aes
   - drupal:tfa
+  - dpc-sdp:tide_core
 config_devel:
   install:
     - encrypt.profile.tfa_encryption
