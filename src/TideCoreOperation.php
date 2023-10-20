@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core;
 
+use Drupal\block\Entity\Block;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
@@ -223,13 +224,70 @@ class TideCoreOperation {
   /**
    * Changes the diff modules general_settings.revision_pager_limit to 16.
    */
-  public function chagneDiffSettings() {
+  public function changeDiffSettings() {
     if (\Drupal::moduleHandler()->moduleExists('diff')) {
       $config = \Drupal::configFactory()
         ->getEditable('diff.settings');
       if (!$config->isNew() && !empty($config->get('general_settings.revision_pager_limit'))) {
         $config->set('general_settings.revision_pager_limit', 16)->save();
       }
+    }
+  }
+
+  /**
+   * Enable TFA.
+   */
+  public static function enableTfaNecessaryModules() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    // Enable Real AES.
+    if (!$moduleHandler->moduleExists('real_aes')) {
+      $moduleInstaller->install(['real_aes']);
+    }
+    // Enable Two-factor Authentication (TFA).
+    if (!$moduleHandler->moduleExists('tfa')) {
+      $moduleInstaller->install(['tfa']);
+    }
+  }
+
+  /**
+   * Disabled site alert for TFA routes.
+   */
+  public static function disabledSiteAlertTfa() {
+    $block = Block::load('tide_site_alert_header');
+    if ($block) {
+      $block->setVisibilityConfig('request_path', [
+        'id' => 'request_path',
+        'pages' => "/user/*/security/tfa\n/user/*/security/tfa/*",
+        'negate' => TRUE,
+      ]);
+      $block->save();
+    }
+  }
+
+  /**
+   * Update TFA settings.
+   */
+  public static function updateTfaSettings(array $config_install, array $config_optional) {
+    module_load_include('inc', 'tide_core', 'includes/helpers');
+    $configs_files_install = [
+      'encrypt.profile.tfa_encryption',
+      'key.key.tfa_encryption_key',
+    ];
+
+    $config_files_optional = [
+      'encrypt.settings',
+      'tfa.settings',
+      'user.role.authenticated',
+      'user.role.site_admin',
+    ];
+
+    foreach ($configs_files_install as $install) {
+      _tide_ensure_config($install, $config_install);
+    }
+
+    foreach ($config_files_optional as $optional) {
+      _tide_ensure_config($optional, $config_optional);
     }
   }
 
