@@ -35,7 +35,6 @@
         "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15044472": "https://www.drupal.org/files/issues/2023-05-10/3109650-62.patch"
       },
       "drupal/entity_embed": {
-        "CKEditor5 support initial commit - https://www.drupal.org/project/entity_embed/issues/3272732#comment-15037680": "https://www.drupal.org/files/issues/2023-05-05/entity_embed-3272732-80.patch",
         "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
       },
       "drupal/field_group": {
