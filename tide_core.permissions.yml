@@ -1,0 +1,3 @@
+tide node bulk update:
+  title: 'Tide node bulk update'
+  description: 'Access bulk update for non-admin users.'
