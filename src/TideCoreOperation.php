@@ -223,13 +223,25 @@ class TideCoreOperation {
   /**
    * Changes the diff modules general_settings.revision_pager_limit to 16.
    */
-  public function chagneDiffSettings() {
+  public function changeDiffSettings() {
     if (\Drupal::moduleHandler()->moduleExists('diff')) {
       $config = \Drupal::configFactory()
         ->getEditable('diff.settings');
       if (!$config->isNew() && !empty($config->get('general_settings.revision_pager_limit'))) {
         $config->set('general_settings.revision_pager_limit', 16)->save();
       }
+    }
+  }
+
+  /**
+   * Enabled Tide TFA module.
+   */
+  public function enabledTideTfa() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    // Enable Tide TFA.
+    if (!$moduleHandler->moduleExists('tide_tfa')) {
+      $moduleInstaller->install(['tide_tfa']);
     }
   }
 

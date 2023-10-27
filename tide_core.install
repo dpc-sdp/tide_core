@@ -50,8 +50,10 @@ function tide_core_install() {
   $tideCoreOperation->useCustomFilesView();
 
   // Changes the diff modules general_settings.revision_pager_limit to 16.
-  $tideCoreOperation->chagneDiffSettings();
+  $tideCoreOperation->changeDiffSettings();
 
+  // Enable Tide TFA.
+  $tideCoreOperation->enabledTideTfa();
 }
 
 /**
@@ -91,4 +93,14 @@ function tide_core_update_10002() {
   $approver = Role::load('approver');
   $approver->grantPermission('tide node bulk update');
   $approver->save();
+}
+
+/**
+ * Enable Tide TFA.
+ */
+function tide_core_update_10003() {
+  $tideCoreOperation = new TideCoreOperation();
+
+  // Enable Tide TFA.
+  $tideCoreOperation->enabledTideTfa();
 }
