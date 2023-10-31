@@ -84,6 +84,7 @@ dependencies:
   - field_permissions:field_permissions
   - content_lock:content_lock
   - ckeditor_templates:ckeditor_templates
+  - term_reference_tree:term_reference_tree
 themes:
   - claro
 config_devel:

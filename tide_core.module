@@ -419,13 +419,34 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
   $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#process'][] = '_tide_core_form_node_form_process';
-
-  // Add comment log message field.
+  $form['#attached']['library'][] = 'tide_core/pseudo_required_field';
   $node = $form_state->getFormObject()->getEntity();
+  // Modify field_content_category help text.
+  if ($node->hasField('field_content_category')) {
+    $newLabelDescription = [
+      '#type' => 'inline_template',
+      '#template' => '<span style="font-weight: bold;">{{ title }}</span>
+                      <span class="pseudo-required-field">{{ asterisk }}</span>
+                      <div style="font-size: 0.85em; color: #595959;">{{ description }}</div>',
+      '#context' => [
+        'title' => (isset($form['field_content_category']['widget']['#required'])) ? $form['field_content_category']['widget']['#title'] : '',
+        'description' => (isset($form['field_content_category']['widget']['#description'])) ? $form['field_content_category']['widget']['#description'] : '',
+        'asterisk' => (isset($form['field_content_category']['widget']['#required']) && $form['field_content_category']['widget']['#required'] == TRUE) ? '*' : '',
+      ],
+    ];
+
+    $form['field_content_category']['#prefix'] = \Drupal::service('renderer')->renderPlain($newLabelDescription);
+
+    if (isset($form['field_content_category']['widget']['#description'])) {
+      $form['field_content_category']['widget']['#description'] = '';
+    }
+    $form['field_content_category']['widget']['#title_display'] = 'invisible';
+  }
   // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
   if ($node->isNew()) {
     return;
   }
+  // Add comment log message field.
   if (isset($form['revision_log']) && $form['revision_log']['#access']) {
     $form['moderation_state']['comment_log_message'] = _tide_core_revision_log_form_label_text() + [
       '#type' => 'textarea',
