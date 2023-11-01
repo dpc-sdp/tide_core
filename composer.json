@@ -234,7 +234,7 @@
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
-                "CKEditor5 support initial commit - https://www.drupal.org/project/entity_embed/issues/3272732#comment-15037680": "https://www.drupal.org/files/issues/2023-05-05/entity_embed-3272732-80.patch"
+                "CKEditor 5 Interface not loading on text formats using entity embed - https://www.drupal.org/project/entity_embed/issues/3396133": "./patches/entity_embed/3396133-ckeditor-5-interface_26.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-12483697": "https://www.drupal.org/files/issues/tokens_body_with_summary-2924873-2.patch"
