@@ -9,9 +9,14 @@ use Drupal\block\Entity\Block;
 use Drupal\Core\Utility\UpdateException;
 
 /**
- * Create Tide CMS Help block.
+ * Implements hook_install().
  */
-function tide_cms_support_update_8001() {
+function tide_cms_support_install() {
+  $block = Block::load('admin_tide_cms_help');
+  if ($block !== NULL) {
+    return;
+  }
+  // Create Tide CMS Help block.
   $block = Block::create([
     'id' => 'admin_tide_cms_help',
     'theme' => \Drupal::config('system.theme')->get('admin'),
@@ -34,21 +39,4 @@ function tide_cms_support_update_8001() {
   catch (\Exception $e) {
     throw new UpdateException("Cannot save Tide CMS Help block: " . $e->getMessage(), $e->getCode(), $e);
   }
-}
-
-/**
- * Install block.block.admin_tide_cms_help to Claro.
- */
-function tide_cms_support_update_8002() {
-  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_cms_support') . '/config/optional'];
-  $storage = \Drupal::entityTypeManager()->getStorage('block');
-  $id = 'admin_tide_cms_help';
-  $config_entity = $storage->load($id);
-  if ($config_entity !== NULL) {
-    $storage->delete([$config_entity]);
-  }
-  $config_read = _tide_read_config('block.block.admin_tide_cms_help', $config_location, FALSE);
-  $new_config_entity = $storage->createFromStorageRecord($config_read);
-  $new_config_entity->save();
 }

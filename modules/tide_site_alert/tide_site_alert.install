@@ -6,18 +6,22 @@
  */
 
 /**
- * Install block.block.tide_site_alert_header.
+ * Implements hook_uninstall().
  */
-function tide_site_alert_update_8001() {
-  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site_alert') . '/config/optional'];
+function tide_site_alert_uninstall() {
   $storage = \Drupal::entityTypeManager()->getStorage('block');
   $id = 'tide_site_alert_header';
   $config_entity = $storage->load($id);
   if ($config_entity !== NULL) {
     $storage->delete([$config_entity]);
   }
-  $config_read = _tide_read_config('block.block.tide_site_alert_header', $config_location, FALSE);
-  $new_config_entity = $storage->createFromStorageRecord($config_read);
-  $new_config_entity->save();
+}
+
+/**
+ * Update timeout to 10 mins.
+ */
+function tide_site_alert_update_10001() {
+  $tide_site_alert_header_block = \Drupal::configFactory()->getEditable('block.block.tide_site_alert_header');
+  $tide_site_alert_header_block->set('settings.timeout', 600)
+    ->save();
 }

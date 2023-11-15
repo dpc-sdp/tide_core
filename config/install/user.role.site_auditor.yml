@@ -1,6 +1,8 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - admin_audit_trail
 id: site_auditor
 label: 'Site Auditor'
 weight: 101
