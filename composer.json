@@ -40,7 +40,7 @@
         "drupal/override_node_options": "^2.7",
         "drupal/paragraphs": "^1.15",
         "drupal/password_policy": "^4.0",
-        "drupal/password_strength": "dev-compatible-with-d10",
+        "drupal/password_strength": "^2.0@beta",
         "drupal/pathauto": "^1.11",
         "drupal/prlp": "^1.10",
         "drupal/redirect": "^1.8",
@@ -86,7 +86,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/password_strength", "drupal/ckeditor_templates"]
+            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates"]
         },
         "ckeditor.autogrow": {
             "_webform": true,
@@ -197,15 +197,6 @@
             "exclude": [
                 "dev-1.x",
                 "1.x-dev"
-            ]
-        },
-        "drupal/password_strength": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/password_strength.git",
-            "exclude": [
-                "dev-default",
-                "default-dev"
             ]
         },
         "drupal/ckeditor_templates": {
