@@ -1,7 +1,7 @@
 name: Tide edit protection
 type: module
 description: Extends Node Edit Protection module to provide custom functions
-core_version_requirement: ^8.9 || ^9
+core_version_requirement: ^9 || ^10
 package: tide
 dependencies:
   - tide_site:tide_site

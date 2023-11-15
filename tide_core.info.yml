@@ -7,15 +7,16 @@ dependencies:
   - address:address
   - allowed_formats:allowed_formats
   - better_exposed_filters:better_exposed_filters
+  - ckeditor5_embedded_content:ckeditor5_embedded_content
   - clamav:clamav
   - config_split:config_split
   - config_update:config_update
   - config_ignore:config_ignore
+  - devel_entity_updates:devel_entity_updates
   - diff:diff
   - drupal:block
   - drupal:block_content
   - drupal:content_moderation
-  - drupal:user_created_by_field
   - drupal:ckeditor5
   - drupal:datetime_range
   - drupal:dynamic_page_cache
@@ -29,11 +30,14 @@ dependencies:
   - drupal:taxonomy
   - drupal:telephone
   - drupal:text
-  - drupal:user
-  - drupal:views
-  - drupal:workflows
+  - drupal:toolbar
   - drupal:token
+  - drupal:user
+  - drupal:user_created_by_field
+  - drupal:user_expire
+  - drupal:views
   - drupal:views_data_export
+  - drupal:workflows
   - editor_advanced_link:editor_advanced_link
   - entity_browser:entity_browser
   - entity_browser:entity_browser_entity_form
@@ -68,6 +72,7 @@ dependencies:
   - seckit:seckit
   - simple_sitemap:simple_sitemap
   - tablefield:tablefield
+  - tide_ckeditor:tide_ckeditor
   - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value
@@ -76,7 +81,7 @@ dependencies:
   - scheduled_transitions:scheduled_transitions
   - dynamic_entity_reference:dynamic_entity_reference
   - admin_audit_trail:admin_audit_trail
-  - user_expire:user_expire
+  - username_enumeration_prevention:username_enumeration_prevention
   - field_permissions:field_permissions
   - content_lock:content_lock
   - ckeditor_templates:ckeditor_templates
@@ -106,6 +111,9 @@ config_devel:
     - field.field.paragraph.accordion_content.field_paragraph_accordion_name
     - field.field.paragraph.links.field_paragraph_link
     - field.field.paragraph.related_links.field_paragraph_link
+    - field.field.user.user.field_business_contact_number
+    - field.field.user.user.field_business_name
+    - field.field.user.user.field_notes
     - field.storage.node.field_audience
     - field.storage.node.field_featured_image
     - field.storage.node.field_landing_page_intro_text

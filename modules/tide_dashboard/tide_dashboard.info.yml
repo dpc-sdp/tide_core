@@ -2,7 +2,7 @@ name: Tide Dashboard
 description: Provides Dashboard for Tide distro.
 type: module
 package: Tide
-core_version_requirement: ^8.9 || ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - admin_toolbar:admin_toolbar
   - admin_toolbar:admin_toolbar_tools
