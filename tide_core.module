@@ -20,9 +20,8 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
-use Drupal\scheduled_transitions\ScheduledTransitionsPermissions;
 use Drupal\tide_core\Render\Element\AdminToolbar;
-use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
 
@@ -306,22 +305,6 @@ function tide_core_local_tasks_alter(&$local_tasks) {
   // @todo delete after scheduled_updates module fully uninstalled.
   if (isset($local_tasks['scheduled_update.admin'])) {
     unset($local_tasks['scheduled_update.admin']);
-  }
-}
-
-/**
- * Implements hook_entity_bundle_create().
- */
-function tide_core_entity_bundle_create($entity_type_id, $bundle) {
-  if ($entity_type_id == 'node') {
-    $roles = ['approver', 'site_admin'];
-    foreach ($roles as $role) {
-      $permissions = [];
-      $permissions[] = ScheduledTransitionsPermissions::viewScheduledTransitionsPermission($entity_type_id, $bundle);
-      $permissions[] = ScheduledTransitionsPermissions::addScheduledTransitionsPermission($entity_type_id, $bundle);
-      $permissions[] = 'view all scheduled transitions';
-      user_role_grant_permissions(Role::load($role)->id(), $permissions);
-    }
   }
 }
 
@@ -761,4 +744,19 @@ function tide_core_toolbar_alter(&$items) {
       'preRenderTray',
     ],
   ];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ *
+ * This is necessary because of a circular dependency between the 'site_admin'
+ * role and the 'assign site_admin role' permission.
+ *
+ * @see https://www.drupal.org/project/role_delegation/issues/3354012
+ */
+function tide_core_user_role_insert(RoleInterface $role): void {
+  if ($role->id() === 'site_admin') {
+    $role->grantPermission('assign site_admin role');
+    $role->save();
+  }
 }

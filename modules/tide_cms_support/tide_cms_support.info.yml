@@ -2,4 +2,4 @@ name: Tide CMS Support
 description: Tide CMS Support Related Content.
 type: module
 package: Tide
-core_version_requirement: ^8.9 || ^9
+core_version_requirement: ^9 || ^10

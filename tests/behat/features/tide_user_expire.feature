@@ -1,4 +1,4 @@
-@tide_core
+@tide_core @install:tide_user_expire
 Feature: Data Driven Fields for the user expire
 
   Ensure that user expire email notification template exist.
