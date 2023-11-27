@@ -103,7 +103,7 @@ function tide_core_update_10003() {
 }
 
 /**
- * Approver role should have permissions to create and edit terms in department and sites.
+ * Approver should have permissions to create/edit terms in department and sites.
  */
 function tide_core_update_10004() {
   $approver = Role::load('approver');
