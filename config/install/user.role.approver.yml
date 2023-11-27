@@ -18,6 +18,7 @@ dependencies:
     - system
     - tide_core
     - toolbar
+    - taxonomy
 id: approver
 label: Approver
 weight: 3
@@ -34,10 +35,14 @@ permissions:
   - 'administer url aliases'
   - 'break content lock'
   - 'create media'
+  - 'create terms in department'
+  - 'create terms in sites'
   - 'create url aliases'
   - 'delete all revisions'
   - 'delete any media'
   - 'delete media'
+  - 'edit terms in department'
+  - 'edit terms in sites'
   - 'import tablefield'
   - 'rebuild tablefield'
   - 'revert all revisions'
