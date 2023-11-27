@@ -1,17 +1,17 @@
 content_moderation:
-  version: VERSION
+  version: 1.0
   css:
     component:
       css/content_moderation.module.css: {}
     theme:
       css/content_moderation.theme.css: {}
 ckeditor_stylesheets:
-  version: VERSION
+  version: 1.0
   css:
     theme:
       css/ckeditor_overrides.css: {}
 sticky_node_form_sidebar:
-  version: VERSION
+  version: 1.0
   css:
     theme:
       css/sticky_node_form_sidebar.css: {}
@@ -32,7 +32,7 @@ editor_autolink:
     - core/drupal
 
 claro_layout:
-  version: VERSION
+  version: 1.0
   css:
     theme:
       css/claro_layout.css: {}
