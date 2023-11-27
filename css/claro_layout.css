@@ -1,4 +1,9 @@
 @media screen and (min-width: 61rem) {
+  .layout-region--node-main,
+  .layout-region--node-footer {
+    margin-inline: unset !important;
+    width: unset !important;
+  }
   .layout-region--node-main .layout-region__content,
   .layout-region--node-footer .layout-region__content {
     max-width: 100rem !important;
