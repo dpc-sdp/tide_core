@@ -99,7 +99,7 @@ function tide_core_update_10002() {
 function tide_core_update_10003() {
   $role = 'approver';
   $permissions = ['administer taxonomy'];
-  user_role_revoke_permissions(Role::load($role)->id(), $permissions);
+  user_role_revoke_permissions($role, $permissions);
 }
 
 /**
@@ -107,6 +107,8 @@ function tide_core_update_10003() {
  */
 function tide_core_update_10004() {
   $approver = Role::load('approver');
-  $approver->grantPermission('create terms in department', 'edit terms in department');
-  $approver->save();
+  if ($approver) {
+    $approver->grantPermission('create terms in department', 'edit terms in department');
+    $approver->save();
+  }
 }
