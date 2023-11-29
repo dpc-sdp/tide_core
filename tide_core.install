@@ -109,7 +109,7 @@ function tide_core_update_10004() {
   $approver = Role::load('approver');
   $permissions = [
     'create terms in department',
-    'edit terms in department'
+    'edit terms in department',
   ];
   if ($approver) {
     foreach ($permissions as $permission) {
