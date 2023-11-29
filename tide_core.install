@@ -107,8 +107,14 @@ function tide_core_update_10003() {
  */
 function tide_core_update_10004() {
   $approver = Role::load('approver');
+  $permissions = [
+    'create terms in department',
+    'edit terms in department'
+  ];
   if ($approver) {
-    $approver->grantPermission('create terms in department', 'edit terms in department');
+    foreach ($permissions as $permission) {
+      $approver->grantPermission($permission);
+    }
     $approver->save();
   }
 }
