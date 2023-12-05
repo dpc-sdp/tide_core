@@ -1,3 +1,6 @@
 access admin_config pages:
   title: 'Access admin_config pages'
   description: 'Allows users to access administration pages starting with /admin/config/.'
+'access event log track':
+  title: 'Access event log track'
+  description: 'Allow user to access event log track.'
