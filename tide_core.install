@@ -98,8 +98,14 @@ function tide_core_update_10002() {
  */
 function tide_core_update_10003() {
   $role = 'approver';
-  $permissions = ['administer taxonomy'];
-  user_role_revoke_permissions($role, $permissions);
+  $permissions = [
+    'administer taxonomy',
+    'edit terms in topic',
+    'delete terms in topic',
+  ];
+  if ($role) {
+    user_role_revoke_permissions($role, $permissions);
+  }
 }
 
 /**
