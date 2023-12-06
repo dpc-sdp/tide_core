@@ -21,7 +21,7 @@ jobs:
     uses: dpc-sdp/github-actions/.github/workflows/tide_merge_to_reference.yml@feature/DDS-1510-tide-module-builds
   set_status:
     name: set_status
-    needs: [tide_build]
+    needs: [tide_merge_to_reference]
     if: always()
     uses: dpc-sdp/github-actions/.github/workflows/set_status.yml@main
     secrets: inherit

@@ -19,6 +19,7 @@ jobs:
     uses: dpc-sdp/github-actions/.github/workflows/tide_build.yml@feature/DDS-1510-tide-module-builds
     with:
       install_dev_tools: true
+      runner: biggy-tide
   export_config:
     name: export_config
     secrets: inherit
