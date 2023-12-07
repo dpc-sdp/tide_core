@@ -6,8 +6,6 @@ jobs:
   dorg_git_sync:
     name: dorg_git_sync
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/dpc-sdp/bay/ci-builder:5.x
     steps:
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
