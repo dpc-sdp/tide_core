@@ -14,6 +14,10 @@ jobs:
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           name: id_rsa
+          known_hosts:
+            git.drupal.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKCkFTXM7BUQUHlDkVmQV6qNkIeSIRBTNzlLn+T/APHa
+            git.drupal.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEyYM2eEQJJLgBxDmCMHykxAkTLMryXJ2zHeQWMFaRCweHmivtuNRzvEfiir09IMwtC+1gP1Tu9tlkqXqtMrWl8=
+            git.drupal.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDbjTZ+rsrZ82kHqPBFfRxP/JJJWrpAaOGGS5Qj6ewK3gQt/ENa47e/rqAjvm8aSvm0GAhjbMmgKQA95USTRqT/VmNmX9NsGzvG1FV9PZ2q6ejoeAkT6PAOF+ZNrG1nNx4ly9h3mYocNgEx6GhqQHznzwXHqK82ZEtXNBVjd+i+sCbz54udQTUZH+KV/yeqYDKsYYA9o+R8ULPTF89bqCaTEy6NyP4d+mv+nqt8ztSWLph8mjol6Cr/LpNtM2Xijr8KmeJ9cEjOW2Tj3v2pyAHhBtLRtL8UgQGRUcOgMgj8fZHAFOhK36n9Esv+i7sFfALy1v0DdLObk8ixWc5eZF1x
           if_key_exists: fail
       - name: Checkout code
         uses: actions/checkout@v4
