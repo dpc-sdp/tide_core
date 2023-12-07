@@ -19,6 +19,9 @@ jobs:
           if_key_exists: fail
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
       - name: Configure Drupal.org remote
         run: |
           git remote add dorg git@git.drupal.org:project/tide_core.git
