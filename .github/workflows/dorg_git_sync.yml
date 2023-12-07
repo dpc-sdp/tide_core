@@ -1,0 +1,19 @@
+name: dorg_git_sync
+
+on: push
+
+jobs:
+  dorg_git_sync:
+    name: dorg_git_sync
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/dpc-sdp/bay/ci-builder:5.x
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Configure Drupal.org remote
+        run: |
+          git remote add dorg git@git.drupal.org:project/tide_core.git
+      - name: Push the current branch to the Drupal.org remote
+        run: |
+          git push dorg HEAD
