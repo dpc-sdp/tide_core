@@ -28,4 +28,4 @@ jobs:
       - name: Push the current branch to the Drupal.org remote
         run: |
           git push dorg HEAD
-          git push --tags
+          git push dorg --tags
