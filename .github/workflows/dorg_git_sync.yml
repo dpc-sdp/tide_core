@@ -7,5 +7,3 @@ jobs:
     name: dorg_git_sync
     uses: dpc-sdp/github-actions/.github/workflows/dorg_git_sync.yml@feature/DDS-1510-tide-module-builds
     secrets: inherit
-    with:
-      project: ${GITHUB_REPOSITORY#*/}
