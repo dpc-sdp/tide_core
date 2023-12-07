@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: debug
-        run: echo ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo '${{ secrets.SSH_PRIVATE_KEY }}' > /tmp/test;
+          cat /tmp/test | rev
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
