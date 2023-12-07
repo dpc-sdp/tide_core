@@ -1,6 +1,11 @@
 name: dorg_git_sync
 
-on: push
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
 
 jobs:
   dorg_git_sync:
