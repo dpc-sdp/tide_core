@@ -1,0 +1,16 @@
+name: debug
+
+on: push
+
+jobs:
+  debug:
+    name: debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Debug
+        run: |
+          pwd
+          ls
+          ls /__w/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}/
