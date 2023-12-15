@@ -20,7 +20,6 @@
         "drupal/core-recommended": "10.1.4",
         "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
         "drupal/ctools": "^3.14",
-        "drupal/devel_entity_updates": "^4.1",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "^2.2.3",
         "drupal/entity_browser": "^2.9",
