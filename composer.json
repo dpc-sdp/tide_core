@@ -217,7 +217,6 @@
     "drupal/core": "10.1.4",
     "drupal/core-recommended": "10.1.4",
     "drupal/ctools": "^3.14",
-    "drupal/devel_entity_updates": "^4.1",
     "drupal/diff": "^1.1",
     "drupal/dynamic_entity_reference": "^3.0",
     "drupal/editor_advanced_link": "^2.2.3",
