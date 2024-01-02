@@ -8,7 +8,6 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -41,7 +40,7 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
   /**
    * The current route match.
    *
-   * @var Request | null
+   * @var \Symfony\Component\HttpFoundation\Request | null
    */
   protected $request;
 
