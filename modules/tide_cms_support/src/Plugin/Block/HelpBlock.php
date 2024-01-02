@@ -38,6 +38,13 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
   protected $routeMatch;
 
   /**
+   * The current route match.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request | null
+   */
+  protected $request;
+
+  /**
    * Creates a HelpBlock instance.
    *
    * @param array $configuration
