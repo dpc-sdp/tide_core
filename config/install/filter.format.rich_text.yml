@@ -2,12 +2,11 @@ langcode: en
 status: true
 dependencies:
   module:
+    - ckeditor5_embedded_content
     - editor
     - entity_embed
     - linkit
-    - media
     - token_filter
-    - wysiwyg_template_core
 name: 'Rich Text'
 format: rich_text
 weight: -10
@@ -48,7 +47,7 @@ filters:
     status: true
     weight: -49
     settings:
-      allowed_html: '<a href hreflang title id target rel data-entity-substitution data-entity-type data-entity-uuid class=""> <em> <strong> <cite> <blockquote cite class=""> <code> <li> <dl> <dt> <dd> <footer> <h2 id> <h3 id> <h4 id> <h5 id> <s> <span class=""> <sup> <sub> <img src alt data-entity-type data-entity-uuid data-align data-caption> <table> <caption> <tbody> <thead> <tfoot> <th colspan rowspan align class=""> <td colspan rowspan align class=""> <tr> <hr> <br> <pre> <p class="wysiwyg-callout text-align-left text-align-center text-align-right text-align-justify quotation__quote"> <div class=""> <iframe frameborder height scrolling src width title> <ol start type style class=" wysiwyg-callout"> <ul type style class=" wysiwyg-callout"> <drupal-entity data-* title alt data-entity-type data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-align data-caption data-embed-button data-langcode>'
+      allowed_html: '<embedded-content data-plugin-config data-plugin-id> <a title class id target rel data-entity-type data-entity-uuid data-entity-substitution hreflang href> <div class> <p class="wysiwyg-callout quotation__quote text-align-left text-align-center text-align-right text-align-justify"> <br> <h2 id class="text-align-left text-align-center text-align-right text-align-justify"> <h3 id class="text-align-left text-align-center text-align-right text-align-justify"> <h4 id class="text-align-left text-align-center text-align-right text-align-justify"> <h5 id class="text-align-left text-align-center text-align-right text-align-justify"> <ol class type reversed start> <ul class type> <cite> <dl> <dt> <dd> <footer> <span class> <img src alt data-entity-type data-entity-uuid data-align data-caption> <iframe frameborder height scrolling src width title> <drupal-entity data-* title alt data-embed-button="node tide_media" data-entity-type="node media"> <blockquote cite class> <th align class rowspan colspan> <td align class rowspan colspan> <strong> <em> <code class="language-*"> <pre class="text-align-left text-align-center text-align-right text-align-justify"> <s> <sub> <sup> <li> <hr> <table> <tr> <thead> <tbody> <tfoot> <caption>'
       filter_html_help: true
       filter_html_nofollow: false
   filter_autop:
@@ -83,12 +82,7 @@ filters:
     weight: -45
     settings:
       replace_empty: '0'
-  filter_wysiwyg_cleanup:
-    id: filter_wysiwyg_cleanup
-    provider: wysiwyg_template_core
-    status: false
-    weight: -38
-    settings: {  }
+
   linkit:
     id: linkit
     provider: linkit
@@ -96,12 +90,9 @@ filters:
     weight: -48
     settings:
       title: true
-  media_embed:
-    id: media_embed
-    provider: media
-    status: false
+  ckeditor5_embedded_content:
+    id: ckeditor5_embedded_content
+    provider: ckeditor5_embedded_content
+    status: true
     weight: 100
-    settings:
-      default_view_mode: default
-      allowed_media_types: {  }
-      allowed_view_modes: {  }
+    settings: {  }

@@ -6,11 +6,11 @@ Feature: WYSIWYG Blockquote template
   @api
   Scenario: User with permission can see WYSIWYG buttons template.
     Given I am logged in as a user with the "administrator" role
-    And I visit "admin/config/content/wysiwyg-templates"
+    And I visit "admin/config/content/ckeditor-templates"
     Then I should see "Primary Button"
     And I should see "Secondary Button"
 
-  @api @javascript
+  @api @javascript @skipped
   Scenario Outline: User with permission can add button WYSIWYG editor.
     Given I am logged in as a user with the "Approver" role
     When I go to "node/add/test"

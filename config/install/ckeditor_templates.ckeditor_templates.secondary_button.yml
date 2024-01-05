@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies: {  }
+id: secondary_button
+label: 'Secondary Button'
+description: ''
+thumb: {  }
+code: '<p><a class="button button--secondary" href="Secondary-button-link">Secondary button text</a></p>'
+formats:
+  rich_text: rich_text
+  summary_text: summary_text
+  admin_text: admin_text
+weight: 2

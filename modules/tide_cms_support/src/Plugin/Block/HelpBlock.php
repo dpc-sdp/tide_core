@@ -8,7 +8,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Provides a 'Help' block.
@@ -31,18 +31,18 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
   protected $moduleHandler;
 
   /**
-   * The current request.
-   *
-   * @var \Symfony\Component\HttpFoundation\Request
-   */
-  protected $request;
-
-  /**
    * The current route match.
    *
    * @var \Drupal\Core\Routing\RouteMatchInterface
    */
   protected $routeMatch;
+
+  /**
+   * The current route match.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request | null
+   */
+  protected $request;
 
   /**
    * Creates a HelpBlock instance.
@@ -53,19 +53,19 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   The current request.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   The request stack.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
    *   The module handler.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
    *   The current route match.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Request $request, ModuleHandlerInterface $module_handler, RouteMatchInterface $route_match) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, RequestStack $requestStack, ModuleHandlerInterface $moduleHandler, RouteMatchInterface $routeMatch) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
-    $this->request = $request;
-    $this->moduleHandler = $module_handler;
-    $this->routeMatch = $route_match;
+    $this->request = $requestStack->getCurrentRequest();
+    $this->moduleHandler = $moduleHandler;
+    $this->routeMatch = $routeMatch;
   }
 
   /**
@@ -76,7 +76,7 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('request_stack')->getCurrentRequest(),
+      $container->get('request_stack'),
       $container->get('module_handler'),
       $container->get('current_route_match')
     );
@@ -91,17 +91,14 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
       return [];
     }
 
-    $implementations = $this->moduleHandler->getImplementations('tide_help');
+    $implementations = $this->moduleHandler->getModuleList();
     $build = [];
     $args = [
       $this->routeMatch->getRouteName(),
       $this->routeMatch,
     ];
-    foreach ($implementations as $module) {
-      // Don't add empty strings to $build array.
+    foreach ($implementations as $module => $moduleInfo) {
       if ($help = $this->moduleHandler->invoke($module, 'tide_help', $args)) {
-        // Convert strings to #markup render arrays so that they will XSS admin
-        // filtered.
         $build[] = is_array($help) ? $help : ['#markup' => $help];
       }
     }

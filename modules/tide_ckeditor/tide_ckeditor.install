@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Install file for tide_ckeditor.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Install the tide_ckeditor module.
+ */
+function tide_ckeditor_install() {
+  $role_ids = ['editor', 'approver', 'site_admin', 'contributor'];
+  foreach ($role_ids as $role_id) {
+    $role = Role::load($role_id);
+    if ($role) {
+      $role->grantPermission('use ckeditor5 embedded content')->save();
+    }
+  }
+}
+
+/**
+ * Assign `use text format advanced` to editor,approver and site_admin.
+ */
+function tide_ckeditor_update_10001() {
+  $role_ids = ['editor', 'approver', 'site_admin', 'contributor'];
+  foreach ($role_ids as $role_id) {
+    $role = Role::load($role_id);
+    if ($role) {
+      $role->grantPermission('use ckeditor5 embedded content')->save();
+    }
+  }
+}

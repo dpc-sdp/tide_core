@@ -9,9 +9,14 @@ use Drupal\block\Entity\Block;
 use Drupal\Core\Utility\UpdateException;
 
 /**
- * Create Tide CMS Help block.
+ * Implements hook_install().
  */
-function tide_cms_support_update_8001() {
+function tide_cms_support_install() {
+  $block = Block::load('admin_tide_cms_help');
+  if ($block !== NULL) {
+    return;
+  }
+  // Create Tide CMS Help block.
   $block = Block::create([
     'id' => 'admin_tide_cms_help',
     'theme' => \Drupal::config('system.theme')->get('admin'),

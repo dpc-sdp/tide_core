@@ -4,9 +4,9 @@ dependencies:
   module:
     - tide_site_alert
   theme:
-    - seven
+    - claro
 id: tide_site_alert_header
-theme: seven
+theme: claro
 region: header
 weight: -100
 provider: null
@@ -16,5 +16,5 @@ settings:
   label: 'Tide Site Alert'
   label_display: '0'
   provider: tide_site_alert
-  timeout: '5'
+  timeout: '600'
 visibility: {  }

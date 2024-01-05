@@ -1,0 +1,72 @@
+'assign editor role':
+  title: 'Assign editor role'
+  description: 'Allows user to assign editor role.'
+'create field_business_contact_number':
+  title: 'Create field_business_contact_number'
+  description: 'Allows user to create field business contact number in user profile.'
+'create field_business_name':
+  title: 'Create field_business_name'
+  description: 'Allows user to create field business name in user profile.'
+'create field_notes':
+  title: 'Create field_notes'
+  description: 'Allows user to create field notes in user profile.'
+'edit field_business_contact_number':
+  title: 'Edit field_business_contact_number'
+  description: 'Allows user to edit field business contact number in user profile.'
+'edit field_business_name':
+  title: 'Edit field_business_name'
+  description: 'Allows user to edit field business name.'
+'edit field_notes':
+  title: 'Edit field_notes'
+  description: 'Allows user edit field notes.'
+'view field_business_contact_number':
+  title: 'View field_business_contact_number'
+  description: 'Allows user to view field business contact number.'
+'view field_business_name':
+  title: 'View field_business_name'
+  description: 'Allows user to view field business name.'
+'view field_notes':
+  title: 'View field_notes'
+  description: 'Allows user to view field notes.'
+'edit own field_business_contact_number':
+  title: 'Edit own field_business_contact_number'
+  description: 'Allows user to edit own field business contact number.'
+'edit own field_business_name':
+  title: 'Edit own field_business_name'
+  description: 'Allows user to edit own field business name.'
+'use editorial transition archive':
+  title: 'Use editorial transition archive'
+  description: 'Allows user to use editorial transition archive.'
+'use editorial transition archived_draft':
+  title: 'Use editorial transition archived_draft'
+  description: 'Allows user to use editorial transition archived_draft.'
+'use editorial transition archived_published':
+  title: 'Use editorial transition archived_published'
+  description: 'Allows user to use editorial transition archived_published.'
+'use editorial transition create_archive_pending':
+  title: 'use editorial transition create_archive_pending'
+  description: 'Allows user to use editorial transition create_archive_pending.'
+'use editorial transition create_new_draft':
+  title: 'Use editorial transition create_new_draft'
+  description: 'Allows user to use editorial transition create_new_draft.'
+'use editorial transition needs_review':
+  title: 'Use editorial transition needs_review'
+  description: 'Allows user to use editorial transition needs_review.'
+'use editorial transition needs_review_draft':
+  title: 'Use editorial transition needs_review_draft'
+  description: 'Allows user to use editorial transition needs_review_draft.'
+'use editorial transition publish':
+  title: 'Use editorial transition publish'
+  description: 'Allows user to use editorial transition publish.'
+'use editorial transition archive_pending':
+  title: 'Use editorial transition archive_pending'
+  description: 'Allows user to use editorial transition archive_pending.'
+'view own field_business_contact_number':
+  title: 'View own field_business_contact_number'
+  description: 'Allows user to view own field business contact number.'
+'view own field_business_name':
+  title: 'View own field_business_name'
+  description: 'Allows user to view own field business name.'
+tide node bulk update:
+  title: 'Tide node bulk update'
+  description: 'Access bulk update for non-admin users.'

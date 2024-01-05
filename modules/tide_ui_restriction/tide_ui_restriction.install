@@ -15,38 +15,6 @@ function tide_ui_restriction_install($is_syncing) {
 }
 
 /**
- * Tighten permissions.
- */
-function tide_ui_restriction_update_8001() {
-  if (!\Drupal::moduleHandler()->moduleExists('config_perms')) {
-    \Drupal::service('module_installer')->install(['config_perms']);
-  }
-
-  module_load_include('inc', 'tide_core', 'includes/helpers');
-  $config_location = [
-    drupal_get_path('module', 'tide_ui_restriction') . '/config/install',
-  ];
-  $configs = [
-    'config_perms.custom_perms_entity.administer_custom_block_types',
-    'config_perms.custom_perms_entity.bulk_update_url_aliases',
-  ];
-  foreach ($configs as $config) {
-    try {
-      $config_read = _tide_read_config($config, $config_location, TRUE);
-      $storage = \Drupal::entityTypeManager()
-        ->getStorage('custom_perms_entity');
-      $config_entity = $storage->createFromStorageRecord($config_read);
-      $config_entity->save();
-    }
-    catch (\Exception $exception) {
-      watchdog_exception('tide_ui_restriction', $exception);
-    }
-  }
-
-  _tide_ui_restriction_tighten_permissions();
-}
-
-/**
  * Tighten the default permissions.
  *
  * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -57,6 +25,7 @@ function _tide_ui_restriction_tighten_permissions() {
   $admin_only = ['administrator'];
   $site_admin_only = ['administrator', 'site_admin'];
   $approver_only = ['administrator', 'site_admin', 'approver'];
+  $auditor_only = ['site_auditor', 'administrator', 'site_admin'];
   $editor_only = ['administrator', 'site_admin', 'approver', 'editor'];
 
   $custom_perms = [
@@ -75,15 +44,13 @@ function _tide_ui_restriction_tighten_permissions() {
     'access taxonomy overview' => $site_admin_only,
     'administer taxonomy' => $site_admin_only,
     'administer users' => $site_admin_only,
-    'access admin audit trail' => $site_admin_only,
-    'access event log track' => $site_admin_only,
+    'access admin audit trail' => $auditor_only,
     'administer pathauto' => $site_admin_only,
     'administer redirect settings' => $site_admin_only,
 
     'Bulk update url aliases' => $approver_only,
 
     'access administration pages' => $editor_only,
-    'administer redirects' => $editor_only,
     'administer url aliases' => $editor_only,
     'create url aliases' => $editor_only,
   ];

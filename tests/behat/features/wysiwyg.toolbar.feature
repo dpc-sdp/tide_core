@@ -3,7 +3,7 @@ Feature: WYSIWYG toolbar configuration
 
   As an Approver or Editor, I want to to have access to all configured WYSIWYG buttons.
 
-  @api @javascript @trait:VisibilityTrait
+  @api @javascript @trait:VisibilityTrait @skipped
   Scenario: Rich Text format has expected WYSIWYG buttons
     Given I am logged in as a user with the "create test content, use text format rich_text" permissions
     When I go to "node/add/test"
@@ -40,7 +40,7 @@ Feature: WYSIWYG toolbar configuration
     And I should see a visible "#cke_edit-body-0-value .cke_top .cke_button__templateselector" element
     And I should not see a visible "#cke_edit-body-0-value .cke_top .cke_button__wenzgmap" element
 
-  @api @javascript
+  @api @javascript @skipped
   Scenario: Admin Text format has expected WYSIWYG buttons
     Given I am logged in as a user with the "create test content, use text format admin_text" permissions
     When I go to "node/add/test"
@@ -78,7 +78,7 @@ Feature: WYSIWYG toolbar configuration
     And I should see a visible "#cke_edit-body-0-value .cke_top .cke_button__wenzgmap" element
     And I should see a visible "#cke_edit-body-0-value .cke_top .cke_button__iframe" element
 
-  @api @javascript
+  @api @javascript @skipped
   Scenario: Plain Text format has no WYSIWYG buttons
     Given I am logged in as a user with the "create test content" permissions
     When I go to "node/add/test"
