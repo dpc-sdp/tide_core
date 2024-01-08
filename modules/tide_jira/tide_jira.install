@@ -11,7 +11,7 @@ use Drupal\monitoring\Entity\SensorConfig;
 /**
  * Configure sensor if monitoring module is present.
  */
-function tide_jira_update_8002() {
+function tide_jira_update_10001() {
   if (\Drupal::service('module_handler')->moduleExists('monitoring')) {
     $sensor = SensorConfig::create([
       'id' => 'tide_jira',
