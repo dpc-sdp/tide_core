@@ -107,20 +107,3 @@ function tide_core_update_10003() {
     user_role_revoke_permissions($role, $permissions);
   }
 }
-
-/**
- * Approver should have permission to create/edit terms in department.
- */
-function tide_core_update_10004() {
-  $approver = Role::load('approver');
-  $permissions = [
-    'create terms in department',
-    'edit terms in department',
-  ];
-  if ($approver) {
-    foreach ($permissions as $permission) {
-      $approver->grantPermission($permission);
-    }
-    $approver->save();
-  }
-}
