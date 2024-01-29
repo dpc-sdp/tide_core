@@ -81,7 +81,7 @@ settings:
         - '<img src alt data-entity-type data-entity-uuid data-align data-caption>'
         - '<div class>'
         - '<iframe frameborder height scrolling src width title>'
-        - '<drupal-entity data-* title alt>'
+        - '<drupal-entity data-caption data-align data-entity-type data-entity-uuid data-embed-button data-entity-embed-display data-entity-embed-display-settings data-show-last-updated title alt>'
         - '<a hreflang target data-entity-substitution data-entity-type data-entity-uuid>'
         - '<blockquote cite class>'
         - '<ul type class>'
