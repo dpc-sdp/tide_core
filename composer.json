@@ -275,7 +275,7 @@
     "jquery/timepicker": "1.14.0",
     "lcobucci/clock": "3.0.0",
     "lesstif/php-jira-rest-client": "2.6.0",
-    "respect/validation": "dev-master"
+    "respect/validation": "dev-lock-symfony-polyfill-1.27.0 as dev-master"
   },
   "type": "drupal-module"
 }
