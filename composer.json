@@ -27,7 +27,8 @@
         "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15126604": "https://www.drupal.org/files/issues/2023-06-28/3109650-63.patch"
       },
       "drupal/entity_embed": {
-        "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
+        "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
+        "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15418003": "https://www.drupal.org/files/issues/2024-01-29/0001-Fixes-custom-data-attributes-issue.patch"
       },
       "drupal/field_group": {
         "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",

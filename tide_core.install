@@ -92,3 +92,52 @@ function tide_core_update_10002() {
   $approver->grantPermission('tide node bulk update');
   $approver->save();
 }
+
+/**
+ * Fixes dialog can no longer use custom data- attributes in CKEditor 5.
+ */
+function tide_core_update_10003() {
+  $config_factory = \Drupal::configFactory();
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+    'filter.format.summary_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    $value = $filter->get('filters.filter_html.settings.allowed_html');
+    if ($value) {
+      $replaced = str_replace('<drupal-entity data-*', '<drupal-entity data-caption data-align data-entity-uuid data-embed-button data-entity-embed-display data-entity-embed-display-settings data-show-last-updated', $value);
+      $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+      $filter->save();
+    }
+  }
+
+  $configs = [
+    'editor.editor.admin_text',
+    'editor.editor.rich_text',
+    'editor.editor.summary_text',
+  ];
+  foreach ($configs as $config) {
+    $editable_config = $config_factory->getEditable($config);
+    $rows = $editable_config->get('settings.plugins.ckeditor5_sourceEditing.allowed_tags');
+    if ($rows) {
+      $replaced_value = _tide_core_replace_attribute_in_tag($rows, 'drupal-entity', 'data-*', 'data-caption data-align data-entity-type data-entity-uuid data-embed-button data-entity-embed-display data-entity-embed-display-settings data-show-last-updated');
+      $editable_config->set('settings.plugins.ckeditor5_sourceEditing.allowed_tags', $replaced_value);
+      $editable_config->save();
+    }
+  }
+}
+
+/**
+ * Replaces a specified attribute within a given tag in an array of strings.
+ */
+function _tide_core_replace_attribute_in_tag($array, $tagName, $attribute, $newAttributeString) {
+  foreach ($array as $key => $value) {
+    if (strpos($value, "<" . $tagName) !== FALSE) {
+      $pattern = '/' . preg_quote($attribute, '/') . '/';
+      $array[$key] = preg_replace($pattern, $newAttributeString, $value);
+    }
+  }
+  return $array;
+}
