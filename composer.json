@@ -92,6 +92,11 @@
       },
       "type": "package"
     },
+    "respect/validation": {
+      "type": "vcs",
+      "no-api": true,
+      "url": "https://github.com/dpc-sdp/Validation.git"
+    },
     "ckeditor.codemirror": {
       "_webform": true,
       "package": {
