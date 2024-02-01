@@ -59,6 +59,7 @@ class TideIframe extends EmbeddedContentPluginBase implements EmbeddedContentInt
       '#type' => 'url',
       '#title' => $this->t('Url'),
       '#default_value' => $this->configuration['url'],
+      '#maxlength' => 1024,
       '#required' => TRUE,
     ];
     $form['width'] = [
