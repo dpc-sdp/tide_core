@@ -275,7 +275,7 @@
     "jquery/timepicker": "1.14.0",
     "lcobucci/clock": "3.0.0",
     "lesstif/php-jira-rest-client": "2.6.0",
-    "respect/validation": "dev-master"
+    "respect/validation": "2.3.1"
   },
   "type": "drupal-module"
 }
