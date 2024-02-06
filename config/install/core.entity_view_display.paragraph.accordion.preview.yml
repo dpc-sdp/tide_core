@@ -1,4 +1,3 @@
-uuid: 4646abeb-0d45-45de-b4c3-5a5de7ba0ece
 langcode: en
 status: true
 dependencies:
@@ -12,8 +11,6 @@ dependencies:
   module:
     - options
     - paragraphs
-_core:
-  default_config_hash: ClBfh4zjsISQn2_siOIQrzTzy-YezCLHrMaMIG9WBcs
 id: paragraph.accordion.preview
 targetEntityType: paragraph
 bundle: accordion
