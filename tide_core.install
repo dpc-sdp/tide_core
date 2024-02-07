@@ -92,3 +92,31 @@ function tide_core_update_10002() {
   $approver->grantPermission('tide node bulk update');
   $approver->save();
 }
+
+/**
+ * Add description field to accordion.
+ */
+function tide_core_update_10003() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+//   $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+//   $field_storage = 'field.storage.paragraph.field_current_milestone';
+//   $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+//   if (empty($storage->load('paragraph.field_current_milestone'))) {
+//     $config_read = _tide_read_config($field_storage, $config_location, TRUE);
+//     // Obtain the storage manager for field storage bases.
+//     // Create a new field from the yaml configuration and save.
+//     $storage->createFromStorageRecord($config_read)->save();
+//   }
+// }
+$configs = [
+    'field.field.paragraph.accordion.field_paragraph_body' => 'field_config',
+  ];
+  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}
