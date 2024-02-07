@@ -15,7 +15,7 @@ field_name: field_paragraph_body
 entity_type: paragraph
 bundle: accordion
 label: 'Accordion description'
-description: ''
+description: 'Add accordion description to display below accordion title.'
 required: false
 translatable: false
 default_value: {  }
