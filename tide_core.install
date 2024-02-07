@@ -111,7 +111,8 @@ function tide_core_update_10003() {
 $configs = [
     'field.field.paragraph.accordion.field_paragraph_body' => 'field_config',
   ];
-  $config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  //$config_location = [drupal_get_path('module', 'tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   // Check if field already exported to config/sync.
   foreach ($configs as $config => $type) {
     $config_read = _tide_read_config($config, $config_location, TRUE);
