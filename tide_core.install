@@ -124,6 +124,7 @@ function tide_core_update_10003() {
     $config->save();
   }
 }
+
 /**
  * Approver should not have access to administer taxonomy.
  */
