@@ -69,3 +69,9 @@ Feature: Access permissions
     Given I am logged in as a user with the "Site Auditor" role
     When I go to "/admin/reports/audit-trail"
     Then I should get a 200 HTTP response
+
+  @api
+  Scenario: Approver role should not have access to redirects.
+    Given I am logged in as a user with the "approver" role
+    When I go to "admin/structure/taxonomy/add"
+    Then I should get a 404 HTTP response
