@@ -92,3 +92,35 @@ function tide_core_update_10002() {
   $approver->grantPermission('tide node bulk update');
   $approver->save();
 }
+
+/**
+ * Add description field to accordion.
+ */
+function tide_core_update_10003() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $configs = [
+    'field.field.paragraph.accordion.field_paragraph_body' => 'field_config',
+  ];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+
+  $form_configs = [
+    'core.entity_form_display.paragraph.accordion.default',
+    'core.entity_view_display.paragraph.accordion.default',
+    'core.entity_view_display.paragraph.accordion.preview',
+  ];
+  foreach ($form_configs as $form_config) {
+    $config = \Drupal::configFactory()->getEditable($form_config);
+    $config_read = _tide_read_config($form_config, $config_location, FALSE);
+    $config->set('dependencies', $config_read['dependencies']);
+    $config->set('content', $config_read['content']);
+    $config->set('hidden', $config_read['hidden']);
+    $config->save();
+  }
+}
