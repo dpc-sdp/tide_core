@@ -1,0 +1,72 @@
+uuid: 9dcf2fb2-fb78-4252-bb3b-1915257d250c
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.tide_search_listing.field_below_results_content
+    - field.field.node.tide_search_listing.field_custom_sort_configuration
+    - field.field.node.tide_search_listing.field_featured_image
+    - field.field.node.tide_search_listing.field_header_components
+    - field.field.node.tide_search_listing.field_landing_page_intro_text
+    - field.field.node.tide_search_listing.field_landing_page_summary
+    - field.field.node.tide_search_listing.field_layout_component
+    - field.field.node.tide_search_listing.field_listing_global_filters
+    - field.field.node.tide_search_listing.field_listing_query_config
+    - field.field.node.tide_search_listing.field_listing_results_config
+    - field.field.node.tide_search_listing.field_listing_results_per_page
+    - field.field.node.tide_search_listing.field_listing_user_filters
+    - field.field.node.tide_search_listing.field_metatags
+    - field.field.node.tide_search_listing.field_node_department
+    - field.field.node.tide_search_listing.field_node_primary_site
+    - field.field.node.tide_search_listing.field_node_site
+    - field.field.node.tide_search_listing.field_results_component
+    - field.field.node.tide_search_listing.field_search_configuration
+    - field.field.node.tide_search_listing.field_search_input_placeholder
+    - field.field.node.tide_search_listing.field_search_submit_label
+    - field.field.node.tide_search_listing.field_show_content_rating
+    - field.field.node.tide_search_listing.field_tags
+    - field.field.node.tide_search_listing.field_topic
+    - node.type.tide_search_listing
+  module:
+    - user
+id: node.tide_search_listing.teaser
+targetEntityType: node
+bundle: tide_search_listing
+mode: teaser
+content:
+  content_moderation_control:
+    settings: {  }
+    third_party_settings: {  }
+    weight: -20
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_below_results_content: true
+  field_custom_sort_configuration: true
+  field_featured_image: true
+  field_header_components: true
+  field_landing_page_intro_text: true
+  field_landing_page_summary: true
+  field_layout_component: true
+  field_listing_global_filters: true
+  field_listing_query_config: true
+  field_listing_results_config: true
+  field_listing_results_per_page: true
+  field_listing_user_filters: true
+  field_metatags: true
+  field_node_department: true
+  field_node_primary_site: true
+  field_node_site: true
+  field_results_component: true
+  field_search_configuration: true
+  field_search_input_placeholder: true
+  field_search_submit_label: true
+  field_show_content_rating: true
+  field_tags: true
+  field_topic: true
+  search_api_excerpt: true
