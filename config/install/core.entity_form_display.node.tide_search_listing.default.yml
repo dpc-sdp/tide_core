@@ -1,3 +1,4 @@
+uuid: e13169a1-62dd-4950-9b6a-a95bec1790db
 langcode: en
 status: true
 dependencies:
@@ -26,10 +27,16 @@ dependencies:
     - field.field.node.tide_search_listing.field_tags
     - field.field.node.tide_search_listing.field_topic
     - node.type.tide_search_listing
+    - workflows.workflow.editorial
   module:
     - content_moderation
+    - field_group
+    - metatag
+    - paragraphs
     - path
     - select2
+    - text
+    - tide_content_collection
 third_party_settings:
   field_group:
     group_search_listing_header:
