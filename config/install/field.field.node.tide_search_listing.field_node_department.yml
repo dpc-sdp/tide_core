@@ -10,7 +10,7 @@ field_name: field_node_department
 entity_type: node
 bundle: tide_search_listing
 label: Department
-description: ''
+description: 'The Department/agency field is mandatory. Start typing your department name and click or down-arrow and Enter to select the correct one.'
 required: true
 translatable: false
 default_value: {  }

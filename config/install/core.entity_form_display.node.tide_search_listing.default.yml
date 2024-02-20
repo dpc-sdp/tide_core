@@ -29,6 +29,7 @@ dependencies:
   module:
     - content_moderation
     - path
+    - select2
 third_party_settings:
   field_group:
     group_search_listing_header:
@@ -287,10 +288,14 @@ content:
       use_details: true
     third_party_settings: {  }
   field_node_department:
-    type: options_select
+    type: select2_entity_reference
     weight: 50
     region: content
-    settings: {  }
+    settings:
+      width: 100%
+      autocomplete: false
+      match_operator: CONTAINS
+      match_limit: 10
     third_party_settings: {  }
   field_node_primary_site:
     type: options_buttons
