@@ -6,6 +6,7 @@ core_version_requirement: ^9 || ^10
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
+  - auditfiles:auditfiles
   - better_exposed_filters:better_exposed_filters
   - ckeditor5_embedded_content:ckeditor5_embedded_content
   - clamav:clamav
