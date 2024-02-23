@@ -139,3 +139,10 @@ function tide_core_update_10004() {
     user_role_revoke_permissions($role, $permissions);
   }
 }
+
+/**
+ * Enable auditfiles module.
+ */
+function tide_core_update_10005() {
+  \Drupal::service('module_installer')->install(['auditfiles']);
+}
