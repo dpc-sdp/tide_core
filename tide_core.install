@@ -101,7 +101,7 @@ function tide_core_update_10003() {
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
 
   $form_configs = [
-    'field.field.paragraph.accordion.field_paragraph_body' ,
+    'field.field.paragraph.accordion.field_paragraph_body',
     'core.entity_form_display.paragraph.accordion.default',
     'core.entity_view_display.paragraph.accordion.default',
     'core.entity_view_display.paragraph.accordion.preview',
