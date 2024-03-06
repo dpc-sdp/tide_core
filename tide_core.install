@@ -98,19 +98,10 @@ function tide_core_update_10002() {
  */
 function tide_core_update_10003() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
-  $configs = [
-    'field.field.paragraph.accordion.field_paragraph_body' => 'field_config',
-  ];
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
-  // Check if field already exported to config/sync.
-  foreach ($configs as $config => $type) {
-    $config_read = _tide_read_config($config, $config_location, TRUE);
-    $storage = \Drupal::entityTypeManager()->getStorage($type);
-    $config_entity = $storage->createFromStorageRecord($config_read);
-    $config_entity->save();
-  }
 
   $form_configs = [
+    'field.field.paragraph.accordion.field_paragraph_body',
     'core.entity_form_display.paragraph.accordion.default',
     'core.entity_view_display.paragraph.accordion.default',
     'core.entity_view_display.paragraph.accordion.preview',
