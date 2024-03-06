@@ -106,8 +106,11 @@ function tide_core_update_10003() {
   foreach ($configs as $config => $type) {
     $config_read = _tide_read_config($config, $config_location, TRUE);
     $storage = \Drupal::entityTypeManager()->getStorage($type);
-    $config_entity = $storage->createFromStorageRecord($config_read);
-    $config_entity->save();
+    $id = substr($config, strrpos($config, '.') + 1);
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
   }
 
   $form_configs = [
