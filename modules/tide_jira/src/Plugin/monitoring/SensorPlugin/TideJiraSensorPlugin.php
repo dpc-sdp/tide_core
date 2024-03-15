@@ -20,21 +20,21 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class TideJiraSensorPlugin extends SensorPluginBase implements SensorPluginInterface {
-  
+
   /**
    * The config.
    *
    * @var \Drupal\Core\Config\ConfigFactory
    */
   protected $config;
-  
+
   /**
    * The connector.
    *
    * @var \Drupal\jira_rest\JiraRestWrapperService
    */
   protected $connector;
-  
+
   /**
    * {@inheritdoc}
    */
@@ -43,7 +43,7 @@ class TideJiraSensorPlugin extends SensorPluginBase implements SensorPluginInter
     $this->config = $config_factory->get('tide_jira.settings');
     $this->connector = $jira_rest;
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -56,7 +56,7 @@ class TideJiraSensorPlugin extends SensorPluginBase implements SensorPluginInter
       $container->get('jira_rest_wrapper_service'),
     );
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -68,7 +68,7 @@ class TideJiraSensorPlugin extends SensorPluginBase implements SensorPluginInter
       'settings' => [],
     ];
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -78,19 +78,21 @@ class TideJiraSensorPlugin extends SensorPluginBase implements SensorPluginInter
     try {
       $us = $this->connector->getUserService();
       $account_id = $us->findUserByEmail($default_email);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       $sensor_result->setStatus(SensorResultInterface::STATUS_CRITICAL);
       $sensor_result->setMessage('Tide Jira endpoint is not correctly configured...');
     }
-    
+
     if (empty($account_id)) {
       $sensor_result->setStatus(SensorResultInterface::STATUS_CRITICAL);
       $sensor_result->setMessage(sprintf('Failed to lookup default account %s', $default_email));
-    } else {
+    }
+    else {
       $sensor_result->setStatus(SensorResultInterface::STATUS_OK);
       $sensor_result->setMessage('Tide Jira OK!');
     }
-    
+
   }
-  
+
 }
