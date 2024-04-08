@@ -260,6 +260,7 @@
     "drupal/smtp": "^1.2",
     "drupal/stage_file_proxy": "^2.0",
     "drupal/tablefield": "2.4",
+    "drupal/term_reference_tree": "^2.0",
     "drupal/token": "^1.11",
     "drupal/token_conditions": "dev-compatible-with-d10",
     "drupal/token_filter": "^2.0",

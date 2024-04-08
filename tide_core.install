@@ -34,6 +34,9 @@ function tide_core_install() {
   // Creates terms for Topic vocabulary.
   $tideCoreOperation->createTopicTermsVocabulary();
 
+  // Creates terms for content_category vocabulary.
+  $tideCoreOperation->addContentCategoryVocabulary();
+
   // Update default Editorial workflow of Content Moderation.
   $tideCoreOperation->updateEditorialWorkflow();
 
@@ -144,9 +147,38 @@ function tide_core_update_10004() {
 }
 
 /**
- * Fixes dialog can no longer use custom data- attributes in CKEditor 5.
+ * Run _add_default_content_category_taxonomy().
  */
 function tide_core_update_10005() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('field.storage.node.field_content_category', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  if ($storage->load('node.field_content_category') === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  if (\Drupal::moduleHandler()->moduleExists('term_reference_tree') === FALSE) {
+    \Drupal::service('module_installer')->install(['term_reference_tree']);
+  }
+  $config_read = _tide_read_config('taxonomy.vocabulary.content_category', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_vocabulary');
+  if ($storage->load('content_category') === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  $vocabulary_details = [
+    'vid' => 'content_category',
+    'description' => 'Categories assigned to all content to assist with filtering in content collection and search',
+    'name' => 'Content category',
+  ];
+  _tide_core_adding_default_taxonomy(_content_category_terms(), $vocabulary_details);
+}
+
+/**
+ * Fixes dialog can no longer use custom data- attributes in CKEditor 5.
+ */
+function tide_core_update_10006() {
   $config_factory = \Drupal::configFactory();
   $filter_ids = [
     'filter.format.admin_text',
