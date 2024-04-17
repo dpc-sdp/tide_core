@@ -4,10 +4,12 @@ dependencies:
   config:
     - field.field.paragraph.accordion.field_paragraph_accordion
     - field.field.paragraph.accordion.field_paragraph_accordion_style
+    - field.field.paragraph.accordion.field_paragraph_body
     - field.field.paragraph.accordion.field_paragraph_title
     - paragraphs.paragraphs_type.accordion
   module:
     - entity_reference_revisions
+    - text
 id: paragraph.accordion.default
 targetEntityType: paragraph
 bundle: accordion
@@ -15,20 +17,27 @@ mode: default
 content:
   field_paragraph_accordion:
     type: entity_reference_revisions_entity_view
-    weight: 1
     label: hidden
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    weight: 1
+    region: content
+  field_paragraph_body:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
     region: content
   field_paragraph_title:
-    weight: 0
+    type: string
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 0
     region: content
 hidden:
   field_paragraph_accordion_style: true

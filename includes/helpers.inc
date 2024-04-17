@@ -9,6 +9,8 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Site\Settings;
 use Drupal\paragraphs\Entity\ParagraphsType;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
 
 /**
  * Helper to read configuration from provided locations.
@@ -198,4 +200,189 @@ function _tide_extract_id_for_storage_usage($target, $config, $include) {
     }
   }
   return $matches;
+}
+
+/**
+ * Adds taxonomy with nested terms up to a specified depth and order.
+ *
+ * @param array $terms
+ *   An associative array of terms where keys are term names and values are
+ *   either arrays of child term names or associative arrays with nested terms.
+ *   Example structure for $terms:
+ *   $terms = [
+ *     'Events' => [
+ *       'Events',
+ *     ],
+ *     'Policy and legislation' => [
+ *       'Legislation',
+ *       'Regulation' => [
+ *         'hello' => [
+ *           'world',
+ *           'new' => [
+ *             'era',
+ *           ],
+ *         ],
+ *       ],
+ *     ],
+ *   ];
+ *   This represents a hierarchy with 'Events' and 'Policy and legislation'
+ *   as top-level terms, and nested children underneath them.
+ * @param array $vocabulary_details
+ *   An associative array with vocabulary details. Example:
+ *   $vocabulary_details = [
+ *     'vid' => 'content_category',
+ *     'description' => 'Categories for content filtering and search',
+ *     'name' => 'Content category',
+ *   ];.
+ * @param int $max_depth
+ *   The maximum hierarchy depth to create, defaulting to 4. Deeper nested
+ *   terms beyond this depth will be ignored.
+ */
+function _tide_core_adding_default_taxonomy(array $terms, array $vocabulary_details, $max_depth = 4) {
+  $vocabulary_id = $vocabulary_details['vid'];
+  // Load or create the vocabulary.
+  $vocabulary = Vocabulary::load($vocabulary_id);
+  if (!$vocabulary) {
+    $vocabulary = Vocabulary::create($vocabulary_details);
+    $vocabulary->save();
+  }
+
+  // Function to recursively add terms to the vocabulary.
+  $add_terms_recursively = function ($parent_tid, array $terms, $weight, $depth) use (&$add_terms_recursively, $vocabulary_id, $max_depth) {
+    if ($depth > $max_depth) {
+      return;
+    }
+
+    foreach ($terms as $term_name => $child_terms) {
+      if (is_array($child_terms)) {
+        $parent_term = _create_or_load_term($vocabulary_id, $term_name, $parent_tid, $weight++);
+        $add_terms_recursively($parent_term->id(), $child_terms, 0, $depth + 1);
+      }
+      else {
+        _create_or_load_term($vocabulary_id, $child_terms, $parent_tid, $weight++);
+      }
+    }
+  };
+
+  $add_terms_recursively(0, $terms, 0, 1);
+}
+
+/**
+ * Create or retrieve a Term.
+ *
+ * This function checks if a taxonomy term already exists within a specified
+ * vocabulary. If the term exists, it is returned. If not, a new term is created
+ * with the given details and then returned.
+ *
+ * @param string $vocabulary_id
+ *   The machine name of the vocabulary.
+ * @param string $term_name
+ *   The name of the term to be created or retrieved.
+ * @param int $parent_tid
+ *   The term ID of the parent term. If set to 0, it has no parent.
+ * @param int $weight
+ *   The weight of the term, used for sorting purposes.
+ *
+ * @return \Drupal\taxonomy\Entity\Term
+ *   The taxonomy term object.
+ */
+function _create_or_load_term($vocabulary_id, $term_name, $parent_tid = 0, $weight = 0) {
+  // If a parent term is specified, search for a term with the same name
+  // and parent.
+  if ($parent_tid != 0) {
+    $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+      'name' => $term_name,
+      'vid' => $vocabulary_id,
+      'parent' => $parent_tid,
+    ]);
+  }
+  // If no parent is specified, search for a term with the same name in
+  // the vocabulary.
+  else {
+    $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+      'name' => $term_name,
+      'vid' => $vocabulary_id,
+    ]);
+  }
+  // If the term exists, return it.
+  $term = reset($terms);
+  if ($term) {
+    return $term;
+  }
+  // If the term does not exist, create a new one with the specified details.
+  $term = Term::create([
+    'vid' => $vocabulary_id,
+    'name' => $term_name,
+    'parent' => [$parent_tid],
+    'weight' => $weight,
+  ]);
+  // Save the newly created term.
+  $term->save();
+  // Return the new term.
+  return $term;
+}
+
+/**
+ * Returns predefined content_category terms for tide_core module.
+ */
+function _content_category_terms() {
+  return [
+    'Events' => [
+      'Event',
+    ],
+    'Grants' => [
+      'Grant',
+    ],
+    'Other' => [
+      'Other',
+    ],
+    'News and media' => [
+      'News article',
+      'Media release',
+    ],
+    'Policy and legislation' => [
+      'Legislation',
+      'Regulation',
+      'Policy',
+      'Ministerial order',
+      'Notice',
+      'Briefing',
+    ],
+    'Profiles' => [
+      'Individual profile',
+      'Organisation profile',
+    ],
+    'Programs and reports' => [
+      'Report',
+      'Program',
+      'Initiative',
+      'Campaign',
+      'Inquiry',
+      'Strategy',
+    ],
+    'Resources and guidance' => [
+      'Guide',
+      'Handbook',
+      'Manual',
+      'Fact sheet',
+      'Brochure',
+      'Map',
+      'Framework',
+      'Poster',
+      'Specification',
+      'Plan',
+    ],
+    'Tools and templates' => [
+      'Tool',
+      'Quote template',
+      'Template',
+      'Calculator',
+      'Contract template',
+      'Worksheet',
+      'Form',
+      'Letter',
+      'Checklist',
+      'Memo',
+    ],
+  ];
 }

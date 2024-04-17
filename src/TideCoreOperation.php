@@ -233,4 +233,17 @@ class TideCoreOperation {
     }
   }
 
+  /**
+   * Creates terms for content_category vocabulary.
+   */
+  public function addContentCategoryVocabulary() {
+    $vocabulary_details = [
+      'vid' => 'content_category',
+      'description' => 'Categories assigned to all content to assist with filtering in content collection and search',
+      'name' => 'Content category',
+    ];
+    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+    _tide_core_adding_default_taxonomy(_content_category_terms(), $vocabulary_details);
+  }
+
 }
