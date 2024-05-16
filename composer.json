@@ -254,8 +254,7 @@
                 "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
             },
             "drupal/content_lock": {
-                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch",
-                "Fix PHP 8.2+ deprecation notices - https://www.drupal.org/project/content_lock/issues/3343964#comment-15061454": "https://www.drupal.org/files/issues/2023-05-22/3343964-5.patch"
+                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
             "lesstif/php-jira-rest-client": {
                 "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
