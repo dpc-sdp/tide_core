@@ -220,7 +220,8 @@
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
                 "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
-                "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15553421": "https://www.drupal.org/files/issues/2024-04-16/3170906-menu-filter-12.patch"
+                "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15553421": "https://www.drupal.org/files/issues/2024-04-16/3170906-menu-filter-12.patch",
+                "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-05-08/drupal_core_non-breaking%20space_issue_3445910_1.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
@@ -253,8 +254,7 @@
                 "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
             },
             "drupal/content_lock": {
-                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch",
-                "Fix PHP 8.2+ deprecation notices - https://www.drupal.org/project/content_lock/issues/3343964#comment-15061454": "https://www.drupal.org/files/issues/2023-05-22/3343964-5.patch"
+                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
             "lesstif/php-jira-rest-client": {
                 "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
