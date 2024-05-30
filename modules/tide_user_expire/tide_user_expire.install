@@ -11,3 +11,12 @@
 function tide_user_expire_uninstall() {
   \Drupal::configFactory()->getEditable('tide_user_expire.settings')->delete();
 }
+
+/**
+ * Import user expire settings.
+ */
+function tide_core_update_10001() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  _tide_import_single_config('user_expire.settings', $config_location);
+}
