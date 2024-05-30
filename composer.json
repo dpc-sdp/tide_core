@@ -272,7 +272,7 @@
                 "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450#comment-15199879": "https://www.drupal.org/files/issues/2023-11-29/vde-drush-with-output-location-2887450-91.patch"
             },
             "drupal/tfa": {
-                "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15266621": "https://www.drupal.org/files/issues/2023-10-11/3223327-implement-force_tfa_setup-30.patch",
+                "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15468410": "https://www.drupal.org/files/issues/2024-02-29/DD-1756-force-tfa-user-setup-3223327-38.patch",
                 "Replace TFA with 2FA in all user strings - https://www.drupal.org/project/tfa/issues/3337528#comment-15275004": "https://www.drupal.org/files/issues/2023-10-17/3337528-replace_tfa_to_2fa-5.patch",
                 "TFA disable screen cancel button always redirects to current user TFA page - https://www.drupal.org/project/tfa/issues/3397070#comment-15291816": "https://www.drupal.org/files/issues/2023-10-27/3397070-fix_redirection_cancel_disable-3.patch"
             }
