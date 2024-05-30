@@ -246,4 +246,16 @@ class TideCoreOperation {
     _tide_core_adding_default_taxonomy(_content_category_terms(), $vocabulary_details);
   }
 
+  /**
+   * Enabled Tide TFA module.
+   */
+  public function enabledTideTfa() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    // Enable Tide TFA.
+    if (!$moduleHandler->moduleExists('tide_tfa')) {
+      $moduleInstaller->install(['tide_tfa']);
+    }
+  }
+
 }

@@ -12,6 +12,7 @@ dependencies:
   - config_split:config_split
   - config_update:config_update
   - config_ignore:config_ignore
+  - devel_entity_updates:devel_entity_updates
   - diff:diff
   - drupal:block
   - drupal:block_content
