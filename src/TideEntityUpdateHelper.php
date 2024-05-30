@@ -172,4 +172,54 @@ class TideEntityUpdateHelper {
     return $this->entityFieldManager->getFieldStorageDefinitions($entity_type_id);
   }
 
+  /**
+   * Gets the entity type's most recently installed field storage definitions.
+   *
+   * During the application lifetime, field storage definitions can change. For
+   * example, updated code can be deployed. The getFieldStorageDefinitions()
+   * method will always return the definitions as determined by the current
+   * codebase. This method, however, returns what the definitions were when the
+   * last time that one of the
+   * \Drupal\Core\Field\FieldStorageDefinitionListenerInterface events was last
+   * fired and completed successfully. In other words, the definitions that
+   * the entity type's handlers have incorporated into the application state.
+   * For example, if the entity type's storage handler is SQL-based, the
+   * definitions for which database tables were created.
+   *
+   * Application management code can check if getFieldStorageDefinitions()
+   * differs from getLastInstalledFieldStorageDefinitions() and decide whether
+   * to:
+   * - Invoke the appropriate
+   *   \Drupal\Core\Field\FieldStorageDefinitionListenerInterface
+   *   events so that handlers react to the new definitions.
+   * - Raise a warning that the application state is incompatible with the
+   *   codebase.
+   * - Perform some other action.
+   *
+   * @param string $entity_type_id
+   *   The entity type ID.
+   *
+   * @return \Drupal\Core\Field\FieldStorageDefinitionInterface[]
+   *   The array of installed field storage definitions for the entity type,
+   *   keyed by field name.
+   *
+   * @see \Drupal\Core\Entity\EntityTypeListenerInterface
+   */
+  public function getOriginalStorageDefinitions(string $entity_type_id) {
+    return $this->lastInstalledSchema->getLastInstalledFieldStorageDefinitions($entity_type_id);
+  }
+
+  /**
+   * Performs a field storage definition update.
+   */
+  public function updateFieldTable(string $entity_type_id, string $field_name) {
+    $storage_definitions = $this->entityFieldManager->getFieldStorageDefinitions($entity_type_id);
+    $original_storage_definitions = $this->lastInstalledSchema->getLastInstalledFieldStorageDefinitions($entity_type_id);
+    $storage_definition = $storage_definitions[$field_name] ?? NULL;
+    $original_storage_definition = $original_storage_definitions[$field_name] ?? NULL;
+    if ($storage_definition && $original_storage_definition) {
+      $this->fieldStorageDefinitionListener->onFieldStorageDefinitionUpdate($storage_definition, $original_storage_definition);
+    }
+  }
+
 }

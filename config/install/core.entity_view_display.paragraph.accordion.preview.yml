@@ -5,6 +5,7 @@ dependencies:
     - core.entity_view_mode.paragraph.preview
     - field.field.paragraph.accordion.field_paragraph_accordion
     - field.field.paragraph.accordion.field_paragraph_accordion_style
+    - field.field.paragraph.accordion.field_paragraph_body
     - field.field.paragraph.accordion.field_paragraph_title
     - paragraphs.paragraphs_type.accordion
   module:
@@ -17,24 +18,25 @@ mode: preview
 content:
   field_paragraph_accordion:
     type: paragraph_summary
-    weight: 2
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_paragraph_accordion_style:
     type: list_default
-    weight: 1
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
   field_paragraph_title:
     type: string
-    weight: 0
-    region: content
     label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
-hidden: {  }
+    weight: 0
+    region: content
+hidden:
+  field_paragraph_body: true
