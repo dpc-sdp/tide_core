@@ -19,8 +19,8 @@ function tide_user_expire_update_10001() {
   module_load_include('inc', 'tide_core', 'includes/helpers');
   $config_id = 'user_expire.settings';
   $config = \Drupal::configFactory()->getEditable($config_id);
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
-  $config_read = _tide_read_config($config_id, $config_location);
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_user_expire') . '/config/optional'];
+  $config_read = _tide_read_config($config_id, $config_location, FALSE);
   $config->set('frequency', $config_read['frequency']);
   $config->set('offset', $config_read['offset']);
   $config->set('user_expire_roles', $config_read['user_expire_roles']);
