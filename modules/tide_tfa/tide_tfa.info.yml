@@ -6,6 +6,7 @@ package: Tide
 dependencies:
   - drupal:real_aes
   - drupal:tfa
+  - drupal:tfa_email_otp
   - dpc-sdp:tide_core
 config_devel:
   install:
