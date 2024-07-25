@@ -3,6 +3,7 @@
 namespace Drupal\tide_tfa;
 
 use Drupal\block\Entity\Block;
+use Drupal\user\Entity\Role;
 
 /**
  * Helper class for install/update ops.
@@ -12,7 +13,7 @@ class TideTfaOperation {
   /**
    * TFA default validation plugin.
    */
-  const DEFAULT_VALIDATION_PLUGIN = 'tfa_totp';
+  const DEFAULT_VALIDATION_PLUGIN = 'tfa_email_otp';
 
   /**
    * Encryption profile.
@@ -28,11 +29,6 @@ class TideTfaOperation {
    * Name prefix.
    */
   const NAME_PREFIX = 'TFA';
-
-  /**
-   * Name prefix.
-   */
-  const ISSUER = 'content-reference';
 
   /**
    * Disabled site alert for TFA routes.
@@ -53,22 +49,24 @@ class TideTfaOperation {
    * Setup TFA settings.
    */
   public static function setupTfaSettings() {
-    $tfa_required_roles = [
-      'authenticated' => 'authenticated',
-      'administrator' => 'administrator',
-      'approver' => 'approver',
-      'site_admin' => 'site_admin',
-      'editor' => 'editor',
-      'previewer' => 'previewer',
-      'contributor' => 'contributor',
-      'event_author' => 'event_author',
-      'grant_author' => 'grant_author',
-      'site_auditor' => 'site_auditor',
-    ];
+    // Get site name.
+    $system_site_config = \Drupal::configFactory()->get('system.site');
+    $site_name = $system_site_config->get('name');
+    // Load all roles.
+    $roles = Role::loadMultiple();
+    // Initialize the $tfa_required_roles array.
+    $tfa_required_roles = [];
+    // Iterate through the roles and map the role IDs.
+    foreach ($roles as $role) {
+    // Map the role ID to itself.
+      $tfa_required_roles[$role->id()] = $role->id();
+    }
+
     $allowed_validation_plugins = [
-      'tfa_recovery_code' => 'tfa_recovery_code',
-      self::DEFAULT_VALIDATION_PLUGIN => self::DEFAULT_VALIDATION_PLUGIN,
+      'tfa_recovery_code' => 0,
+      'tfa_totp' => 0,
       'tfa_hotp' => 0,
+      'tfa_email_otp' => 'tfa_email_otp',
     ];
     $login_plugin_settings = [
       'tfa_trusted_browser' => [
@@ -82,16 +80,23 @@ class TideTfaOperation {
         'counter_window' => '10',
         'site_name_prefix' => self::SITE_NAME_PREFIX,
         'name_prefix' => self::NAME_PREFIX,
-        'issuer' => self::ISSUER,
+        'issuer' => $site_name,
       ],
       'tfa_recovery_code' => [
         'recovery_codes_amount' => '10',
       ],
-      self::DEFAULT_VALIDATION_PLUGIN => [
+      'tfa_totp' => [
         'time_skew' => '2',
         'site_name_prefix' => self::SITE_NAME_PREFIX,
         'name_prefix' => self::NAME_PREFIX,
-        'issuer' => self::ISSUER,
+        'issuer' => $site_name,
+      ],
+      'tfa_email_otp' => [
+        'code_validity_period' => '600',
+        'email_setting' => [
+          'subject' => '[site:name] Authentication code',
+          'body' => '[user:display-name],\r\n\r\nThis code is valid for [length] minutes. Your code is: [code]\r\n\r\nThis code will expire once you have logged in.',
+        ],
       ],
     ];
 
@@ -104,6 +109,8 @@ class TideTfaOperation {
       ->set('default_validation_plugin', self::DEFAULT_VALIDATION_PLUGIN)
       ->set('validation_plugin_settings', $validation_plugin_settings)
       ->set('encryption', self::ENCRYPTION_PROFILE)
+      ->set('users_without_tfa_redirect', TRUE)
+      ->set('reset_pass_skip_enabled', TRUE)
       ->save();
   }
 
