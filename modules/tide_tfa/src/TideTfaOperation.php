@@ -58,7 +58,7 @@ class TideTfaOperation {
     $tfa_required_roles = [];
     // Iterate through the roles and map the role IDs.
     foreach ($roles as $role) {
-    // Map the role ID to itself.
+      // Map the role ID to itself.
       $tfa_required_roles[$role->id()] = $role->id();
     }
 
