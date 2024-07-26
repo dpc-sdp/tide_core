@@ -22,7 +22,7 @@ Feature: Force 2FA setup
   Scenario Outline: 2FA settings page is set disabled by default
     Given I am logged in as a user with the "<role>" role
     When I go to "/admin/config/people/tfa"
-    And I see the text "2FA Settings"
+    And I see the text "TFA Settings"
     And I see field "edit-tfa-enabled"
     And the "edit-tfa-enabled" checkbox should not be checked
     And I see field "edit-tfa-forced"
