@@ -2,7 +2,7 @@ tide_cms_support.cms_guides:
   title: 'Help'
   description: 'Access our content guides, find out where you can get further content support and training, and keep up to date by reading our latest CMS update release notes.'
   parent: 'system.admin'
-  url: https://digital-vic.atlassian.net/servicedesk/customer/portal/14/article/2030338745
+  url: https://digital-vic.atlassian.net/servicedesk/customer/article/2030338745
   weight: 100
   options:
     attributes:
