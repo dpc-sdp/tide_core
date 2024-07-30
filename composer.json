@@ -57,7 +57,7 @@
         "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
       },
       "drupal/token": {
-        "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-12483697": "https://www.drupal.org/files/issues/tokens_body_with_summary-2924873-2.patch"
+        "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
       },
       "drupal/views_data_export": {
         "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-14930767": "https://www.drupal.org/files/issues/2023-02-20/views_data_export-3173296-25.patch",
@@ -257,7 +257,7 @@
     "drupal/stage_file_proxy": "^2.0",
     "drupal/tablefield": "2.4",
     "drupal/term_reference_tree": "^2.0",
-    "drupal/token": "^1.11",
+    "drupal/token": "^1.15",
     "drupal/token_conditions": "dev-compatible-with-d10",
     "drupal/token_filter": "^2.0",
     "drupal/twig_field_value": "^2.0",
