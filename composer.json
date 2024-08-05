@@ -235,7 +235,7 @@
             },
             "drupal/field_group": {
                 "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550#comment-15712652": "https://www.drupal.org/files/issues/2024-08-05/3098550-19.patch",
-                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
+                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-15712685": "https://www.drupal.org/files/issues/2024-08-05/2894351-32.patch"
             },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
