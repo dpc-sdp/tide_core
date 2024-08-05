@@ -231,7 +231,6 @@
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
             },
             "drupal/field_group": {
-                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
                 "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
             },
             "drupal/jira_rest": {
