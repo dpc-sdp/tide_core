@@ -230,9 +230,6 @@
             "drupal/token": {
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
             },
-            "drupal/field_group": {
-                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
-            },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
