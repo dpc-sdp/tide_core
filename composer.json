@@ -27,7 +27,7 @@
         "drupal/entity_embed": "1.x-dev@dev",
         "drupal/environment_indicator": "^4.0",
         "drupal/fast_404": "^3.0",
-        "drupal/field_group": "^3.4",
+        "drupal/field_group": "^3.6",
         "drupal/google_analytics": "^4.0",
         "drupal/hotjar": "^3.1",
         "drupal/linkit": "^6.0.0",
