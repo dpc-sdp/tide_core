@@ -20,7 +20,7 @@
         "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
         "Empty breadcrumb at node/add and node/add/{content_type} when frontpage view is enabled - https://www.drupal.org/project/drupal/issues/3220437": "https://www.drupal.org/files/issues/2021-08-25/3220437-61.patch",
         "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
-        "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-05-08/drupal_core_non-breaking%20space_issue_3445910_1.patch",
+        "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
         "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
         "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
         "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
@@ -29,10 +29,6 @@
       "drupal/entity_embed": {
         "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15546646": "https://www.drupal.org/files/issues/2024-04-11/Fixes-custom-data-attributes-issue-11.patch",
         "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
-      },
-      "drupal/field_group": {
-        "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
-        "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
       },
       "drupal/jira_rest": {
         "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
