@@ -27,7 +27,7 @@
         "drupal/entity_embed": "1.x-dev@dev",
         "drupal/environment_indicator": "^4.0",
         "drupal/fast_404": "^3.0",
-        "drupal/field_group": "^3.4",
+        "drupal/field_group": "^3.6",
         "drupal/google_analytics": "^4.0",
         "drupal/hotjar": "^3.1",
         "drupal/linkit": "^6.0.0",
@@ -221,7 +221,7 @@
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
                 "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
                 "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15553421": "https://www.drupal.org/files/issues/2024-04-16/3170906-menu-filter-12.patch",
-                "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-05-08/drupal_core_non-breaking%20space_issue_3445910_1.patch"
+                "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
@@ -231,14 +231,15 @@
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
             },
             "drupal/field_group": {
-                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550": "https://www.drupal.org/files/issues/2020-06-18/3098550-12.patch",
-                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-14063815": "https://www.drupal.org/files/issues/2021-04-18/2894351-23.patch"
+                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550#comment-15712652": "https://www.drupal.org/files/issues/2024-08-05/3098550-19.patch",
+                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-15712685": "https://www.drupal.org/files/issues/2024-08-05/2894351-32.patch"
             },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
             "drupal/password_policy": {
-                "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
+                "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch",
+                "Fatal error when changing password when password_policy_history is enabled - https://www.drupal.org/project/password_policy/issues/3465364#comment-15713319": "https://www.drupal.org/files/issues/2024-08-05/3465364-1.patch"
             },
             "drupal/simple_oauth": {
                 "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",
