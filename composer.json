@@ -225,7 +225,8 @@
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
-                "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15546646": "https://www.drupal.org/files/issues/2024-04-11/Fixes-custom-data-attributes-issue-11.patch"
+                "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15546646": "https://www.drupal.org/files/issues/2024-04-11/Fixes-custom-data-attributes-issue-11.patch",
+                "Entity Embed fails to install after Embed module update - https://www.drupal.org/project/entity_embed/issues/3466609#comment-15717703": "https://www.drupal.org/files/issues/2024-08-07/entity_embed-embed_constructor-3466609-8.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
