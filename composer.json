@@ -27,6 +27,7 @@
         "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15443091": "https://www.drupal.org/files/issues/2024-02-15/drupal-n3109650-72-102x.patch"
       },
       "drupal/entity_embed": {
+        "Entity Embed fails to install after Embed module update - https://www.drupal.org/project/entity_embed/issues/3466609#comment-15717703": "https://www.drupal.org/files/issues/2024-08-07/entity_embed-embed_constructor-3466609-8.patch",
         "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15546646": "https://www.drupal.org/files/issues/2024-04-11/Fixes-custom-data-attributes-issue-11.patch",
         "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch"
       },
