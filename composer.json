@@ -44,8 +44,7 @@
         "Paragraph with long label name gets cut off -https://www.drupal.org/project/paragraphs/issues/3350521#comment-14984824": "https://www.drupal.org/files/issues/2023-03-27/paragraph-long-label-cut-off-3350521-2.patch"
       },
       "drupal/password_policy": {
-        "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch",
-        "Fatal error when changing password when password_policy_history is enabled - https://www.drupal.org/project/password_policy/issues/3465364#comment-15713319": "https://www.drupal.org/files/issues/2024-08-05/3465364-1.patch"
+        "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
       },
       "drupal/simple_oauth": {
         "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch",
