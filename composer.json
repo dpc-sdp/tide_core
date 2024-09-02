@@ -80,13 +80,30 @@
         "giggsey/libphonenumber-for-php": "^8.13",
         "drupal/site_alert": "^1.3",
         "lcobucci/clock": "3.2.0",
-        "drupal/term_reference_tree": "^2.0"
+        "drupal/term_reference_tree": "^2.0",
+        "drupal/embed": "^1.6",
+        "drupal/focal_point": "^2.0",
+        "drupal/svg_image": "^3.0",
+        "drupal/video_embed_field": "2.5",
+        "drupal/entity_usage": "^2.0@beta",
+        "drupal/crop": "^2.3",
+        "drupal/jsonapi_extras": "^3.23",
+        "drupal/jsonapi_menu_items": "^1.2",
+        "drupal/jsonapi_resources": "^1.0.0-beta5@beta",
+        "drupal/schemata": "^1.0@beta",
+        "drupal/create_menus_permission": "dev-drupal_10_compatibility",
+        "drupal/key_value_field": "^1.3"
     },
     "repositories": {
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates"]
+            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+        },
+        "drupal/create_menus_permission": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/create_menus_permission.git"
         },
         "ckeditor.autogrow": {
             "_webform": true,
@@ -221,7 +238,13 @@
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
                 "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
                 "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15553421": "https://www.drupal.org/files/issues/2024-04-16/3170906-menu-filter-12.patch",
-                "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch"
+                "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
+                "Use CKEditor 5's native <ol type> and <ul type> UX - https://www.drupal.org/project/drupal/issues/3274635#comment-15507417": "https://www.drupal.org/files/issues/2024-03-21/ckeditor5_custom_patch_file.patch",
+                "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch",
+                "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://www.drupal.org/files/issues/2024-03-25/3088239-50.patch"
+            },
+            "drupal/video_embed_field": {
+                "Add support for Ckeditor 5 - https://www.drupal.org/project/video_embed_field/issues/3311063": "./patches/video_embed_field/video_embed_field_6.patch"
             },
             "drupal/entity_embed": {
                 "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
@@ -265,6 +288,15 @@
             "drupal/views_data_export": {
                 "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-14930767": "https://www.drupal.org/files/issues/2023-02-20/views_data_export-3173296-25.patch",
                 "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450#comment-15199879": "https://www.drupal.org/files/issues/2023-11-29/vde-drush-with-output-location-2887450-91.patch"
+            },
+            "drupal/jsonapi_extras": {
+                "Make max value of page[limit] configurable per entity/bundle - https://www.drupal.org/project/jsonapi_extras/issues/2884292#comment-14794882": "https://www.drupal.org/files/issues/2022-11-21/max_page_limit_configuration-2884292-33.patch"
+            },
+            "drupal/jsonapi_menu_items": {
+                "Allow filtering of response payload - https://www.drupal.org/project/jsonapi_menu_items/issues/3350524#comment-15577964": "https://www.drupal.org/files/issues/2024-05-02/3350524-filter_fields-6.patch"
+            },
+            "drupal/linkit": {
+                "Unpublished nodes not included even when option is selected - https://www.drupal.org/project/linkit/issues/3049946#comment-14953079": "https://www.drupal.org/files/issues/2023-03-06/linkit-unpublished-nodes-not-included-3049946-32.patch"
             }
         }
     },

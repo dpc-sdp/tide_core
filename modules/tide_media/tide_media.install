@@ -1,0 +1,62 @@
+<?php
+
+/**
+ * @file
+ * Tide Media install.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\tide_media\TideOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_media_install() {
+  TideOperation::enableStandaloneMedia();
+  TideOperation::entityUsageDefaultSettings();
+  TideOperation::assignNecessaryPermissions();
+  TideOperation::createLicenseTypeTerms();
+
+}
+
+/**
+ * Updates to have department field required.
+ */
+function tide_media_update_10001() {
+  $entity_type = 'media';
+  $media_bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($entity_type);
+  $bundles = [
+    'audio',
+    'document',
+    'embedded_video',
+    'file',
+    'image',
+  ];
+  if (!empty($media_bundles) && is_array($media_bundles)) {
+    foreach ($media_bundles as $name => $bundle) {
+      if (in_array($name, $bundles)) {
+        $field = FieldConfig::loadByName($entity_type, $name, 'field_media_department');
+        if (!empty($field)) {
+          $field->setRequired(TRUE);
+          $field->save();
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Creates terms for license_type vocabulary for installed site.
+ */
+function tide_media_update_10002() {
+  TideOperation::createLicenseTypeTerms();
+}
+
+/**
+ * Remove the png icon.
+ */
+function tide_media_update_10003() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('embed.button.tide_media');
+  $config->set('icon', [])->save();
+}

@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Tide content collection install file.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_install().
+ */
+function tide_content_collection_install($is_syncing) {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  // Get icons.
+  $icon_dir = \Drupal::service('extension.list.module')->getPath('tide_content_collection') . DIRECTORY_SEPARATOR . 'icons';
+  // Changing icons.
+  $icon_filename = $icon_dir . DIRECTORY_SEPARATOR . 'content_collection.svg';
+  _tide_set_paragraph_type_icon('content_collection', $icon_filename);
+
+  // Set content_collection permission to site_admin.
+  _assign_content_collection_perm_site_admin();
+}
+
+/**
+ * Assign access content_collection permission to site_admin.
+ */
+function _assign_content_collection_perm_site_admin() {
+  $permission = 'access content_collection paragraph';
+  /** @var \Drupal\user\RoleInterface $role */
+  $role = Role::load('site_admin');
+  if ($role) {
+    $role->grantPermission($permission);
+    $role->save();
+  }
+}
+
+/**
+ * Add event and publication to content collection.
+ */
+function tide_content_collection_update_10000() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('core.entity_form_display.paragraph.content_collection_enhanced.default');
+  $allowed_content_types = [
+    'landing_page' => 'Landing Page',
+    'publication' => 'Publication',
+    'news' => 'News',
+    'event' => 'Events',
+  ];
+  if ($config) {
+    $config->set('content.field_content_collection_config.settings.content.internal.contentTypes.allowed_values', $allowed_content_types);
+    $config->save();
+  }
+}

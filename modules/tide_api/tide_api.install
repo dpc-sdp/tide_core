@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Install file for Tide API module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function tide_api_install() {
+  // Update default configuration provided by jsonapi_extras.
+  $config_factory = \Drupal::configFactory();
+  $config_factory->getEditable('jsonapi_extras.settings')->set('path_prefix', 'api/v1')->save();
+  $config_factory->getEditable('jsonapi_extras.settings')->set('include_count', TRUE)->save();
+  // Update jsonpai.settings['read_only'] to FALSE.
+  $config_factory->getEditable('jsonapi.settings')->set('read_only', FALSE)->save(TRUE);
+
+}

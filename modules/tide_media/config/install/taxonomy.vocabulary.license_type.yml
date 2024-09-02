@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'License Type'
+vid: license_type
+description: 'License Types for Media'
+hierarchy: 0
+weight: 0
