@@ -9,8 +9,3 @@ dependencies:
   - drupal:jsonapi_resources
   - drupal:schemata
   - drupal:schemata_json_schema
-config_devel:
-  optional:
-    - jsonapi_extras.jsonapi_resource_config.menu_link_content--menu_link_content
-    - jsonapi_extras.jsonapi_resource_config.paragraph--links
-    - jsonapi_extras.jsonapi_resource_config.paragraph--related_links
