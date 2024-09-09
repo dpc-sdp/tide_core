@@ -18,7 +18,21 @@ tide_core.system_info:
   path: '/api/v1/system-info'
   defaults:
     _controller: '\Drupal\tide_core\Controller\SystemInfoController::getSystemInfo'
-    _title: 'System Info'
+    _title: 'System Information'
   methods: ['GET']
   requirements:
     _access: 'TRUE'
+
+tide_core.system_info.fields:
+  path: '/api/v1/system-info/fields/{types}'
+  defaults:
+    _controller: '\Drupal\tide_core\Controller\SystemInfoController::getFields'
+    _title: 'System Fields Information'
+    types: 'all'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+    parameters:
+      types:
+        type: string
