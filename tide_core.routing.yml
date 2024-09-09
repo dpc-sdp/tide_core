@@ -29,10 +29,10 @@ tide_core.system_info.fields:
     _controller: '\Drupal\tide_core\Controller\SystemInfoController::getFields'
     _title: 'System Fields Information'
     types: 'all'
+  methods: ['GET']
   requirements:
     _access: 'TRUE'
   options:
-    no_cache: 'TRUE'
     parameters:
       types:
         type: string

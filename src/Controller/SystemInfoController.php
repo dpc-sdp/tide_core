@@ -2,17 +2,17 @@
 
 namespace Drupal\tide_core\Controller;
 
-use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\Core\Cache\CacheBackendInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\State\StateInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Returns system information including tide and sdp versions.
@@ -120,25 +120,22 @@ class SystemInfoController extends ControllerBase {
       return new JsonResponse($cache->data);
     }
 
-    $composer_file_path = DRUPAL_ROOT . '/../composer.json';
+    $file_system = \Drupal::service('file_system');
+    $composer_file_path = $file_system->realpath(DRUPAL_ROOT . '/../composer.json');
 
     if (!file_exists($composer_file_path)) {
-      $this->logger->error('composer.json not found at @path',
-        ['@path' => $composer_file_path]);
-      return new JsonResponse(['error' => 'composer.json not found'],
-        Response::HTTP_NOT_FOUND);
+      $this->logger->error('composer.json not found at @path', ['@path' => $composer_file_path]);
+      return new JsonResponse(['error' => 'composer.json not found'], Response::HTTP_NOT_FOUND);
     }
 
     $composer_data = json_decode(file_get_contents($composer_file_path), TRUE);
 
     $data = [
       'tideVersion' => $composer_data['require']['dpc-sdp/tide'] ?? 'unknown',
-      'sdpVersion'  => $composer_data['extra']['sdp_version'] ?? 'unknown',
+      'sdpVersion' => $composer_data['extra']['sdp_version'] ?? 'unknown',
     ];
 
-    $this->cacheBackend->set($cid,
-      $data,
-      $this->state->get('tide_core.cache_lifetime', 3600));
+    $this->cacheBackend->set($cid, $data, $this->state->get('tide_core.cache_lifetime', 3600));
 
     return new JsonResponse($data);
   }
