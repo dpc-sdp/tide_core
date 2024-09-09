@@ -13,3 +13,12 @@ tide_core.node.action_confirm:
     _title_callback: '\Drupal\tide_core\Form\NodeActionForm::getTitle'
   requirements:
     _custom_access: '\Drupal\tide_core\Form\NodeActionForm::access'
+
+tide_core.system_info:
+  path: '/api/v1/system-info'
+  defaults:
+    _controller: '\Drupal\tide_core\Controller\SystemInfoController::getSystemInfo'
+    _title: 'System Info'
+  methods: ['GET']
+  requirements:
+    _access: 'TRUE'
