@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core\Controller;
 
+use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -11,7 +12,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -117,7 +118,7 @@ class SystemInfoController extends ControllerBase {
     $cid = 'tide_core:system_info:composer_versions';
 
     if ($cache = $this->cacheBackend->get($cid)) {
-      return new JsonResponse($cache->data);
+      return new CacheableJsonResponse($cache->data);
     }
 
     $file_system = \Drupal::service('file_system');
@@ -125,7 +126,7 @@ class SystemInfoController extends ControllerBase {
 
     if (!file_exists($composer_file_path)) {
       $this->logger->error('composer.json not found at @path', ['@path' => $composer_file_path]);
-      return new JsonResponse(['error' => 'composer.json not found'], Response::HTTP_NOT_FOUND);
+      return new CacheableJsonResponse(['error' => 'composer.json not found'], Response::HTTP_NOT_FOUND);
     }
 
     $composer_data = json_decode(file_get_contents($composer_file_path), TRUE);
@@ -137,7 +138,7 @@ class SystemInfoController extends ControllerBase {
 
     $this->cacheBackend->set($cid, $data, $this->state->get('tide_core.cache_lifetime', 3600));
 
-    return new JsonResponse($data);
+    return new CacheableJsonResponse($data);
   }
 
   /**
@@ -157,7 +158,7 @@ class SystemInfoController extends ControllerBase {
       $invalidTypes = array_diff($requestedTypes, $validTypes);
 
       if (!empty($invalidTypes)) {
-        return new JsonResponse([
+        return new CacheableJsonResponse([
           'error'       => 'Invalid entity type(s): ' . implode(', ',
               $invalidTypes),
           'valid_types' => $validTypes,
@@ -165,12 +166,12 @@ class SystemInfoController extends ControllerBase {
       }
 
       $data = $this->getCustomFieldIds($requestedTypes);
-      return new JsonResponse($data);
+      return new CacheableJsonResponse($data);
     }
     catch (\Exception $e) {
       $this->logger->error('Error fetching field information: @message',
         ['@message' => $e->getMessage()]);
-      return new JsonResponse(['error' => 'An error occurred while fetching field information.'],
+      return new CacheableJsonResponse(['error' => 'An error occurred while fetching field information.'],
             Response::HTTP_INTERNAL_SERVER_ERROR);
     }
   }
@@ -272,6 +273,84 @@ class SystemInfoController extends ControllerBase {
       $this->state->get('tide_core.cache_lifetime', 86400));
 
     return $validTypes;
+  }
+
+  /**
+   * Returns the version of a specified package from composer.lock.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The package version in JSON format.
+   */
+  public function getPackageVersion(Request $request) {
+    $packageName = $request->query->get('q');
+
+    if (empty($packageName)) {
+      return new CacheableJsonResponse(['error' => 'Package name is required.'], Response::HTTP_BAD_REQUEST);
+    }
+
+    if (strtolower($packageName) === 'php') {
+      $data = [
+        'package' => 'php',
+        'version' => PHP_VERSION,
+      ];
+      return new CacheableJsonResponse($data);
+    }
+
+    $cid = 'tide_core:system_info:package_version:' . md5($packageName);
+
+    if ($cache = $this->cacheBackend->get($cid)) {
+      return new CacheableJsonResponse($cache->data);
+    }
+
+    $file_system = \Drupal::service('file_system');
+    $composer_lock_path = $file_system->realpath(DRUPAL_ROOT . '/../composer.lock');
+
+    if (!file_exists($composer_lock_path)) {
+      $this->logger->error('composer.lock not found at @path', ['@path' => $composer_lock_path]);
+      return new CacheableJsonResponse(['error' => 'composer.lock not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $composer_lock = json_decode(file_get_contents($composer_lock_path), TRUE);
+
+    $version = $this->findPackageVersion($composer_lock, $packageName);
+
+    if ($version === NULL) {
+      return new CacheableJsonResponse(['error' => 'Package not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $data = [
+      'package' => $packageName,
+      'version' => $version,
+    ];
+
+    $this->cacheBackend->set($cid, $data);
+
+    return new CacheableJsonResponse($data);
+  }
+
+  /**
+   * Finds the version of a package in the composer.lock.
+   *
+   * @param array $composer_lock
+   *   The parsed composer.lock.
+   * @param string $packageName
+   *   The name of the package to find.
+   *
+   * @return string|null
+   *   The version of the package, or null if not found.
+   */
+  private function findPackageVersion(array $composer_lock, string $packageName) {
+    foreach (['packages', 'packages-dev'] as $section) {
+      foreach ($composer_lock[$section] as $package) {
+        if ($package['name'] === $packageName) {
+          return $package['version'];
+        }
+      }
+    }
+    return NULL;
   }
 
 }
