@@ -2,7 +2,7 @@ name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
@@ -72,6 +72,9 @@ dependencies:
   - simple_sitemap:simple_sitemap
   - tablefield:tablefield
   - tide_ckeditor:tide_ckeditor
+  - tide_site:tide_site
+  - tide_media:tide_media
+  - tide_api:tide_api
   - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value

@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.embedded
+    - core.entity_view_mode.media.embedded_with_caption
+    - core.entity_view_mode.media.embedded_with_transcript
+    - core.entity_view_mode.media.full
+    - entity_browser.browser.tide_media_browser_iframe
+  module:
+    - entity_embed
+    - media
+label: Media
+id: tide_media
+type_id: entity
+type_settings:
+  entity_type: media
+  bundles: {  }
+  display_plugins:
+    - 'entity_reference:media_thumbnail'
+    - 'view_mode:media.embedded'
+    - 'view_mode:media.embedded_with_caption'
+    - 'view_mode:media.embedded_with_transcript'
+    - 'view_mode:media.full'
+  entity_browser: tide_media_browser_iframe
+  entity_browser_settings:
+    display_review: false
+icon: {  }
+icon_uuid: null

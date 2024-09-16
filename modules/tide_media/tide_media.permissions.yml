@@ -1,0 +1,15 @@
+'access tide_embedded_video_browser entity browser pages':
+  title: 'Access tide_embedded_video_browser entity browser pages'
+  description: 'Allows user to access tide_embedded_video_browser entity browser pages'
+'access tide_document_browser entity browser pages':
+  title: 'Access tide_document_browser entity browser pages'
+  description: 'Allow user to access tide_document_browser entity browser pages'
+'access tide_image_browser entity browser pages':
+  title: 'Access tide_image_browser entity browser pages'
+  description: 'Allow user to access tide_image_browser entity browser pages'
+'access tide_media_browser entity browser pages':
+  title: 'Access tide_media_browser entity browser pages'
+  description: 'Allow user to access tide_media_browser entity browser pages'
+'access tide_media_browser_iframe entity browser pages':
+  title: 'Access tide_media_browser_iframe entity browser pages'
+  description: 'Allow user to access tide_media_browser_iframe entity browser pages'

@@ -1,0 +1,6 @@
+tide_media.settings:
+  title: Tide Media
+  description: 'Settings for Tide Media.'
+  route_name: tide_media.settings
+  parent: system.admin_config_media
+  weight: 100

@@ -1,0 +1,9 @@
+tide_media_file_overwrite.settings_form:
+  path: '/admin/config/tide_media_file_overwrite/settings'
+  defaults:
+    _form: '\Drupal\tide_media_file_overwrite\Form\TideMediaFileOverwriteSettingsForm'
+    _title: 'File upload overwrite settings'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
