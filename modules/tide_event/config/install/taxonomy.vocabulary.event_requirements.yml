@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Event Requirements'
+vid: event_requirements
+description: 'Event Requirements for events'
+hierarchy: 0
+weight: 0

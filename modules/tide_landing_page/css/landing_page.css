@@ -1,0 +1,68 @@
+/**
+ * @file
+ * Styling changes to the Landing page node form.
+ */
+
+.node-form-landing-page .js .paragraph-type-title {
+  -webkit-flex-basis: 350px !important;;
+  flex-basis: 350px !important;;
+}
+
+.node-form-landing-page .layout-region--node-main .form-radios .form-item {
+  display: inline-block;
+  margin-right: 2em;
+}
+
+.node-form-landing-page .field--widget-paragraphs .node-landing-page-alternative-paragraph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#edit-field-landing-page-component--description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.node-form-landing-page .field--widget-paragraphs .node-landing-page-alternative-paragraph .form-item__description > h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.node-form-landing-page .field--widget-paragraphs .node-landing-page-alternative-paragraph > .form-actions {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.node-form-landing-page .field--widget-paragraphs .node-landing-page-alternative-paragraph > .form-actions .paragraphs-add-wrapper.form-wrapper .paragraphs-add-suffix {
+  display:none;
+}
+
+/* Custom css for navigation and promotion card paragraph type fields. */
+.paragraph-type--navigation-card .summary-message-group,
+.paragraph-type--navigation-card .customise-field-group,
+.paragraph-type--promotion-card .customise-field-group,
+.paragraph-type--promotion-card .summary-message-group {
+  background-color: transparent;
+  border: none;
+  padding-left: 0;
+}
+
+.paragraph-type--navigation-card .summary-message-group .fieldset-legend,
+.paragraph-type--navigation-card .customise-field-group .fieldset-legend,
+.paragraph-type--promotion-card .summary-message-group .fieldset-legend,
+.paragraph-type--promotion-card .customise-field-group .fieldset-legend {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+div.dropbutton-multiple .dropbutton-action .ajax-progress {
+  position: relative;
+  top: -4px;
+  left: 30px;
+}

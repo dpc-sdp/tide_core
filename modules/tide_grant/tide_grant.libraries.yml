@@ -1,0 +1,16 @@
+drupal.paragraphs.actions:
+  version: 1.0
+  js:
+    js/paragraphs.actions.js: {}
+  dependencies:
+    - core/drupalSettings
+    - core/jquery.once
+    - core/jquery
+    - core/jquery.form
+    - core/drupal.ajax
+    - core/drupal
+grant_form:
+  version: 1.0
+  css:
+    theme:
+      css/grant.css: {}

@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.listing_site.field_listing_site_site
+    - paragraphs.paragraphs_type.listing_site
+  module:
+    - select2
+id: paragraph.listing_site.default
+targetEntityType: paragraph
+bundle: listing_site
+mode: default
+content:
+  field_listing_site_site:
+    type: select2_entity_reference
+    weight: 0
+    region: content
+    settings:
+      width: 100%
+      autocomplete: false
+      match_operator: CONTAINS
+      match_limit: 10
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraph_body
+    - paragraphs.paragraphs_type.data_driven_component
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    rich_text: rich_text
+    admin_text: admin_text
+    plain_text: plain_text
+id: paragraph.data_driven_component.field_paragraph_body
+field_name: field_paragraph_body
+entity_type: paragraph
+bundle: data_driven_component
+label: Description
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

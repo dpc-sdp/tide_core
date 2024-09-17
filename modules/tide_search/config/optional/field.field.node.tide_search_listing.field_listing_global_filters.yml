@@ -1,0 +1,277 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_listing_global_filters
+    - node.type.tide_search_listing
+    - paragraphs.paragraphs_type.listing_content_type
+    - paragraphs.paragraphs_type.listing_custom_filter
+    - paragraphs.paragraphs_type.listing_site
+  module:
+    - entity_reference_revisions
+id: node.tide_search_listing.field_listing_global_filters
+field_name: field_listing_global_filters
+entity_type: node
+bundle: tide_search_listing
+label: 'Global filters'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      listing_content_type: listing_content_type
+      listing_custom_filter: listing_custom_filter
+      listing_site: listing_site
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 83
+        enabled: false
+      accordion_content:
+        weight: 84
+        enabled: false
+      banner:
+        weight: 85
+        enabled: false
+      basic_text:
+        weight: 86
+        enabled: false
+      business_entity:
+        weight: 87
+        enabled: false
+      call_to_action:
+        weight: 88
+        enabled: false
+      call_to_action_image:
+        weight: 89
+        enabled: false
+      card_carousel:
+        weight: 90
+        enabled: false
+      card_event:
+        weight: 91
+        enabled: false
+      card_event_auto:
+        weight: 92
+        enabled: false
+      card_keydates:
+        weight: 93
+        enabled: false
+      card_promotion:
+        weight: 94
+        enabled: false
+      card_promotion_auto:
+        weight: 95
+        enabled: false
+      clients:
+        weight: 96
+        enabled: false
+      compact_card:
+        weight: 97
+        enabled: false
+      compact_card_collection:
+        weight: 98
+        enabled: false
+      complex_image:
+        weight: 99
+        enabled: false
+      contact_us:
+        weight: 100
+        enabled: false
+      content_collection:
+        weight: 101
+        enabled: false
+      content_collection_enhanced:
+        weight: 102
+        enabled: false
+      daily_update:
+        weight: 103
+        enabled: false
+      daily_update_statistics:
+        weight: 104
+        enabled: false
+      data_driven_component:
+        weight: 105
+        enabled: false
+      data_table:
+        weight: 106
+        enabled: false
+      embedded_search_form:
+        weight: 107
+        enabled: false
+      embedded_webform:
+        weight: 108
+        enabled: false
+      event_details:
+        weight: 109
+        enabled: false
+      form_embed_openforms:
+        weight: 110
+        enabled: false
+      gc_advice:
+        weight: 111
+        enabled: false
+      gc_face_masks:
+        weight: 112
+        enabled: false
+      gc_get_vaccinated:
+        weight: 113
+        enabled: false
+      gc_how_to_stay_safe_and_well:
+        weight: 114
+        enabled: false
+      gc_in_the_vaccine:
+        weight: 115
+        enabled: false
+      gc_kits_for_community:
+        weight: 116
+        enabled: false
+      gc_media:
+        weight: 117
+        enabled: false
+      gc_more_information:
+        weight: 118
+        enabled: false
+      gc_paragraph_100:
+        weight: 119
+        enabled: false
+      gc_paragraph_20:
+        weight: 120
+        enabled: false
+      gc_paragraph_30:
+        weight: 121
+        enabled: false
+      gc_paragraph_40:
+        weight: 122
+        enabled: false
+      gc_paragraph_50:
+        weight: 123
+        enabled: false
+      gc_paragraph_60:
+        weight: 124
+        enabled: false
+      gc_paragraph_70:
+        weight: 125
+        enabled: false
+      gc_paragraph_80:
+        weight: 126
+        enabled: false
+      gc_paragraph_90:
+        weight: 127
+        enabled: false
+      gc_resources:
+        weight: 128
+        enabled: false
+      gc_restrictions_metro:
+        weight: 129
+        enabled: false
+      gc_restrictions_regional_vic:
+        weight: 130
+        enabled: false
+      gc_support:
+        weight: 131
+        enabled: false
+      gc_testing_and_isolation:
+        weight: 132
+        enabled: false
+      gc_text_area_4:
+        weight: 133
+        enabled: false
+      gc_text_area_6:
+        weight: 134
+        enabled: false
+      gc_text_field_video:
+        weight: 135
+        enabled: false
+      gc_vaccinated_first:
+        weight: 136
+        enabled: false
+      gc_vaccine_safety:
+        weight: 137
+        enabled: false
+      gc_victoria_restrictions:
+        weight: 138
+        enabled: false
+      hero_banner_with_cta:
+        weight: 139
+        enabled: false
+      introduction_banner:
+        weight: 140
+        enabled: false
+      key_journeys:
+        weight: 142
+        enabled: false
+      keydates:
+        weight: 141
+        enabled: false
+      kinder_date_calculator:
+        weight: 143
+        enabled: false
+      latest_events:
+        weight: 144
+        enabled: false
+      links:
+        weight: 145
+        enabled: false
+      listing_content_type:
+        weight: 146
+        enabled: true
+      listing_custom_filter:
+        weight: 147
+        enabled: true
+      listing_site:
+        weight: 148
+        enabled: true
+      lobbyist:
+        weight: 149
+        enabled: false
+      media_gallery:
+        weight: 150
+        enabled: false
+      navigation_card:
+        weight: 151
+        enabled: false
+      news_listing:
+        weight: 152
+        enabled: false
+      owner:
+        weight: 153
+        enabled: false
+      phone:
+        weight: 154
+        enabled: false
+      project_information:
+        weight: 155
+        enabled: false
+      promotion_card:
+        weight: 156
+        enabled: false
+      related_links:
+        weight: 157
+        enabled: false
+      search_listing_header_component:
+        weight: 158
+        enabled: false
+      social_link:
+        weight: 159
+        enabled: false
+      statistic_block:
+        weight: 161
+        enabled: false
+      statistic_link:
+        weight: 162
+        enabled: false
+      statistics_grid:
+        weight: 160
+        enabled: false
+      timeline:
+        weight: 163
+        enabled: false
+      timelines:
+        weight: 164
+        enabled: false
+field_type: entity_reference_revisions

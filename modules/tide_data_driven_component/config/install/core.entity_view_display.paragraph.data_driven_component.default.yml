@@ -1,0 +1,50 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.data_driven_component.field_configuration
+    - field.field.paragraph.data_driven_component.field_data_driven_component
+    - field.field.paragraph.data_driven_component.field_paragraph_body
+    - field.field.paragraph.data_driven_component.field_paragraph_title
+    - paragraphs.paragraphs_type.data_driven_component
+  module:
+    - options
+    - text
+    - tide_content_collection
+id: paragraph.data_driven_component.default
+targetEntityType: paragraph
+bundle: data_driven_component
+mode: default
+content:
+  field_configuration:
+    type: content_collection_configuration_raw
+    label: above
+    settings:
+      raw_json: '1'
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_data_driven_component:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_paragraph_body:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_paragraph_title:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  search_api_excerpt: true

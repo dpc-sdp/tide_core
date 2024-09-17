@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_custom_sort_configuration
+    - node.type.tide_search_listing
+  module:
+    - tide_content_collection
+id: node.tide_search_listing.field_custom_sort_configuration
+field_name: field_custom_sort_configuration
+entity_type: node
+bundle: tide_search_listing
+label: 'Custom sort configuration'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: content_collection_configuration

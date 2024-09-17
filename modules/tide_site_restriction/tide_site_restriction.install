@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\tide_site_restriction\TideSiteRestrictionOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_site_restriction_install() {
+
+  TideSiteRestrictionOperation::addSubSitesFilter();
+  TideSiteRestrictionOperation::installWidgets();
+  TideSiteRestrictionOperation::addNecessarySettings();
+
+}

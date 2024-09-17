@@ -1,0 +1,24 @@
+name: Tide Alert
+type: module
+description: 'Provides Alert content type and related configuration. '
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:menu_ui
+  - tide_core:tide_core
+  - tide_core:tide_media
+config_devel:
+  install:
+    - core.base_field_override.node.alert.promote
+    - core.base_field_override.node.alert.status
+    - core.entity_form_display.node.alert.default
+    - core.entity_view_display.node.alert.default
+    - core.entity_view_display.node.alert.teaser
+    - field.field.node.alert.field_alert_type
+    - field.field.node.alert.field_call_to_action
+    - field.storage.node.field_alert_type
+    - node.type.alert
+    - taxonomy.vocabulary.alert_type
+  optional:
+    - jsonapi_extras.jsonapi_resource_config.node--alert
+    - views.view.site_alerts

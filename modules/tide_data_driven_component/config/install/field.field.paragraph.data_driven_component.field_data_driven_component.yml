@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_data_driven_component
+    - paragraphs.paragraphs_type.data_driven_component
+  module:
+    - options
+id: paragraph.data_driven_component.field_data_driven_component
+field_name: field_data_driven_component
+entity_type: paragraph
+bundle: data_driven_component
+label: 'Data driven component'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: 'tide_data_driven_component_default_value'
+settings: {  }
+field_type: list_string

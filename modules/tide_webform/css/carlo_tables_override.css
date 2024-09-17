@@ -1,0 +1,8 @@
+td > .form-item > .form-element--type-select, td > .ajax-new-content > .form-item > .form-element--type-select {
+  width: 10px;
+  max-width: 10px;
+}
+
+.webform-states-table--operator.form-type-select.js-form-item.form-item.js-form-type-select.form-type--select.js-form-item-properties-states-states-0-operator.form-item--properties-states-states-0-operator.form-item--no-label {
+  width: 110px;
+}

@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Organisation
+vid: organisation
+description: 'Currently used for ''Publication author'' non-mandatory field'
+weight: 0

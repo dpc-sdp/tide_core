@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_landing_page_summary
+    - node.type.tide_search_listing
+id: node.tide_search_listing.field_landing_page_summary
+field_name: field_landing_page_summary
+entity_type: node
+bundle: tide_search_listing
+label: Summary
+description: 'This is the meta description that appears in Google search results. Recommended length <156 characters. Use keywords.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

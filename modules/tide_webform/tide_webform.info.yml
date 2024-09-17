@@ -1,0 +1,21 @@
+name: Tide Webform
+description: 'Provides Webform and related configuration.'
+type: module
+package: Tide
+core_version_requirement: ^9.5 || ^10
+dependencies:
+  - config_filter:config_filter
+  - config_ignore:config_ignore
+  - token_conditions:token_conditions
+  - webform:webform
+  - webform:webform_ui
+  - tide_core:tide_core
+  - tide_core:tide_api
+config_devel:
+  install:
+    - field.storage.node.field_show_content_rating
+    - webform.webform.tide_webform_content_rating
+  optional:
+    - block.block.tide_webform_content_rating
+    - jsonapi_extras.jsonapi_resource_config.webform--webform
+    - webform.settings

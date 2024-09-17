@@ -1,0 +1,64 @@
+sdp_data_pipeline:
+  label: 'SDP Data Pipeline'
+  class: '\Drupal\data_pipelines_elasticsearch\ElasticSearchDatasetPipeline'
+  mappings:
+    properties:
+      id:
+        type: text
+        index: false
+      string_1:
+        type: text
+      number_1:
+        type: number
+      keyword_1:
+        type: keyword
+      date_1:
+        type: date
+      string_2:
+        type: text
+      number_2:
+        type: number
+      keyword_2:
+        type: keyword
+      date_2:
+        type: date
+      string_3:
+        type: text
+      number_3:
+        type: number
+      keyword_3:
+        type: keyword
+      date_3:
+        type: date
+      string_4:
+        type: text
+      number_4:
+        type: number
+      keyword_4:
+        type: keyword
+      date_4:
+        type: date
+      string_5:
+        type: text
+      number_5:
+        type: number
+      keyword_5:
+        type: keyword
+      date_5:
+        type: date
+      latitude:
+        type: text
+        index: false
+      longitude:
+        type: text
+        index: false
+      location:
+        type: geo_point
+  transforms:
+    record:
+      - plugin: concat
+        fields:
+          - latitude
+          - longitude
+        as: location
+        separator: ','

@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - tide_grant
+id: grant_author
+label: Grant Author
+weight: 99
+is_admin: false
+permissions:
+  - 'access content'
+  - 'view media'
+  - 'create grant content'
+  - 'use draft_needs_review transition'
+  - 'use editorial transition needs_review'
+  - 'use editorial transition needs_review_draft'
+  - 'use needs_review_draft transition'

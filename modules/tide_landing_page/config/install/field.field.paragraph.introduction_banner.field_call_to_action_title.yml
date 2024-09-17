@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_call_to_action_title
+    - paragraphs.paragraphs_type.introduction_banner
+id: paragraph.introduction_banner.field_call_to_action_title
+field_name: field_call_to_action_title
+entity_type: paragraph
+bundle: introduction_banner
+label: 'Button heading'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

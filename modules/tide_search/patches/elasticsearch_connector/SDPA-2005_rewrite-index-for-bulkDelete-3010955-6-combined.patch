@@ -1,0 +1,128 @@
+diff --git a/src/ElasticSearch/Parameters/Factory/IndexFactory.php b/src/ElasticSearch/Parameters/Factory/IndexFactory.php
+index 11f7b9c..4114a9e 100644
+--- a/src/ElasticSearch/Parameters/Factory/IndexFactory.php
++++ b/src/ElasticSearch/Parameters/Factory/IndexFactory.php
+@@ -6,11 +6,14 @@ use Drupal\search_api\IndexInterface;
+ use Drupal\elasticsearch_connector\Event\PrepareIndexEvent;
+ use Drupal\elasticsearch_connector\Event\PrepareIndexMappingEvent;
+ use Drupal\search_api_autocomplete\Suggester\SuggesterInterface;
++use Drupal\elasticsearch_connector\Entity\Cluster;
++use Drupal\search_api\Entity\Server;
+
+ /**
+  * Create Elasticsearch Indices.
+  */
+ class IndexFactory {
++  const HASH_LENGTH = 32;
+
+   /**
+    * Build parameters required to index.
+@@ -84,6 +87,18 @@ class IndexFactory {
+    */
+   public static function bulkDelete(IndexInterface $index, array $ids) {
+     $params = IndexFactory::index($index, TRUE);
++
++    // This convoluted path to the host domain is due to
++    // https://www.drupal.org/project/search_api/issues/2976339 not populating
++    // `search_api.server.server_id` config with the correct values.
++    $cluster_id = Server::load($index->getServerId())->getBackend()->getCluster();
++    $host = parse_url(Cluster::load($cluster_id)->url, PHP_URL_HOST);
++    $hash = strstr($host, '.', TRUE);
++
++    if (isset($hash) && strlen($hash) === self::HASH_LENGTH) {
++      $params['index'] = $hash . '--' . $params['index'];
++    }
++
+     foreach ($ids as $id) {
+       $params['body'][] = [
+         'delete' => [
+@@ -224,15 +239,29 @@ class IndexFactory {
+    */
+   public static function getIndexName(IndexInterface $index) {
+
+-    $options = \Drupal::database()->getConnectionOptions();
+-    $site_database = $options['database'];
+-
++    // Get index machine name.
+     $index_machine_name = is_string($index) ? $index : $index->id();
+
++    // Get prefix and suffix form the cluster if present.
++    $cluster_id = $index->getServerInstance()->getBackend()->getCluster();
++    $cluster_options = Cluster::load($cluster_id)->options;
++
++    // If  prefix is not set ensure we set it to db name by default.
++    if (isset($cluster_options['rewrite']['rewrite_index'])) {
++      $index_prefix = isset($cluster_options['rewrite']['index']['prefix']) ? $cluster_options['rewrite']['index']['prefix'] : '';
++    }
++    else {
++      $options = \Drupal::database()->getConnectionOptions();
++      $index_prefix = 'elasticsearch_index_' . $options['database'] . '_';
++    }
++
++    // Get the index suffix.
++    $index_suffix = isset($cluster_options['rewrite']['index']['suffix']) ? $cluster_options['rewrite']['index']['suffix'] : '';
++
+     return strtolower(preg_replace(
+       '/[^A-Za-z0-9_]+/',
+       '',
+-      'elasticsearch_index_' . $site_database . '_' . $index_machine_name
++      $index_prefix . $index_machine_name . $index_suffix
+     ));
+   }
+
+diff --git a/src/Form/ClusterForm.php b/src/Form/ClusterForm.php
+index 0138a68..d1ccbca 100644
+--- a/src/Form/ClusterForm.php
++++ b/src/Form/ClusterForm.php
+@@ -231,6 +231,51 @@ class ClusterForm extends EntityForm {
+       '#default_value' => (!empty($this->entity->options['timeout']) ? $this->entity->options['timeout'] : Cluster::ELASTICSEARCH_CONNECTOR_DEFAULT_TIMEOUT),
+       '#weight' => 5.6,
+     );
++
++    $form['options']['rewrite'] = [
++      '#tree' => TRUE,
++      '#type' => 'details',
++      '#title' => $this->t('Alter the ES index name.'),
++      '#open' => FALSE,
++      '#weight' => 6,
++    ];
++
++    $form['options']['rewrite']['rewrite_index'] = [
++      '#title' => $this->t('Alter the Elasticsearch index name.'),
++      '#type' => 'checkbox',
++      '#default_value' => (!empty($this->entity->options['rewrite']['rewrite_index']) ? 1 : 0),
++      '#description' => t('Alter the name of the Elasticsearch index by optionally adding a prefix and suffix to the Search API index name.')
++    ];
++
++    $form['options']['rewrite']['index']['prefix'] = [
++      '#type' => 'textfield',
++      '#title' => t('Index name prefix'),
++      '#default_value' => (!empty($this->entity->options['rewrite']['index']['prefix']) ? $this->entity->options['rewrite']['index']['prefix'] : ''),
++      '#description' => t(
++        'If a value is provided it will be prepended to the index name.'
++      ),
++      '#states' => [
++        'visible' => [
++          ':input[name="options[rewrite][rewrite_index]"]' => ['checked' => TRUE],
++        ],
++      ],
++      '#weight' => 6.1,
++    ];
++
++    $form['options']['rewrite']['index']['suffix'] = [
++      '#type' => 'textfield',
++      '#title' => t('Index name suffix'),
++      '#default_value' => (!empty($this->entity->options['rewrite']['index']['suffix']) ? $this->entity->options['rewrite']['index']['suffix'] : ''),
++      '#description' => t(
++        'If a value is provided it will be appended to the index name.'
++      ),
++      '#states' => [
++        'visible' => [
++          ':input[name="options[rewrite][rewrite_index]"]' => ['checked' => TRUE],
++        ],
++      ],
++      '#weight' => 6.2,
++    ];
+   }
+
+   /**

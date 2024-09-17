@@ -1,0 +1,440 @@
+<?php
+
+/**
+ * @file
+ * Tide Webform.
+ */
+
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\webform\Entity\Webform;
+use Drupal\webform\Entity\WebformSubmission;
+use Drupal\webform\WebformSubmissionForm;
+
+/**
+ * Implements hook_config_ignore_settings_alter().
+ */
+function tide_webform_config_ignore_settings_alter(array &$settings) {
+  // Ignore the Content Rating webform so that it won't be reverted
+  // during config sync.
+  $settings[] = 'webform.webform.tide_webform_content_rating';
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (!empty($form['#webform_id']) && $form['#webform_id'] == 'tide_webform_content_rating') {
+    $form['#attached']['library'][] = 'tide_webform/content_rating';
+
+    // Restricting access for anonymous user from BE.
+    if (\Drupal::currentUser()->isAnonymous()) {
+      $form['#access'] = FALSE;
+      $form['#markup'] = t('Access Denied.');
+    }
+  }
+
+  if ($form_id == 'webform_ui_element_form') {
+    $form['#after_build'][] = 'tide_webform_webform_ui_element_form_after_build';
+    $form['#attached']['library'][] = 'tide_webform/webform';
+    if (isset($form['properties']['form']['length_container']['maxlength']) && array_key_exists('#default_value', $form['properties']['form']['length_container']['maxlength'])) {
+      $default_value = NestedArray::getValue($form,
+        [
+          'properties',
+          'form',
+          'length_container',
+          'maxlength',
+          '#default_value',
+        ]);
+      if ($default_value === NULL) {
+        NestedArray::setValue($form,
+          [
+            'properties',
+            'form',
+            'length_container',
+            'maxlength',
+            '#default_value',
+          ],
+          '255');
+      }
+    }
+  }
+
+  if ($form_id == 'webform_submission_filter_form') {
+    $options = $form['filter']['state']['#options'];
+    $options['processed'] = 'Exported [' . tide_webform_submission_filter_query(1) . ']';
+    $options['unprocessed'] = 'New [' . tide_webform_submission_filter_query(0) . ']';
+    $form['filter']['state']['#options'] = $options;
+  }
+
+  if (strstr($form_id, 'webform_submission') && strstr($form_id, 'notes_form')) {
+    $webform_submission = \Drupal::routeMatch()->getParameter('webform_submission');
+    $form['processed'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Has this submission been exported?'),
+      '#description' => t('If checked, this submission will be flagged as exported. If unchecked, it will be flagged as a new submission.'),
+      '#default_value' => tide_webform_get_processed($webform_submission),
+      '#return_value' => TRUE,
+    ];
+  }
+
+  if ($form_id == 'webform_results_export') {
+    $form['export']['download']['unprocessed_submissions'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Only download new submissions'),
+      '#default_value' => TRUE,
+    ];
+    $form['export']['download']['process_submissions'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Download submissions marked as exported'),
+      '#default_value' => TRUE,
+    ];
+
+    $form['#submit'][] = 'tide_webform_form_webform_results_export_form_submit';
+
+  }
+
+}
+
+/**
+ * After_build callback.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Form state.
+ *
+ * @return array
+ *   The form.
+ */
+function tide_webform_webform_ui_element_form_after_build(array $form, FormStateInterface $form_state) {
+  $storage = $form_state->getStorage();
+  // Unset the default properties of the Privacy Statement element to force
+  // webform to save them in the YAML source of the element.
+  if (isset($storage['element_properties']['type'])
+    && $storage['element_properties']['type'] == 'webform_privacy_statement'
+  ) {
+    unset($storage['default_properties']['title']);
+    unset($storage['default_properties']['required']);
+    unset($storage['default_properties']['privacy_statement_heading']);
+    unset($storage['default_properties']['privacy_statement_content']);
+    $form_state->setStorage($storage);
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * @see \Drupal\webform\Form\AdminConfig\WebformAdminConfigElementsForm::buildForm()
+ */
+function tide_webform_form_webform_admin_config_elements_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $config = \Drupal::config('tide_webform.defaults');
+  $form['privacy_statement'] = [
+    '#type' => 'details',
+    '#title' => t('Default Privacy statement'),
+    '#description' => t('Set the default values for new Privacy Statement webform elements.'),
+    '#description_display' => 'before',
+    '#open' => TRUE,
+    '#tree' => TRUE,
+  ];
+
+  $form['privacy_statement']['add_to_new_form'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Add a default Privacy Statement element when creating a new webform'),
+    '#default_value' => $config->get('privacy_statement.add_to_new_form'),
+  ];
+
+  $form['privacy_statement']['agreement'] = [
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#description' => t('This message will be displayed with a checkbox on frontend.'),
+    '#default_value' => $config->get('privacy_statement.agreement'),
+    '#required' => TRUE,
+  ];
+
+  $form['privacy_statement']['heading'] = [
+    '#type' => 'textfield',
+    '#title' => t('Heading'),
+    '#default_value' => $config->get('privacy_statement.heading'),
+  ];
+
+  $form['privacy_statement']['content'] = [
+    '#type' => 'webform_html_editor',
+    '#title' => t('Content'),
+    '#default_value' => $config->get('privacy_statement.content'),
+    '#required' => TRUE,
+  ];
+
+  $form['privacy_statement']['token_tree_link'] = \Drupal::service('webform.token_manager')->buildTreeElement();
+
+  $form['#submit'][] = 'tide_webform_form_webform_admin_config_elements_form_submit';
+}
+
+/**
+ * Submit callback.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Form state.
+ */
+function tide_webform_form_webform_admin_config_elements_form_submit(array $form, FormStateInterface $form_state) {
+  $config = \Drupal::service('config.factory')->getEditable('tide_webform.defaults');
+  $privacy_statement = $form_state->getValue('privacy_statement');
+  $config->set('privacy_statement', $privacy_statement)->save();
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ *
+ * @see \Drupal\webform\Entity\WebformSubmission::baseFieldDefinitions()
+ */
+function tide_webform_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'webform_submission') {
+    // Expose the data attribute as a field.
+    if (empty($fields['data'])) {
+      $fields['data'] = BaseFieldDefinition::create('string_long')
+        ->setName('data')
+        ->setLabel('Data')
+        ->setDescription(t('Webform Submission Data'))
+        ->setDefaultValue('')
+        ->setTargetEntityTypeId('webform_submission')
+        ->setComputed(TRUE);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ *
+ * @see \Drupal\webform\Entity\WebformSubmission::baseFieldDefinitions()
+ */
+function tide_webform_entity_base_field_info(EntityTypeInterface $entity_type) {
+  $fields = [];
+  if ($entity_type->id() == 'webform_submission') {
+    $fields['processed'] = BaseFieldDefinition::create('boolean')
+      ->setName('Exported')
+      ->setLabel(t('Exported'))
+      ->setDescription(t('A flag that indicates whether the submission has been downloaded'))
+      ->setDefaultValue(FALSE)
+      ->setDisplayConfigurable('form', FALSE);
+  }
+
+  return $fields;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_create_access().
+ *
+ * @see \Drupal\webform\WebformSubmissionAccessControlHandler::checkAccess()
+ */
+function tide_webform_webform_submission_create_access(AccountInterface $account, array $context, $entity_bundle) {
+  // Check webform create access.
+  // This hook should be only invoked if the webform_submission is created
+  // via JSON:API requests.
+  $is_jsonapi = \Drupal::request()->attributes->get('_is_jsonapi', FALSE);
+  if ($is_jsonapi) {
+    $webform = Webform::load($entity_bundle);
+    if ($webform) {
+      /** @var \Drupal\webform\WebformAccessRulesManagerInterface $webform_access_rules_manager */
+      $webform_access_rules_manager = \Drupal::service('webform.access_rules_manager');
+      /** @var \Drupal\Core\Access\AccessResultInterface $webform_access */
+      $webform_access = $webform_access_rules_manager->checkWebformAccess('create', $account, $webform);
+      if ($webform_access->isAllowed()) {
+        return $webform_access;
+      }
+    }
+  }
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_webform_form_webform_add_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\webform\WebformEntityAddForm $form_object */
+  $form_object = $form_state->getFormObject();
+  /** @var \Drupal\webform\WebformInterface $webform */
+  $webform = $form_object->getEntity();
+  if ($webform->isNew()) {
+    // Expose the webform to API requests by default.
+    $access_rules = $webform->getAccessRules();
+    $access_rules['configuration']['roles'][] = 'anonymous';
+    $access_rules['configuration']['roles'][] = 'authenticated';
+    $webform->setAccessRules($access_rules);
+
+    // Add a Privacy Statement element to the new webform.
+    $default_privacy_statement = \Drupal::config('tide_webform.defaults')->get('privacy_statement');
+    if (!empty($default_privacy_statement['add_to_new_form'])) {
+      $elements = $webform->getElementsDecoded();
+      if (empty($elements)) {
+        $elements['privacy_statement'] = [
+          '#type' => 'webform_privacy_statement',
+          '#required' => TRUE,
+          '#privacy_statement_heading' => $default_privacy_statement['heading'] ?? '',
+          '#privacy_statement_content' => $default_privacy_statement['content'] ?? '',
+          '#title' => $default_privacy_statement['agreement'] ?? t('I have read and understood the privacy statement.'),
+        ];
+
+        $webform->setElements($elements);
+      }
+    }
+
+    // Make default submit button name.
+    if (!isset($elements['actions'])) {
+      $elements['actions'] = [
+        '#type' => 'webform_actions',
+        '#title' => 'Submit',
+      ];
+
+      $webform->setElements($elements);
+    }
+  }
+
+  $form_object->setEntity($webform);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_webform_webform_submission_presave(WebformSubmission $webform_submission) {
+  // Preparing confirmation message.
+  $webform = $webform_submission->getWebform();
+  if ($webform->getElement('confirmation_message') !== NULL) {
+    $webform_submission->set('notes', $webform_submission->uuid());
+  }
+  $elements = $webform_submission->getWebform()->getElementsDecoded();
+  // SDPAP-5181 Front end submits the value as numeric.
+  // Triggers invalid validation error from core.
+  // See /Drupal/Core/Form/FormValidator.php $is_empty_value.
+  $submission_data = $webform_submission->getData();
+  foreach ($elements as $key => $element) {
+    // It will not validate for multi step form.
+    if (isset($element['#type']) && $element['#type'] == 'wizard_page') {
+      return;
+    }
+    if (isset($element['#type']) && $element['#type'] == 'number') {
+      if (is_numeric($submission_data[$key])) {
+        $submission_data[$key] = strval($submission_data[$key]);
+        $webform_submission->setData($submission_data);
+      }
+    }
+    // SDPAP-6627 temporary fix until contrib module patch is created.
+    // Validation isolated to specific webform.
+    // @todo refactior the code and submit a patch.
+    // Look at webform issue - 3170790.
+    // Server side validation from API submission.
+    if (isset($element['#required']) && $element['#required'] == TRUE && $webform->get('id') === 'tide_webform_content_rating') {
+      if (empty($submission_data[$key]) && $submission_data[$key] == "") {
+        // Throw an exception to prevent saving the webform.
+        throw new \Exception("The required field '{$element['#title']}' is empty.");
+      }
+    }
+  }
+  $errors = WebformSubmissionForm::validateWebformSubmission($webform_submission);
+  if ($errors) {
+    foreach ($elements as $key => $element) {
+      if (isset($errors[$key]) && !empty($errors[$key])) {
+        throw new Exception($errors[$key]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function tide_webform_entity_type_alter(array &$entity_types) {
+  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
+  $entity_types['webform_submission']->setListBuilderClass('Drupal\tide_webform\TideWebformSubmissionListBuilder');
+}
+
+/**
+ * Function to get value of processed field.
+ *
+ * @param Drupal\webform\Entity\WebformSubmission $webform_submission
+ *   Webform submission.
+ *
+ * @return processed[0][value]
+ *   Returns value of processed field from Webform Submission.
+ */
+function tide_webform_get_processed(WebformSubmission $webform_submission) {
+  $processed = $webform_submission->processed->getValue();
+  if ($processed == NULL) {
+    return 0;
+  }
+  else {
+    return $processed[0]['value'];
+  }
+}
+
+/**
+ * Function to build query for filter on webform submissions pages.
+ *
+ * @return total
+ *   Returns total from the webform submission count.
+ */
+function tide_webform_submission_filter_query($value) {
+  $query = \Drupal::entityQuery('webform_submission');
+  $query->condition('processed', $value)->accessCheck(TRUE);
+  $webform_submission = \Drupal::routeMatch()->getParameter('webform');
+  if ($webform_submission != NULL) {
+    $id = $webform_submission->id();
+    $query->condition('webform_id', $id);
+  }
+  $query->count();
+  $total = $query->execute();
+  return $total;
+}
+
+/**
+ * Submit callback.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Form state.
+ */
+function tide_webform_form_webform_results_export_form_submit(array $form, FormStateInterface $form_state) {
+  $unprocessed_submissions = $form_state->getValue('unprocessed_submissions');
+  $process_submissions = $form_state->getValue('process_submissions');
+  $route = $form_state->getRedirect();
+  $route_parameters = $route->getRouteParameters();
+  $options = $route->getOptions();
+  $query = $options['query'];
+  $query['unprocessed_submissions'] = $unprocessed_submissions;
+  $query['process_submissions'] = $process_submissions;
+  $options = ['query' => $query];
+  $form_state->setRedirect('entity.webform.results_export', $route_parameters, $options);
+}
+
+/**
+ * Alter a webform element's default properties.
+ *
+ * @param array &$properties
+ *   An associative array containing an element's default properties.
+ * @param array $definition
+ *   The webform element's definition.
+ *
+ * @see webform_example_element_properties.module
+ */
+function tide_webform_webform_element_default_properties_alter(array &$properties, array &$definition) {
+  if (($definition["id"] === "textfield") && (empty($properties["counter_type"]))) {
+    $properties["counter_type"] = "character";
+    $properties["counter_maximum"] = 255;
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function tide_webform_webform_update(EntityInterface $entity) {
+  \Drupal::cache()->invalidate('webform_text_fields_default_maxlength');
+}

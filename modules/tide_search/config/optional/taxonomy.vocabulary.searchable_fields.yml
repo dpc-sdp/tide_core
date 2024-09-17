@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Searchable Fields'
+vid: searchable_fields
+description: 'A list of terms that describe fields against content types that we can use as filters for search'
+weight: 0

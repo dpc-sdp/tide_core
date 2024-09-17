@@ -29,7 +29,12 @@ class TideSiteFieldsTest extends TideSiteTest {
       ['field_ENTITY_TYPE_site', 'node', 'page', 'field_node_site'],
       ['field_ENTITY_TYPE_site', 'entity_with_underscores', 'page', 'field_entity_with_underscores_site'],
       ['field_ENTITY_TYPE_BUNDLE_site', 'node', 'page', 'field_node_page_site'],
-      ['field_ENTITY_TYPE_BUNDLE_site', 'entity_with_underscores', 'bundle_with_underscores', 'field_entity_with_underscores_bundle_with_underscores_site'],
+      [
+        'field_ENTITY_TYPE_BUNDLE_site',
+        'entity_with_underscores',
+        'bundle_with_underscores',
+        'field_entity_with_underscores_bundle_with_underscores_site',
+      ],
       ['field_site', 'entity_with_underscores', 'bundle_with_underscores', 'field_site'],
       ['field_ENTITY_TYPE_site', '', '', 'field_site'],
     ];

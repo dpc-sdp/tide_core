@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Tide Profile module functionality.
+ */
+
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_entity_bundle_create().
+ */
+function tide_profile_entity_bundle_create($entity_type_id, $bundle) {
+  if ($entity_type_id == 'node' && $bundle == 'profile') {
+    // Grant permissions on Test content type to Approver and Editor.
+    $roles = ['approver', 'editor'];
+    $permissions = [
+      'create profile content',
+      'delete any profile content',
+      'delete own profile content',
+      'delete profile revisions',
+      'edit any profile content',
+      'edit own profile content',
+      'revert profile revisions',
+      'view profile revisions',
+    ];
+
+    foreach ($roles as $role_name) {
+      $role = Role::load($role_name);
+      if ($role) {
+        foreach ($permissions as $permission) {
+          $role->grantPermission($permission);
+        }
+        $role->save();
+      }
+    }
+  }
+}
+
+/**
+ * Set dynamic allowed values for the year field.
+ *
+ * @param \Drupal\field\Entity\FieldStorageConfig $definition
+ *   The field definition.
+ * @param \Drupal\Core\Entity\ContentEntityInterface|null $entity
+ *   The entity being created if applicable.
+ * @param bool $cacheable
+ *   Boolean indicating if the results are cacheable.
+ *
+ * @return array
+ *   An array of possible key and value options.
+ *
+ * @see options_allowed_values()
+ */
+function tide_profile_year_allowed_values(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
+  $options = [];
+  $years = range(date('Y'), 2001);
+  // Add a custom alignment option for Article nodes.
+  if ($entity->bundle() == 'profile') {
+    foreach ($years as $year) {
+      $options[$year] = $year;
+    }
+  }
+
+  return $options;
+}

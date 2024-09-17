@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Alert Type'
+vid: alert_type
+description: 'Alert type for Alerts'
+hierarchy: 0
+weight: 0

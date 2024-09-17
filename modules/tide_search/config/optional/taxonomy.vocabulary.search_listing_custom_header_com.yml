@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Search Listing Custom Header Component'
+vid: search_listing_custom_header_com
+description: 'A list of custom components available to place in the header of a search listing content type'
+weight: 0

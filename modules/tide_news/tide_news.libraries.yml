@@ -1,0 +1,4 @@
+news_form:
+  css:
+    theme:
+      css/news.css: {}

@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\tide_webform\TideOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_webform_install() {
+  TideOperation::installWebformConfig();
+  TideOperation::accessTextEditorInWebform();
+}

@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_profile_intro_text
+    - node.type.profile
+id: node.profile.field_profile_intro_text
+field_name: field_profile_intro_text
+entity_type: node
+bundle: profile
+label: Introduction
+description: 'Add Introduction text for this profile.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

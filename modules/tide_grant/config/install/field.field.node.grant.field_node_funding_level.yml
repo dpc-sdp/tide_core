@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_node_funding_level
+    - node.type.grant
+  module:
+    - range
+id: node.grant.field_node_funding_level
+field_name: field_node_funding_level
+entity_type: node
+bundle: grant
+label: 'Funding Level'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  from:
+    prefix: ''
+    suffix: ''
+  to:
+    prefix: ''
+    suffix: ''
+field_type: range_integer

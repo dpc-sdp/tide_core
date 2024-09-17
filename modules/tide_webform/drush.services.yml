@@ -1,0 +1,5 @@
+services:
+  tide_webform_cleanup:
+    class: \Drupal\tide_webform\Commands\TideWebformSubmissionsCleanUp
+    tags:
+      - { name: drush.command }
