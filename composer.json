@@ -27,7 +27,7 @@
         "drupal/entity_embed": "1.x-dev@dev",
         "drupal/environment_indicator": "^4.0",
         "drupal/fast_404": "^3.0",
-        "drupal/field_group": "^3.6",
+        "drupal/field_group": "^4.0@alpha",
         "drupal/google_analytics": "^4.0",
         "drupal/hotjar": "^3.1",
         "drupal/linkit": "^6.0.0",
@@ -230,7 +230,6 @@
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
             },
             "drupal/field_group": {
-                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550#comment-15712652": "https://www.drupal.org/files/issues/2024-08-05/3098550-19.patch",
                 "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-15712685": "https://www.drupal.org/files/issues/2024-08-05/2894351-32.patch"
             },
             "drupal/jira_rest": {
