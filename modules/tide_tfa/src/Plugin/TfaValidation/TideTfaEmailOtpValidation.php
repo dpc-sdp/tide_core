@@ -54,4 +54,5 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
       return TRUE;
     }
   }
+
 }

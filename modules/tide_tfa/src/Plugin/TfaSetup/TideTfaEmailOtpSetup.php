@@ -3,8 +3,8 @@
 namespace Drupal\tide_tfa\Plugin\TfaSetup;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\tfa_email_otp\Plugin\TfaSetup\TfaEmailOtpSetup;
 use Drupal\Core\Url;
+use Drupal\tfa_email_otp\Plugin\TfaSetup\TfaEmailOtpSetup;
 
 /**
  * Tide TFA Email OTP Setup class.
