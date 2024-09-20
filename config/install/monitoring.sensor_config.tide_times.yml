@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+    - monitoring
+id: tide_times
+label: 'Tide times'
+description: 'Information Hub for Tide Modules.'
+category: 'Tide'
+plugin_id: tide_times_sensor
+caching_time: 3600
