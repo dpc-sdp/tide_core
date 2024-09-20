@@ -55,7 +55,7 @@ Feature: Access permissions
     Given I go to "user/password"
     Then I fill in "Username or email address" with "test@example.com"
     And I press "Submit"
-    And I should see the success message "If the username or email address exists and is active, further instructions have been sent to your email address."
+    And I should see the success message "If test@example.com is a valid account, an email will be sent with instructions to reset your password."
     And I save screenshot
 
   @api
