@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_tfa.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+    if ($form_id == 'tfa_entry_form') {
+      // [SD-294] Change the label of the 'Send' button.
+      if (isset($form['actions']['send'])) {
+        $form['actions']['send']['#value'] = t('Email me a verification code');
+      }
+    }
+}
