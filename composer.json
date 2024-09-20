@@ -55,6 +55,13 @@
       "drupal/tablefield": {
         "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
       },
+      "drupal/tfa": {
+        "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15468410": "https://www.drupal.org/files/issues/2024-02-29/DD-1756-force-tfa-user-setup-3223327-38.patch",
+        "TfaLoginController enforces opaque form expiration - https://www.drupal.org/project/tfa/issues/3390083#comment-15753259": "https://www.drupal.org/files/issues/2024-09-02/3390083-3.patch"
+      },
+      "drupal/tfa_email_otp": {
+        "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
+      },
       "drupal/token": {
         "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
       },
@@ -244,6 +251,7 @@
     "drupal/prlp": "^1.10",
     "drupal/queue_mail": "^1.5",
     "drupal/quick_node_clone": "^1.16",
+    "drupal/real_aes": "^2.5",
     "drupal/redirect": "^1.8",
     "drupal/role_delegation": "^1.2",
     "drupal/scheduled_transitions": "^2.3",
@@ -256,6 +264,8 @@
     "drupal/stage_file_proxy": "^2.0",
     "drupal/tablefield": "2.4",
     "drupal/term_reference_tree": "^2.0",
+    "drupal/tfa": "^1.2",
+    "drupal/tfa_email_otp": "^1.0@beta",
     "drupal/token": "^1.15",
     "drupal/token_conditions": "dev-compatible-with-d10",
     "drupal/token_filter": "^2.0",
