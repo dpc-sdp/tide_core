@@ -6,6 +6,7 @@ use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\tide_core\TideSystemInfoService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,7 +79,7 @@ class SystemInfoController extends ControllerBase {
   public function getPackageVersion(Request $request) {
     $packageName = $request->query->get('q');
     $data = $this->systemInfoService->getPackageVersion($packageName);
-    return new CacheableJsonResponse($data);
+    return new JsonResponse($data);
   }
 
 }

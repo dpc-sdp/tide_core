@@ -9,4 +9,3 @@ label: 'Tide times'
 description: 'Information Hub for Tide Modules.'
 category: 'Tide'
 plugin_id: tide_times_sensor
-caching_time: 3600
