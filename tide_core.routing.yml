@@ -36,3 +36,12 @@ tide_core.system_info.fields:
     parameters:
       types:
         type: string
+
+tide_core.package_version:
+  path: '/api/v1/package-version'
+  defaults:
+    _controller: '\Drupal\tide_core\Controller\SystemInfoController::getPackageVersion'
+    _title: 'Package Version Information'
+  methods: ['GET']
+  requirements:
+    _access: 'TRUE'
