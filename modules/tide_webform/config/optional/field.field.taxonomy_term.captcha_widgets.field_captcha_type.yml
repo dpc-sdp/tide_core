@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_captcha_type
+    - taxonomy.vocabulary.captcha_widgets
+  module:
+    - options
+id: taxonomy_term.captcha_widgets.field_captcha_type
+field_name: field_captcha_type
+entity_type: taxonomy_term
+bundle: captcha_widgets
+label: 'Captcha type'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

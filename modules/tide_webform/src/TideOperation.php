@@ -74,7 +74,6 @@ class TideOperation {
         'webform_time',
         'webform_variant',
         'webform_video_file',
-        'webform_wizard_page',
       ];
       $config_factory = \Drupal::configFactory();
       $config = $config_factory->getEditable('webform.settings');

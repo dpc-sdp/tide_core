@@ -170,7 +170,6 @@ element:
     webform_time: webform_time
     webform_variant: webform_variant
     webform_video_file: webform_video_file
-    webform_wizard_page: webform_wizard_page
 html_editor:
   disabled: false
   format: ''
