@@ -1,0 +1,34 @@
+media_form:
+  version: 1.0
+  js:
+    js/media_form.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery
+
+media_browser:
+  css:
+    theme:
+      css/media_browser.css: {}
+
+embed_media_back_button:
+  js:
+    js/embed_media_back_button.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery
+
+embed_media_iframe_form:
+  js:
+    js/embed_media_iframe_form.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery
+
+embed_media_back_button_style:
+  css:
+    theme:
+      css/embed_media_back_button.css: {}

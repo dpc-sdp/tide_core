@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.media_browser_preview
+label: 'Media browser preview'
+targetEntityType: media
+cache: true
