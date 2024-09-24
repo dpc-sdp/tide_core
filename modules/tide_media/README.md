@@ -9,7 +9,7 @@ Tide is a Drupal 8 distribution focused on delivering an API first, headless Dru
 [![Licence: GPL 2](https://img.shields.io/badge/licence-GPL2-blue.svg)](https://github.com/dpc-sdp/tide_media/blob/master/LICENSE.txt)
 [![Pull Requests](https://img.shields.io/github/issues-pr/dpc-sdp/tide_page.svg)](https://github.com/dpc-sdp/tide_media/pulls)
 
-## What is in this package
+## What is in this package 
 - Media types: Document, Audio, Video, Embed Video, File
 - Media entity fields: Department, License
 - Entity browser configurations
