@@ -3,7 +3,9 @@
 namespace Drupal\Tests\tide_core\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\test_helpers\TestHelpers;
 use Drupal\tide_core\Controller\SystemInfoController;
+use Drupal\tide_core\TideSystemInfoService;
 use org\bovigo\vfs\vfsStream;
 
 /**
@@ -18,7 +20,7 @@ class SystemInfoControllerTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['system', 'user', 'field', 'tide_core'];
+  protected static $modules = ['system', 'user', 'field', 'test_helpers', 'monitoring', 'tide_core'];
 
   /**
    * The SystemInfoController instance.
@@ -33,6 +35,8 @@ class SystemInfoControllerTest extends KernelTestBase {
    * @var \org\bovigo\vfs\vfsStreamDirectory
    */
   protected $vfsRoot;
+
+  protected $sysInfoService;
 
   /**
    * {@inheritdoc}
@@ -54,6 +58,7 @@ class SystemInfoControllerTest extends KernelTestBase {
 
     $container = $this->container;
 
+
     // Mock the file system service.
     $file_system = $this->createMock('\Drupal\Core\File\FileSystemInterface');
     $file_system->method('realpath')
@@ -61,22 +66,17 @@ class SystemInfoControllerTest extends KernelTestBase {
     $container->set('file_system', $file_system);
 
     $this->controller = SystemInfoController::create($container);
+    $this->sysInfoService = TestHelpers::service('tide_core.system_info_service');
+
   }
 
   /**
    * Tests the getSystemInfo method.
    */
   public function testGetSystemInfo() {
-    $response = $this->controller->getSystemInfo();
-    $this->assertTrue($response->isOk());
-
-    $content = json_decode($response->getContent(), TRUE);
-    $this->assertEquals('1.2.3', $content['tideVersion']);
-    $this->assertEquals('4.5.6', $content['sdpVersion']);
-
-    // Test caching.
-    $cachedResponse = $this->controller->getSystemInfo();
-    $this->assertEquals($response->getContent(), $cachedResponse->getContent());
+    $content = $this->sysInfoService->getSystemInfo();
+    $this->assertEquals(['tideVersion' => '1.2.3', 'sdpVersion' => '4.5.6'],
+      $content);
   }
 
   /**
@@ -125,11 +125,8 @@ class SystemInfoControllerTest extends KernelTestBase {
     // Remove the virtual composer.json file.
     unlink($this->vfsRoot->url() . '/composer.json');
 
-    $response = $this->controller->getSystemInfo();
-    $this->assertEquals(404, $response->getStatusCode());
-
-    $content = json_decode($response->getContent(), TRUE);
-    $this->assertArrayHasKey('error', $content);
+    $response = $this->sysInfoService->getSystemInfo();
+    $this->assertEquals(['error' => 'composer.json not found'], $response);
   }
 
   /**
