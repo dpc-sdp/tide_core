@@ -5,7 +5,6 @@ namespace Drupal\Tests\tide_core\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\test_helpers\TestHelpers;
 use Drupal\tide_core\Controller\SystemInfoController;
-use Drupal\tide_core\TideSystemInfoService;
 use org\bovigo\vfs\vfsStream;
 
 /**
@@ -36,6 +35,11 @@ class SystemInfoControllerTest extends KernelTestBase {
    */
   protected $vfsRoot;
 
+  /**
+   * Tide_core system_info_service.
+   *
+   * @var \Drupal\tide_core\TideSystemInfoService
+   */
   protected $sysInfoService;
 
   /**
@@ -57,7 +61,6 @@ class SystemInfoControllerTest extends KernelTestBase {
       ]));
 
     $container = $this->container;
-
 
     // Mock the file system service.
     $file_system = $this->createMock('\Drupal\Core\File\FileSystemInterface');

@@ -3,10 +3,10 @@
 namespace Drupal\tide_core\Controller;
 
 use Drupal\Core\Cache\CacheableJsonResponse;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\tide_core\TideSystemInfoService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -79,7 +79,9 @@ class SystemInfoController extends ControllerBase {
   public function getPackageVersion(Request $request) {
     $packageName = $request->query->get('q');
     $data = $this->systemInfoService->getPackageVersion($packageName);
-    return new JsonResponse($data);
+    $response = new CacheableJsonResponse($data);
+    $response->addCacheableDependency((new CacheableMetadata())->addCacheContexts(['url.query_args:q']));
+    return $response;
   }
 
 }
