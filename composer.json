@@ -218,6 +218,7 @@
     "drupal/config_split": "^2.0",
     "drupal/config_update": "^2.0@alpha",
     "drupal/content_lock": "^2.3",
+    "drupal/monitoring": "^1.13",
     "drupal/core": "10.3.x",
     "drupal/core-recommended": "10.3.x",
     "drupal/ctools": "^3.14",
