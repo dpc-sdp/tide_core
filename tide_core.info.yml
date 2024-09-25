@@ -2,7 +2,7 @@ name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
@@ -72,7 +72,6 @@ dependencies:
   - seckit:seckit
   - simple_sitemap:simple_sitemap
   - tablefield:tablefield
-  - tide_ckeditor:tide_ckeditor
   - token_conditions:token_conditions
   - token_filter:token_filter
   - twig_field_value:twig_field_value
@@ -86,6 +85,42 @@ dependencies:
   - content_lock:content_lock
   - ckeditor_templates:ckeditor_templates
   - term_reference_tree:term_reference_tree
+  - drupal:jsonapi_extras
+  - drupal:jsonapi_menu_items
+  - drupal:jsonapi_resources
+  - drupal:schemata
+  - drupal:schemata_json_schema
+  - crop:crop
+  - drupal:field
+  - drupal:media
+  - drupal:path
+  - drupal:text
+  - drupal:user
+  - drupal:datetime
+  - field_group:field_group
+  - inline_entity_form:inline_entity_form
+  - embed:embed
+  - entity_embed:entity_embed
+  - entity_browser:entity_browser
+  - entity_browser:entity_browser_entity_form
+  - entity_usage:entity_usage
+  - focal_point:focal_point
+  - svg_image:svg_image
+  - video_embed_field:video_embed_field
+  - video_embed_field:video_embed_media
+  - drupal:field
+  - drupal:field_ui
+  - drupal:node
+  - drupal:path
+  - drupal:taxonomy
+  - drupal:text
+  - drupal:user
+  - drupal:path_alias
+  - key_value_field:key_value_field
+  - pathauto:pathauto
+  - entity_browser:entity_browser
+  - entity_browser:entity_browser_entity_form
+  - create_menus_permission:create_menus_permission
 themes:
   - claro
 config_devel:

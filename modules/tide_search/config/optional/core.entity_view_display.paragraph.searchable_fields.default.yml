@@ -1,0 +1,39 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.searchable_fields.field_field
+    - field.field.paragraph.searchable_fields.field_input_label
+    - field.field.paragraph.searchable_fields.field_placeholder
+    - paragraphs.paragraphs_type.searchable_fields
+id: paragraph.searchable_fields.default
+targetEntityType: paragraph
+bundle: searchable_fields
+mode: default
+content:
+  field_field:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_input_label:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_placeholder:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  search_api_excerpt: true

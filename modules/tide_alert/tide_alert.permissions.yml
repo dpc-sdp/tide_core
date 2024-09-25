@@ -1,0 +1,33 @@
+'add scheduled transitions node alert':
+  title: 'Add scheduled transitions for node alert'
+  description: 'Allows user to add scheduled transitions for alert content type.'
+'create alert content':
+  title: 'Create alert content'
+  description: 'Allows user to create alert content.'
+'clone alert content':
+  title: 'Clone alert content'
+  description: 'Allows user to clone alert content.'
+'delete alert revisions':
+  title: 'Delete alert revisions'
+  description: 'Allows user to delete alert revisions.'
+'delete any alert content':
+  title: 'Delete any alert content'
+  description: 'Allows user to delete any alert content.'
+'delete own alert content':
+  title: 'Delete own alert content'
+  description: 'Allows user to delete own alert content.'
+'edit any alert content':
+  title: 'Edit any alert content'
+  description: 'Allows user to edit any alert content.'
+'edit own alert content':
+  title: 'Edit own alert content'
+  description: 'Allows user to edit own alert content.'
+'revert alert revisions':
+  title: 'Revert alert revisions'
+  description: 'Allows user to revert alert revisions.'
+'view alert revisions':
+  title: 'View alert revisions'
+  description: 'Allows user to view alert revisions.'
+'view scheduled transitions node alert':
+  title: 'View scheduled transitions for node alert'
+  description: 'Allows user to view all scheduled transitions for alert content type.'

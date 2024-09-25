@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\tide_publication\TidePublicationOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_publication_install() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  TidePublicationOperation::addToWorkflows();
+  TidePublicationOperation::addToScheduledTransitions();
+  TidePublicationOperation::assignNecessaryPermissions(FALSE);
+  TidePublicationOperation::addFieldsToSearchApi();
+
+  // Creates vocabulary if doesn't exist.
+  $vocabularies = Vocabulary::loadMultiple();
+  if (!isset($vocabularies['organisation'])) {
+    TidePublicationOperation::createVocabulary('organisation');
+  }
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_publication_uninstall() {
+  TidePublicationOperation::assignNecessaryPermissions(TRUE);
+}
+
+/**
+ * Update pathauto.pattern.publication_pages to be compatible with D10.
+ */
+function tide_publication_update_10001() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('pathauto.pattern.publication_pages');
+  $config->set('selection_criteria.96994a80-9dfb-4bf3-b9cf-7fc3e3503c56.id', 'entity_bundle:node');
+  $config->save();
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function tide_publication_update_dependencies() {
+  $dependencies = [];
+  $dependencies['tide_publication'][10003] = ['tide_core' => 10005];
+  return $dependencies;
+}
+
+/**
+ * Update field_publication_authors cardinality and vocabulary to organisation.
+ */
+function tide_publication_update_10002() {
+  $tidePublicationOperation = new TidePublicationOperation();
+  $vocabulary = 'organisation';
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('field.storage.node.field_publication_authors');
+  $config->set('cardinality', 1);
+  $config->save();
+
+  // Creates vocabulary if doesn't exist.
+  $vocabularies = Vocabulary::loadMultiple();
+  if (!isset($vocabularies[$vocabulary])) {
+    $tidePublicationOperation->createVocabulary($vocabulary);
+  }
+
+  $field = FieldConfig::loadByName('node', 'publication', 'field_publication_authors');
+  if ($field->get('field_type') === 'entity_reference') {
+    $new_field = $field->toArray();
+    $new_field['field_type'] = 'entity_reference';
+    $new_field['description'] = 'Start typing to choose one publication author. (Authors are added in the organisation taxonomy by your Site Admins.)';
+    $new_field['dependencies'] = [
+      'config' => [
+        'field.storage.' . $config->get('id'),
+        'node.type.publication',
+        'taxonomy.vocabulary.' . $vocabulary,
+      ],
+    ];
+    $new_field['settings'] = [
+      'handler_settings' => [
+        'target_bundles' => [
+          'department' => $vocabulary,
+        ],
+      ],
+    ];
+    $new_field = FieldConfig::create($new_field);
+    $new_field->original = $field;
+    $new_field->enforceIsNew(FALSE);
+    $new_field->save();
+  }
+}
+
+/**
+ * Imports publication.field_content_category for existing sites.
+ */
+function tide_publication_update_10003() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_publication') . '/config/install'];
+  $config_read = _tide_read_config('field.field.node.publication.field_content_category', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $id = $storage->getIDFromConfigName('field.field.node.publication.field_content_category', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
+  _tide_core_content_category_form_display('publication');
+}

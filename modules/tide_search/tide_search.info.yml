@@ -1,0 +1,14 @@
+name: Tide Search
+description: 'Provides Search and related configuration.'
+type: module
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - search_api:search_api
+  - elasticsearch_connector:elasticsearch_connector
+  - tide_core:tide_core
+  - tide_core:tide_api
+  - tide_content_collection:tide_content_collection
+  - tide_core:tide_landing_page
+  - paragraphs:paragraphs
+  - tide_search:tide_data_pipeline

@@ -1,0 +1,48 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.event.body
+    - node.type.event
+  module:
+    - text
+    - user
+id: node.event.teaser
+targetEntityType: node
+bundle: event
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  content_moderation_control:
+    weight: -20
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden:
+  field_audience: true
+  field_event_category: true
+  field_event_description: true
+  field_event_details: true
+  field_featured_image: true
+  field_landing_page_contact: true
+  field_landing_page_show_contact: true
+  field_landing_page_summary: true
+  field_news_intro_text: true
+  field_node_author: true
+  field_node_email: true
+  field_node_link: true
+  field_node_phone: true
+  field_related_links: true
+  field_show_content_rating: true
+  field_show_social_sharing: true
+  field_tags: true
+  field_topic: true

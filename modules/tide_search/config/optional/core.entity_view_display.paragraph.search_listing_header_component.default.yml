@@ -1,0 +1,47 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.search_listing_header_component.field_component
+    - field.field.paragraph.search_listing_header_component.field_header_configuration
+    - paragraphs.paragraphs_type.search_listing_header_component
+  module:
+    - tide_content_collection
+id: paragraph.search_listing_header_component.default
+targetEntityType: paragraph
+bundle: search_listing_header_component
+mode: default
+content:
+  field_component:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_description:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  field_header_configuration:
+    type: content_collection_configuration_raw
+    label: above
+    settings:
+      raw_json: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_title:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  search_api_excerpt: true

@@ -1,0 +1,40 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.call_to_action.field_paragraph_body
+    - field.field.paragraph.call_to_action.field_paragraph_cta
+    - field.field.paragraph.call_to_action.field_paragraph_media
+    - field.field.paragraph.call_to_action.field_paragraph_title
+    - paragraphs.paragraphs_type.call_to_action
+  module:
+    - link
+id: paragraph.call_to_action.preview
+targetEntityType: paragraph
+bundle: call_to_action
+mode: preview
+content:
+  field_paragraph_cta:
+    weight: 1
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    type: link
+    region: content
+  field_paragraph_title:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden:
+  field_paragraph_body: true
+  field_paragraph_media: true

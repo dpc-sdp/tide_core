@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_first_row_table_header
+    - paragraphs.paragraphs_type.data_table
+id: paragraph.data_table.field_first_row_table_header
+field_name: field_first_row_table_header
+entity_type: paragraph
+bundle: data_table
+label: 'Use first row as table header'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: phone
+label: Phone
+icon_uuid: null
+description: 'Provides a phone number field with an option of adding a title to the number.'
+behavior_plugins: {  }

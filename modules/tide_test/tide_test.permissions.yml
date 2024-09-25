@@ -1,0 +1,7 @@
+'view scheduled transitions node test':
+  title: 'View scheduled transitions for node test'
+  description: 'View all scheduled transitions for test content type.'
+
+'add scheduled transitions node test':
+  title: 'Add scheduled transitions for node test'
+  description: 'Add scheduled transitions for test content type.'

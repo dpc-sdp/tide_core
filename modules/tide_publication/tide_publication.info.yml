@@ -1,0 +1,66 @@
+name: Tide Publication
+type: module
+description: 'Provides Publication content type and related configuration. '
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - tide_landing_page:tide_landing_page
+  - tide_core:tide_media
+  - entity_hierarchy:entity_hierarchy
+  - inline_entity_form:inline_entity_form
+config_devel:
+  install:
+    - core.base_field_override.node.publication.promote
+    - core.base_field_override.node.publication.status
+    - core.base_field_override.node.publication_page.promote
+    - core.base_field_override.node.publication_page.status
+    - core.entity_form_display.node.publication.default
+    - core.entity_form_display.node.publication_page.default
+    - core.entity_view_display.node.publication.default
+    - core.entity_view_display.node.publication.teaser
+    - core.entity_view_display.node.publication_page.default
+    - core.entity_view_display.node.publication_page.teaser
+    - field.field.node.publication.body
+    - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_landing_page_component
+    - field.field.node.publication.field_landing_page_contact
+    - field.field.node.publication.field_landing_page_intro_text
+    - field.field.node.publication.field_landing_page_show_contact
+    - field.field.node.publication.field_landing_page_summary
+    - field.field.node.publication_page.field_node_display_headings
+    - field.field.node.publication.field_license_type
+    - field.field.node.publication.field_node_documents
+    - field.field.node.publication.field_publication_authors
+    - field.field.node.publication.field_publication_date
+    - field.field.node.publication.field_related_links
+    - field.field.node.publication.field_show_content_rating
+    - field.field.node.publication.field_show_publication_nav
+    - field.field.node.publication.field_show_related_content
+    - field.field.node.publication.field_show_social_sharing
+    - field.field.node.publication.field_show_table_of_content
+    - field.field.node.publication.field_topic
+    - field.field.node.publication_page.field_landing_page_component
+    - field.field.node.publication_page.field_landing_page_contact
+    - field.field.node.publication_page.field_landing_page_intro_text
+    - field.field.node.publication_page.field_landing_page_show_contact
+    - field.field.node.publication_page.field_landing_page_summary
+    - field.field.node.publication_page.field_publication
+    - field.field.node.publication_page.field_related_links
+    - field.field.node.publication_page.field_show_content_rating
+    - field.field.node.publication_page.field_show_publication_nav
+    - field.field.node.publication_page.field_show_related_content
+    - field.field.node.publication_page.field_show_social_sharing
+    - field.field.node.publication_page.field_show_table_of_content
+    - field.storage.node.field_license_type
+    - field.storage.node.field_publication
+    - field.storage.node.field_publication_authors
+    - field.storage.node.field_publication_date
+    - field.storage.node.field_show_publication_nav
+    - node.type.publication
+    - node.type.publication_page
+  optional:
+    - jsonapi_extras.jsonapi_resource_config.node--publication
+    - jsonapi_extras.jsonapi_resource_config.node--publication_page
+    - pathauto.pattern.publication_pages
+    - simple_sitemap.bundle_settings.node.publication
+    - simple_sitemap.bundle_settings.node.publication_page

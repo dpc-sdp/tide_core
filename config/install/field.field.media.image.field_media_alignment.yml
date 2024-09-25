@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_media_alignment
+    - media.type.image
+  module:
+    - options
+id: media.image.field_media_alignment
+field_name: field_media_alignment
+entity_type: media
+bundle: image
+label: Alignment
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

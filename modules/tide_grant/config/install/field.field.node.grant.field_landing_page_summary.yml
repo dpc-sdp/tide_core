@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_landing_page_summary
+    - node.type.grant
+id: node.grant.field_landing_page_summary
+field_name: field_landing_page_summary
+entity_type: node
+bundle: grant
+label: Summary
+description: 'Add short summary to introduce your grant. This summary will display on promotional cards or a card carousel.'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - tide_webform
+id: webform_submission_make_process_action
+label: 'Mark as exported'
+type: webform_submission
+plugin: webform_submission_make_process_action
+configuration: {  }

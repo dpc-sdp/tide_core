@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.statistic_block.field_statistic_body
+    - field.field.paragraph.statistic_block.field_statistic_heading
+    - paragraphs.paragraphs_type.statistic_block
+id: paragraph.statistic_block.default
+targetEntityType: paragraph
+bundle: statistic_block
+mode: default
+content:
+  field_statistic_body:
+    weight: 1
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_statistic_heading:
+    weight: 0
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden:
+  search_api_excerpt: true

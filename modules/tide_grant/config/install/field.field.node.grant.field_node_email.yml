@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_node_email
+    - node.type.grant
+id: node.grant.field_node_email
+field_name: field_node_email
+entity_type: node
+bundle: grant
+label: 'Email address'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

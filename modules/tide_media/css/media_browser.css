@@ -1,0 +1,66 @@
+.file--tide-media-office-document {
+  background-image: url(../images/icons/tide_doc.svg);
+}
+
+.file--tide-media-application-pdf {
+  background-image: url(../images/icons/tide_pdf.svg);
+}
+
+.file--tide-media-application-spreadsheet {
+  background-image: url(../images/icons/tide_xls.svg);
+}
+
+.file--tide-media-application-presentation {
+  background-image: url(../images/icons/tide_pptx.svg);
+}
+
+.file--tide-media-application-plaintext {
+  background-image: url(../images/icons/tide_txt.svg);
+}
+
+.file--tide-media-xlsm {
+  background-image: url(../images/icons/tide_xlsm.svg);
+}
+
+.file--tide-media-csv {
+  background-image: url(../images/icons/tide_csv.svg);
+}
+
+.file--tide-media-ppt {
+  background-image: url(../images/icons/tide_ppt.svg);
+}
+
+.file--tide-media-mswordx {
+  background-image: url(../images/icons/tide_docx.svg);
+}
+
+.file--tide-media-tiff {
+  background-image: url(../images/icons/tide_tiff.svg);
+}
+
+.file--tide-media-zip {
+  background-image: url(../images/icons/tide_zip.svg);
+}
+
+.file--tide-media-eps {
+  background-image: url(../images/icons/tide_eps.svg);
+}
+
+.file--tide-media-xls {
+  background-image: url(../images/icons/tide_xls.svg);
+}
+
+.file--tide-media-dotx {
+  background-image: url(../images/icons/tide_dotx.svg);
+}
+
+.file--tide-media-office-document, .file--tide-media-application-pdf,
+.file--tide-media-application-spreadsheet, .file--tide-media-application-presentation,
+.file--tide-media-application-plaintext, .file--tide-media-xlsm, .file--tide-media-csv, .file--tide-media-ppt, .file--tide-media-mswordx, .file--tide-media-tiff, .file--tide-media-zip, .file--tide-media-eps, .file--tide-media-xls, .file--tide-media-dotx {
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 6.25rem;
+  width: 6.25rem;
+  display: block;
+}

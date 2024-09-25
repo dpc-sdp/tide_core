@@ -1,0 +1,177 @@
+<?php
+
+/**
+ * @file
+ * Tide Landing Page install.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\tide_landing_page\TideLandingPageOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_landing_page_install() {
+
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  TideLandingPageOperation::addToWorkflows();
+  TideLandingPageOperation::addToScheduledTransitions();
+  TideLandingPageOperation::addWebformComponent();
+  TideLandingPageOperation::assignNecessaryPermissions();
+  TideLandingPageOperation::addFieldsToSearchApi();
+
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function tide_landing_page_update_dependencies() {
+  $dependencies = [];
+  $dependencies['tide_landing_page'][10102] = ['tide_core' => 10005];
+
+  return $dependencies;
+}
+
+/**
+ * Update twitter name to X.
+ */
+function tide_landing_page_update_10100() {
+  $config = \Drupal::configFactory()->getEditable('field.storage.paragraph.field_paragraph_social_list');
+  $allowed_values = $config->get('settings.allowed_values');
+  if ($allowed_values[0]['label'] == 'Twitter') {
+    $allowed_values[0]['label'] = 'X (formerly Twitter)';
+  }
+  $config->set('settings.allowed_values', $allowed_values);
+  $config->save();
+}
+
+/**
+ * Imports landing_page.field_content_category for existing sites.
+ */
+function tide_landing_page_update_10101() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
+  $config_read = _tide_read_config('field.field.node.landing_page.field_content_category', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $id = $storage->getIDFromConfigName('field.field.node.landing_page.field_content_category', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
+  _tide_core_content_category_form_display('landing_page');
+}
+
+/**
+ * Removes latest event paragraph types.
+ */
+function tide_landing_page_update_10102() {
+  $paragraph_types = [
+    'latest_events',
+    'news_listing',
+  ];
+  foreach ($paragraph_types as $paragraph_type) {
+    $query = \Drupal::entityQuery('paragraph')
+      ->accessCheck(TRUE)
+      ->condition('type', $paragraph_type);
+    $p_ids = $query->execute();
+    if (!empty($p_ids)) {
+      $p_entities = Paragraph::loadMultiple($p_ids);
+      $storage_handler = \Drupal::entityTypeManager()->getStorage('paragraph');
+      $storage_handler->delete($p_entities);
+    }
+    $p_type = \Drupal::entityTypeManager()->getStorage('paragraphs_type')->load($paragraph_type);
+    if ($p_type) {
+      $p_type->delete();
+    }
+  }
+}
+
+/**
+ * Remove style option field from call to action component.
+ */
+function tide_landing_page_update_10103() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
+  // Delete field configuration manually.
+  $field_names = ['field_paragraph_cta_style'];
+  foreach ($field_names as $field_name) {
+    $field_config = FieldConfig::loadByName('paragraph', 'call_to_action', $field_name);
+    if ($field_config) {
+      $field_config->delete();
+    }
+
+    $field_storage_config = FieldStorageConfig::loadByName('paragraph', $field_name);
+    if ($field_storage_config) {
+      $field_storage_config->delete();
+    }
+  }
+
+  $form_configs = [
+    'core.entity_form_display.paragraph.call_to_action.default',
+    'core.entity_view_display.paragraph.call_to_action.default',
+    'paragraphs.paragraphs_type.call_to_action',
+  ];
+  foreach ($form_configs as $form_config) {
+    $config = \Drupal::configFactory()->getEditable($form_config);
+    $config_read = _tide_read_config($form_config, $config_location, FALSE);
+    $config->set('description', $config_read['description']);
+    $config->save();
+  }
+}
+
+/**
+ * Change weight of paragraph types.
+ */
+function tide_landing_page_update_10104() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
+  $config = 'field.field.node.landing_page.field_landing_page_component';
+  // Read only from /config/install.
+  $config_read = _tide_read_config($config, $config_location, FALSE);
+  // Get the sync file to update.
+  $config_factory = \Drupal::configFactory();
+  $config_sync = $config_factory->getEditable($config);
+  $paragraphs = [
+    'basic_text',
+    'accordion',
+    'promotion_card',
+    'navigation_card',
+    'card_keydates',
+    'call_to_action',
+    'card_event',
+    'card_carousel',
+    'embedded_webform',
+    'form_embed_openforms',
+    'media_gallery',
+    'complex_image',
+    'timelines',
+    'compact_card_collection',
+    'data_table',
+    'statistics_grid',
+  ];
+  foreach ($paragraphs as $paragraph_type_id) {
+    // Changing weight.
+    $new_weight = $config_read['settings']['handler_settings']['target_bundles_drag_drop'][$paragraph_type_id]['weight'];
+    $config_sync->set('settings.handler_settings.target_bundles_drag_drop.' . $paragraph_type_id . '.weight', $new_weight)->save();
+  }
+}
+
+/**
+ * Adds highlight option new value to to field_promo_card_display_style.
+ */
+function tide_landing_page_update_10105() {
+  $field_storage = FieldStorageConfig::loadByName('paragraph', 'field_promo_card_display_style');
+  $new_field = $field_storage->getSettings()['allowed_values'];
+  $new_field['highlight'] = 'Highlight';
+  $field_storage->setSettings([
+    'allowed_values' => $new_field,
+  ]);
+  $field_storage->save();
+}

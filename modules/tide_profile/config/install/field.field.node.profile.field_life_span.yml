@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_life_span
+    - node.type.profile
+id: node.profile.field_life_span
+field_name: field_life_span
+entity_type: node
+bundle: profile
+label: 'Life span'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

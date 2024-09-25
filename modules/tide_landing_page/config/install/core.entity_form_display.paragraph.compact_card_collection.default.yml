@@ -1,0 +1,44 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.compact_card_collection.field_compact_card
+    - field.field.paragraph.compact_card_collection.field_paragraph_title
+    - paragraphs.paragraphs_type.compact_card_collection
+  module:
+    - paragraphs
+id: paragraph.compact_card_collection.default
+targetEntityType: paragraph
+bundle: compact_card_collection
+mode: default
+content:
+  field_compact_card:
+    type: paragraphs
+    weight: 1
+    settings:
+      title: 'Compact card'
+      title_plural: 'Compact cards'
+      edit_mode: closed
+      closed_mode: preview
+      autocollapse: all
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: compact_card
+      features:
+        add_above: '0'
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
+    third_party_settings: {  }
+    region: content
+  field_paragraph_title:
+    weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+hidden:
+  created: true
+  status: true

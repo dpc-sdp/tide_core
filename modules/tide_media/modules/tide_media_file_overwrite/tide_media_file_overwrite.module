@@ -1,0 +1,219 @@
+<?php
+
+/**
+ * @file
+ * Contains tide_media_file_overwrite.module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\file\Entity\File;
+
+/**
+ * Implements hook_help().
+ */
+function tide_media_file_overwrite_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the tide_media_file_overwrite module.
+    case 'help.page.tide_media_file_overwrite':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Gives the author option to a overwrite file, and keeping the same filename when upload. This is an override of the default Drupal behaviour where a file is uploaded as a new file with a number appended to the file name, eg my-file-title_1.pdf. This module can be set to Override or not Override the file by default. Each file upload has an option to change the default.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function tide_media_file_overwrite_theme() {
+  return [
+    'tide_media_file_overwrite' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_media_file_overwrite_form_media_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Only show overwrite option on edit,
+  // and this media bundle is actually in the configured list.
+  if ($form_state->getFormObject()->getOperation() == 'edit' && _tide_media_file_overwrite_get_field($form_id) != FALSE) {
+    $upload_overwrite = \Drupal::config('tide_media_file_overwrite.settings')->get('needs_overwritten');
+
+    $form['needs_overwritten'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Overwrite upload file if the same file name exists?'),
+      '#default_value' => $upload_overwrite,
+      '#weight' => '0',
+    ];
+
+    foreach (array_keys($form['actions']) as $action) {
+      if (isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+        $form['actions'][$action]['#submit'][] = 'tide_media_file_overwrite_form_submit';
+      }
+    }
+  }
+}
+
+/**
+ * Custom form submit handler.
+ */
+function tide_media_file_overwrite_form_submit($form, FormStateInterface $form_state) {
+  $upload_overwrite = $form_state->getValue('needs_overwritten');
+
+  // User wanted to replace existing file.
+  if ($upload_overwrite == 1) {
+    if (!is_null($file_entity = _tide_media_file_overwrite_get_file($form_state))) {
+
+      // Get the original file name, before the _0 that got added in.
+      $prev_filename = _tide_media_file_overwrite_get_original_filename($file_entity->getFilename());
+      // Get the previous fid and uri from database.
+      $connection = \Drupal::service('database');
+      $result = $connection->select('file_managed', 'f')
+        ->fields('f', ['fid', 'filename', 'uri'])
+        ->condition('f.fid', $file_entity->fid->value, '!=')
+        ->condition('f.filename', $prev_filename, '=')
+        ->condition('f.status', 1, '=')
+        ->orderBy('f.fid', 'DESC')
+        ->range(0, 1)
+        ->execute()->fetchAll();
+
+      if ($result) {
+        $prev_file_entity = File::load($result[0]->fid);
+
+        // Compare if the uploaded file entity and the previous file entity
+        // share the same directory path. The first time the file is
+        // re-uploaded, the uploaded file location will be changed due to
+        // the upload path configuration changes for different file type.
+        // The current upload location config is: /files/year-month.
+        // The new upload location config is /files/document
+        // for document, /audio for audio and /images for images.
+        // Get the directory path of the file to be replaced.
+        $prev_file_wrapper = \Drupal::service('stream_wrapper_manager')->getViaUri($result[0]->uri);
+        $old_file = $prev_file_wrapper->realpath();
+        // We got the real path of file so we just use php dirname
+        // function to get the directory path.
+        $dir_path_old = dirname($old_file);
+
+        // Rename old file so it can be deleted safely by cron later.
+        if (file_exists($old_file)) {
+          rename($old_file, $old_file . '_' . $result[0]->fid . '_deleted');
+        }
+        // Also set the old file uri in database to match.
+        $prev_file_entity->setFileUri($result[0]->uri . '_' . $result[0]->fid . '_deleted');
+        $prev_file_entity->setTemporary();
+        $prev_file_entity->save();
+
+        // Get the directory path of the uploaded file.
+        $uploaded_file_wrapper = \Drupal::service('stream_wrapper_manager')->getViaUri($file_entity->getFileUri());
+        $new_file = $uploaded_file_wrapper->realpath();
+        $dir_path_new = dirname($new_file);
+
+        // Delete all message so wen can add our own later.
+        \Drupal::messenger()->deleteAll();
+
+        // If the old and new path are the same,
+        // we want to perform the file replacement.
+        if ($dir_path_old == $dir_path_new) {
+          // Rename new file to old file name.
+          if (file_exists($new_file)) {
+            rename($new_file, $old_file);
+            // Set the uri of uploaded file via setFileUri to previous uri.
+            $file_entity->setFileUri($result[0]->uri);
+            $file_entity->setFileName($result[0]->filename);
+            $file_entity->setPermanent();
+            $file_entity->save();
+
+            // Send a status message to user about the file being overwritten.
+            \Drupal::messenger()->addWarning('The file ' . $prev_file_entity->getFilename() . ' has been overwritten.');
+          }
+        }
+        else {
+          \Drupal::messenger()->addMessage('The file ' . $prev_file_entity->getFilename() . ' has been updated. However, it has not been overwritten due to the upload location has changed.');
+        }
+      }
+
+      \Drupal::logger(' tide_media_file_overwrite')->notice('tide_media_file_overwrite submit ');
+    }
+  }
+}
+
+/**
+ * Helper function to get the the file entity object.
+ *
+ * @param mixed $form_state
+ *   The object passed into the submit method or callback.
+ *
+ * @return mixed
+ *   An entity object or NULL.
+ */
+function _tide_media_file_overwrite_get_file($form_state) {
+  // Get the field name of the bundle.
+  if ($form_field_upload = _tide_media_file_overwrite_get_field($form_state->getBuildInfo()['form_id'])) {
+    $form_field_upload = $form_state->getValue($form_field_upload);
+    if (isset($form_field_upload[0]['fids'][0])) {
+      $fid = $form_field_upload[0]['fids'][0];
+    }
+  }
+
+  if (isset($fid) && $fid > 0) {
+    // Load the object of the file by it's fid.
+    return File::load($fid);
+  }
+  return NULL;
+}
+
+/**
+ * Helper function to get corresponding field of bundle stored in config.
+ *
+ * @param mixed $form_id
+ *   The form id of the media being edited.
+ *
+ * @return string
+ *   The corresponding field name of the bundle stored in config.
+ */
+function _tide_media_file_overwrite_get_field($form_id) {
+  $form_field_map_config = \Drupal::config('tide_media_file_overwrite.settings')->get('media_form_field_map');
+  // Get the media bundle name from form_id,
+  // the form id for edit media look like this: media_audio_edit_form.
+  $bundle_name = substr($form_id, 6, -10);
+
+  if (isset($form_field_map_config[$bundle_name])) {
+    return $form_field_map_config[$bundle_name];
+  }
+  else {
+    return FALSE;
+  }
+
+}
+
+/**
+ * Helper function to get the original file name, before _0 added.
+ *
+ * @param string $filename
+ *   The filename with extension.
+ *
+ * @return string
+ *   The original filename with _0 removed from its part.
+ */
+function _tide_media_file_overwrite_get_original_filename($filename) {
+  $pos = strrpos($filename, '_');
+  // Check if file name has _ in the last occurrence follow by digit.
+  if ($pos !== FALSE && substr($filename, $pos + 1, -4) >= 0) {
+    $name = substr($filename, 0, $pos);
+    // Get the file extension.
+    $pos = strrpos($filename, '.');
+    $ext = substr($filename, $pos);
+
+    if (isset($name) && isset($ext)) {
+      return $name . $ext;
+    }
+  }
+  return $filename;
+
+}

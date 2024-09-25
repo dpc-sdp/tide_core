@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: keydates
+label: Key dates
+icon_uuid: null
+description: 'Add this card to feature important dates. Add a date, title, summary and link.'
+behavior_plugins: {  }

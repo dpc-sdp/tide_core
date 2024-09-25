@@ -6,6 +6,17 @@
   },
   "description": "Core functionality for Tide distribution",
   "extra": {
+    "installer-paths": {
+      "docroot/libraries/{$name}": [
+        "type:drupal-library",
+        "type:bower-asset",
+        "type:npm-asset"
+      ]
+    },
+    "installer-types": [
+      "bower-asset",
+      "npm-asset"
+    ],
     "patches": {
       "drupal/admin_audit_trail": {
         "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
@@ -19,11 +30,18 @@
         "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
         "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
         "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
+        "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch",
         "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
         "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
         "PathBasedBreadcrumbBuilder needs to be able to exclude pointless paths - https://www.drupal.org/project/drupal/issues/3344200": "https://www.drupal.org/files/issues/2024-06-26/3344200-17.patch",
         "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
-        "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15443091": "https://www.drupal.org/files/issues/2024-02-15/drupal-n3109650-72-102x.patch"
+        "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15443091": "https://www.drupal.org/files/issues/2024-02-15/drupal-n3109650-72-102x.patch",
+        "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://www.drupal.org/files/issues/2024-03-25/3088239-50.patch"
+      },
+      "drupal/data_pipelines": {
+        "CSV data header row whitespace needs to be cleaned up - https://drupal.org/project/data_pipelines/issues/3391214": "https://www.drupal.org/files/issues/2023-10-03/trim-whitespace-from-csv-header-names-3391214-2.patch",
+        "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines/issues/3467021#comment-15720597": "https://www.drupal.org/files/issues/2024-08-09/Change-bulk-deleting-on-Elasticsearch-endpoint-3467021.patch",
+        "set a default value based on certain criteria - https://www.drupal.org/project/data_pipelines/issues/3426248#comment-15507258": "https://www.drupal.org/files/issues/2024-03-21/data_pipelines-3426248-6.patch.patch"
       },
       "drupal/entity_embed": {
         "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15546646": "https://www.drupal.org/files/issues/2024-04-11/Fixes-custom-data-attributes-issue-11.patch",
@@ -36,6 +54,23 @@
       "drupal/jira_rest": {
         "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
       },
+      "drupal/jsonapi_extras": {
+        "Issue #3473990: Fix PHP Fatal error on Declaration of the normalize function must be compatible with normalize function return type after Schemata 8.x-1.0 was released": "https://git.drupalcode.org/project/jsonapi_extras/-/commit/d7ab37658999b5fae74769ade4155ec7310aa468.diff",
+        "Make max value of page[limit] configurable per entity/bundle - https://www.drupal.org/project/jsonapi_extras/issues/2884292#comment-14794882": "https://www.drupal.org/files/issues/2022-11-21/max_page_limit_configuration-2884292-33.patch"
+      },
+      "drupal/jsonapi_menu_items": {
+        "Allow filtering of response payload - https://www.drupal.org/project/jsonapi_menu_items/issues/3350524#comment-15577964": "https://www.drupal.org/files/issues/2024-05-02/3350524-filter_fields-6.patch"
+      },
+      "drupal/key": {
+        "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch",
+        "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-15030602": "https://git.drupalcode.org/project/key/-/merge_requests/11/diffs.patch"
+      },
+      "drupal/linkit": {
+        "Unpublished nodes not included even when option is selected - https://www.drupal.org/project/linkit/issues/3049946#comment-14953079": "https://www.drupal.org/files/issues/2023-03-06/linkit-unpublished-nodes-not-included-3049946-32.patch"
+      },
+      "drupal/migrate_plus": {
+        "Simple XML broken with UTF-16LE - https://www.drupal.org/project/migrate_plus/issues/3051858#comment-15138496": "https://www.drupal.org/files/issues/2023-07-06/3051858-migrate_plus-simplexml_remove_trim-5.patch"
+      },
       "drupal/paragraphs": {
         "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
         "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch",
@@ -44,6 +79,9 @@
       },
       "drupal/password_policy": {
         "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
+      },
+      "drupal/search_api": {
+        "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2020-02-08/search_api-index-specific-items-3016809-09.patch"
       },
       "drupal/simple_oauth": {
         "Allow to add multiple redirect uri for a single client - https://www.drupal.org/project/simple_oauth/issues/3331436": "https://git.drupalcode.org/project/simple_oauth/-/merge_requests/87.patch",
@@ -65,9 +103,19 @@
       "drupal/token": {
         "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
       },
+      "drupal/video_embed_field": {
+        "Add support for Ckeditor 5 - https://www.drupal.org/project/video_embed_field/issues/3311063": "./patches/video_embed_field/video_embed_field_6.patch"
+      },
       "drupal/views_data_export": {
         "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-14930767": "https://www.drupal.org/files/issues/2023-02-20/views_data_export-3173296-25.patch",
         "Support views data export using drush - https://www.drupal.org/project/views_data_export/issues/2887450#comment-15199879": "https://www.drupal.org/files/issues/2023-11-29/vde-drush-with-output-location-2887450-91.patch"
+      },
+      "drupal/webform": {
+        "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-15686345": "https://www.drupal.org/files/issues/2024-07-24/exporting-webform-submission-static-batch-process-3348336-8.patch"
+      },
+      "drupal/yaml_content": {
+        "Alter parsed values before nodes created. - https://www.drupal.org/project/yaml_content/issues/3261689#comment-15167530": "https://www.drupal.org/files/issues/2023-07-27/yaml_content-3261689_4.patch",
+        "Warnings when importing menus using module. - https://www.drupal.org/project/yaml_content/issues/3340448": "https://www.drupal.org/files/issues/2023-07-28/warnings-when-importing_3340448_7.patch"
       },
       "lesstif/php-jira-rest-client": {
         "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
@@ -79,6 +127,29 @@
   "name": "dpc-sdp/tide_core",
   "prefer-stable": true,
   "repositories": {
+    "asset-packagist": {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    },
+    "choices": {
+      "_webform": true,
+      "package": {
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/jshjohnson/Choices/archive/v9.0.1.zip"
+        },
+        "extra": {
+          "installer-name": "choices"
+        },
+        "name": "choices/choices",
+        "require": {
+          "composer/installers": "~1.0"
+        },
+        "type": "drupal-library",
+        "version": "9.0.1"
+      },
+      "type": "package"
+    },
     "ckeditor.autogrow": {
       "_webform": true,
       "package": {
@@ -143,10 +214,30 @@
       },
       "type": "package"
     },
+    "codemirror": {
+      "_webform": true,
+      "package": {
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/components/codemirror/archive/5.65.12.zip"
+        },
+        "extra": {
+          "installer-name": "codemirror"
+        },
+        "name": "codemirror/codemirror",
+        "require": {
+          "composer/installers": "~1.0"
+        },
+        "type": "drupal-library",
+        "version": "5.65.12"
+      },
+      "type": "package"
+    },
     "drupal": {
       "exclude": [
         "drupal/token_conditions",
-        "drupal/ckeditor_templates"
+        "drupal/ckeditor_templates",
+        "drupal/create_menus_permission"
       ],
       "type": "composer",
       "url": "https://packages.drupal.org/8"
@@ -156,6 +247,11 @@
       "type": "vcs",
       "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
     },
+    "drupal/create_menus_permission": {
+      "no-api": true,
+      "type": "vcs",
+      "url": "https://github.com/dpc-sdp/create_menus_permission.git"
+    },
     "drupal/token_conditions": {
       "exclude": [
         "dev-1.x",
@@ -164,6 +260,44 @@
       "no-api": true,
       "type": "vcs",
       "url": "https://github.com/dpc-sdp/token_conditions.git"
+    },
+    "jquery.inputmask": {
+      "_webform": true,
+      "package": {
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/RobinHerbots/jquery.inputmask/archive/5.0.8.zip"
+        },
+        "extra": {
+          "installer-name": "jquery.inputmask"
+        },
+        "name": "jquery/inputmask",
+        "require": {
+          "composer/installers": "~1.0"
+        },
+        "type": "drupal-library",
+        "version": "5.0.8"
+      },
+      "type": "package"
+    },
+    "jquery.intl-tel-input": {
+      "_webform": true,
+      "package": {
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/jackocnr/intl-tel-input/archive/v17.0.19.zip"
+        },
+        "extra": {
+          "installer-name": "jquery.intl-tel-input"
+        },
+        "name": "jquery/intl-tel-input",
+        "require": {
+          "composer/installers": "~1.0"
+        },
+        "type": "drupal-library",
+        "version": "17.0.19"
+      },
+      "type": "package"
     },
     "jquery.textcounter": {
       "_webform": true,
@@ -202,9 +336,30 @@
         "version": "1.14.0"
       },
       "type": "package"
+    },
+    "progress-tracker": {
+      "_webform": true,
+      "package": {
+        "dist": {
+          "type": "zip",
+          "url": "https://github.com/NigelOToole/progress-tracker/archive/refs/tags/2.0.7.zip"
+        },
+        "extra": {
+          "installer-name": "progress-tracker"
+        },
+        "name": "progress-tracker/progress-tracker",
+        "require": {
+          "composer/installers": "~1.0"
+        },
+        "type": "drupal-library",
+        "version": "2.0.7"
+      },
+      "type": "package"
     }
   },
   "require": {
+    "choices/choices": "9.0.1",
+    "codemirror/codemirror": "5.65.12",
     "drupal/address": "^1.4",
     "drupal/admin_audit_trail": "^1.0",
     "drupal/allowed_formats": "^2.0",
@@ -220,22 +375,37 @@
     "drupal/content_lock": "^2.3",
     "drupal/core": "10.3.x",
     "drupal/core-recommended": "10.3.x",
+    "drupal/create_menus_permission": "dev-drupal_10_compatibility",
+    "drupal/crop": "^2.3",
     "drupal/ctools": "^3.14",
+    "drupal/data_pipelines": "1.0.0-alpha22",
+    "drupal/data_pipelines_elasticsearch": "^1.0@alpha",
     "drupal/diff": "^1.1",
     "drupal/dynamic_entity_reference": "^3.0",
     "drupal/editor_advanced_link": "^2.2.3",
+    "drupal/elasticsearch_connector": "^7.0",
+    "drupal/embed": "^1.6",
     "drupal/entity_browser": "^2.9",
     "drupal/entity_embed": "1.x-dev@dev",
+    "drupal/entity_hierarchy": "4.x",
     "drupal/entity_reference_revisions": "^1.10",
+    "drupal/entity_usage": "^2.0@beta",
     "drupal/environment_indicator": "^4.0",
     "drupal/fast_404": "^3.0",
     "drupal/field_group": "^3.6",
     "drupal/field_permissions": "^1.2",
+    "drupal/focal_point": "^2.0",
+    "drupal/form_options_attributes": "^2.0",
     "drupal/google_analytics": "^4.0",
     "drupal/hotjar": "^3.1",
     "drupal/inline_entity_form": "^1.0@RC",
     "drupal/jira_rest": "^4.0@beta",
     "drupal/jquery_ui_touch_punch": "^1.1",
+    "drupal/jsonapi_extras": "^3.23",
+    "drupal/jsonapi_menu_items": "^1.2",
+    "drupal/jsonapi_resources": "^1.0.0-beta5@beta",
+    "drupal/key": "^1.17",
+    "drupal/key_value_field": "^1.3",
     "drupal/link_field_autocomplete_filter": "^2.0",
     "drupal/linkit": "^6.0.0",
     "drupal/login_redirect_per_role": "^1.9",
@@ -243,6 +413,10 @@
     "drupal/maxlength": "^2.1",
     "drupal/media_entity_audio": "^3.1",
     "drupal/metatag": "^2.0",
+    "drupal/migrate_file": "^2.0",
+    "drupal/migrate_plus": "6.0.2",
+    "drupal/migrate_source_ui": "^1.0",
+    "drupal/migrate_tools": "^6.0",
     "drupal/monitoring": "^1.13",
     "drupal/override_node_options": "^2.7",
     "drupal/paragraphs": "^1.15",
@@ -252,17 +426,22 @@
     "drupal/prlp": "^1.10",
     "drupal/queue_mail": "^1.5",
     "drupal/quick_node_clone": "^1.16",
+    "drupal/range": "^1.5",
     "drupal/real_aes": "^2.5",
     "drupal/redirect": "^1.8",
     "drupal/role_delegation": "^1.2",
     "drupal/scheduled_transitions": "^2.3",
+    "drupal/schemata": "^1.0@beta",
+    "drupal/search_api": "^1.11",
     "drupal/seckit": "^2.0",
+    "drupal/select2": "^1.7",
     "drupal/simple_oauth": "^5.2",
     "drupal/simple_sitemap": "^4.1",
     "drupal/site_alert": "^1.3",
     "drupal/smart_trim": "^2.0",
     "drupal/smtp": "^1.2",
     "drupal/stage_file_proxy": "^2.0",
+    "drupal/svg_image": "^3.0",
     "drupal/tablefield": "2.4",
     "drupal/term_reference_tree": "^2.0",
     "drupal/tfa": "^1.2",
@@ -274,16 +453,25 @@
     "drupal/user_created_by_field": "^1.1",
     "drupal/user_expire": "^1.1",
     "drupal/username_enumeration_prevention": "^1.3",
+    "drupal/video_embed_field": "2.5",
     "drupal/views_data_export": "1.3",
     "drupal/views_menu_children_filter": "^3.0@RC",
     "drupal/viewsreference": "^2.0@beta",
+    "drupal/webform": "^6.2@beta",
     "drupal/workbench": "^1.4",
+    "drupal/yaml_content": "^1.0@alpha",
     "giggsey/libphonenumber-for-php": "^8.13",
+    "jquery/inputmask": "5.0.8",
+    "jquery/intl-tel-input": "17.0.19",
     "jquery/textcounter": "0.9.1",
     "jquery/timepicker": "1.14.0",
     "lcobucci/clock": "3.2.0",
     "lesstif/php-jira-rest-client": "2.6.0",
-    "respect/validation": "2.3.1"
+    "npm-asset/select2": "^4.0",
+    "oomphinc/composer-installers-extender": "^2.0",
+    "progress-tracker/progress-tracker": "2.0.7",
+    "respect/validation": "2.3.1",
+    "select2/select2": "^4.0"
   },
   "type": "drupal-module"
 }

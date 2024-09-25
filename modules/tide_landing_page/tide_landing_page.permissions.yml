@@ -1,0 +1,39 @@
+'add scheduled transitions node landing_page':
+  title: 'Add scheduled transitions node landing_page'
+  description: 'Allows user to add scheduled transitions node landing_page.'
+
+'clone landing_page content':
+  title: 'Clone landing_page content'
+  description: 'Allows user to clone landing_page content.'
+
+'create landing_page content':
+  title: 'Create landing_page content'
+  description: 'Allows user to create landing_page content.'
+
+'delete any landing_page content':
+  title: 'Delete any landing_page content'
+  description: 'Allows user to delete any landing_page content.'
+'delete landing_page revisions':
+  title: 'Delete landing_page revisions'
+  description: 'Allows user to delete landing_page revisions.'
+'delete own landing_page content':
+  title: 'Delete own landing_page content'
+  description: 'Allows user to delete own landing_page content.'
+
+'edit any landing_page content':
+  title: 'Edit any landing_page content'
+  description: 'Allows user to edit any landing_page content.'
+'edit own landing_page content':
+  title: 'Edit own landing_page content'
+  description: 'Allows user to edit own landing_page content.'
+
+'revert landing_page revisions':
+  title: 'Revert landing_page revisions'
+  description: 'Allows user to revert landing_page revisions.'
+
+'view landing_page revisions':
+  title: 'View landing_page revisions'
+  description: 'Allows user to view landing_page revisions.'
+'view scheduled transitions node landing_page':
+ title: 'View scheduled transitions node landing_page'
+ description: 'Allows user to view scheduled transitions node landing_page.'
