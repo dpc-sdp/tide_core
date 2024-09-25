@@ -16,12 +16,6 @@
 'delete profile revisions':
   title: 'Delete profile revisions'
   description: 'Allows user to delete profile revisions.'
-'delete profile revisions':
-  title: 'Delete profile revisions'
-  description: 'Allows user to delete profile revisions.'
-'delete profile revisions':
-  title: 'Delete profile revisions'
-  description: 'Allows user to delete profile revisions.'
 'delete own profile content':
   title: 'Delete own profile content'
   description: 'Allows user to delete own profile content.'
@@ -37,9 +31,6 @@
   title: 'Revert profile revisions'
   description: 'Allows user to revert profile revisions.'
 
-'view profile revisions':
-  title: 'View profile revisions'
-  description: 'Allows user to view profile revisions.'
 'view profile revisions':
   title: 'View profile revisions'
   description: 'Allows user to view profile revisions.'
