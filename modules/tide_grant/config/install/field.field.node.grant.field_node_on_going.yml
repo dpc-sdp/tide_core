@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_node_on_going
+    - node.type.grant
+id: node.grant.field_node_on_going
+field_name: field_node_on_going
+entity_type: node
+bundle: grant
+label: Ongoing
+description: 'Check this field if the grant is ongoing and does not have start and end dates.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

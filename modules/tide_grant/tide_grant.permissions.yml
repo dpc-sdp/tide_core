@@ -1,0 +1,36 @@
+'add scheduled transitions node grant':
+  title: 'Add scheduled transitions node grant'
+  description: 'Allows user to add scheduled transitions node grant.'
+'clone grant content':
+  title: 'Clone grant content'
+  description: 'Allows user to clone grant content.'
+'create grant content':
+  title: 'Create grant content'
+  description: 'Allows user to create grant content.'
+'delete any grant content':
+  title: 'Delete any grant content'
+  description: 'Allows user delete any grant content.'
+'delete grant revisions':
+  title: 'Delete grant revisions'
+  description: 'Allows user to delete grant revisions.'
+'delete own grant content':
+  title: 'Delete own grant content'
+  description: 'Allows user to delete own grant content.'
+'edit any grant content':
+  title: 'Edit any grant content'
+  description: 'Allows user to edit any grant content.'
+'edit own grant content':
+  title: 'Edit own grant content'
+  description: 'Allows user to edit own grant content'
+'revert grant revisions':
+  title: 'Revert grant revisions'
+  description: 'Allows user to revert grant revisions.'
+'update grant author details':
+  title: 'Update grant author details'
+  description: 'Allows user to update grant author details.'
+'view grant revisions':
+  title: 'View grant revisions'
+  description: 'Allows user to view grant revisions'
+'view scheduled transitions node grant':
+  title: 'view scheduled transitions node grant'
+  description: 'Allows user to view scheduled transitions node grant.'

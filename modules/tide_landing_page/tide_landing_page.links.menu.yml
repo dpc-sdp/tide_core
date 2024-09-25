@@ -1,0 +1,5 @@
+tide_landing_page.block_library:
+  title: Custom Block Library
+  route_name: entity.block_content.collection
+  description: 'Manage blocks.'
+  parent: system.admin_structure

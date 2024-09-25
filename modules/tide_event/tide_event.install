@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\tide_event\TideEventOperation;
+
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for Tide profile Profile.
+ *
+ * @see system_install()
+ */
+function tide_event_install() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  TideEventOperation::addFieldsToSearchApi();
+  TideEventOperation::assignNecessaryPermissions(FALSE);
+  TideEventOperation::enableNecessaryModules();
+  TideEventOperation::addDefaultValueToContentCategory();
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function tide_event_update_dependencies() {
+  $dependencies = [];
+  $dependencies['tide_event'][10001] = ['tide_core' => 10005];
+  return $dependencies;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_event_uninstall() {
+  TideEventOperation::assignNecessaryPermissions(TRUE);
+}
+
+/**
+ * Imports field.field.node.event.field_content_category for existing sites.
+ */
+function tide_event_update_10001() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_event') . '/config/install'];
+  $config_read = _tide_read_config('field.field.node.event.field_content_category', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $id = $storage->getIDFromConfigName('field.field.node.event.field_content_category', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
+  _tide_core_field_content_category_default_value('event', 'Event');
+  _tide_core_content_category_form_display('event');
+}

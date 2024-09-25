@@ -1,0 +1,45 @@
+langcode: en
+status: false
+dependencies:
+  module:
+    - system
+    - token_conditions
+    - webform
+  theme:
+    - claro
+id: tide_webform_content_rating
+theme: claro
+region: content
+weight: 10
+provider: null
+plugin: webform_block
+settings:
+  id: webform_block
+  label: 'Content Rating'
+  provider: webform
+  label_display: '0'
+  webform_id: tide_webform_content_rating
+  default_data: "url: \"[current-page:url]\"\n"
+visibility:
+  request_path:
+    id: request_path
+    pages: "<front>\n/admin\n/admin*\n/batch\n/block/add*\n/node/*/*\n/media/add*\n/media/*/*\n/user/*\n/user/*/*\n/entity-browser*\n/taxonomy/term/*/*\r\n/clone/*/quick_clone"
+    negate: true
+    context_mapping: {  }
+  token_matcher:
+    id: token_matcher
+    token_match: '[node:field_show_content_rating:value]'
+    value_match: '0'
+    check_empty: false
+    use_regex: false
+    negate: true
+    context_mapping: {  }
+  webform:
+    id: webform
+    webforms:
+      content_rating: tide_webform_content_rating
+    negate: true
+    context_mapping:
+      webform: '@webform.webform_route_context:webform'
+      webform_submission: '@webform.webform_submission_route_context:webform_submission'
+      node: '@node.node_route_context:node'

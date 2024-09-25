@@ -1,0 +1,16 @@
+name: Tide Data Pipeline
+type: module
+description: Data pipeline for SDP
+core_version_requirement: ^9 || ^10
+package: data_pipelines
+dependencies:
+  - data_pipelines:data_pipelines
+  - data_pipelines_elasticsearch:data_pipelines_elasticsearch
+  - key:key
+config_devel:
+install:
+  - key.key.search_auth_username
+  - key.key.search_auth_password
+  - key.config_override.search_auth_password
+  - key.config_override.search_auth_username
+  - data_pipelines.dataset_destination.sdp_elasticsearch

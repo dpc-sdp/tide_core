@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_current_milestone
+    - paragraphs.paragraphs_type.timeline
+id: paragraph.timeline.field_current_milestone
+field_name: field_current_milestone
+entity_type: paragraph
+bundle: timeline
+label: 'Current milestone'
+description: 'If selected, this milestone will appear as the ‘current’ milestone in the timeline.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

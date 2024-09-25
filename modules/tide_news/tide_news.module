@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * @file
+ * Tide News module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Implements hook_entity_bundle_create().
+ */
+function tide_news_entity_bundle_create($entity_type_id, $bundle) {
+  // Enable News in Editorial workflow if workflow module is enabled.
+  if ($entity_type_id === 'node' && $bundle === 'news') {
+    /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
+    $moduleHandler = \Drupal::service('module_handler');
+    if ($moduleHandler->moduleExists('workflows')) {
+      $editorial_workflow = Workflow::load('editorial');
+      if ($editorial_workflow) {
+        $editorial_workflow->getTypePlugin()
+          ->addEntityTypeAndBundle('node', 'news');
+        $editorial_workflow->save();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function tide_news_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (!in_array($form_id, [
+    'node_news_form',
+    'node_news_edit_form',
+    'node_news_quick_node_clone_form',
+  ])) {
+    return;
+  }
+
+  if (isset($form['title']['widget'][0]['value']['#description'])) {
+    $form['title']['widget'][0]['value']['#description'] = t('Include a short unique title for your page and keywords.');
+  }
+
+  // Hide the body summary subfield in favour of the new Summary field.
+  if (!empty($form['body']['widget'])) {
+    foreach (Element::children($form['body']['widget']) as $delta) {
+      if (!empty($form['body']['widget'][$delta]['summary'])) {
+        $form['body']['widget'][$delta]['summary']['#access'] = FALSE;
+      }
+    }
+  }
+
+  // Change form layout.
+  $form['#attached']['library'][] = 'tide_news/news_form';
+  $form['#attributes']['class'][] = 'node-form-news';
+  $form['#process'][] = '_tide_news_form_node_form_process';
+}
+
+/**
+ * Node form #process callback.
+ *
+ * @param array $form
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param array $complete_form
+ *   The complete form.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_news_form_node_form_process(array $form, FormStateInterface $form_state, array $complete_form = []) {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+
+  $form['field_node_department']['#group'] = 'group_author_detail';
+
+  // At this stage, the form has not been fully built yet, so we need an
+  // after_build callback to determine the actual state.
+  $form['#after_build'][] = '_tide_news_form_node_form_after_build';
+  return $form;
+}
+
+/**
+ * Node form #after_build callback.
+ *
+ * @param array $form
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_news_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  $form['field_node_department']['#group'] = 'group_author_detail';
+
+  return $form;
+}

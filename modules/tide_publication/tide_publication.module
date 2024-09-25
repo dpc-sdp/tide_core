@@ -1,0 +1,313 @@
+<?php
+
+/**
+ * @file
+ * Tide Publication.
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\tide_publication\Navigation\Children;
+use Drupal\tide_publication\Navigation\Next;
+use Drupal\tide_publication\Navigation\Previous;
+use Drupal\tide_publication\Navigation\Root;
+use Drupal\tide_publication\TidePublicationFieldStorageDefinition;
+
+/**
+ * Implements hook_entity_bundle_create().
+ */
+function tide_publication_entity_bundle_create($entity_type_id, $bundle) {
+  /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
+  $moduleHandler = \Drupal::service('module_handler');
+
+  // Add the Embedded Webform paragraphs to Publication Page
+  // components if exists.
+  if ($entity_type_id == 'paragraph') {
+    $field_config = FieldConfig::loadByName('node', 'publication_page', 'field_landing_page_component');
+    if ($field_config) {
+      $handler_settings = $field_config->getSetting('handler_settings');
+
+      $is_embedded_webform = ($bundle == 'embedded_webform' && $moduleHandler->moduleExists('tide_webform'));
+      if ($is_embedded_webform) {
+        $handler_settings['target_bundles'][$bundle] = $bundle;
+        $field_config->setSetting('handler_settings', $handler_settings);
+        $field_config->save();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $publication_forms = [
+    'node_publication_form',
+    'node_publication_edit_form',
+    'node_publication_page_form',
+    'node_publication_page_edit_form',
+  ];
+  if (in_array($form_id, $publication_forms)) {
+    // Change form layout.
+    $form['#attached']['library'][] = 'tide_landing_page/landing_page_form';
+    $form['#attributes']['class'][] = 'node-form-landing-page';
+
+    // Change the styling of paragraph widgets.
+    $paragraph_fields = [
+      'field_landing_page_component' => t('Page content is currently blank.'),
+    ];
+    foreach ($paragraph_fields as $paragraph_field => $component_name) {
+      $form[$paragraph_field]['widget']['#attributes']['class'][] = 'node-landing-page-alternative-paragraph';
+      if (isset($form[$paragraph_field]['widget']['#max_delta'])) {
+        $max_delta = $form[$paragraph_field]['widget']['#max_delta'];
+        if ($max_delta < 0 || !isset($form[$paragraph_field]['widget'][$max_delta])) {
+          $form[$paragraph_field]['widget']['#description'] = t('<h4><strong>@empty_component</strong></h4>',
+              ['@empty_component' => $component_name]) . $form[$paragraph_field]['widget']['#description'];
+        }
+      }
+    }
+
+    $form['#process'][] = '_tide_publication_form_node_form_process';
+
+    // Move Hero Image theme to Hero Image field group.
+    if (isset($form['field_landing_page_hero_theme']) && isset($form['field_landing_page_hero_image']['widget'])) {
+      $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme'] = $form['field_landing_page_hero_theme'];
+      unset($form['field_landing_page_hero_theme']);
+    }
+
+    // Add conditional field for show table of content.
+    if (isset($form['field_node_display_headings'])) {
+      $form['field_node_display_headings']['#states'] = [
+        'visible' => [
+          ':input[name="field_show_table_of_content[value]"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ];
+      if (!isset($form['field_node_display_headings']['widget']['#default_value'])) {
+        $form['field_node_display_headings']['widget']['#default_value'] = 'showH2';
+      }
+    }
+  }
+}
+
+/**
+ * Node form #process callback.
+ *
+ * @param array $form
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param array $complete_form
+ *   The complete form.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_publication_form_node_form_process(array $form, FormStateInterface $form_state, array $complete_form = []) {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+
+  // Add pseudo radio buttons for Header style.
+  $form['_header_style'] = [
+    '#type' => 'container',
+    '#group' => 'group_customised_header',
+    '#weight' => -100,
+  ];
+  $form['_header_style']['_header_style_options'] = [
+    '#title' => t('Header style'),
+    '#description' => t('The header can be customised to incorporate photography and other design elements.'),
+    '#type' => 'radios',
+    '#required' => TRUE,
+    '#options' => [
+      'default' => t('Default appearance'),
+      'fullwidth' => t('Full-width  background image'),
+    ],
+  ];
+
+  $form['field_landing_page_hero_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => [
+      ['value' => 'fullwidth'],
+      ['value' => 'cta'],
+    ],
+  ];
+
+  // Determine the initial value of Header style.
+  $node_hero_image_empty = $node->get('field_landing_page_hero_image')->isEmpty();
+  $header_style = 'default';
+  if (!$node_hero_image_empty) {
+    $header_style = 'fullwidth';
+  }
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
+  $form['#after_build'][] = '_tide_publication_form_node_form_after_build';
+  return $form;
+}
+
+/**
+ * Node form #after_build callback.
+ *
+ * @param array $form
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_publication_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  // Determine the current value of Header style.
+  $form_hero_image_empty = empty($form_state->getValue([
+    'field_landing_page_hero_image',
+    'target_id',
+  ]));
+  $header_style = 'default';
+  if (!$form_hero_image_empty) {
+    $header_style = 'fullwidth';
+  }
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
+  return $form;
+}
+
+/**
+ * Implements hook_entity_bundle_field_info().
+ */
+function tide_publication_entity_bundle_field_info(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+  $fields = [];
+  if ($entity_type->id() === 'node') {
+    $default_settings = [
+      'handler' => 'default:node',
+      'handler_settings' => [
+        'target_bundles' => [
+          'publication' => 'publication',
+          'publication_page' => 'publication_page',
+        ],
+      ],
+    ];
+    $default_display = [
+      'label' => 'hidden',
+      'region' => 'hidden',
+      'weight' => 100,
+    ];
+
+    // Add the publication children and next navigation computed fields to
+    // Publication content type.
+    if ($bundle === 'publication') {
+      $fields['publication_children'] = TidePublicationFieldStorageDefinition::create('entity_reference')
+        ->setLabel(t('Publication Children'))
+        ->setComputed(TRUE)
+        ->setClass(Children::class)
+        ->setReadOnly(FALSE)
+        ->setInternal(FALSE)
+        ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+        ->setSettings($default_settings)
+        ->setDisplayOptions('view', $default_display)
+        ->setDisplayOptions('form', $default_display)
+        ->setTargetEntityTypeId($entity_type->id())
+        ->setTargetBundle('publication')
+        ->setName('publication_pages')
+        ->setDisplayConfigurable('form', FALSE)
+        ->setDisplayConfigurable('view', FALSE);
+
+      $fields['publication_navigation_next'] = clone $fields['publication_children'];
+      $fields['publication_navigation_next']->setClass(Next::class)
+        ->setCardinality(1)
+        ->setLabel('Publication Navigation Next')
+        ->setName('publication_navigation_next');
+    }
+    // Add the publication root/prev/next navigation computed fields to
+    // Publication Page content type.
+    elseif ($bundle === 'publication_page') {
+      $fields['publication_navigation_root'] = TidePublicationFieldStorageDefinition::create('entity_reference')
+        ->setLabel(t('Publication Navigation Root'))
+        ->setComputed(TRUE)
+        ->setClass(Root::class)
+        ->setReadOnly(FALSE)
+        ->setInternal(FALSE)
+        ->setCardinality(1)
+        ->setSettings($default_settings)
+        ->setDisplayOptions('view', $default_display)
+        ->setDisplayOptions('form', $default_display)
+        ->setTargetEntityTypeId($entity_type->id())
+        ->setTargetBundle('publication_page')
+        ->setName('publication_navigation_root')
+        ->setDisplayConfigurable('form', FALSE)
+        ->setDisplayConfigurable('view', FALSE);
+
+      $fields['publication_navigation_prev'] = clone $fields['publication_navigation_root'];
+      $fields['publication_navigation_prev']->setClass(Previous::class)
+        ->setLabel('Publication Navigation Prev')
+        ->setName('publication_navigation_prev');
+
+      $fields['publication_navigation_next'] = clone $fields['publication_navigation_root'];
+      $fields['publication_navigation_next']->setClass(Next::class)
+        ->setLabel('Publication Navigation Next')
+        ->setName('publication_navigation_next');
+    }
+  }
+
+  return $fields;
+}
+
+/**
+ * Implements hook_tide_entity_reference_site_enhancer_undo_transform_alter().
+ *
+ * @see \Drupal\tide_site\Plugin\jsonapi\FieldEnhancer\EntityReferenceSiteEnhancer::doUndoTransform()
+ */
+function tide_publication_tide_entity_reference_site_enhancer_undo_transform_alter(&$data, &$context, &$entity) {
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+  if ($entity && in_array($entity->bundle(), ['publication', 'publication_page'])) {
+    $summary = $entity->get('field_landing_page_summary')->getString();
+    if ($summary) {
+      $data['meta']['field_landing_page_summary'] = $summary;
+    }
+  }
+}
+
+/**
+ * Implements hook_tide_path_enhancer_transform_alter().
+ *
+ * @see \Drupal\tide_site\Plugin\jsonapi\FieldEnhancer\EntityReferenceSiteEnhancer:::doTransform()
+ */
+function tide_publication_tide_entity_reference_site_enhancer_transform_alter(&$value, &$context) {
+  unset($value['meta']['field_landing_page_summary']);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function tide_publication_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (\Drupal::routeMatch()->getRouteName() == 'entity.node.entity_hierarchy_reorder') {
+    // Updates the destination of 'Create new Publication page' link
+    // under /node/{node_id}/children page.
+    if (isset($form['actions']['add_child']['#url']) && $form['actions']['add_child']['#url'] instanceof Url) {
+      /** @var \Drupal\Core\Url $url */
+      $url = $form['actions']['add_child']['#url'];
+      $options = $url->getOptions();
+      if (isset($options['query'][Root::PUBLICATION_FIELD_NAME]) && !empty($options['query'][Root::PUBLICATION_FIELD_NAME])) {
+        $destination_option = ['destination' => "/node/{$options['query'][Root::PUBLICATION_FIELD_NAME]}/children"];
+        $options = array_merge($options['query'], $destination_option);
+        $url->setOption('query', $options);
+        array_walk($form['children'], function ($item, $index) use ($destination_option) {
+          if (is_numeric($index)) {
+            // Updates the destination of the 'edit' link.
+            if (isset($item['operations']['#links']['edit']['url']) && $item['operations']['#links']['edit']['url'] instanceof Url) {
+              $item['operations']['#links']['edit']['url']->setOption('query', $destination_option);
+            }
+            // Updates the destination of the 'delete' link.
+            if (isset($item['operations']['#links']['delete']['url']) && $item['operations']['#links']['delete']['url'] instanceof Url) {
+              $item['operations']['#links']['delete']['url']->setOption('query', $destination_option);
+            }
+          }
+        });
+      }
+    }
+  }
+  if (isset($form['field_publication_authors'])) {
+    $form['field_publication_authors']['widget'][0]['target_id']['#placeholder'] = t('Start typing');
+  }
+}

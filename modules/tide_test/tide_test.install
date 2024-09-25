@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\user\Entity\Role;
+use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for Tide profile Profile.
+ *
+ * @see system_install()
+ */
+function tide_test_install() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  // Enable Editorial workflow if workflow module is enabled.
+  $moduleHandler = \Drupal::service('module_handler');
+  if ($moduleHandler->moduleExists('workflows')) {
+    $editorial_workflow = Workflow::load('editorial');
+    if ($editorial_workflow) {
+      $editorial_workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'test');
+      $editorial_workflow->save();
+    }
+  }
+
+  // Enable Claro theme if current theme is not set or Classy (usually
+  // happens when using minimal or testing profile).
+  $default_theme = \Drupal::service('theme_handler')->getDefault();
+  if (is_null($default_theme) || $default_theme === 'classy' || $default_theme === 'stark' || $default_theme === 'seven') {
+    \Drupal::service('theme_installer')->install(['claro']);
+    \Drupal::configFactory()
+      ->getEditable('system.theme')
+      ->set('default', 'claro')
+      ->set('admin', 'claro')
+      ->save(TRUE);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_test_uninstall() {
+  // Remove permissions on Test content type to Approver and Editor.
+  $roles = ['approver', 'editor'];
+  $permissions = [
+    'create test content',
+    'delete any test content',
+    'delete own test content',
+    'delete test revisions',
+    'edit any test content',
+    'edit own test content',
+    'revert test revisions',
+    'view test revisions',
+  ];
+
+  foreach ($roles as $role_name) {
+    $role = Role::load($role_name);
+    if ($role) {
+      foreach ($permissions as $permission) {
+        $role->revokePermission($permission);
+      }
+      $role->save();
+    }
+  }
+}

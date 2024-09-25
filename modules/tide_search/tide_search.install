@@ -1,0 +1,119 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\tide_search\TideSearchOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_search_install() {
+  $tideSearchOperation = new TideSearchOperation();
+  $tideSearchOperation->removeTideAlertFromDatasource();
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function tide_search_update_dependencies() {
+  $dependencies = [];
+  $dependencies['tide_search'][10004] = ['tide_core' => 10005];
+  return $dependencies;
+}
+
+/**
+ * Install module tide_data_pipeline.
+ */
+function tide_search_update_10001() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_data_pipeline')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['tide_data_pipeline']);
+  }
+}
+
+/**
+ * Add secondary campaign to search listing.
+ */
+function tide_search_update_10002() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+
+  $config = 'field.field.node.tide_search_listing.field_landing_page_c_secondary';
+  $type = 'field_config';
+  $config_read = _tide_read_config($config, $config_location);
+  $storage = \Drupal::entityTypeManager()->getStorage($type);
+  $id = substr($config, strrpos($config, '.') + 1);
+  if ($storage->load($id) == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+
+  $form_configs = [
+    'core.entity_view_display.node.tide_search_listing.default',
+    'core.entity_form_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.teaser',
+  ];
+  foreach ($form_configs as $form_config) {
+    $config = \Drupal::configFactory()->getEditable($form_config);
+    $config_read = _tide_read_config($form_config, $config_location, FALSE);
+    $config->set('dependencies', $config_read['dependencies']);
+    $config->set('content', $config_read['content']);
+    $config->set('hidden', $config_read['hidden']);
+    $config->save();
+  }
+}
+
+/**
+ * Adds field_above_results_content field to search listing.
+ */
+function tide_search_update_10003() {
+  module_load_include('inc', 'tide_core', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+
+  $configs = [
+    'field.storage.node.field_above_results_content' => 'field_storage_config',
+    'field.field.node.tide_search_listing.field_above_results_content' => 'field_config',
+  ];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+
+  $form_configs = [
+    'core.entity_form_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.teaser',
+  ];
+  foreach ($form_configs as $form_config) {
+    $config = \Drupal::configFactory()->getEditable($form_config);
+    $config_read = _tide_read_config($form_config, $config_location, FALSE);
+    $config->set('dependencies', $config_read['dependencies']);
+    $config->set('content', $config_read['content']);
+    $config->set('hidden', $config_read['hidden']);
+    $config->save();
+  }
+}
+
+/**
+ * Imports field_content_category field for existing sites.
+ */
+function tide_search_update_10004() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+  $config_read = _tide_read_config('field.field.node.tide_search_listing.field_content_category', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $id = $storage->getIDFromConfigName('field.field.node.tide_search_listing.field_content_category', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
+  _tide_core_field_content_category_default_value('tide_search_listing', 'Search listing');
+  _tide_core_content_category_form_display('tide_search_listing');
+}

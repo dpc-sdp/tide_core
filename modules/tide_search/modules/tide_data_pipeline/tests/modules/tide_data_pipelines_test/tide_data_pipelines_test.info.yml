@@ -1,0 +1,10 @@
+name: Data Pipelines - Test Pipelines
+package: Testing
+description: 'Provides tests data set plugins'
+core_version_requirement: ^10.1
+php: 8.0
+type: module
+dependencies:
+  - data_pipelines:data_pipelines
+  - data_pipelines_test:data_pipelines_test
+  - tide_data_pipeline:tide_data_pipeline

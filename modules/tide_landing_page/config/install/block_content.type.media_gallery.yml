@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: media_gallery
+label: 'Image Gallery'
+revision: 1
+description: 'Block type used for Image Gallery on Landing pages.'

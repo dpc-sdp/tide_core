@@ -1,0 +1,65 @@
+name: Tide Event
+description: 'Provides Event content type and related configuration. '
+type: module
+package: Tide
+core_version_requirement: ^9.5 || ^10
+dependencies:
+  - drupal:datetime_range
+  - drupal:menu_ui
+  - tide_core:tide_core
+  - tide_core:tide_api
+  - tide_core:tide_media
+  - tide_core:tide_webform
+config_devel:
+  install:
+    - core.base_field_override.node.event.promote
+    - core.base_field_override.node.event.status
+    - core.entity_form_display.node.event.default
+    - core.entity_form_display.paragraph.event_details.default
+    - core.entity_view_display.node.event.default
+    - core.entity_view_display.node.event.teaser
+    - core.entity_view_display.paragraph.event_details.default
+    - field.field.node.event.body
+    - field.field.node.event.field_audience
+    - field.field.node.event.field_event_category
+    - field.field.node.event.field_event_description
+    - field.field.node.event.field_event_details
+    - field.field.node.event.field_featured_image
+    - field.field.node.event.field_landing_page_contact
+    - field.field.node.event.field_landing_page_show_contact
+    - field.field.node.event.field_landing_page_summary
+    - field.field.node.event.field_news_intro_text
+    - field.field.node.event.field_node_author
+    - field.field.node.event.field_node_email
+    - field.field.node.event.field_node_link
+    - field.field.node.event.field_node_phone
+    - field.field.node.event.field_related_links
+    - field.field.node.event.field_show_content_rating
+    - field.field.node.event.field_show_related_content
+    - field.field.node.event.field_show_social_sharing
+    - field.field.node.event.field_tags
+    - field.field.node.event.field_topic
+    - field.field.paragraph.event_details.field_show_time
+    - field.field.paragraph.event_details.field_event_requirements
+    - field.field.paragraph.event_details.field_paragraph_date_range
+    - field.field.paragraph.event_details.field_paragraph_event_price_from
+    - field.field.paragraph.event_details.field_paragraph_event_price_to
+    - field.field.paragraph.event_details.field_paragraph_link
+    - field.field.paragraph.event_details.field_paragraph_location
+    - field.storage.node.field_event_category
+    - field.storage.node.field_event_description
+    - field.storage.node.field_event_details
+    - field.storage.paragraph.field_event_requirements
+    - field.storage.paragraph.field_paragraph_event_price_from
+    - field.storage.paragraph.field_paragraph_event_price_to
+    - field.storage.paragraph.field_show_time
+    - node.type.event
+    - paragraphs.paragraphs_type.event_details
+    - simple_sitemap.bundle_settings.node.event
+    - taxonomy.vocabulary.event
+    - taxonomy.vocabulary.event_requirements
+    - user.role.event_author
+    - webform.webform.tide_event_submission
+  optional:
+    - jsonapi_extras.jsonapi_resource_config.node--event
+    - jsonapi_extras.jsonapi_resource_config.paragraph--event_details

@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_media_transcript
+    - media.type.embedded_video
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    rich_text: rich_text
+    summary_text: '0'
+    admin_text: '0'
+    html_text: '0'
+    plain_text: '0'
+
+id: media.embedded_video.field_media_transcript
+field_name: field_media_transcript
+entity_type: media
+bundle: embedded_video
+label: Transcript
+description: 'Add video transcript.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

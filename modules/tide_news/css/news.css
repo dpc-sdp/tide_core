@@ -1,0 +1,17 @@
+/**
+ * @file
+ * Styling changes to the News node form.
+ */
+
+.node-form-news .layout-region-node-main .form-radios .form-item {
+  display: inline-block;
+  margin-right: 2em;
+}
+
+.node-form-news .field--widget-paragraphs .node-news-alternative-paragraph  > .description,
+.node-form-news .field--widget-paragraphs .node-news-alternative-paragraph > .clearfix .paragraphs-add-wrapper.form-wrapper {
+  text-align: center;
+}
+.node-form-news .field--widget-paragraphs .node-news-alternative-paragraph > .clearfix .paragraphs-add-wrapper.form-wrapper .paragraphs-add-suffix {
+  display:none;
+}

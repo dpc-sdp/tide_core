@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Profile Category'
+vid: profile_category
+description: 'Profile Category for Profile content.'
+hierarchy: 0
+weight: 0

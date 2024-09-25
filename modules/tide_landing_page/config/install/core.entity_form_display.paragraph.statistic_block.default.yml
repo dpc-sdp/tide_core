@@ -1,0 +1,39 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.statistic_block.field_statistic_body
+    - field.field.paragraph.statistic_block.field_statistic_heading
+    - paragraphs.paragraphs_type.statistic_block
+  module:
+    - maxlength
+id: paragraph.statistic_block.default
+targetEntityType: paragraph
+bundle: statistic_block
+mode: default
+content:
+  field_statistic_body:
+    weight: 1
+    settings:
+      size: 70
+      placeholder: ''
+    third_party_settings:
+      maxlength:
+        maxlength_js: 70
+        maxlength_js_label: 'Content limited to @limit characters, remaining: <strong>@remaining</strong>'
+    type: string_textfield
+    region: content
+  field_statistic_heading:
+    weight: 0
+    settings:
+      size: 70
+      placeholder: ''
+    third_party_settings:
+      maxlength:
+        maxlength_js: 70
+        maxlength_js_label: 'Content limited to @limit characters, remaining: <strong>@remaining</strong>'
+    type: string_textfield
+    region: content
+hidden:
+  created: true
+  status: true

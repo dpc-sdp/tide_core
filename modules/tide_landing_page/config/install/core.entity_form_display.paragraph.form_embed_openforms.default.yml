@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.form_embed_openforms.field_form_link
+    - paragraphs.paragraphs_type.form_embed_openforms
+  module:
+    - link
+id: paragraph.form_embed_openforms.default
+targetEntityType: paragraph
+bundle: form_embed_openforms
+mode: default
+content:
+  field_form_link:
+    weight: 0
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+    type: link_default
+    region: content
+hidden:
+  created: true
+  status: true

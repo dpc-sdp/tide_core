@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+    - tide_search
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+name: 'Search Listing'
+type: tide_search_listing
+description: 'Use <em>Search Listing</em> content type for landing pages that have a search widget to filter results with.'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

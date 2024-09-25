@@ -1,0 +1,48 @@
+'add scheduled transitions node profile':
+  title: 'Add scheduled transitions node profile'
+  description: 'Allows user to add scheduled transitions node profile.'
+
+'clone profile content':
+  title: 'Clone profile content'
+  description: 'Allows user to clone profile content.'
+
+'create profile content':
+  title: 'Create profile content'
+  description: 'Allows user to create profile content.'
+
+'delete any profile content':
+  title: 'Delete any profile content'
+  description: 'Allows user to delete any profile content.'
+'delete profile revisions':
+  title: 'Delete profile revisions'
+  description: 'Allows user to delete profile revisions.'
+'delete profile revisions':
+  title: 'Delete profile revisions'
+  description: 'Allows user to delete profile revisions.'
+'delete profile revisions':
+  title: 'Delete profile revisions'
+  description: 'Allows user to delete profile revisions.'
+'delete own profile content':
+  title: 'Delete own profile content'
+  description: 'Allows user to delete own profile content.'
+
+'edit any profile content':
+  title: 'Edit any profile content'
+  description: 'Allows user to edit any profile content.'
+'edit own profile content':
+  title: 'Edit own profile content'
+  description: 'Allows user to edit own profile content.'
+
+'revert profile revisions':
+  title: 'Revert profile revisions'
+  description: 'Allows user to revert profile revisions.'
+
+'view profile revisions':
+  title: 'View profile revisions'
+  description: 'Allows user to view profile revisions.'
+'view profile revisions':
+  title: 'View profile revisions'
+  description: 'Allows user to view profile revisions.'
+'view scheduled transitions node profile':
+ title: 'View scheduled transitions node profile'
+ description: 'Allows user to view scheduled transitions node profile.'

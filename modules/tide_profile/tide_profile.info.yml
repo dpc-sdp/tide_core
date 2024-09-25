@@ -1,0 +1,45 @@
+name: Tide Profile
+type: module
+description: 'Provides Profile content type and related configuration. '
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - tide_core:tide_core
+  - tide_landing_page:tide_landing_page
+  - tide_media:tide_media
+  - drupal:menu_ui
+config_devel:
+  install:
+    - core.base_field_override.node.profile.promote
+    - core.base_field_override.node.profile.status
+    - core.entity_form_display.node.profile.default
+    - core.entity_view_display.node.profile.default
+    - core.entity_view_display.node.profile.teaser
+    - field.field.node.profile.body
+    - field.field.node.profile.field_expertise
+    - field.field.node.profile.field_featured_image
+    - field.field.node.profile.field_landing_page_c_secondary
+    - field.field.node.profile.field_landing_page_contact
+    - field.field.node.profile.field_landing_page_show_contact
+    - field.field.node.profile.field_landing_page_summary
+    - field.field.node.profile.field_life_span
+    - field.field.node.profile.field_location
+    - field.field.node.profile.field_related_links
+    - field.field.node.profile.field_tags
+    - field.field.node.profile.field_topic
+    - field.field.node.profile.field_profile_category
+    - field.field.node.profile.field_profile_intro_text
+    - field.field.node.profile.field_show_content_rating
+    - field.field.node.profile.field_show_social_sharing
+    - field.field.node.profile.field_year
+    - field.storage.node.field_expertise
+    - field.storage.node.field_life_span
+    - field.storage.node.field_profile_category
+    - field.storage.node.field_profile_intro_text
+    - field.storage.node.field_year
+    - node.type.profile
+    - simple_sitemap.bundle_settings.node.profile
+    - taxonomy.vocabulary.expertise
+    - taxonomy.vocabulary.profile_category
+  optional:
+    - jsonapi_extras.jsonapi_resource_config.node--profile

@@ -1,0 +1,15 @@
+services:
+  tide_site_restriction.helper:
+    class: \Drupal\tide_site_restriction\Helper
+    arguments: ['@entity_type.manager', '@entity.repository', '@current_user']
+    calls:
+      - [setContainer, ['@service_container']]
+  tide_site_restriction.event_subscriber:
+    class: Drupal\tide_site_restriction\EventSubscriber\TideSiteRestrictionRouterAlter
+    tags:
+      - { name: event_subscriber }
+  tide_site_restriction.site_access_route_check:
+    class: \Drupal\tide_site_restriction\Access\SiteAccessRouteCheck
+    arguments: ['@tide_site_restriction.helper']
+    tags:
+      - { name: access_check, applies_to: _site_access_route_check }

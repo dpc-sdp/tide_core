@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_listing_query_config
+    - node.type.tide_search_listing
+  module:
+    - tide_content_collection
+id: node.tide_search_listing.field_listing_query_config
+field_name: field_listing_query_config
+entity_type: node
+bundle: tide_search_listing
+label: 'Query Configuration'
+description: 'Page level search query DSL configuration to define how the page behaves against Elasticsearch'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: content_collection_configuration

@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_table_orientation
+    - paragraphs.paragraphs_type.data_table
+id: paragraph.data_table.field_table_orientation
+field_name: field_table_orientation
+entity_type: paragraph
+bundle: data_table
+label: 'Table orientation on mobile'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'Row oriented (group content by row)'
+  off_label: 'Column oriented (group content by column)'
+field_type: boolean

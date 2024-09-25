@@ -1,0 +1,153 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_header_components
+    - node.type.tide_search_listing
+    - paragraphs.paragraphs_type.search_listing_header_component
+  module:
+    - entity_reference_revisions
+id: node.tide_search_listing.field_header_components
+field_name: field_header_components
+entity_type: node
+bundle: tide_search_listing
+label: 'Header Components'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      search_listing_header_component: search_listing_header_component
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 43
+        enabled: false
+      accordion_content:
+        weight: 44
+        enabled: false
+      banner:
+        weight: 45
+        enabled: false
+      basic_text:
+        weight: 46
+        enabled: false
+      call_to_action:
+        weight: 47
+        enabled: false
+      call_to_action_image:
+        weight: 48
+        enabled: false
+      card_carousel:
+        weight: 49
+        enabled: false
+      card_event:
+        weight: 50
+        enabled: false
+      card_event_auto:
+        weight: 51
+        enabled: false
+      card_keydates:
+        weight: 52
+        enabled: false
+      card_promotion:
+        weight: 53
+        enabled: false
+      card_promotion_auto:
+        weight: 54
+        enabled: false
+      compact_card:
+        weight: 55
+        enabled: false
+      compact_card_collection:
+        weight: 56
+        enabled: false
+      complex_image:
+        weight: 57
+        enabled: false
+      contact_us:
+        weight: 58
+        enabled: false
+      content_collection:
+        weight: 59
+        enabled: false
+      content_collection_enhanced:
+        weight: 60
+        enabled: false
+      data_driven_component:
+        weight: 61
+        enabled: false
+      data_table:
+        weight: 62
+        enabled: false
+      embedded_search_form:
+        weight: 63
+        enabled: false
+      embedded_webform:
+        weight: 64
+        enabled: false
+      event_details:
+        weight: 65
+        enabled: false
+      form_embed_openforms:
+        weight: 66
+        enabled: false
+      hero_banner_with_cta:
+        weight: 67
+        enabled: false
+      introduction_banner:
+        weight: 68
+        enabled: false
+      key_journeys:
+        weight: 70
+        enabled: false
+      keydates:
+        weight: 69
+        enabled: false
+      latest_events:
+        weight: 71
+        enabled: false
+      links:
+        weight: 72
+        enabled: false
+      media_gallery:
+        weight: 73
+        enabled: false
+      navigation_card:
+        weight: 74
+        enabled: false
+      news_listing:
+        weight: 75
+        enabled: false
+      phone:
+        weight: 76
+        enabled: false
+      promotion_card:
+        weight: 77
+        enabled: false
+      related_links:
+        weight: 78
+        enabled: false
+      search_listing_header_component:
+        weight: 79
+        enabled: true
+      social_link:
+        weight: 80
+        enabled: false
+      statistic_block:
+        weight: 82
+        enabled: false
+      statistics_grid:
+        weight: 81
+        enabled: false
+      timeline:
+        weight: 83
+        enabled: false
+      timelines:
+        weight: 84
+        enabled: false
+field_type: entity_reference_revisions

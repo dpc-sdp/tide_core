@@ -1,0 +1,6 @@
+tide_media_file_overwrite.settings_form:
+  title: 'Tide Media File Overwrite'
+  route_name: tide_media_file_overwrite.settings_form
+  description: 'Change default upload overwrite behaviour.'
+  parent: system.admin_config_media
+  weight: 99
