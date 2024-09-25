@@ -37,6 +37,7 @@ dependencies:
   - drupal:views
   - drupal:views_data_export
   - drupal:workflows
+  - monitoring:monitoring
   - editor_advanced_link:editor_advanced_link
   - entity_browser:entity_browser
   - entity_browser:entity_browser_entity_form
