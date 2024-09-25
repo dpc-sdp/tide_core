@@ -13,3 +13,26 @@ tide_core.node.action_confirm:
     _title_callback: '\Drupal\tide_core\Form\NodeActionForm::getTitle'
   requirements:
     _custom_access: '\Drupal\tide_core\Form\NodeActionForm::access'
+
+tide_core.fields_info.fields:
+  path: '/fields-info/{types}'
+  defaults:
+    _controller: '\Drupal\tide_core\Controller\SystemInfoController::getFields'
+    _title: 'System Fields Information'
+    types: 'all'
+  methods: ['GET']
+  requirements:
+    _access: 'TRUE'
+  options:
+    parameters:
+      types:
+        type: string
+
+tide_core.package_version:
+  path: '/pkg-version'
+  defaults:
+    _controller: '\Drupal\tide_core\Controller\SystemInfoController::getPackageVersion'
+    _title: 'Package Version Information'
+  methods: ['GET']
+  requirements:
+    _access: 'TRUE'

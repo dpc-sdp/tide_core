@@ -16,3 +16,14 @@ services:
     arguments: ['@plugin.manager.entity_reference_selection']
   tide_core.common_services:
     class: Drupal\tide_core\TideCommonServices
+  tide_core.system_info_service:
+    class: Drupal\tide_core\TideSystemInfoService
+    arguments:
+      - '@cache.default'
+      - '@state'
+      - '@entity_type.manager'
+      - '@entity_type.bundle.info'
+      - '@entity_field.manager'
+      - '@logger.factory'
+      - '@file_system'
+      - '@monitoring.sensor_runner'
