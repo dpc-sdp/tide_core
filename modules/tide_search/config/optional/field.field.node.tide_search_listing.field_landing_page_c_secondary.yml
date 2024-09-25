@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_landing_page_c_secondary
+    - node.type.tide_search_listing
+id: node.tide_search_listing.field_landing_page_c_secondary
+field_name: field_landing_page_c_secondary
+entity_type: node
+bundle: tide_search_listing
+label: 'Secondary campaign'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:block_content'
+  handler_settings: {  }
+field_type: entity_reference

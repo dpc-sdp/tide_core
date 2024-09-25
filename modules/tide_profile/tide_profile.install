@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Tide Profile module install file..
+ */
+
+use Drupal\tide_profile\TideProfileOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_profile_install() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+  TideProfileOperation::addToWorkflows();
+  TideProfileOperation::addToScheduledTransitions();
+  TideProfileOperation::assignNecessaryPermissions();
+  TideProfileOperation::addFieldsToSearchApi();
+
+}

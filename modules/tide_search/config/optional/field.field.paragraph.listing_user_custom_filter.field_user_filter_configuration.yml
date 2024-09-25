@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_user_filter_configuration
+    - paragraphs.paragraphs_type.listing_user_custom_filter
+  module:
+    - tide_content_collection
+id: paragraph.listing_user_custom_filter.field_user_filter_configuration
+field_name: field_user_filter_configuration
+entity_type: paragraph
+bundle: listing_user_custom_filter
+label: 'Filter configuration'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: content_collection_configuration

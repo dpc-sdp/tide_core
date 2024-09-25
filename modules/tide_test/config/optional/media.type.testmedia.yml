@@ -1,0 +1,16 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - media
+      - tide_test
+id: testmedia
+label: 'Test media'
+description: 'Test media'
+source: file
+queue_thumbnail_downloads: false
+new_revision: false
+source_configuration:
+  source_field: field_media_file_test
+field_map: {  }

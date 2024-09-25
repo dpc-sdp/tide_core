@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_elasticsearch_field
+    - taxonomy.vocabulary.searchable_fields
+id: taxonomy_term.searchable_fields.field_elasticsearch_field
+field_name: field_elasticsearch_field
+entity_type: taxonomy_term
+bundle: searchable_fields
+label: 'Elasticsearch field'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

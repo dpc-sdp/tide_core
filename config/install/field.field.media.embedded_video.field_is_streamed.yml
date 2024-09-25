@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_is_streamed
+    - media.type.embedded_video
+id: media.embedded_video.field_is_streamed
+field_name: field_is_streamed
+entity_type: media
+bundle: embedded_video
+label: 'Is this video being live streamed?'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

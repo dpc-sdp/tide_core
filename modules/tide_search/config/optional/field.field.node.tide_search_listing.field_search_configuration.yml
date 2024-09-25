@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_search_configuration
+    - node.type.tide_search_listing
+  module:
+    - tide_content_collection
+id: node.tide_search_listing.field_search_configuration
+field_name: field_search_configuration
+entity_type: node
+bundle: tide_search_listing
+label: 'Search Configuration'
+description: 'Note, this field may not be required if you are using the UI elements to configure the page above.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: content_collection_configuration

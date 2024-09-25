@@ -1,0 +1,10 @@
+tide_publication.demo:
+  dependencies:
+    modules:
+      - tide_publication
+    collections:
+      - tide_demo_content:tide_core.demo
+      - tide_demo_content:tide_media.demo
+      - tide_demo_content:tide_site.demo
+  content:
+    - .

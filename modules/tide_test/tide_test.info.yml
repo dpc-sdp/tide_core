@@ -1,0 +1,41 @@
+name: Tide Test
+description: 'Provides Test content type and related configuration. '
+type: module
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:field
+  - drupal:media
+  - drupal:menu_ui
+  - drupal:node
+  - drupal:path
+  - drupal:text
+  - drupal:user
+  - drupal:ctools
+  - tide_core:tide_core
+  - drupal:datetime
+  - maxlength:maxlength
+  - smart_trim:smart_trim
+  - simple_sitemap:simple_sitemap
+config_devel:
+  install:
+    - node.type.test
+    - core.entity_form_display.node.test.default
+    - core.entity_view_display.node.test.card
+    - core.entity_view_display.node.test.default
+    - core.entity_view_display.node.test.featured_card
+    - field.field.node.test.body
+    - field.field.node.test.field_metatags
+    - field.field.node.test.field_test_link
+    - field.field.node.test.field_test_reference
+    - field.storage.node.field_test_link
+    - field.storage.node.field_test_reference
+    - simple_sitemap.bundle_settings.node.test
+  optional:
+    - media.type.testmedia
+    - field.field.media.testmedia.field_media_file_test
+    - field.field.node.test.field_show_content_rating
+    - field.storage.media.field_media_file_test
+    - core.entity_form_display.media.testmedia.default
+    - core.entity_view_display.media.testmedia.default
+    - jsonapi_extras.jsonapi_resource_config.node--test

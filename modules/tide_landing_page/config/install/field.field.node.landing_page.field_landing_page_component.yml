@@ -1,0 +1,161 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_landing_page_component
+    - node.type.landing_page
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.basic_text
+    - paragraphs.paragraphs_type.call_to_action
+    - paragraphs.paragraphs_type.card_carousel
+    - paragraphs.paragraphs_type.card_keydates
+    - paragraphs.paragraphs_type.compact_card_collection
+    - paragraphs.paragraphs_type.card_promotion
+    - paragraphs.paragraphs_type.card_promotion_auto
+    - paragraphs.paragraphs_type.complex_image
+    - paragraphs.paragraphs_type.data_table
+    - paragraphs.paragraphs_type.form_embed_openforms
+    - paragraphs.paragraphs_type.media_gallery
+    - paragraphs.paragraphs_type.navigation_card
+    - paragraphs.paragraphs_type.promotion_card
+    - paragraphs.paragraphs_type.statistics_grid
+    - paragraphs.paragraphs_type.timelines
+  module:
+    - entity_reference_revisions
+id: node.landing_page.field_landing_page_component
+field_name: field_landing_page_component
+entity_type: node
+bundle: landing_page
+label: 'Content components'
+description: '<p>Add text, links, media and cards to build your page.</p>'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      basic_text: basic_text
+      accordion: accordion
+      promotion_card: promotion_card
+      navigation_card: navigation_card
+      card_carousel: card_carousel
+      card_keydates: card_keydates
+      call_to_action: call_to_action
+      embedded_webform: embedded_webform
+      form_embed_openforms: form_embed_openforms
+      media_gallery: media_gallery
+      complex_image: complex_image
+      timelines: timelines
+      compact_card_collection: compact_card_collection
+      data_table: data_table
+      statistics_grid: statistics_grid
+    target_bundles_drag_drop:
+      banner:
+        weight: -95
+        enabled: false
+      basic_text:
+        enabled: true
+        weight: -94
+      accordion:
+        enabled: true
+        weight: -93
+      promotion_card:
+        enabled: true
+        weight: -92
+      navigation_card:
+        enabled: true
+        weight: -91
+      card_promotion:
+        enabled: false
+        weight: -90
+      card_promotion_auto:
+        enabled: false
+        weight: -89
+      key_journeys:
+        weight: -88
+        enabled: false
+      related_links:
+        weight: -87
+        enabled: false
+      links:
+        weight: -86
+        enabled: false
+      card_keydates:
+        enabled: true
+        weight: -83
+      call_to_action:
+        enabled: true
+        weight: -82
+      card_event:
+        weight: -81
+        enabled: true
+      card_carousel:
+        weight: -80
+        enabled: true
+      embedded_webform:
+        enabled: true
+        weight: -79
+      form_embed_openforms:
+        enabled: true
+        weight: -78
+      media_gallery:
+        enabled: true
+        weight: -77
+      complex_image:
+        enabled: true
+        weight: -76
+      timelines:
+        enabled: true
+        weight: -75
+      data_table:
+        enabled: true
+        weight: -74
+      compact_card:
+        weight: -66
+        enabled: false
+      compact_card_collection:
+        weight: -65
+        enabled: true
+      accordion_content:
+        weight: -73
+        enabled: false
+      keydates:
+        weight: -72
+        enabled: false
+      contact_us:
+        weight: -70
+        enabled: false
+      call_to_action_image:
+        weight: -69
+        enabled: false
+      phone:
+        weight: -68
+        enabled: false
+      statistic_block:
+        weight: -49
+        enabled: false
+      statistics_grid:
+        enabled: true
+        weight: -61
+      social_link:
+        weight: -67
+        enabled: false
+      event_details:
+        weight: -64
+        enabled: false
+      introduction_banner:
+        weight: -63
+        enabled: false
+      embedded_search_form:
+        weight: -62
+        enabled: false
+      grants_overview:
+        weight: 56
+        enabled: false
+      timeline:
+        weight: -5
+        enabled: false
+field_type: entity_reference_revisions

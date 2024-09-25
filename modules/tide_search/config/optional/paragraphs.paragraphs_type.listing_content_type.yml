@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: listing_content_type
+label: 'Content type'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

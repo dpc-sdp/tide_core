@@ -1,0 +1,9 @@
+services:
+  tide_publication.response_event_subscriber:
+    class: \Drupal\tide_publication\EventSubscriber\Response
+    tags:
+      - {name: event_subscriber}
+  tide_publication.route_event_subscriber:
+    class: \Drupal\tide_publication\EventSubscriber\Route
+    tags:
+      - {name: event_subscriber}

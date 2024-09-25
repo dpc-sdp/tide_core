@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_statistics_grid_theme
+    - paragraphs.paragraphs_type.statistics_grid
+id: paragraph.statistics_grid.field_statistics_grid_theme
+field_name: field_statistics_grid_theme
+entity_type: paragraph
+bundle: statistics_grid
+label: Theme
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'Grey (best for white page background)'
+  off_label: 'White (best for grey page background)'
+field_type: boolean

@@ -1,0 +1,51 @@
+name: Tide News
+description: 'Provides News content type and related configuration. '
+type: module
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:field
+  - drupal:menu_ui
+  - drupal:node
+  - drupal:path
+  - drupal:text
+  - drupal:user
+  - drupal:datetime
+  - tide_core:tide_core
+  - tide_core:tide_media
+  - entity_reference_revisions:entity_reference_revisions
+  - field_group:field_group
+  - maxlength:maxlength
+  - metatag:metatag
+  - metatag:metatag_open_graph
+  - paragraphs:paragraphs
+  - select2:select2
+  - smart_trim:smart_trim
+config_devel:
+  install:
+    - node.type.news
+    - core.entity_form_display.node.page.default
+    - core.entity_view_display.node.page.default
+    - field.field.node.news.body
+    - field.field.node.news.field_featured_image
+    - field.field.node.news.field_landing_page_contact
+    - field.field.node.news.field_landing_page_nav_title
+    - field.field.node.news.field_landing_page_show_contact
+    - field.field.node.news.field_landing_page_summary
+    - field.field.node.news.field_metatags
+    - field.field.node.news.field_news_date
+    - field.field.node.news.field_news_intro_text
+    - field.field.node.news.field_show_introduction_text
+    - field.field.node.news.field_show_related_content
+    - field.field.node.news.field_show_site_section_nav
+    - field.field.node.news.field_show_social_sharing
+    - field.field.node.news.field_show_topic_term_and_tags
+    - field.field.node.news.field_related_links
+    - field.field.node.news.field_tags
+    - field.field.node.news.field_topic
+    - field.storage.node.field_news_date
+    - field.storage.news.field_news_intro_text
+  optional:
+    - field.field.node.news.field_show_content_rating
+    - jsonapi_extras.jsonapi_resource_config.node--news
+    - simple_sitemap.bundle_settings.node.news

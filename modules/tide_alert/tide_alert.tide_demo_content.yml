@@ -1,0 +1,10 @@
+tide_alert.demo:
+  dependencies:
+    modules:
+      - tide_alert
+    collections:
+      - tide_demo_content:tide_core.demo
+      - tide_demo_content:tide_site.demo
+  content:
+    - taxonomy_term
+    - alert.content.yml

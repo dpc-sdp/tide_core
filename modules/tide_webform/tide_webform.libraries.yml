@@ -1,0 +1,12 @@
+content_rating:
+  version: 1.0
+  js:
+    js/content_rating.js: {}
+  dependencies:
+    - core/jquery
+
+webform:
+  version: VERSION
+  css:
+    theme:
+      css/carlo_tables_override.css: {}

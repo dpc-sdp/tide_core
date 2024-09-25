@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_complex_image_full_label
+    - paragraphs.paragraphs_type.complex_image
+id: paragraph.complex_image.field_complex_image_full_label
+field_name: field_complex_image_full_label
+entity_type: paragraph
+bundle: complex_image
+label: 'Label for View in full screen'
+description: 'Leave this field empty for the default value: <em>View {title} in full screen</em>'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - data_pipelines.dataset_destination.sdp_elasticsearch
+    - key.key.search_auth_username
+id: search_auth_username
+label: SEARCH_AUTH_USERNAME
+config_type: dataset_destination
+config_prefix: data_pipelines.dataset_destination
+config_name: sdp_elasticsearch
+config_item: destinationSettings.username
+key_id: search_auth_username

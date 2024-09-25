@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_below_results_content
+    - node.type.tide_search_listing
+  module:
+    - text
+id: node.tide_search_listing.field_below_results_content
+field_name: field_below_results_content
+entity_type: node
+bundle: tide_search_listing
+label: 'Below results content'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

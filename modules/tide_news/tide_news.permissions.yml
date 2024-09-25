@@ -1,0 +1,33 @@
+'add scheduled transitions node news':
+  title: 'Add scheduled transitions for node news'
+  description: 'Allows user to add scheduled transitions for news content type.'
+'create news content':
+  title: 'Create news content'
+  description: 'Allows user to create news content.'
+'clone news content':
+  title: 'Clone news content'
+  description: 'Allows user to clone news content.'
+'delete any news content':
+  title: 'Delete any news content'
+  description: 'Allows user to delete any news content.'
+'delete news revisions':
+  title: 'Delete news revisions'
+  description: 'Allows user to delete news revisions.'
+'delete own news content':
+  title: 'Delete own news content'
+  description: 'Allows user to delete own news content.'
+'edit any news content':
+  title: 'Edit any news content'
+  description: 'Allows user to edit any news content.'
+'edit own news content':
+  title: 'Edit own news content'
+  description: 'Allows user to edit own news content.'
+'revert news revisions':
+  title: 'Revert news revisions'
+  description: 'Allows user to revert news revisions.'
+'view news revisions':
+  title: 'View news revisions'
+  description: 'Allows user to view news revisions.'
+'view scheduled transitions node news':
+  title: 'View scheduled transitions for node news'
+  description: 'Allows user to view all scheduled transitions for news content type.'

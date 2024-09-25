@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: timeline
+label: Timeline
+icon_uuid: null
+description: 'Used to display content in a style representing a timeline.'
+behavior_plugins: {  }

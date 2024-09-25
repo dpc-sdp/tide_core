@@ -1,0 +1,254 @@
+<?php
+
+/**
+ * @file
+ * Tide Event module functionality.
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\search_api\IndexInterface;
+use Drupal\smart_trim\TruncateHTML;
+use Drupal\user\Entity\Role;
+use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Implements hook_entity_bundle_create().
+ */
+function tide_event_entity_bundle_create($entity_type_id, $bundle) {
+  if ($entity_type_id == 'node' && $bundle == 'event') {
+    // Grant permissions on Test content type to Approver and Editor.
+    $roles = ['approver', 'editor'];
+    $permissions = [
+      'create event content',
+      'delete any event content',
+      'delete own event content',
+      'delete event revisions',
+      'edit any event content',
+      'edit own event content',
+      'revert event revisions',
+      'view event revisions',
+    ];
+
+    foreach ($roles as $role_name) {
+      $role = Role::load($role_name);
+      if ($role) {
+        foreach ($permissions as $permission) {
+          $role->grantPermission($permission);
+        }
+        $role->save();
+      }
+    }
+
+    // Enable Editorial workflow.
+    $editorial_workflow = Workflow::load('editorial');
+    if ($editorial_workflow) {
+      $editorial_workflow->getTypePlugin()->addEntityTypeAndBundle($entity_type_id, $bundle);
+      $editorial_workflow->save();
+    }
+  }
+}
+
+/**
+ * Implements hook_search_api_index_items_alter().
+ */
+function tide_event_search_api_index_items_alter(IndexInterface $index, array &$items) {
+  foreach ($items as $item_id => $item) {
+
+    $content_type = $item->getField('type');
+    if (empty($content_type) || $content_type->getValues()[0] !== 'event') {
+      continue;
+    }
+
+    // Add the Link field path.
+    // @todo Consider a check for all site aliases
+    // `tide_site.module:tide_site_search_api_index_items_alter`.
+    // This should be redundant if we move to consolidating all index alters to
+    // a processor.
+    // See https://digital-engagement.atlassian.net/browse/SDPA-1071
+    $field_link = $item->getField('field_paragraph_link');
+
+    if (isset($field_link)) {
+      $values = $field_link->getValues();
+      if (is_array($values) && isset($values[0])) {
+        $uri = $values[0];
+      }
+    }
+
+    if (isset($uri)) {
+      $path = Url::fromUri($uri)->toString();
+    }
+
+    if (isset($path)) {
+      $field_link->setValues([$path]);
+      $item->setField('field_paragraph_link', $field_link);
+    }
+  }
+}
+
+/**
+ * Converts timestamp to RFC-3339 format.
+ *
+ * @param int $ts
+ *   Timestamp.
+ *
+ * @return string
+ *   Formatted date.
+ */
+function _tide_event_get_formatted_date($ts) {
+  $config = \Drupal::config('system.date');
+  $timezone = new DateTimeZone($config->get('timezone.default'));
+  $date = new \Datetime();
+  $date->setTimezone($timezone);
+  $date = $date->setTimestamp($ts);
+
+  return $date->format('Y-m-d\TH:i:sP');
+}
+
+/**
+ * Implements hook_config_ignore_settings_alter().
+ */
+function tide_event_config_ignore_settings_alter(array &$settings) {
+  // Ignore the Content Rating webform so that it won't be reverted
+  // during config sync.
+  $settings[] = 'webform.webform.tide_event_submission';
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_event_webform_submission_presave($submission) {
+  $truncator = new TruncateHTML();
+
+  if ($submission->getWebform()->get('id') === 'tide_event_submission') {
+    $submission_data = $submission->getData();
+
+    // Add Event Details.
+    $event_details_data = [
+      'type' => 'event_details',
+      'field_paragraph_link' => [
+        'uri' => Html::escape($submission_data['website_url_for_booking']),
+        'title' => t('Book now'),
+      ],
+      'field_paragraph_date_range' => [
+        [
+          'value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['open_date']))) ,
+          'end_value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['close_date']))),
+        ],
+      ],
+      'field_paragraph_location' => [
+        [
+          'langcode' => '',
+          'country_code' => 'AU',
+          'administrative_area' => 'VIC',
+          'locality' => Html::escape($submission_data['location']['locality']),
+          'postal_code' => Html::escape($submission_data['location']['postal_code']),
+          'address_line1' => Html::escape($submission_data['location']['address_line1']),
+          'address_line2' => Html::escape($submission_data['location']['address_line2']),
+        ],
+      ],
+      'field_paragraph_event_price_from' => [
+        'value' => Html::escape($submission_data['price_from']),
+      ],
+      'field_paragraph_event_price_to' => [
+        'value' => Html::escape($submission_data['price_to']),
+      ],
+
+    ];
+
+    // Loop through requirements multiple value fields.
+    foreach ($submission_data['requirements'] as $requirement) {
+      $event_details_data['field_event_requirements'][] = ['target_id' => Html::escape($requirement)];
+    }
+
+    $event_details = Paragraph::create($event_details_data);
+    $event_details->save();
+
+    $node_data = [];
+    $node_data['field_event_details'] = [
+      [
+        'target_id' => $event_details->id(),
+        'target_revision_id' => $event_details->getRevisionId(),
+      ],
+    ];
+    // Create node object with values from webform submission.
+    $node = Node::create([
+      'type' => 'event',
+      'title' => Html::escape($submission_data['name_of_event']),
+      'field_event_details' => [
+        'target_id' => $event_details->id(),
+        'target_revision_id' => $event_details->getRevisionId(),
+      ],
+      'body' => [
+        'value' => Html::escape($submission_data['description']),
+        'summary' => $truncator->truncateWords(Html::escape($submission_data['description']), 30, ''),
+        'format' => 'rich_text',
+      ],
+      'field_event_description' => [
+        'value' => Html::escape($submission_data['description']),
+      ],
+      'field_landing_page_summary' => [
+        'value' => Html::escape($submission_data['description']),
+      ],
+      'field_node_link' => [
+        'uri' => Html::escape($submission_data['website_url_for_event_information']),
+      ],
+      'field_node_author' => [
+        'value' => Html::escape($submission_data['contact_person']),
+      ],
+      'field_node_email' => Html::escape($submission_data['contact_email_address']),
+      'field_node_phone' => Html::escape($submission_data['contact_telephone_number']),
+    ]);
+
+    if (\Drupal::moduleHandler()->moduleExists('tide_site')) {
+      if ($site = (int) \Drupal::request()->query->get('site')) {
+        /** @var \Drupal\tide_site\TideSiteHelper $helper */
+        $helper = \Drupal::service('tide_site.helper');
+        $site_trail = $helper->getSiteTrail($site);
+        if (count($site_trail) == 1) {
+          $node_sites = [$site];
+          $node_primary_site = $site;
+        }
+        else {
+          $node_sites = $site_trail;
+          $node_primary_site = $site_trail[0];
+        }
+        $node->field_node_primary_site->target_id = $node_primary_site;
+        foreach ($node_sites as $site_id) {
+          $node->field_node_site->appendItem($site_id);
+        }
+      }
+    }
+
+    // Loop through category multiple value fields.
+    foreach ($submission_data['category'] as $category) {
+      $node->field_event_category->appendItem(Html::escape($category));
+    }
+
+    // Set the node to Needs Review state.
+    $node->set('moderation_state', "needs_review");
+
+    // Set Event Author user as node author.
+    if ($user = user_load_by_name('Event Author')) {
+      $node->setOwnerId($user->id());
+    }
+
+    $node->save();
+  }
+}
+
+/**
+ * Implements hook_webform_element_alter().
+ */
+function tide_event_webform_element_alter(array &$element, FormStateInterface $form_state, array $context) {
+  // Check for Event Submission Price To field.
+  if (isset($element['#webform_id']) && $element['#webform_id'] === 'tide_event_submission--price_to') {
+    $element['#element_validate'][] = [
+      'Drupal\tide_event\Validate\PriceConstraint',
+      'validate',
+    ];
+  }
+}

@@ -1,0 +1,9 @@
+/**
+ * @file
+ * Styling changes to the Grant node form.
+ */
+
+.node-form-grant .layout-region-node-main .form-radios .form-item {
+  display: inline-block;
+  margin-right: 2em;
+}

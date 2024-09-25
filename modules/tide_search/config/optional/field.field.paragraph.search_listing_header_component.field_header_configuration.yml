@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_header_configuration
+    - paragraphs.paragraphs_type.search_listing_header_component
+  module:
+    - tide_content_collection
+id: paragraph.search_listing_header_component.field_header_configuration
+field_name: field_header_configuration
+entity_type: paragraph
+bundle: search_listing_header_component
+label: Configuration
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: content_collection_configuration
