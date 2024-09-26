@@ -1,0 +1,13 @@
+frequency: 172800
+offset: 604800
+user_expire_roles:
+  authenticated: 13148730
+  administrator: 13148730
+  approver: 13148730
+  site_admin: 13148730
+  editor: 13148730
+  previewer: 13148730
+  contributor: 13148730
+  event_author: 13148730
+  grant_author: 13148730
+  site_auditor: 13148730
