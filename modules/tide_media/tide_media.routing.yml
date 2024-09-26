@@ -1,0 +1,15 @@
+tide_media.settings:
+  path: '/admin/config/media/tide-media'
+  defaults:
+    _form: '\Drupal\tide_media\Form\TideMediaSettingsForm'
+    _title: 'Tide Media'
+  requirements:
+    _permission: 'administer media'
+
+tide_media.file.delete_action:
+  path: '/admin/media_files/deletion/{redirect_info}/{fid}'
+  defaults:
+    _form: '\Drupal\tide_media\Form\DeleteActionForm'
+    _title: 'File deletion'
+  requirements:
+    _permission: 'access files overview'

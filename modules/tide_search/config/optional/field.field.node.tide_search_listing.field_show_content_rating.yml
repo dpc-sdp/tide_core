@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_show_content_rating
+    - node.type.tide_search_listing
+id: node.tide_search_listing.field_show_content_rating
+field_name: field_show_content_rating
+entity_type: node
+bundle: tide_search_listing
+label: 'Show Content Rating?'
+description: 'Show ''Was this page helpful?'' feedback form. Do not uncheck this form without admin approval. '
+required: false
+translatable: true
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

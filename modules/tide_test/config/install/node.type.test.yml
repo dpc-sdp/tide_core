@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - tide_test
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Test
+type: test
+description: 'Test content type'
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: true

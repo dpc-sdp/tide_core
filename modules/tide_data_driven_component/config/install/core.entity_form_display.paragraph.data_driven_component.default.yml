@@ -1,0 +1,58 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.data_driven_component.field_configuration
+    - field.field.paragraph.data_driven_component.field_data_driven_component
+    - field.field.paragraph.data_driven_component.field_paragraph_body
+    - field.field.paragraph.data_driven_component.field_paragraph_title
+    - paragraphs.paragraphs_type.data_driven_component
+  module:
+    - text
+    - tide_content_collection
+id: paragraph.data_driven_component.default
+targetEntityType: paragraph
+bundle: data_driven_component
+mode: default
+content:
+  field_configuration:
+    type: content_collection_configuration_raw
+    weight: 2
+    region: content
+    settings:
+      schema_validation: '1'
+      rows: '5'
+      placeholder: ''
+    third_party_settings: {  }
+  field_data_driven_component:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_paragraph_body:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_paragraph_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

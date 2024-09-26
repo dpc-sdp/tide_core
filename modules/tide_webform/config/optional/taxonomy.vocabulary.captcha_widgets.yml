@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'CAPTCHA widgets'
+vid: captcha_widgets
+description: ''
+weight: 0

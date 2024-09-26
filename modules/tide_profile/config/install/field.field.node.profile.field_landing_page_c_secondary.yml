@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.campaign
+    - field.storage.node.field_landing_page_c_secondary
+    - node.type.profile
+id: node.profile.field_landing_page_c_secondary
+field_name: field_landing_page_c_secondary
+entity_type: node
+bundle: profile
+label: 'Secondary Campaign'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:block_content'
+  handler_settings:
+    target_bundles:
+      campaign: campaign
+      campaign_with_video: campaign_with_video
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: campaign
+field_type: entity_reference

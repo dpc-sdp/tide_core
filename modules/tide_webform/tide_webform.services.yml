@@ -1,0 +1,7 @@
+services:
+  tide_webform.exporter:
+    class: Drupal\tide_webform\TideWebformSubmissionExporter
+    public: false
+    decorates: webform_submission.exporter
+    decoration_priority: 4
+    arguments: ['@tide_webform.exporter.inner', '@config.factory', '@file_system', '@entity_type.manager', '@stream_wrapper_manager', '@plugin.manager.archiver', '@plugin.manager.webform.element', '@plugin.manager.webform.exporter']

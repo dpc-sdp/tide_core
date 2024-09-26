@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * @file
+ * Tide Alert module install file..
+ */
+
+use Drupal\taxonomy\Entity\Term;
+use Drupal\user\Entity\Role;
+use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Install default set of alert types.
+ */
+function _tide_alert_create_default_terms() {
+  $alert_types = [
+    'Emergency',
+    'Fire',
+    'Flood',
+    'Medical',
+    'Lightning',
+    'Pollution',
+    'Heat wave',
+    'Traffic',
+    'Notification',
+  ];
+
+  foreach ($alert_types as $alert_type) {
+    Term::create([
+      'vid' => 'alert_type',
+      'name' => $alert_type,
+      'weight' => 100,
+    ])->save();
+  }
+}
+
+/**
+ * Implements hook_install().
+ */
+function tide_alert_install() {
+  if (!\Drupal::service('config.installer')->isSyncing()) {
+    // Enable Editorial workflow if workflow module is enabled.
+    $moduleHandler = \Drupal::service('module_handler');
+
+    if ($moduleHandler->moduleExists('workflows')) {
+      $editorial_workflow = Workflow::load('editorial');
+      if ($editorial_workflow) {
+        $editorial_workflow->getTypePlugin()
+          ->addEntityTypeAndBundle('node', 'alert');
+        $editorial_workflow->save();
+      }
+    }
+
+    // Enable entity type/bundles for use with scheduled transitions.
+    if (\Drupal::moduleHandler()->moduleExists('scheduled_transitions')) {
+      $config_factory = \Drupal::configFactory();
+      $config = $config_factory->getEditable('scheduled_transitions.settings');
+      $bundles = $config->get('bundles');
+      if ($bundles) {
+        foreach ($bundles as $bundle) {
+          $enabled_bundles = [];
+          $enabled_bundles[] = $bundle['bundle'];
+        }
+        if (!in_array('alert', $enabled_bundles)) {
+          $bundles[] = ['entity_type' => 'node', 'bundle' => 'alert'];
+          $config->set('bundles', $bundles)->save();
+        }
+      }
+      else {
+        $bundles[] = ['entity_type' => 'node', 'bundle' => 'alert'];
+        $config->set('bundles', $bundles)->save();
+      }
+    }
+    _tide_alert_create_default_terms();
+    _tide_alert_scheduled_transitions_settings();
+    _tide_alert_should_not_be_indexed();
+    _tide_alert_assign_necessary_permissions();
+  }
+}
+
+/**
+ * Enable entity type/bundles for use with scheduled transitions.
+ */
+function _tide_alert_scheduled_transitions_settings() {
+  if (\Drupal::moduleHandler()->moduleExists('scheduled_transitions')) {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('scheduled_transitions.settings');
+    $bundles = $config->get('bundles');
+    if ($bundles) {
+      $enabled_bundles = [];
+      foreach ($bundles as $bundle) {
+        $enabled_bundles[] = $bundle['bundle'];
+      }
+      if (!in_array('alert', $enabled_bundles)) {
+        $bundles[] = ['entity_type' => 'node', 'bundle' => 'alert'];
+        $config->set('bundles', $bundles)->save();
+      }
+    }
+    else {
+      $bundles[] = ['entity_type' => 'node', 'bundle' => 'alert'];
+      $config->set('bundles', $bundles)->save();
+    }
+  }
+}
+
+/**
+ * Alerts should not to be indexed.
+ */
+function _tide_alert_should_not_be_indexed() {
+  if (\Drupal::moduleHandler()->moduleExists('tide_search')) {
+    $config_factory = \Drupal::configFactory();
+    $config = $config_factory->getEditable('search_api.index.node');
+    $data = $config->get('datasource_settings.entity:node.bundles.selected');
+    if (!in_array('alert', $data)) {
+      array_push($data, 'alert');
+      $config->set('datasource_settings.entity:node.bundles.selected', $data)
+        ->save();
+    }
+  }
+}
+
+/**
+ * Assign necessary permissions .
+ */
+function _tide_alert_assign_necessary_permissions() {
+  $role_permissions = [
+    'editor' => [
+      'create alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'revert alert revisions',
+      'view alert revisions',
+      'clone alert content',
+    ],
+    'site_admin' => [
+      'create alert content',
+      'delete alert revisions',
+      'delete any alert content',
+      'delete own alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'revert alert revisions',
+      'view alert revisions',
+      'clone alert content',
+    ],
+    'approver' => [
+      'create alert content',
+      'delete alert revisions',
+      'delete any alert content',
+      'delete own alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'revert alert revisions',
+      'view alert revisions',
+    ],
+    'contributer' => [
+      'create alert content',
+      'delete alert revisions',
+      'delete any alert content',
+      'delete own alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'revert alert revisions',
+      'view alert revisions',
+      'clone alert content',
+    ],
+  ];
+
+  foreach ($role_permissions as $role => $permissions) {
+    if (Role::load($role) && !is_null(Role::load($role))) {
+      user_role_grant_permissions(Role::load($role)->id(), $permissions);
+    }
+  }
+
+}

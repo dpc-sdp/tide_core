@@ -1,0 +1,21 @@
+uuid: 2f4321e2-f852-42ad-8f11-f088159226c6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_metatags_rtl
+    - media.type.embedded_video
+  module:
+    - metatag
+id: media.embedded_video.field_metatags_rtl
+field_name: field_metatags_rtl
+entity_type: media
+bundle: embedded_video
+label: Metatags
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: metatag

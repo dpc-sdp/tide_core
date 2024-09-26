@@ -1,0 +1,68 @@
+name: Tide Grant
+type: module
+description: 'Provides Grant content type and related configuration. '
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - tide_api:tide_api
+  - tide_core:tide_core
+  - tide_media:tide_media
+  - tide_webform:tide_webform
+  - drupal:datetime_range
+  - drupal:menu_ui
+  - drupal:migrate_plus
+  - drupal:migrate_tools
+  - drupal:range
+  - tide_core:tide_workflow_notification
+config_devel:
+  install:
+    - node.type.grant
+    - core.base_field_override.node.grant.promote
+    - core.base_field_override.node.grant.status
+    - core.entity_form_display.node.grant.default
+    - core.entity_view_display.node.grant.default
+    - core.entity_view_display.node.grant.teaser
+    - core.entity_form_display.paragraph.accordion.grants
+    - core.entity_form_display.paragraph.accordion_content.grants
+    - core.entity_form_display.paragraph.timeline.grants.yml
+    - core.entity_form_display.paragraph.timelines.grants.yml
+    - core.entity_form_mode.paragraph.grants
+    - core.entity_view_display.node.grant.default
+    - core.entity_view_display.node.grant.teaser
+    - field.field.node.grant.field_audience
+    - field.field.node.grant.field_description
+    - field.field.node.grant.field_featured_image
+    - field.field.node.grant.field_landing_page_contact
+    - field.field.node.grant.field_landing_page_intro_text
+    - field.field.node.grant.field_landing_page_show_contact
+    - field.field.node.grant.field_landing_page_summary
+    - field.field.node.grant.field_node_author
+    - field.field.node.grant.field_node_dates
+    - field.field.node.grant.field_node_documents
+    - field.field.node.grant.field_node_email
+    - field.field.node.grant.field_node_funding_level
+    - field.field.node.grant.field_node_guidelines
+    - field.field.node.grant.field_node_link
+    - field.field.node.grant.field_node_on_going
+    - field.field.node.grant.field_node_phone
+    - field.field.node.grant.field_node_timeline
+    - field.field.node.grant.field_overview_title
+    - field.field.node.grant.field_show_content_rating
+    - field.field.node.grant.field_show_social_sharing
+    - field.field.node.grant.field_tags
+    - field.field.node.grant.field_topic
+    - field.storage.node.field_description
+    - field.storage.node.field_node_author
+    - field.storage.node.field_node_dates
+    - field.storage.node.field_node_email
+    - field.storage.node.field_node_funding_level
+    - field.storage.node.field_node_guidelines
+    - field.storage.node.field_node_link
+    - field.storage.node.field_node_on_going
+    - field.storage.node.field_node_phone
+    - field.storage.node.field_overview_title
+    - migrate_plus.migration_group.default
+    - tide_grant.settings
+    - webform.webform.tide_grant_submission
+  optional:
+    - jsonapi_extras.jsonapi_resource_config.node--grant

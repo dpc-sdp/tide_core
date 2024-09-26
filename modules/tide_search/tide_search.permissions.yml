@@ -1,0 +1,6 @@
+'add scheduled transitions node tide_search_listing':
+  title: 'Add scheduled transitions node tide_search_listing'
+  description: 'Allows user to add scheduled transitions node tide_search_listing.'
+'view scheduled transitions node tide_search_listing':
+  title: 'View scheduled transitions node tide_search_listing'
+  description: 'Allows user to view scheduled transitions node tide_search_listing.'

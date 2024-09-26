@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+id: media.embedded_with_transcript
+label: 'Embedded with transcript'
+targetEntityType: media
+cache: true

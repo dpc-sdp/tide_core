@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+use Drupal\user\Entity\User;
+
+/**
+ * Implements hook_schema().
+ */
+function tide_demo_content_schema() {
+  $schema = [];
+  $schema['tide_demo_content_tracking'] = [
+    'description' => 'Tracks created demo content.',
+    'fields' => [
+      'entity_type' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Entity type.',
+      ],
+      'bundle' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Entity bundle.',
+      ],
+      'entity_id' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Entity ID.',
+      ],
+    ],
+    'primary key' => ['entity_type', 'bundle', 'entity_id'],
+    'indexes' => [
+      'entity_type' => ['entity_type'],
+      'bundle' => ['bundle'],
+      'entity_id' => ['entity_id'],
+    ],
+  ];
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function tide_demo_content_install() {
+  // We don't want Pbt to interfere as it has memory limit issue.
+  $pbt_enabled = \Drupal::moduleHandler()->moduleExists('permissions_by_term');
+  if ($pbt_enabled) {
+    $pbt_settings = \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings');
+    $node_access = $pbt_settings->get('disable_node_access_records');
+    $pbt_settings->set('disable_node_access_records', TRUE)->save();
+  }
+
+  /** @var \Drupal\tide_demo_content\DemoContentLoader $loader */
+  $loader = \Drupal::service('tide_demo_content.loader');
+  $loader->loadAllDemoContent();
+
+  // Restore Pbt settings.
+  if ($pbt_enabled) {
+    $pbt_settings->set('disable_node_access_records', $node_access)->save();
+  }
+
+  // Adds sites to test users.
+  if (\Drupal::moduleHandler()->moduleExists('tide_site_restriction')) {
+    $usernames = [
+      'editor1.test@example.com',
+      'editor2.test@example.com',
+      'approver1.test@example.com',
+      'approver2.test@example.com',
+      'previewer1.test@example.com',
+      'contributor1.test@example.com',
+    ];
+    $department = [1459];
+    /** @var \Drupal\tide_site\TideSiteHelper $site_helper */
+    $site_helper = \Drupal::service('tide_site.helper');
+    $sites = $site_helper->getAllSites();
+    $user_ids = \Drupal::entityQuery('user')
+      ->condition('name', $usernames, 'IN')
+      ->sort('uid', 'ASC')
+      ->accessCheck(FALSE)
+      ->execute();
+    if (isset($user_ids)) {
+      foreach ($user_ids as $user_id) {
+        $user = User::load($user_id);
+        if ($user->hasField('field_name')) {
+          $user->set('field_name', $user->getAccountName());
+        }
+        if ($user->hasField('field_last_name')) {
+          $user->set('field_last_name', $user->getAccountName());
+        }
+        if ($user->hasField('field_department_agency')) {
+          $user->set('field_department_agency', $department);
+        }
+        if (($user->getAccountName() != 'previewer1.test@example.com') && ($user->hasField('field_user_site'))) {
+          $user->set('field_user_site', $sites);
+        }
+        $user->save();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_demo_content_uninstall() {
+  /** @var \Drupal\tide_demo_content\DemoContentRepository $repository */
+  $repository = \Drupal::service('tide_demo_content.repository');
+  $repository->removeTrackedEntities();
+  \Drupal::messenger()->addMessage('Removed all demo content.');
+}

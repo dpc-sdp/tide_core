@@ -1,0 +1,41 @@
+services:
+  tide_api.helper:
+    class: Drupal\tide_api\TideApiHelper
+    arguments: [ '@path_alias.manager', '@entity_type.manager', '@jsonapi.resource_type.repository', '@config.factory' ]
+  tide_api.version_subscriber:
+    class: Drupal\tide_api\EventSubscriber\TideApiVersionSubscriber
+    tags:
+      - {name: event_subscriber}
+  tide_api.route_alter_subscriber:
+    class: Drupal\tide_api\EventSubscriber\TideApiRouteAlterSubscriber
+    arguments:
+      - '@config.factory'
+    tags:
+      - {name: event_subscriber}
+  tide_api.redirect_repository:
+    class: Drupal\tide_api\TideApiRedirectRepository
+    arguments: ['@entity_type.manager', '@database', '@config.factory']
+    tags:
+      - { name: backend_overridable }
+  tide_api.field_resolver:
+    class: Drupal\tide_api\TideApiFieldResolver
+    decorates: jsonapi.field_resolver
+    public: false
+    decoration_priority: 5
+    arguments:
+      - '@tide_api.field_resolver.inner'
+      - '@entity_type.manager'
+      - '@entity_field.manager'
+      - '@entity_type.bundle.info'
+      - '@jsonapi.resource_type.repository'
+      - '@module_handler'
+      - '@current_user'
+  tide_api.include_resolver:
+    class: Drupal\tide_api\TideApiIncludeResolver
+    decorates: jsonapi.include_resolver
+    public: false
+    decoration_priority: 5
+    arguments:
+      - '@tide_api.include_resolver.inner'
+      - '@entity_type.manager'
+      - '@jsonapi.entity_access_checker'

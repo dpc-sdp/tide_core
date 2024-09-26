@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: hero_banner_with_cta
+label: 'Hero banner with CTA'
+icon_uuid: null
+description: 'A call to action hero banner to provoke an immediate response from the citizen.'
+behavior_plugins: {  }

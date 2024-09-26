@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_statistic_heading
+    - paragraphs.paragraphs_type.statistic_block
+id: paragraph.statistic_block.field_statistic_heading
+field_name: field_statistic_heading
+entity_type: paragraph
+bundle: statistic_block
+label: 'Statistic Heading'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

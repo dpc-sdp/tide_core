@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_listing_results_per_page
+    - node.type.tide_search_listing
+id: node.tide_search_listing.field_listing_results_per_page
+field_name: field_listing_results_per_page
+entity_type: node
+bundle: tide_search_listing
+label: 'Results per page'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

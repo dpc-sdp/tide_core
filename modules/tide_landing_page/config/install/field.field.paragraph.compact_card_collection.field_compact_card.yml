@@ -1,0 +1,144 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_compact_card
+    - paragraphs.paragraphs_type.compact_card
+    - paragraphs.paragraphs_type.compact_card_collection
+  module:
+    - entity_reference_revisions
+id: paragraph.compact_card_collection.field_compact_card
+field_name: field_compact_card
+entity_type: paragraph
+bundle: compact_card_collection
+label: 'Compact card'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      compact_card: compact_card
+    target_bundles_drag_drop:
+      accordion:
+        weight: 41
+        enabled: false
+      accordion_content:
+        weight: 42
+        enabled: false
+      banner:
+        weight: 43
+        enabled: false
+      basic_text:
+        weight: 44
+        enabled: false
+      call_to_action:
+        weight: 45
+        enabled: false
+      call_to_action_image:
+        weight: 46
+        enabled: false
+      card_carousel:
+        weight: 47
+        enabled: false
+      card_event:
+        weight: 48
+        enabled: false
+      card_event_auto:
+        weight: 49
+        enabled: false
+      card_keydates:
+        weight: 50
+        enabled: false
+      card_navigation:
+        weight: 51
+        enabled: false
+      card_navigation_auto:
+        weight: 52
+        enabled: false
+      card_navigation_featured:
+        weight: 53
+        enabled: false
+      card_navigation_featured_auto:
+        weight: 54
+        enabled: false
+      card_promotion:
+        weight: 55
+        enabled: false
+      card_promotion_auto:
+        weight: 56
+        enabled: false
+      compact_card:
+        enabled: true
+        weight: 57
+      compact_card_collection:
+        weight: 40
+        enabled: false
+      complex_image:
+        weight: 58
+        enabled: false
+      contact_us:
+        weight: 59
+        enabled: false
+      data_driven_component:
+        weight: 60
+        enabled: false
+      embedded_search_form:
+        weight: 61
+        enabled: false
+      embedded_webform:
+        weight: 62
+        enabled: false
+      event_details:
+        weight: 63
+        enabled: false
+      featured_news:
+        weight: 64
+        enabled: false
+      hero_banner_with_cta:
+        weight: 65
+        enabled: false
+      introduction_banner:
+        weight: 66
+        enabled: false
+      key_journeys:
+        weight: 67
+        enabled: false
+      keydates:
+        weight: 68
+        enabled: false
+      latest_events:
+        weight: 69
+        enabled: false
+      links:
+        weight: 70
+        enabled: false
+      media_gallery:
+        weight: 71
+        enabled: false
+      news_listing:
+        weight: 72
+        enabled: false
+      phone:
+        weight: 73
+        enabled: false
+      related_links:
+        weight: 74
+        enabled: false
+      social_link:
+        weight: 75
+        enabled: false
+      timeline:
+        weight: 76
+        enabled: false
+      timelines:
+        weight: 77
+        enabled: false
+      user_authentication_block:
+        weight: 78
+        enabled: false
+field_type: entity_reference_revisions

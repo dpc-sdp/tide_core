@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.listing_user_custom_filter.field_user_filter_configuration
+    - paragraphs.paragraphs_type.listing_user_custom_filter
+  module:
+    - tide_content_collection
+id: paragraph.listing_user_custom_filter.default
+targetEntityType: paragraph
+bundle: listing_user_custom_filter
+mode: default
+content:
+  field_user_filter_configuration:
+    type: content_collection_configuration_raw
+    weight: 0
+    region: content
+    settings:
+      schema_validation: false
+      rows: '5'
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

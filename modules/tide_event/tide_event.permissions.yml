@@ -1,0 +1,51 @@
+'add scheduled transitions node event':
+  title: 'Add scheduled transitions for node event'
+  description: 'Allows user to add scheduled transitions for event content type.'
+
+'clone event content':
+  title: 'Clone event content'
+  description: 'Allows user to clone event content.'
+
+'create event content':
+  title: 'Create event content'
+  description: 'Allows user to create event content.'
+
+'delete any event content':
+  title: 'Delete any event content'
+  description: 'Allows user to delete any event content.'
+
+'delete event revisions':
+  title: 'Delete event revisions'
+  description: 'Allows user to delete event revisions.'
+
+'edit any event content':
+  title: 'Edit any event content'
+  description: 'Allows user to edit any event content.'
+
+'edit own event content':
+  title: 'Edit own event content'
+  description: 'Allows user to edit own event content.'
+
+'revert event revisions':
+  title: 'Revert event revisions'
+  description: 'Allows user to revert event revisions.'
+
+'view event revisions':
+  title: 'View event revisions'
+  description: 'Allows user to view event revisions.'
+
+'use draft_needs_review transition':
+  title: 'use draft_needs_review transition'
+  description: 'use draft_needs_review transition.'
+
+'use needs_review_draft transition':
+  title: 'use needs_review_draft transition'
+  description: 'use needs_review_draft transition.'
+
+'use needs_review_needs_review transition':
+  title: 'use needs_review_needs_review transition'
+  description: 'use needs_review_needs_review transition.'
+
+'view scheduled transitions node event':
+  title: 'View scheduled transitions for Content:Event entities'
+  description: 'View scheduled transitions for Content:Event entities.'

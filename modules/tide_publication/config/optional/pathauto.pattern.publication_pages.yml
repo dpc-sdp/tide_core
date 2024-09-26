@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: publication_pages
+label: 'Publication Pages'
+type: 'canonical_entities:node'
+pattern: '[node:field_publication:entity:url:path-no-site-prefix]/[node:title]'
+selection_criteria:
+  96994a80-9dfb-4bf3-b9cf-7fc3e3503c56:
+    id: 'entity_bundle:node'
+    bundles:
+      publication_page: publication_page
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 96994a80-9dfb-4bf3-b9cf-7fc3e3503c56
+selection_logic: and
+weight: -50
+relationships: {  }

@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Expertise
+vid: expertise
+description: 'Areas of expertise for Profile content.'
+hierarchy: 0
+weight: 0

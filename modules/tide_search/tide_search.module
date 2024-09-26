@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Tide Search module functionality.
+ */
+
+use Drupal\search_api\IndexInterface;
+
+/**
+ * Implements hook_search_api_index_items_alter().
+ */
+function tide_search_search_api_index_items_alter(IndexInterface $index, array &$items) {
+  // Get any fields of type date and format it's value to align with RFC-3339.
+  $index_fields = $index->getFields();
+  $date_field_ids = [];
+  foreach ($index_fields as $field_id => $index_field) {
+    if ($index_field->getType() === 'date') {
+      $date_field_ids[$field_id] = $field_id;
+    }
+  }
+  foreach ($items as $item) {
+    foreach ($date_field_ids as $field_id) {
+      $date_field = $item->getField($field_id);
+      if ($date_field) {
+        $values = $date_field->getValues();
+        foreach ($values as &$value) {
+          $value = _tide_search_get_formatted_date($value);
+        }
+        unset($value);
+        $date_field->setValues($values);
+        $item->setField($field_id, $date_field);
+      }
+    }
+  }
+}
+
+/**
+ * Converts timestamp to RFC-3339 format.
+ *
+ * @param int $ts
+ *   Timestamp.
+ *
+ * @return string
+ *   Formatted date.
+ */
+function _tide_search_get_formatted_date($ts) {
+  if (!is_numeric($ts)) {
+    return $ts;
+  }
+  $config = \Drupal::config('system.date');
+  $timezone = new DateTimeZone($config->get('timezone.default'));
+  $date = new \Datetime();
+  $date->setTimezone($timezone);
+  $date = $date->setTimestamp($ts);
+
+  return $date->format('Y-m-d\TH:i:sP');
+}
+
+/**
+ * Implements hook_admin_audit_trail_handlers().
+ */
+function tide_search_admin_audit_trail_handlers() {
+  // Page event log handler.
+  $handlers = [];
+  $handlers['tide_search'] = [
+    'title' => t('Tide Search'),
+  ];
+  return $handlers;
+}

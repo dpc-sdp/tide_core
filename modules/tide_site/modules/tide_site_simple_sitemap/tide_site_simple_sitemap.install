@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @file
+ * Tide Site install file.
+ */
+
+use Drupal\simple_sitemap\Entity\SimpleSitemap;
+use Drupal\simple_sitemap\Entity\SimpleSitemapType;
+
+/**
+ * Implements hook_install().
+ */
+function tide_site_simple_sitemap_install($is_syncing) {
+  _update_settings();
+}
+
+/**
+ * Update for sitemap 4.x.
+ */
+function _update_settings() {
+  // Step1, Creates a sitemap type.
+  $type = SimpleSitemapType::create([
+    'id'                => 'tide_default_sitemap_type',
+    'label'             => 'Tide default sitemap type',
+    'sitemap_generator' => 'tide_default',
+    'url_generators'    => ['tide_custom', 'tide_entity'],
+  ]);
+  $type->save();
+
+  // Step2, Creates sitemap entities.
+  $sites = \Drupal::service('tide_site.helper')->getAllSites();
+  $sites += ['default' => 'Default'];
+  foreach ($sites as $site_id => $item) {
+    $simple_site_map = SimpleSitemap::create([
+      'id'    => $site_id === 'default' ? 'default' : 'site-' . $site_id,
+      'label' => $site_id === 'default' ? 'Default' : $item->label(),
+      'type'  => 'tide_default_sitemap_type',
+    ]);
+    $simple_site_map->save();
+  }
+
+  // Step3, Enables sitemap bundle settings.
+  /** @var \Drupal\simple_sitemap\Manager\EntityManager $entity_manager */
+  $entity_manager = \Drupal::service('simple_sitemap.entity_manager');
+  $bundle_info = \Drupal::service('entity_type.bundle.info')->getBundleInfo(
+    'node'
+  );
+  /** @var Drupal\simple_sitemap\Manager\Generator $custom_generator */
+  $custom_generator = \Drupal::service('simple_sitemap.generator');
+  $settings = [
+    'index'          => '1',
+    'priority'       => '0.5',
+    'changefreq'     => '',
+    'include_images' => '0',
+  ];
+  foreach ($sites as $site_id => $item) {
+    if ($site_id === 'default') {
+      $custom_generator->setVariants('default');
+      $custom_generator->customLinkManager()->add(
+        '/',
+        ["path" => "/", "priority" => "1.0", "changefreq" => "daily"]
+      );
+      $entity_manager->setVariants($site_id);
+    }
+    else {
+      $custom_generator->setVariants('site-' . $site_id);
+      $custom_generator->customLinkManager()->add(
+        '/',
+        ["path" => "/", "priority" => "1.0", "changefreq" => "daily"]
+      );
+      $entity_manager->setVariants('site-' . $site_id);
+    }
+    foreach ($bundle_info as $bundle_id => $details) {
+      $entity_manager->setBundleSettings('node', $bundle_id, $settings);
+    }
+  }
+}

@@ -1,0 +1,8 @@
+name: 'Tide Media File Overwrite'
+description: 'Gives the author option to overwrite file, and keeping the same filename when upload.'
+type: module
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - dpc-sdp:tide_core
+  - dpc-sdp:tide_media
