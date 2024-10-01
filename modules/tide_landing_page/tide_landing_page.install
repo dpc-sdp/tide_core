@@ -175,3 +175,23 @@ function tide_landing_page_update_10105() {
   ]);
   $field_storage->save();
 }
+
+/**
+ * Set field `field_landing_page_hero_theme` to mandatory.
+ */
+function tide_landing_page_update_10106() {
+  $bundles = [
+    'landing_page',
+    'publication',
+    'publication_page',
+  ];
+
+  foreach ($bundles as $bundle) {
+    $field = FieldConfig::loadByName('node', $bundle, 'field_landing_page_hero_theme');
+    if (!empty($field)) {
+      $field->setLabel('Hero image theme');
+      $field->setRequired(TRUE);
+      $field->save();
+    }
+  }
+}
