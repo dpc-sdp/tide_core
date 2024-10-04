@@ -1,0 +1,166 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.accordion
+    - paragraphs.paragraphs_type.basic_text
+  module:
+    - entity_reference_revisions
+    - paragraphs_library
+id: paragraphs_library_item.paragraphs_library_item.paragraphs
+field_name: paragraphs
+entity_type: paragraphs_library_item
+bundle: paragraphs_library_item
+label: Paragraphs
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      accordion: accordion
+      basic_text: basic_text
+    negate: 0
+    target_bundles_drag_drop:
+      accordion:
+        weight: 47
+        enabled: true
+      accordion_content:
+        weight: 48
+        enabled: false
+      banner:
+        weight: 49
+        enabled: false
+      basic_text:
+        weight: 50
+        enabled: true
+      call_to_action:
+        weight: 51
+        enabled: false
+      call_to_action_image:
+        weight: 52
+        enabled: false
+      card_carousel:
+        weight: 53
+        enabled: false
+      card_event:
+        weight: 54
+        enabled: false
+      card_event_auto:
+        weight: 55
+        enabled: false
+      card_keydates:
+        weight: 56
+        enabled: false
+      card_promotion:
+        weight: 57
+        enabled: false
+      card_promotion_auto:
+        weight: 58
+        enabled: false
+      compact_card:
+        weight: 59
+        enabled: false
+      compact_card_collection:
+        weight: 60
+        enabled: false
+      complex_image:
+        weight: 61
+        enabled: false
+      contact_us:
+        weight: 62
+        enabled: false
+      content_collection:
+        weight: 63
+        enabled: false
+      content_collection_enhanced:
+        weight: 64
+        enabled: false
+      data_driven_component:
+        weight: 65
+        enabled: false
+      data_table:
+        weight: 66
+        enabled: false
+      embedded_search_form:
+        weight: 67
+        enabled: false
+      embedded_webform:
+        weight: 68
+        enabled: false
+      event_details:
+        weight: 69
+        enabled: false
+      form_embed_openforms:
+        weight: 70
+        enabled: false
+      from_library:
+        weight: 71
+        enabled: false
+      hero_banner_with_cta:
+        weight: 72
+        enabled: false
+      introduction_banner:
+        weight: 73
+        enabled: false
+      key_journeys:
+        weight: 75
+        enabled: false
+      keydates:
+        weight: 74
+        enabled: false
+      links:
+        weight: 76
+        enabled: false
+      listing_content_type:
+        weight: 77
+        enabled: false
+      listing_custom_filter:
+        weight: 78
+        enabled: false
+      listing_site:
+        weight: 79
+        enabled: false
+      listing_user_custom_filter:
+        weight: 80
+        enabled: false
+      media_gallery:
+        weight: 81
+        enabled: false
+      navigation_card:
+        weight: 82
+        enabled: false
+      phone:
+        weight: 83
+        enabled: false
+      promotion_card:
+        weight: 84
+        enabled: false
+      related_links:
+        weight: 85
+        enabled: false
+      search_listing_header_component:
+        weight: 87
+        enabled: false
+      searchable_fields:
+        weight: 86
+        enabled: false
+      social_link:
+        weight: 88
+        enabled: false
+      statistic_block:
+        weight: 90
+        enabled: false
+      statistics_grid:
+        weight: 89
+        enabled: false
+      timeline:
+        weight: 91
+        enabled: false
+      timelines:
+        weight: 92
+        enabled: false
+field_type: entity_reference_revisions

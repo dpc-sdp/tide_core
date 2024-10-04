@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.paragraphs_library_items
     - filter.format.rich_text
     - filter.format.summary_text
     - media.type.audio
@@ -14,9 +15,11 @@ dependencies:
     - content_moderation
     - filter
     - media
+    - entity_browser
     - node
     - override_node_options
     - system
+    - paragraphs_library
     - tablefield
     - tide_core
     - toolbar
@@ -27,6 +30,7 @@ is_admin: null
 permissions:
   - 'access administration pages'
   - 'access content overview'
+  - 'access paragraphs_library_items entity browser pages'
   - 'access media overview'
   - 'access toolbar'
   - 'addrow tablefield'
@@ -36,6 +40,9 @@ permissions:
   - 'create document media'
   - 'create file media'
   - 'create image media'
+  - 'create paragraph library item'
+  - 'edit paragraph library item'
+  - 'create media'
   - 'create url aliases'
   - 'edit any audio media'
   - 'edit any document media'

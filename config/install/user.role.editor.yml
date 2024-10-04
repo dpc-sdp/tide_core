@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.paragraphs_library_items
     - filter.format.rich_text
     - filter.format.summary_text
     - media.type.audio
@@ -12,9 +13,11 @@ dependencies:
     - workflows.workflow.editorial
   module:
     - block
+    - paragraphs_library
     - content_moderation
     - filter
     - media
+    - entity_browser
     - node
     - path
     - system
@@ -26,6 +29,8 @@ weight: 4
 is_admin: null
 permissions:
   - 'access administration pages'
+  - 'access paragraphs_library_items entity browser pages'
+  - 'edit paragraph library item'
   - 'access content overview'
   - 'access media overview'
   - 'access toolbar'
@@ -36,6 +41,8 @@ permissions:
   - 'create document media'
   - 'create file media'
   - 'create image media'
+  - 'create paragraph library item'
+  - 'create media'
   - 'create url aliases'
   - 'edit any audio media'
   - 'edit any document media'

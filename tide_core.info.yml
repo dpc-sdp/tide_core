@@ -64,6 +64,7 @@ dependencies:
   - metatag:metatag_open_graph
   - override_node_options:override_node_options
   - paragraphs:paragraphs
+  - paragraphs:paragraphs_library
   - password_policy:password_policy
   - password_strength:password_strength
   - pathauto:pathauto

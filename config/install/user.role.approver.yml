@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.paragraphs_library_items
     - filter.format.admin_text
     - filter.format.rich_text
     - filter.format.summary_text
@@ -9,6 +10,7 @@ dependencies:
     - block
     - content_lock
     - content_moderation
+    - entity_browser
     - filter
     - media
     - node
@@ -16,6 +18,7 @@ dependencies:
     - redirect
     - scheduled_transitions
     - system
+    - paragraphs_library
     - tide_core
     - toolbar
 id: approver
@@ -26,6 +29,7 @@ permissions:
   - 'access administration pages'
   - 'access content overview'
   - 'access media overview'
+  - 'access paragraphs_library_items entity browser pages'
   - 'access toolbar'
   - 'administer blocks'
   - 'addrow tablefield'
@@ -37,6 +41,8 @@ permissions:
   - 'create file media'
   - 'create image media'
   - 'create url aliases'
+  - 'create paragraph library item'
+  - 'edit paragraph library item'
   - 'delete all revisions'
   - 'delete media'
   - 'edit any audio media'

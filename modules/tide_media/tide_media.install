@@ -68,3 +68,16 @@ function tide_media_update_10003() {
 function tide_media_update_10004() {
   TideOperation::addMediaTypePermissions();
 }
+
+/**
+ * Adds paragraphs_library_item to track_enabled_target_entity_types.
+ */
+function tide_media_update_10005() {
+  // Update entity_usage.
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('entity_usage.settings');
+  $result = $config->get('track_enabled_target_entity_types');
+  array_push($result, 'paragraphs_library_item');
+  $config->set('track_enabled_target_entity_types', $result);
+  $config->save();
+}
