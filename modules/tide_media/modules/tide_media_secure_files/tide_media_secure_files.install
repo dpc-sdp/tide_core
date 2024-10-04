@@ -61,9 +61,14 @@ function tide_media_secure_files_install() {
     $module_installer = \Drupal::service('module_installer');
     $module_installer->install(['pfdp']);
   }
-  // Add 'view field_secure_file' permission to the 'anonymous' role.
-  $anonymous_role = Role::load('anonymous');
-  if ($anonymous_role) {
-    user_role_grant_permissions($anonymous_role->id(), ['view field_secure_file']);
+  // Add 'view field_secure_file' permission.
+  // To the 'anonymous' and 'authenticated' roles.
+  $roles = ['anonymous', 'authenticated'];
+  
+  foreach ($roles as $role_name) {
+    $role = Role::load($role_name);
+    if ($role) {
+      user_role_grant_permissions($role->id(), ['view field_secure_file']);
+    }
   }
 }

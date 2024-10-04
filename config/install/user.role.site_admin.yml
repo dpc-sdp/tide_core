@@ -5,6 +5,11 @@ dependencies:
     - filter.format.admin_text
     - filter.format.rich_text
     - filter.format.summary_text
+    - media.type.audio
+    - media.type.document
+    - media.type.embedded_video
+    - media.type.file
+    - media.type.image
     - taxonomy.vocabulary.audience
     - taxonomy.vocabulary.department
     - taxonomy.vocabulary.location
@@ -58,7 +63,10 @@ permissions:
   - 'create field_business_contact_number'
   - 'create field_business_name'
   - 'create field_notes'
-  - 'create media'
+  - 'create document media'
+  - 'create embedded_video media'
+  - 'create file media'
+  - 'create image media'
   - 'create terms in audience'
   - 'create terms in department'
   - 'create terms in location'
@@ -66,7 +74,11 @@ permissions:
   - 'create terms in topic'
   - 'create url aliases'
   - 'delete all revisions'
-  - 'delete any media'
+  - 'delete any audio media'
+  - 'delete any document media'
+  - 'delete any embedded_video media'
+  - 'delete any file media'
+  - 'delete any image media'
   - 'delete media'
   - 'delete terms in audience'
   - 'delete terms in department'
@@ -84,7 +96,6 @@ permissions:
   - 'import tablefield'
   - 'rebuild tablefield'
   - 'revert all revisions'
-  - 'update any media'
   - 'update media'
   - 'use editorial transition archive'
   - 'use editorial transition archived_draft'
