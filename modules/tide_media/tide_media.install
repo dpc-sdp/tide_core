@@ -7,6 +7,7 @@
 
 use Drupal\field\Entity\FieldConfig;
 use Drupal\tide_media\TideOperation;
+use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_install().
@@ -59,4 +60,103 @@ function tide_media_update_10003() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('embed.button.tide_media');
   $config->set('icon', [])->save();
+}
+
+/**
+ * Update media permissions.
+ */
+function tide_media_update_10004() {
+  // Define permissions to be added and removed for each role.
+  $role_permissions_add = [
+    'approver' => [
+      'create document media',
+      'create embedded_video media',
+      'create file media',
+      'create image media',
+      'edit any audio media',
+      'edit any document media',
+      'edit any embedded_video media',
+      'edit any file media',
+      'edit any image media',
+    ],
+    'contributor' => [
+      'create document media',
+      'create embedded_video media',
+      'create file media',
+      'create image media',
+      'edit any audio media',
+      'edit any document media',
+      'edit any embedded_video media',
+      'edit any file media',
+      'edit any image media',
+    ],
+    'editor' => [
+      'create document media',
+      'create embedded_video media',
+      'create file media',
+      'create image media',
+      'edit any audio media',
+      'edit any document media',
+      'edit any embedded_video media',
+      'edit any file media',
+      'edit any image media',
+      'view field_secure_file',
+    ],
+    'site_admin' => [
+      'create document media',
+      'create embedded_video media',
+      'create file media',
+      'create image media',
+      'delete any audio media',
+      'delete any document media',
+      'delete any embedded_video media',
+      'delete any file media',
+      'delete any image media',
+      'delete own audio media',
+      'delete own document media',
+      'delete own embedded_video media',
+      'delete own file media',
+      'delete own image media',
+      'edit any audio media',
+      'edit any document media',
+      'edit any embedded_video media',
+      'edit any file media',
+      'edit any image media',
+    ],
+  ];
+
+  $role_permissions_remove = [
+    'approver' => [
+      'create media',
+      'delete any media',
+      'update any media',
+    ],
+    'contributor' => [
+      'create media',
+      'update any media',
+    ],
+    'editor' => [
+      'create media',
+      'update any media',
+    ],
+    'site_admin' => [
+      'create media',
+      'delete any media',
+      'update any media',
+    ],
+  ];
+
+  // Grant the permissions.
+  foreach ($role_permissions_add as $role => $permissions) {
+    if ($role_object = Role::load($role)) {
+      user_role_grant_permissions($role_object->id(), $permissions);
+    }
+  }
+
+  // Revoke the permissions.
+  foreach ($role_permissions_remove as $role => $permissions) {
+    if ($role_object = Role::load($role)) {
+      user_role_revoke_permissions($role_object->id(), $permissions);
+    }
+  }
 }

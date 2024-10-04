@@ -7,13 +7,18 @@ bypass: false
 grant_file_owners: false
 users: {  }
 roles:
+  administrator: administrator
   secure_file_user: secure_file_user
+  site_admin: '0'
+  approver: '0'
+  editor: '0'
+  contributor: '0'
+  previewer: '0'
   anonymous: '0'
   authenticated: '0'
-  administrator: '0'
-  approver: '0'
-  site_admin: '0'
-  editor: '0'
-  previewer: '0'
-  contributor: '0'
+  grant_author: '0'
+  html_editor: '0'
+  emergency_recovery_resource: '0'
+  data_importer: '0'
   site_auditor: '0'
+  jobs_editor: '0'
