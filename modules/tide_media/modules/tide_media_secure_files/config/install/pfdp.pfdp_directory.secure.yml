@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies: {  }
+id: secure
+path: /secure
+bypass: false
+grant_file_owners: false
+users: {  }
+roles:
+  secure_file_user: secure_file_user
+  anonymous: '0'
+  authenticated: '0'
+  administrator: '0'
+  approver: '0'
+  site_admin: '0'
+  editor: '0'
+  previewer: '0'
+  contributor: '0'
+  site_auditor: '0'
