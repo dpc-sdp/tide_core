@@ -64,7 +64,7 @@ function tide_media_secure_files_install() {
   // Add 'view field_secure_file' permission.
   // To the 'anonymous' and 'authenticated' roles.
   $roles = ['anonymous', 'authenticated'];
-  
+
   foreach ($roles as $role_name) {
     $role = Role::load($role_name);
     if ($role) {
