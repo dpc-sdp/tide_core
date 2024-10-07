@@ -64,7 +64,6 @@ permissions:
   - 'create field_business_name'
   - 'create field_notes'
   - 'create document media'
-  - 'create embedded_video media'
   - 'create file media'
   - 'create image media'
   - 'create terms in audience'
