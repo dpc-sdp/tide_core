@@ -204,26 +204,6 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 }
 
 /**
- * Implements hook_preprocess_views_view_field().
- */
-function tide_core_preprocess_views_view_field(&$variables) {
-  $current_user = \Drupal::currentUser();
-  $roles = $current_user->getRoles();
-
-  $view = $variables['view'];
-  $field = $variables['field'];
-
-  if (
-    in_array('approver', $roles) &&
-    $view->storage->id() == 'summary_contents_filters' &&
-    $view->current_display == 'page_1' &&
-    $field->field == 'node_bulk_form'
-  ) {
-    array_push($variables['field']->options['selected_actions'], 'node_delete_action');
-  }
-}
-
-/**
  * Redirect form upon saving to the Menu UI Module collection.
  */
 function _tide_core_menu_submit_handler(&$form, FormStateInterface $form_state) {
