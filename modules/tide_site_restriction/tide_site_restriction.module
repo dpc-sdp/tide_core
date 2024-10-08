@@ -394,24 +394,3 @@ function tide_site_restriction_views_data_alter(array &$data) {
 function tide_site_restriction_views_plugins_field_alter(array &$plugins) {
   $plugins['node_bulk_form']['class'] = 'Drupal\\tide_site_restriction\\Plugin\\views\\field\\TideNodeBulkForm';
 }
-
-/**
- * Implements hook_preprocess_views_view_field().
- */
-function tide_site_restriction_preprocess_views_view_field(&$variables)
-{
-  $current_user = \Drupal::currentUser();
-  $roles = $current_user->getRoles();
-
-  $view = $variables['view'];
-  $field = $variables['field'];
-
-  if (
-    in_array('approver', $roles) &&
-    $view->storage->id() == 'summary_contents_filters' &&
-    $view->current_display == 'page_1' &&
-    $field->field == 'node_bulk_form'
-  ) {
-    array_push($variables['field']->options['selected_actions'], 'node_delete_action');
-  }
-}

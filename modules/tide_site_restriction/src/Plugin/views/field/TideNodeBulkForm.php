@@ -86,6 +86,12 @@ class TideNodeBulkForm extends NodeBulkForm {
       // Remove the default actions build array.
       unset($form['actions']);
     }
+
+    // Removed delete option for approver role.
+    $roles = $current_user->getRoles();
+    if (in_array('approver', $roles)) {
+      unset($form['header']['node_bulk_form']['action']['#options']['node_delete_action']);
+    }
   }
 
 }
