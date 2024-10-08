@@ -3,36 +3,36 @@
 
   Drupal.behaviors.heroImageTheme = {
     attach: function (context, settings) {
-      const imageTheme = document.querySelector(
+      const imageTheme = context.querySelector(
         'select[data-drupal-selector^="edit-field-landing-page-hero-theme"]'
       );
 
       if (imageTheme !== null) {
         setImageTheme();
 
-        const headerStyles = document.querySelectorAll(
+        const headerStyles = context.querySelectorAll(
           'input[data-drupal-selector^="edit-header-style-options"]'
         );
 
-        if (headerStyles !== null) {
+        if (headerStyles.length > 0) {
           headerStyles.forEach((style) => {
-            style.addEventListener("change", () => {
-              setImageTheme();
-            });
+            style.addEventListener("change", setImageTheme);
           });
         }
       }
 
       function setImageTheme() {
-        let defaultHeaderStyle = document.querySelector(
+        const selectedHeaderStyle = document.querySelector(
           'input[data-drupal-selector^="edit-header-style-options"]:checked'
-        ).value;
+        );
 
-        if (defaultHeaderStyle === "fullwidth") {
-          imageTheme.value = "dark";
-        } else {
-          imageTheme.value = "light";
+        if (!selectedHeaderStyle) {
+          return; // Exit if no style option is selected.
         }
+
+        let defaultHeaderStyle = selectedHeaderStyle.value;
+        imageTheme.value =
+          defaultHeaderStyle === "fullwidth" ? "dark" : "light";
       }
     },
   };
