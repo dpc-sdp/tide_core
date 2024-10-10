@@ -4,7 +4,7 @@ description: 'Provides Publication content type and related configuration. '
 package: Tide
 core_version_requirement: ^9 || ^10
 dependencies:
-  - tide_landing_page:tide_landing_page
+  - tide_core:tide_landing_page
   - tide_core:tide_media
   - entity_hierarchy:entity_hierarchy
   - inline_entity_form:inline_entity_form

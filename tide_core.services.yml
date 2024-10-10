@@ -6,7 +6,15 @@ services:
   tide_core.entity_update_helper:
     class: Drupal\tide_core\TideEntityUpdateHelper
     arguments:
-      [ '@entity_type.manager', '@entity_field.manager', '@entity.last_installed_schema.repository', '@field_storage_definition.listener' ]
+      - '@entity_type.manager'
+      - '@config.storage'
+      - '@config_update.extension_storage'
+      - '@config_update.extension_optional_storage'
+      - '@config.factory'
+      - '@event_dispatcher'
+      - '@entity_field.manager'
+      - '@entity.last_installed_schema.repository'
+      - '@field_storage_definition.listener'
   tide_core.route_subscriber:
     class: Drupal\tide_core\Routing\AutocompleteRouteSubscriber
     tags:

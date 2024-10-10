@@ -7,6 +7,7 @@
 
 use Drupal\field\Entity\FieldConfig;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_publication\TidePublicationOperation;
 
 /**
@@ -115,4 +116,17 @@ function tide_publication_update_10003() {
   }
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
   _tide_core_content_category_form_display('publication');
+}
+
+/**
+ * Update field_landing_page_component configs.
+ */
+function tide_publication_update_10004() {
+  $form_configs = [
+    'field.field.node.publication.field_landing_page_component',
+    'field.field.node.publication_page.field_landing_page_component',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $s */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->configMergeDeep('tide_landing_page', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
 }
