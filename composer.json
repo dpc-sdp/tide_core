@@ -55,7 +55,6 @@
         "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
       },
       "drupal/jsonapi_extras": {
-        "Issue #3473990: Fix PHP Fatal error on Declaration of the normalize function must be compatible with normalize function return type after Schemata 8.x-1.0 was released": "https://git.drupalcode.org/project/jsonapi_extras/-/commit/d7ab37658999b5fae74769ade4155ec7310aa468.diff",
         "Make max value of page[limit] configurable per entity/bundle - https://www.drupal.org/project/jsonapi_extras/issues/2884292#comment-14794882": "https://www.drupal.org/files/issues/2022-11-21/max_page_limit_configuration-2884292-33.patch"
       },
       "drupal/jsonapi_menu_items": {
@@ -423,6 +422,7 @@
     "drupal/password_policy": "^4.0",
     "drupal/password_strength": "^2.0@beta",
     "drupal/pathauto": "^1.11",
+    "drupal/private_files_download_permission": "^3.1",
     "drupal/prlp": "^1.10",
     "drupal/queue_mail": "^1.5",
     "drupal/quick_node_clone": "^1.16",

@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_media_site
+    - media.type.secure_file
+    - taxonomy.vocabulary.sites
+id: media.secure_file.field_media_site
+field_name: field_media_site
+entity_type: media
+bundle: secure_file
+label: Site
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      sites: sites
+field_type: entity_reference

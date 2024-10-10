@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_secure_file
+    - media.type.secure_file
+  module:
+    - file
+id: media.secure_file.field_secure_file
+field_name: field_secure_file
+entity_type: media
+bundle: secure_file
+label: File
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: 'secure/[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'xls xlsx csv xlsm doc docx dotx pdf ppt pptx'
+  max_filesize: ''
+  description_field: true
+field_type: file

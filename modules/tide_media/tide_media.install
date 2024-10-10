@@ -16,6 +16,7 @@ function tide_media_install() {
   TideOperation::entityUsageDefaultSettings();
   TideOperation::assignNecessaryPermissions();
   TideOperation::createLicenseTypeTerms();
+  TideOperation::addMediaTypePermissions();
 
 }
 
@@ -59,4 +60,11 @@ function tide_media_update_10003() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('embed.button.tide_media');
   $config->set('icon', [])->save();
+}
+
+/**
+ * Update media permissions.
+ */
+function tide_media_update_10004() {
+  TideOperation::addMediaTypePermissions();
 }
