@@ -59,6 +59,7 @@ class TideOperation {
       ];
       $entity_types = [
         'media',
+        'paragraphs_library_item',
       ];
       // Set where it will check for media items use.
       $source = [

@@ -15,6 +15,7 @@ dependencies:
     - paragraphs.paragraphs_type.complex_image
     - paragraphs.paragraphs_type.data_table
     - paragraphs.paragraphs_type.form_embed_openforms
+    - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.media_gallery
     - paragraphs.paragraphs_type.navigation_card
     - paragraphs.paragraphs_type.promotion_card
@@ -46,6 +47,7 @@ settings:
       call_to_action: call_to_action
       embedded_webform: embedded_webform
       form_embed_openforms: form_embed_openforms
+      from_library: from_library
       media_gallery: media_gallery
       complex_image: complex_image
       timelines: timelines
@@ -101,6 +103,9 @@ settings:
       form_embed_openforms:
         enabled: true
         weight: -78
+      from_library:
+        weight: 71
+        enabled: true
       media_gallery:
         enabled: true
         weight: -77
