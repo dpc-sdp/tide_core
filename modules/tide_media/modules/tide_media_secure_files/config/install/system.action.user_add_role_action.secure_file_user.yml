@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.secure_file_user
+  module:
+    - user
+id: user_add_role_action.secure_file_user
+label: 'Add the Secure File User role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: secure_file_user
