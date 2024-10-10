@@ -258,4 +258,31 @@ class TideCoreOperation {
     }
   }
 
+  /**
+   * Enables paragraphs_library.
+   */
+  public function alterParagraphsLibrary() {
+    // Enabled paragraphs_library module.
+    if (!\Drupal::moduleHandler()->moduleExists('paragraphs_library')) {
+      /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+      $module_installer = \Drupal::service('module_installer');
+      $module_installer->install(['paragraphs_library']);
+    }
+
+    // Overwrites paragraphs_library.
+    $entity_update_items = [
+      'from_library' => 'paragraphs_type',
+      'paragraphs_library' => 'view',
+      'paragraphs_library_browser' => 'view',
+      'paragraphs_library_item.paragraphs_library_item.default' => 'entity_form_display',
+    ];
+    $update_service = \Drupal::service('tide_core.entity_update_helper');
+    foreach ($entity_update_items as $name => $type) {
+      $result = $update_service->updateFromOptional($type, $name);
+      if (!$result) {
+        $update_service->import($type, $name);
+      }
+    }
+  }
+
 }

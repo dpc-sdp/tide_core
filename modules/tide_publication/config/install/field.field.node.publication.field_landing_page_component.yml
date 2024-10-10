@@ -7,6 +7,7 @@ dependencies:
     - paragraphs.paragraphs_type.accordion
     - paragraphs.paragraphs_type.basic_text
     - paragraphs.paragraphs_type.complex_image
+    - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.statistics_grid
   module:
     - entity_reference_revisions
@@ -27,6 +28,7 @@ settings:
     target_bundles:
       accordion: accordion
       basic_text: basic_text
+      from_library: from_library
       complex_image: complex_image
       statistics_grid: statistics_grid
     target_bundles_drag_drop:
@@ -45,4 +47,7 @@ settings:
       statistics_grid:
         enabled: true
         weight: 152
+      from_library:
+        weight: 71
+        enabled: true
 field_type: entity_reference_revisions
