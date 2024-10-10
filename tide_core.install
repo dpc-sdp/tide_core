@@ -54,9 +54,6 @@ function tide_core_install() {
 
   // Changes the diff modules general_settings.revision_pager_limit to 16.
   $tideCoreOperation->changeDiffSettings();
-
-  // Enable Tide TFA.
-  $tideCoreOperation->enabledTideTfa();
 }
 
 /**
@@ -228,19 +225,9 @@ function _tide_core_replace_attribute_in_tag($array, $tagName, $attribute, $newA
 }
 
 /**
- * Enable Tide TFA.
- */
-function tide_core_update_10007() {
-  $tideCoreOperation = new TideCoreOperation();
-
-  // Enable Tide TFA.
-  $tideCoreOperation->enabledTideTfa();
-}
-
-/**
  * Installs tide_times sensor.
  */
-function tide_core_update_10008() {
+function tide_core_update_10007() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   $config_read = _tide_read_config('monitoring.sensor_config.tide_times', $config_location, TRUE);
