@@ -109,11 +109,6 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
       }
     }
 
-    // Adding custom states from webform js.
-    if (\Drupal::moduleHandler()->moduleExists('webform')) {
-      $form['#attached']['library'][] = 'webform/webform.states';
-    }
-
     // Hide the field Show Acknowledgement to Country if tide_site is missing.
     if (!\Drupal::moduleHandler()->moduleExists('tide_site')) {
       $form['field_show_ack_of_country']['#attributes']['class'][] = 'hidden';
