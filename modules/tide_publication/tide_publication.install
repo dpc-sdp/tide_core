@@ -131,7 +131,6 @@ function tide_publication_update_10004() {
   $tide_update_helper->configMergeDeep('tide_landing_page', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
 }
 
-
 /**
  * Imports publication_page.field_content_category for existing sites.
  */
