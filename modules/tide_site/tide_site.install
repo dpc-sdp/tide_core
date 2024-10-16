@@ -35,7 +35,7 @@ function tide_site_update_10001() {
   foreach ($configs as $config => $type) {
     $config_read = _tide_read_config($config, $config_location, TRUE);
     $storage = \Drupal::entityTypeManager()->getStorage($type);
-    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity = $storage->``=-34567890=``($config_read);
     $config_entity->save();
   }
 
@@ -61,3 +61,33 @@ function tide_site_update_10001() {
     $display_config_entity->save();
   }
 }
+
+/**
+ * New field site specific quick exit button.
+ */
+
+ function tide_site_update_10002() {
+  // Import extra fields.
+
+  $field_configs = [
+    'field.storage.taxonomy_term.field_show_exit_site_specific' => 'field_storage_config',
+    'field.field.taxonomy_term.sites.field_show_exit_site_specific' => 'field_config',
+  ];
+  /** @var \Drupal\config_update\ConfigReverter $config_update */
+  $update_service = \Drupal::service('tide_core.entity_update_helper');
+  foreach ($field_configs as $name => $type) {
+    $update_service->import($type, $name);
+  }
+
+  $taxonomy_configs = [
+    'core.entity_form_display.taxonomy_term.sites.default' => 'entity_form_display',
+    'core.entity_view_display.taxonomy_term.sites.default' => 'entity_view_display',
+  ];
+  foreach ($taxonomy_configs as $configs_name => $type) {
+    // Check default configuration.
+    $config = \Drupal::configFactory()->getEditable($configs_name);
+    if ($config) {
+      $update_service->revert($type, $configs_name);
+    }
+  }
+ }
