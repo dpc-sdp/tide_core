@@ -35,7 +35,7 @@ function tide_site_update_10001() {
   foreach ($configs as $config => $type) {
     $config_read = _tide_read_config($config, $config_location, TRUE);
     $storage = \Drupal::entityTypeManager()->getStorage($type);
-    $config_entity = $storage->``=-34567890=``($config_read);
+    $config_entity = $storage->createFromStorageRecord($config_read);
     $config_entity->save();
   }
 
