@@ -24,4 +24,13 @@ Feature: Sites taxonomy vocabulary
     And I see field "Show Exit Site?"
     And I should see an "input#edit-field-site-show-exit-site-value" element
     And I should not see an "input#edit-field-site-show-exit-site-value.required" element
+    And I should not see field "Show Exit Site Specific?"
+    And I should not see an "input#edit-field-show-exit-site-specific" element
+
+    And I see field "Show Exit Site Specific?"
+    And I should see an "input#edit-field-show-exit-site-specific" element
+    And I should not see an "input#edit-field-show-exit-site-specific.required" element
+    And I should not see field "Show Exit Site?"
+    And I should not see an "input#edit-field-site-show-exit-site-value" element
+
 

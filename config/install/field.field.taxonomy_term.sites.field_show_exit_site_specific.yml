@@ -1,0 +1,21 @@
+uuid: f65e524a-0a93-444a-92c5-c68e3467cca4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_show_exit_site_specific
+    - taxonomy.vocabulary.sites
+  module:
+    - options
+id: taxonomy_term.sites.field_show_exit_site_specific
+field_name: field_show_exit_site_specific
+entity_type: taxonomy_term
+bundle: sites
+label: 'Show Exit Site Specific?'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
