@@ -88,7 +88,7 @@ class TideNodeBulkForm extends NodeBulkForm {
     }
 
     // Removed delete option for approver role.
-     if ($current_user) {
+    if ($current_user) {
       $roles = $current_user->getRoles();
       if (
         in_array('approver', $roles) &&
@@ -98,4 +98,5 @@ class TideNodeBulkForm extends NodeBulkForm {
       }
     }
   }
+
 }
