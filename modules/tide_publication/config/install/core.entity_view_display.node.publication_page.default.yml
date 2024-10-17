@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.publication.field_content_category
     - field.field.node.publication_page.field_landing_page_component
     - field.field.node.publication_page.field_landing_page_contact
     - field.field.node.publication_page.field_landing_page_hero_image
@@ -22,6 +23,7 @@ dependencies:
     - entity_reference_revisions
     - options
     - user
+    - term_reference_tree
 id: node.publication_page.default
 targetEntityType: node
 bundle: publication_page
@@ -39,6 +41,17 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_content_category:
+    type: term_reference_tree
+    weight: 5
+    region: content
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 0
+    third_party_settings: { }
   field_landing_page_component:
     weight: 1
     label: above
