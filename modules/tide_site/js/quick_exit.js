@@ -4,8 +4,8 @@
   
     Drupal.behaviors.siteQuickExitFields = {
       attach: function (context, settings) {
-        var parent = ($('.taxonomy-term-sites-form  #edit-parent'));
-        var parentVal = parent.val();
+        var parentField = ($('.taxonomy-term-sites-form  #edit-parent'));
+        var parentVal = parentField.val();
         if (parentVal == 0) {
           $('.field--name-field-show-exit-site-specific').hide();
         }
