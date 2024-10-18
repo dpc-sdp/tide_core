@@ -393,7 +393,8 @@
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
             "drupal/webform": {
-                "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-15686345": "https://www.drupal.org/files/issues/2024-07-24/exporting-webform-submission-static-batch-process-3348336-8.patch"
+                "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-15686345": "https://www.drupal.org/files/issues/2024-07-24/exporting-webform-submission-static-batch-process-3348336-8.patch",
+                "Fix incompatibility with devel - https://www.drupal.org/project/webform/issues/3435903#comment-15707835": "https://www.drupal.org/files/issues/2024-08-01/fix_incompatibility_with_devel_5.2.patch"
             },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
