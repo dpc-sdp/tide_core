@@ -132,16 +132,12 @@ function tide_site_entity_presave(EntityInterface $entity) {
  * @todo Extract into a service.
  */
 function tide_site_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
-  
   $field_definition = $context['items']->getFieldDefinition();
-
- // Site specific exit button state change
+  // Site specific exit button state change.
   $vocabulary = $form_state->get(['taxonomy', 'vocabulary']);
   if ($vocabulary->id() === 'sites') {
     $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
   }
-
-
 
   // Restrict options to 2 levels of depth for Site field.
   if (TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_SITE)) {
