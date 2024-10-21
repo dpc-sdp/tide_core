@@ -1,0 +1,7 @@
+services:
+  delete_orphaned_paragraphs_test.commands:
+    class: Drupal\tide_core\Commands\TideDeleteOrphanedParagraphsTest
+    arguments: ['@keyvalue']
+    tags:
+      - { name: drush.command }
+
