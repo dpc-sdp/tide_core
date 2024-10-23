@@ -27,6 +27,7 @@ Feature: Fields for Landing Page content type
     And I should see text matching "Call to action banner"
     And I should see text matching "No Hero Banner with CTA added yet."
     And I should see the button "Add Hero banner with CTA" in the "content" region
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
     And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
@@ -34,6 +35,7 @@ Feature: Fields for Landing Page content type
     And I select the radio button "Corner graphics"
     And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
     And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And I click on the horizontal tab "Header extras"
     And I should see text matching "Header components"
@@ -156,6 +158,7 @@ Feature: Fields for Landing Page content type
     And I should see text matching "Call to action banner"
     And I should see text matching "No Hero Banner with CTA added yet."
     And I should see the button "Add Hero banner with CTA" in the "content" region
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
     And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
@@ -163,6 +166,7 @@ Feature: Fields for Landing Page content type
     And I select the radio button "Corner graphics"
     And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
     And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And I click on the horizontal tab "Header extras"
     And I should see text matching "Header components"
