@@ -42,7 +42,8 @@ class TideTfaUserController extends TfaUserControllerBase {
     $this->setUser($user);
 
     // Let Drupal core deal with the one time login,
-    // if Tfa is not enabled or current user can skip TFA while resetting password.
+    // if Tfa is not enabled or
+    // current user can skip TFA while resetting password.
     if ($this->isTfaDisabled() || $this->canSkipPassReset()) {
       // Use PRLP's resetPassLogin instead of the core function.
       return $prlp_controller->prlpResetPassLogin($request, $uid, $timestamp, $hash);
@@ -70,7 +71,8 @@ class TideTfaUserController extends TfaUserControllerBase {
     if ($user->getLastLoginTime() && $current - $timestamp > $timeout) {
       $this->messenger()->addError($this->t('You have tried to use a one-time login link that has expired. Please request a new one using the form below.'));
       return $this->redirect('user.pass');
-    } elseif ($user->isAuthenticated() && ($timestamp >= $user->getLastLoginTime()) && ($timestamp <= $current) && hash_equals($hash, user_pass_rehash($user, $timestamp))) {
+    }
+    elseif ($user->isAuthenticated() && ($timestamp >= $user->getLastLoginTime()) && ($timestamp <= $current) && hash_equals($hash, user_pass_rehash($user, $timestamp))) {
       if ($tfa_ready) {
         $this->session->migrate();
         $token = Crypt::randomBytesBase64(55);
@@ -90,10 +92,12 @@ class TideTfaUserController extends TfaUserControllerBase {
           'query' => ['pass-reset-token' => $token],
           'absolute' => TRUE,
         ]);
-      } else {
+      }
+      else {
         if ($this->canLoginWithoutTfa($this->getLogger('tfa'))) {
           return $this->redirectToUserForm($user, $request, $timestamp);
-        } else {
+        }
+        else {
           return $this->redirect('<front>');
         }
       }
@@ -104,10 +108,10 @@ class TideTfaUserController extends TfaUserControllerBase {
   }
 
   /**
-   * Determines if the user can skip two-factor authentication on password reset.
+   * Determines if the user can skip tfa on password reset.
    *
    * This function checks the TFA settings to see if the option to skip TFA
-   * during password reset is enabled. If enabled, users will not be required 
+   * during password reset is enabled. If enabled, users will not be required
    * to complete two-factor authentication when resetting their password.
    *
    * @return bool
