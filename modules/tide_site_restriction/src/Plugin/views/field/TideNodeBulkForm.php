@@ -74,6 +74,17 @@ class TideNodeBulkForm extends NodeBulkForm {
         '#empty_option' => $this->t('- Select -'),
       ];
       $current_user = \Drupal::currentUser();
+
+      // Removed delete option for approver role.
+      if ($current_user) {
+        $roles = $current_user->getRoles();
+        if (
+          in_array('approver', $roles) &&
+          isset($form['header']['node_bulk_form']['action']['#options']['node_delete_action'])
+        ) {
+          unset($form['header']['node_bulk_form']['action']['#options']['node_delete_action']);
+        }
+      }
       if (!$current_user->hasPermission('tide node bulk update') &&
           !\Drupal::service('tide_site_restriction.helper')->canBypassRestriction($current_user)) {
         $form['actions']['submit']['#disabled'] = TRUE;

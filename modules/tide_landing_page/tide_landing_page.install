@@ -8,6 +8,7 @@
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_landing_page\TideLandingPageOperation;
 
 /**
@@ -177,9 +178,26 @@ function tide_landing_page_update_10105() {
 }
 
 /**
- * Set field `field_landing_page_hero_theme` to mandatory.
+ * Update field_landing_page_component configs.
  */
 function tide_landing_page_update_10106() {
+  $form_configs = [
+    'field.field.node.landing_page.field_landing_page_component',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $s */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->configMergeDeep('tide_landing_page', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
+  $result = $tide_update_helper->updateFromOptional('base_field_override', 'paragraphs_library_item.paragraphs_library_item.paragraphs');
+  if (!$result) {
+    $tide_update_helper->import('base_field_override', 'paragraphs_library_item.paragraphs_library_item.paragraphs');
+  }
+
+}
+
+/**
+ * Set field `field_landing_page_hero_theme` to mandatory.
+ */
+function tide_landing_page_update_10107() {
   $bundles = [
     'landing_page',
     'publication',
@@ -194,4 +212,5 @@ function tide_landing_page_update_10106() {
       $field->save();
     }
   }
+
 }

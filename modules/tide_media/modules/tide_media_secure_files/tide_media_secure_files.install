@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * @file
+ * Tide Media Secure Files.
+ */
+
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_media_secure_files_uninstall() {
+  \Drupal::configFactory()->getEditable('pfdp.pfdp_directory.secure')->delete();
+
+  $secure_file_media_type = 'secure_file';
+  $ids = \Drupal::entityQuery('media')
+    ->condition('bundle', $secure_file_media_type)
+    ->accessCheck(FALSE)
+    ->execute();
+  $storageHandler = \Drupal::entityTypeManager()->getStorage('media');
+  $entities = $storageHandler->loadMultiple($ids);
+  if ($entities) {
+    foreach ($entities as $entity) {
+      $entity->delete();
+    }
+  }
+
+  $media_type = \Drupal::entityTypeManager()
+    ->getStorage('media_type')
+    ->load($secure_file_media_type);
+  if ($media_type) {
+    $media_type->delete();
+  }
+
+  $secure_file_user_role = 'secure_file_user';
+  $secure_file_users = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['roles' => 'secure_file_user']);
+  if ($secure_file_users) {
+    foreach ($secure_file_users as $user) {
+      $user->removeRole($secure_file_user_role);
+      $user->save();
+    }
+  }
+
+  $role = Role::load($secure_file_user_role);
+  if ($role) {
+    $role->delete();
+  }
+
+  drupal_flush_all_caches();
+
+  \Drupal::service('module_installer')->uninstall(['pfdp']);
+}
+
+/**
+ * Implements hook_install().
+ */
+function tide_media_secure_files_install() {
+  if (!\Drupal::moduleHandler()->moduleExists('pfdp')) {
+    /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['pfdp']);
+  }
+  // Add 'view field_secure_file' permission.
+  // To the 'anonymous' and 'authenticated' roles.
+  $roles = ['anonymous', 'authenticated'];
+
+  foreach ($roles as $role_name) {
+    $role = Role::load($role_name);
+    if ($role) {
+      user_role_grant_permissions($role->id(), ['view field_secure_file']);
+    }
+  }
+}

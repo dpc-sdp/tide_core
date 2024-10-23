@@ -13,3 +13,9 @@
 'access tide_media_browser_iframe entity browser pages':
   title: 'Access tide_media_browser_iframe entity browser pages'
   description: 'Allow user to access tide_media_browser_iframe entity browser pages'
+'create embedded_video media':
+  title: 'Create embedded_video media'
+  description: 'Allow user to create embedded_video media'
+'edit any embedded_video media':
+  title: 'Edit embedded_video media'
+  description: 'Allow user to Edit embedded_video media'
