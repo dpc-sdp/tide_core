@@ -15,7 +15,18 @@ class TideTfaUserController extends TfaUserControllerBase {
   /**
    * {@inheritdoc}
    */
-  protected function doResetPassLogin($uid, $timestamp, $hash, $request = NULL) {
+  public function doResetPassLogin($uid, $timestamp, $hash, $request = NULL) {
+    // Ensure a valid request object.
+    if (!$request) {
+      $request = \Drupal::request();
+    }
+
+    // Check if the PRLP module is enabled.
+    if (!\Drupal::moduleHandler()->moduleExists('prlp')) {
+      // If PRLP is not enabled, call the parent method.
+      return parent::doResetPassLogin($uid, $timestamp, $hash, $request);
+    }
+
     // Create an instance of PrlpController.
     $prlp_controller = new PrlpController(
       \Drupal::service('date.formatter'),
