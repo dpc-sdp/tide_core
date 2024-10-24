@@ -56,9 +56,13 @@ class TideTfaOperation {
     $roles = Role::loadMultiple();
     // Initialize the $tfa_required_roles array.
     $tfa_required_roles = [];
+    // Define the roles to exclude in a variable.
+    $excluded_roles = ['authenticated', 'previewer', 'secure_file_user'];
+
     // Iterate through the roles and map the role IDs.
     foreach ($roles as $role) {
-      if ($role->id() !== 'authenticated') {
+      // Check if the current role is not in the excluded roles.
+      if (!in_array($role->id(), $excluded_roles)) {
         // Map the role ID to itself.
         $tfa_required_roles[$role->id()] = $role->id();
       }
