@@ -135,8 +135,10 @@ function tide_site_field_widget_single_element_form_alter(&$element, FormStateIn
   $field_definition = $context['items']->getFieldDefinition();
   // Site specific exit button state change.
   $vocabulary = $form_state->get(['taxonomy', 'vocabulary']);
-  if ($vocabulary->id() === 'sites') {
-    $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
+  if (!empty($vocabulary)) {
+    if ($vocabulary->id() === 'sites') {
+      $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
+    }
   }
 
   // Restrict options to 2 levels of depth for Site field.
