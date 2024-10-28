@@ -26,10 +26,9 @@ class AliasManager extends CoreAliasManager {
   /**
    * {@inheritdoc}
    */
-  public function __construct(AliasRepositoryInterface $repository, AliasWhitelistInterface $whitelist, LanguageManagerInterface $language_manager, CacheBackendInterface $cache, protected ?TimeInterface $time = NULL)
-  {
+  public function __construct(AliasRepositoryInterface $repository, AliasWhitelistInterface $whitelist, LanguageManagerInterface $language_manager, CacheBackendInterface $cache, protected ?TimeInterface $time, AliasStorageHelper $alias_helper) {
     parent::__construct($repository, $whitelist, $language_manager, $cache, $time);
-    $this->aliasHelper = \Drupal::service('tide_site.alias_storage_helper');
+    $this->aliasHelper = $alias_helper;
   }
 
   /**
