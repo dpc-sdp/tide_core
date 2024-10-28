@@ -409,10 +409,6 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
     ],
   ];
 
-  $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme']['#states']['enabled'] = [
-    ':input[name="_header_style_options"]' => ['value' => 'corner'],
-  ];
-
   $form['field_graphical_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
