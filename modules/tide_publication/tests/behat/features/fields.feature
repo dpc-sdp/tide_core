@@ -179,3 +179,5 @@ Feature: Fields for Publication content type
     And I see field "Show content rating?"
     And I should see an "input#edit-field-show-content-rating-value" element
     And I should not see an "input#edit-field-show-content-rating-value.required" element
+
+    And I should see text matching "Content category"
