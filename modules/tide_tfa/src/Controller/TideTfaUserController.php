@@ -5,6 +5,7 @@ namespace Drupal\tide_tfa\Controller;
 use Drupal\Component\Utility\Crypt;
 use Drupal\prlp\Controller\PrlpController;
 use Drupal\tfa\Controller\TfaUserControllerBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -13,12 +14,30 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class TideTfaUserController extends TfaUserControllerBase {
 
   /**
+   * The request stack service.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    // Get the parent instance with inherited dependencies.
+    $instance = parent::create($container);
+    $instance->requestStack = $container->get('request_stack');
+
+    return $instance;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function doResetPassLogin($uid, $timestamp, $hash, $request = NULL) {
     // Ensure a valid request object.
     if (!$request) {
-      $request = \Drupal::request();
+      $request = $this->requestStack->getCurrentRequest();
     }
 
     // Check if the PRLP module is enabled.
@@ -41,8 +60,8 @@ class TideTfaUserController extends TfaUserControllerBase {
     $user = $this->userStorage->load($uid);
     $this->setUser($user);
 
-    // Let Drupal core deal with the one time login,
-    // if Tfa is not enabled or
+    // Let Drupal core deal with the one-time login,
+    // if TFA is not enabled or
     // current user can skip TFA while resetting password.
     if ($this->isTfaDisabled() || $this->canSkipPassReset()) {
       // Use PRLP's resetPassLogin instead of the core function.
@@ -76,7 +95,7 @@ class TideTfaUserController extends TfaUserControllerBase {
       if ($tfa_ready) {
         $this->session->migrate();
         $token = Crypt::randomBytesBase64(55);
-        $request ? $request->getSession()->set('pass_reset_' . $uid, $token) : $_SESSION['pass_reset_' . $uid] = $token;
+        $request->getSession()->set('pass_reset_' . $uid, $token);
 
         $this->logger->notice('User %name used one-time login link at time %timestamp.', [
           '%name' => $user->getDisplayName(),
