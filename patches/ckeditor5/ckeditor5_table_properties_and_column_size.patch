@@ -1,0 +1,36 @@
+diff --git a/core/modules/ckeditor5/ckeditor5.ckeditor5.yml b/core/modules/ckeditor5/ckeditor5.ckeditor5.yml
+index 2a2c3fd165..3c76e71482 100644
+--- a/core/modules/ckeditor5/ckeditor5.ckeditor5.yml
++++ b/core/modules/ckeditor5/ckeditor5.ckeditor5.yml
+@@ -526,8 +526,6 @@ ckeditor5_table_properties:
+     conditions:
+       plugins:
+         - ckeditor5_table
+-        # When arbitrary HTML is already allowed, it's harmless to enable CKEditor 5's UI for table properties.
+-        - ckeditor5_arbitraryHtmlSupport
+     elements:
+       - <table style>
+ 
+@@ -549,8 +547,20 @@ ckeditor5_table_cell_properties:
+     elements:
+       - <td style>
+       - <td rowspan colspan style>
+-      - <th style>
+-      - <th rowspan colspan style>
++
++ckeditor5_tableColumnResize:
++  ckeditor5:
++    plugins:
++      - table.TableColumnResize
++  drupal:
++    label: Table Column Resize
++    conditions:
++      plugins:
++        - ckeditor5_table
++    elements:
++      - <colgroup>
++      - <col>
++      - <col style>
+ 
+ ckeditor5_image:
+   ckeditor5:

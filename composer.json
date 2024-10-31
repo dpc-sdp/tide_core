@@ -366,7 +366,8 @@
                 "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15553421": "https://www.drupal.org/files/issues/2024-04-16/3170906-menu-filter-12.patch",
                 "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
                 "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch",
-                "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://www.drupal.org/files/issues/2024-03-25/3088239-50.patch"
+                "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://www.drupal.org/files/issues/2024-03-25/3088239-50.patch",
+                "Add tableTableColumnResize for formats with arbitrary HTML supported - https://www.drupal.org/project/drupal/issues/3353010#comment-15144906": "./patches/ckeditor5/ckeditor5_table_properties_and_column_size.patch"
             },
             "drupal/video_embed_field": {
                 "Add support for Ckeditor 5 - https://www.drupal.org/project/video_embed_field/issues/3311063": "./patches/video_embed_field/video_embed_field_6.patch"
@@ -464,7 +465,8 @@
     },
     "config": {
         "allow-plugins": {
-            "composer/installers": true
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
         }
     }
 }
