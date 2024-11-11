@@ -36,3 +36,11 @@ tide_core.package_version:
   methods: ['GET']
   requirements:
     _access: 'TRUE'
+
+audit_trail_settings.admin:
+  path: '/admin/reports/audit-trail/audit-trail-settings'
+  defaults:
+    _form: '\Drupal\tide_core\Form\AuditTrailSettingsForm'
+    _title: 'Audit Trail Settings'
+  requirements:
+    _permission: "access admin audit trail"
