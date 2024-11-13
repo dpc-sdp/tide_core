@@ -63,6 +63,16 @@ function tide_core_install() {
 }
 
 /**
+ * Implements hook_update_dependencies().
+ */
+function tide_core_update_dependencies() {
+  $dependencies = [];
+  $dependencies['tide_core'][10007] = ['bay_platform_dependencies' => 10003];
+
+  return $dependencies;
+}
+
+/**
  * Increase character limit of URLs.
  */
 function tide_core_update_10000() {
