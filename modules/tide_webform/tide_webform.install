@@ -52,3 +52,52 @@ function tide_webform_update_10002() {
     }
   }
 }
+
+/**
+ * Update tide webform dependencies.
+ */
+function update_tide_webform_dependencies(array $dependencies, array $remove_modules = [], array $add_modules = []) {
+  if (isset($dependencies['module'])) {
+    $dependencies['module'] = array_values(
+      array_diff($dependencies['module'], $remove_modules)
+    );
+    $dependencies['module'] = array_unique(
+      array_merge($dependencies['module'], $add_modules)
+    );
+    sort($dependencies['module']);
+  }
+  return $dependencies;
+}
+
+/**
+ * Update tide webform captcha settings.
+ */
+function update_tide_webform_captcha_settings(array $config) {
+  if (isset($config['tide_webform_captcha'])) {
+    $settings = $config['tide_webform_captcha'];
+    unset($config['tide_webform_captcha']);
+    $config['tide_webform'] = $settings;
+  }
+  return $config;
+}
+
+/**
+ * Update webform dependencies and third party settings.
+ */
+function tide_webform_update_10003() {
+  $webform_storage = \Drupal::entityTypeManager()->getStorage('webform');
+  $webforms = $webform_storage->loadMultiple();
+  foreach ($webforms as $webform_id => $webform_entity) {
+    $config = \Drupal::configFactory()->getEditable('webform.webform.' . $webform_id);
+    $dependencies = $config->get('dependencies');
+    $third_party_settings = $config->get('third_party_settings');
+    if (!empty($dependencies)) {
+      $result = update_tide_webform_dependencies($dependencies, ['tide_webform_captcha'], ['tide_webform']);
+      $config->set('dependencies', $result)->save();
+    }
+    if (!empty($third_party_settings)) {
+      $result = update_tide_webform_captcha_settings($third_party_settings);
+      $config->set('third_party_settings', $result)->save();
+    }
+  }
+}
