@@ -34,7 +34,8 @@ function tide_landing_page_install() {
  */
 function tide_landing_page_update_dependencies() {
   $dependencies = [];
-  $dependencies['tide_landing_page'][10102] = ['tide_core' => 10005];
+  $dependencies['tide_landing_page'][10101] = ['tide_core' => 10005];
+  $dependencies['tide_landing_page'][10106] = ['tide_core' => 10009];
 
   return $dependencies;
 }
