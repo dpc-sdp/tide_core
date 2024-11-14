@@ -25,7 +25,7 @@ function tide_site_install() {
  */
 function tide_site_update_10001() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
 
   $configs = [
     'field.storage.taxonomy_term.field_additional_comment' => 'field_storage_config',
