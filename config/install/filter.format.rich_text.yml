@@ -82,12 +82,6 @@ filters:
     weight: -45
     settings:
       replace_empty: '0'
-  filter_resize_tablecolumns:
-    id: filter_resize_tablecolumns
-    provider: ckeditor_tablecol_resize
-    status: true
-    weight: 99
-    settings: {  }
 
   linkit:
     id: linkit

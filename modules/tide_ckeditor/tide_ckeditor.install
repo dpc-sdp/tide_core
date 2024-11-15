@@ -40,10 +40,17 @@ function tide_ckeditor_update_10002() {
   if (\Drupal::moduleHandler()->moduleExists('ckeditor_tablecol_resize') === FALSE) {
     \Drupal::service('module_installer')->install(['ckeditor_tablecol_resize']);
   }
-  $update_service = \Drupal::service('tide_core.entity_update_helper');
   // Import table col style filter in rich text format.
-  $config = \Drupal::configFactory()->getEditable('filter.format.rich_text');
-  if ($config) {
-    $update_service->revert('filter.format', 'filter.format.rich_text');
+  $config_factory = \Drupal::configFactory();
+  $filter = $config_factory->getEditable('filter.format.rich_text');
+  if ($filter) {
+    $filter->set('filters.filter_resize_tablecolumns', [
+      'id' => 'filter_resize_tablecolumns',
+      'provider' => 'ckeditor_tablecol_resize',
+      'status' => true,
+      'weight' => 99,
+      'settings' => [],
+    ]);
+    $filter->save();
   }
 }
