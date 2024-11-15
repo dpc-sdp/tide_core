@@ -41,6 +41,9 @@ function tide_ckeditor_update_10002() {
     \Drupal::service('module_installer')->install(['ckeditor_tablecol_resize']);
   }
   $update_service = \Drupal::service('tide_core.entity_update_helper');
-  // Import table col style filter.
-  $update_service->import('filter.format', 'filter.format.rich_text');
+  // Import table col style filter in rich text format.
+  $config = \Drupal::configFactory()->getEditable('filter.format.rich_text');
+  if ($config) {
+    $update_service->revert('filter.format', 'filter.format.rich_text');
+  }
 }
