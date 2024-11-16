@@ -35,3 +35,8 @@ services:
       - '@logger.factory'
       - '@file_system'
       - '@monitoring.sensor_runner'
+  tide_core.batch:
+    class: 'Drupal\tide_core\Batch\BatchService'
+    arguments:
+      - '@entity_type.manager'
+      - '@logger.factory'

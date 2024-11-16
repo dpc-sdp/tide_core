@@ -4,4 +4,13 @@ services:
     arguments: ['@keyvalue']
     tags:
       - { name: drush.command }
+  tide_core.batch_command:
+    class: \Drupal\tide_core\Commands\TideParagraphRevisionsCleanUp
+    tags:
+        - { name: drush.command }
+    arguments:
+        - '@entity_type.manager'
+        - '@logger.factory'
+        - '@tide_core.batch'
+
 
