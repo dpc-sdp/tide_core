@@ -1,8 +1,8 @@
 (function (Drupal) {
-  "use strict";
+  'use strict';
 
   Drupal.behaviors.heroImageTheme = {
-    attach: function (context, settings) {
+    attach: function (context) {
       const imageTheme = context.querySelector(
         'select[data-drupal-selector^="edit-field-landing-page-hero-theme"]'
       );
@@ -16,13 +16,13 @@
 
         if (headerStyles.length > 0) {
           headerStyles.forEach((style) => {
-            style.addEventListener("change", setImageTheme);
+            style.addEventListener('change', setImageTheme);
           });
         }
       }
 
       function setImageTheme() {
-        const selectedHeaderStyle = document.querySelector(
+        const selectedHeaderStyle = context.querySelector(
           'input[data-drupal-selector^="edit-header-style-options"]:checked'
         );
 
@@ -31,10 +31,9 @@
         }
 
         let defaultHeaderStyle = selectedHeaderStyle.value;
-        imageTheme.disabled =
-          defaultHeaderStyle === "corner" ? false : true;
+        imageTheme.disabled = defaultHeaderStyle === 'corner' ? false : true;
         imageTheme.value =
-          defaultHeaderStyle === "fullwidth" ? "dark" : "light";
+          defaultHeaderStyle === 'fullwidth' ? 'dark' : 'light';
       }
     },
   };
