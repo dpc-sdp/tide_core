@@ -22,7 +22,7 @@ class AuditLogCleanupCommand extends DrushCommands {
   protected $configFactory;
 
   /**
-   * Constructs a LogCleanupCommands object.
+   * Constructs a AuditLogCleanupCommand object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The configuration service.
@@ -46,10 +46,23 @@ class AuditLogCleanupCommand extends DrushCommands {
    * @command tide_core:auditlog-cleanup
    * @aliases tcl
    * @description Cleans up audittrail logs older than the configured retention period.
+   *
+   * @option yes Skip confirmation and run the cleanup immediately.
    */
-  public function cleanupLogs() {
+  public function cleanupLogs($options = ['yes' => FALSE]) {
+    // Check if the user passed the --yes option
+    if (!$options['yes']) {
+      // If the -y/--yes flag isn't passed, ask for confirmation.
+      $confirmation = $this->confirmCleanup();
+      if (!$confirmation) {
+        $this->output()->writeln('<comment>Cleanup operation cancelled.</comment>');
+        return;
+      }
+    }
+
     $config = $this->configFactory->get('tide_core.settings');
-    $log_retention_days = $config->get('log_retention_days') ?: 30;
+    define('DEFAULT_LOG_RETENTION_DAYS', 30);
+    $log_retention_days = $config->get('log_retention_days') ?: DEFAULT_LOG_RETENTION_DAYS;
 
     // Get current date and time
     $current_time = new DateTime();
@@ -66,6 +79,20 @@ class AuditLogCleanupCommand extends DrushCommands {
     
     // Run a database optimization command to recover space
     $this->optimizeDatabase();
+  }
+
+  /**
+   * Ask for confirmation before proceeding with the cleanup.
+   *
+   * @return bool
+   *   TRUE if the user confirms, FALSE if the user cancels.
+   */
+  private function confirmCleanup() {
+    $question = 'Are you sure you want to delete log entries older than the configured retention period? (y/n): ';
+    $confirmation = $this->io()->ask($question, 'n');
+    $confirmation = strtolower($confirmation);
+    // Return TRUE if the user answers 'y' or 'yes'
+    return in_array($confirmation, ['y', 'yes']);
   }
 
   /**
