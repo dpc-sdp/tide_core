@@ -102,38 +102,41 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
 
       // Apply data attributes and styles if there are tables in both DOMs.
       if ($valueTables->length > 0 && $processedTables->length > 0) {
-        // Process the first <table> in both DOMs.
-        $valueTable = $valueTables->item(0);
-        $processedTable = $processedTables->item(0);
-        // Transfer the inline style from valueTable to processedTable.
-        if ($valueTable->hasAttribute('style')) {
-          $styleValue = $valueTable->getAttribute('style');
-          $processedTable->setAttribute('style', $styleValue);
-        }
+        // Loop through all <table> elements in both DOMs.
+        $tableCount = min($valueTables->length, $processedTables->length);
+        for ($i = 0; $i < $tableCount; $i++) {
+          $valueTable = $valueTables->item($i);
+          $processedTable = $processedTables->item($i);
+          // Transfer the inline style from valueTable to processedTable.
+          if ($valueTable->hasAttribute('style')) {
+            $styleValue = $valueTable->getAttribute('style');
+            $processedTable->setAttribute('style', $styleValue);
+          }
 
-        // Process <col> elements in both DOMs.
-        $valueCols = $valueTable->getElementsByTagName('col');
-        $processedCols = $processedTable->getElementsByTagName('col');
+          // Process <col> elements in both DOMs.
+          $valueCols = $valueTable->getElementsByTagName('col');
+          $processedCols = $processedTable->getElementsByTagName('col');
 
-        for ($i = 0; $i < min($valueCols->length, $processedCols->length); $i++) {
-          $valueCol = $valueCols->item($i);
-          $processedCol = $processedCols->item($i);
+          for ($j = 0; $j < min($valueCols->length, $processedCols->length); $j++) {
+            $valueCol = $valueCols->item($j);
+            $processedCol = $processedCols->item($j);
 
-          if ($valueCol->hasAttribute('style')) {
+            if ($valueCol->hasAttribute('style')) {
             // Parse the style attribute.
-            $styleValue = $valueCol->getAttribute('style');
-            $styles = explode(';', $styleValue);
+              $styleValue = $valueCol->getAttribute('style');
+              $styles = explode(';', $styleValue);
 
-            foreach ($styles as $style) {
-              $style = trim($style);
-              if (!empty($style)) {
-                list($property, $value) = explode(':', $style, 2);
-                $property = trim($property);
-                $value = trim($value);
+              foreach ($styles as $style) {
+                $style = trim($style);
+                if (!empty($style)) {
+                  list($property, $value) = explode(':', $style, 2);
+                  $property = trim($property);
+                  $value = trim($value);
 
-                // Sanitize the property name for a valid data attribute.
-                $dataAttribute = 'data-' . str_replace([' ', '_'], '-', strtolower($property));
-                $processedCol->setAttribute($dataAttribute, $value);
+                  // Sanitize the property name for a valid data attribute.
+                  $dataAttribute = 'data-' . str_replace([' ', '_'], '-', strtolower($property));
+                  $processedCol->setAttribute($dataAttribute, $value);
+                }
               }
             }
           }
@@ -152,4 +155,3 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
     return $data;
   }
 }
-
