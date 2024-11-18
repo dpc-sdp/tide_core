@@ -51,7 +51,6 @@ export default class TableColResizeEditing extends Plugin {
       dispatcher.on( `element:col`, ( evt, data, conversionApi ) => {
         const { schema, writer } = conversionApi;
         const colWidth = data.viewItem.getAttribute( dataAttribute );
-        console.log('col upcast', colWidth);
 
         // Do not go for the model element after data.modelCursor because it might happen
         // that a single view element was converted to multiple model elements. Get all of them.
