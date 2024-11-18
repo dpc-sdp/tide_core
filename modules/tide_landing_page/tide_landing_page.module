@@ -44,7 +44,7 @@ function tide_landing_page_entity_bundle_create($entity_type_id, $bundle) {
         $editorial_workflow = Workflow::load('editorial');
         if ($editorial_workflow) {
           $editorial_workflow->getTypePlugin()
-            ->addEntityTypeAndBundle('node', 'landing_page');
+                             ->addEntityTypeAndBundle('node', 'landing_page');
           $editorial_workflow->save();
         }
       }
@@ -373,6 +373,23 @@ function tide_landing_page_field_widget_single_element_paragraphs_form_alter(&$e
   }
 }
 
+function change_the_value($form, FormStateInterface $form_state): \Drupal\Core\Ajax\AjaxResponse {
+  $response = new \Drupal\Core\Ajax\AjaxResponse();
+  $value = $form_state->getValue('_header_style_options');
+  if ($value === 'fullwidth'){
+    return $response->addCommand(new \Drupal\Core\Ajax\InvokeCommand(
+      '#edit-field-landing-page-hero-theme',
+      'val',
+      ['dark']
+    ));
+  }
+  return $response->addCommand(new \Drupal\Core\Ajax\InvokeCommand(
+    '#edit-field-landing-page-hero-theme',
+    'val',
+    ['light']
+  ));
+}
+
 /**
  * Node form #process callback.
  *
@@ -406,6 +423,16 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
       'fullwidth' => t('Full-width  background image'),
       'corner' => t('Corner graphics'),
       'cta' => t('Call to action banner'),
+    ],
+    '#ajax' => [
+      'callback' => 'change_the_value',
+    ],
+  ];
+  $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme']['#states']['disabled'] = [
+    ':input[name="_header_style_options"]' => [
+      ['value' => 'default'],
+      ['value' => 'fullwidth'],
+      ['value' => 'cta'],
     ],
   ];
 
