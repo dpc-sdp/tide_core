@@ -16,6 +16,7 @@ use Drupal\jsonapi\Controller\EntityResource;
 use Drupal\jsonapi\JsonApiResource\Link;
 use Drupal\jsonapi\JsonApiResource\LinkCollection;
 use Drupal\jsonapi\Routing\Routes;
+use Drupal\taxonomy\TermInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -181,9 +182,58 @@ class PublicationResource extends EntityResource {
    *   The hierarchy.
    */
   protected function buildHierarchy(ContentEntityInterface $entity, NestedSetStorage $storage, CacheableMetadata $cache, $weight, array &$flatten_hierarchy, $site = NULL) {
-    $resource_type = $this->resourceTypeRepository->get($entity->getEntityTypeId(), $entity->bundle());
+    // Try cache first.
+    $cid = "tide_publication:hierarchy:{$entity->uuid()}:{$weight}:" . ($site ? $site->id() : 'null');
+    if ($cached = $this->cacheData->get($cid)) {
+      $cache->addCacheTags($cached->tags);
+      $flatten_hierarchy = array_merge($flatten_hierarchy, $cached->data['flatten']);
+      return $cached->data['hierarchy'];
+    }
 
-    $hierarchy = [
+    // Build basic node data.
+    $hierarchy = $this->buildNodeData($entity, $weight);
+    $flatten_hierarchy[] = $this->buildFlattenData($entity, $weight);
+
+    // Handle site-specific URL.
+    if ($site) {
+      $this->adjustSiteUrl($hierarchy, $entity, $site);
+    }
+
+    // Process children.
+    $children = $this->loadChildren($storage, $entity, $cache);
+    if (!empty($children)) {
+      $hierarchy['children'] = [];
+      foreach ($children as $child_weight => $child_entity) {
+        $child_hierarchy = $this->buildHierarchy(
+          $child_entity,
+          $storage,
+          $cache,
+          $child_weight,
+          $flatten_hierarchy,
+          $site
+        );
+        if ($child_hierarchy) {
+          $hierarchy['children'][] = $child_hierarchy;
+        }
+      }
+    }
+
+    // Cache the results.
+    $cache_data = [
+      'hierarchy' => $hierarchy,
+      'flatten' => $flatten_hierarchy,
+    ];
+    $this->cacheData->set($cid, $cache_data, $cache->getCacheMaxAge(), $cache->getCacheTags());
+
+    return $hierarchy;
+  }
+
+  /**
+   * Build the node data.
+   */
+  protected function buildNodeData(ContentEntityInterface $entity, $weight) {
+    $resource_type = $this->resourceTypeRepository->get($entity->getEntityTypeId(), $entity->bundle());
+    return [
       'id' => $entity->uuid(),
       'type' => $resource_type->getTypeName(),
       'entity_id' => $entity->id(),
@@ -191,43 +241,51 @@ class PublicationResource extends EntityResource {
       'url' => $entity->toUrl('canonical')->toString(),
       'weight' => $weight,
     ];
+  }
 
-    $flatten_hierarchy[] = [
+  /**
+   * Build the flatten data.
+   */
+  protected function buildFlattenData(ContentEntityInterface $entity, $weight) {
+    return [
       'entity_id' => $entity->id(),
       'revision_id' => $entity->getRevisionId(),
       'bundle' => $entity->bundle(),
       'uuid' => $entity->uuid(),
       'weight' => $weight,
     ];
+  }
 
-    if ($site) {
-      /** @var \Drupal\tide_site\TideSiteHelper $site_helper */
-      $site_helper = $this->container->get('tide_site.helper');
-      if (!$site_helper->isEntityBelongToSite($entity, $site->id())) {
-        $hierarchy['url'] = $site_helper->getNodeUrlFromPrimarySite($entity);
-      }
+  /**
+   * Adjust the URL to the site-specific URL.
+   */
+  protected function adjustSiteUrl(array &$hierarchy, ContentEntityInterface $entity, TermInterface $site) {
+    /** @var \Drupal\tide_site\TideSiteHelper $site_helper */
+    $site_helper = $this->container->get('tide_site.helper');
+    if (!$site_helper->isEntityBelongToSite($entity, $site->id())) {
+      $hierarchy['url'] = $site_helper->getNodeUrlFromPrimarySite($entity);
     }
+  }
 
-    /** @var \PNX\NestedSet\NestedSetInterface $storage */
-    /** @var \PNX\NestedSet\Node[] $children */
+  /**
+   * Load children of a node.
+   */
+  protected function loadChildren(NestedSetStorage $storage, ContentEntityInterface $entity, CacheableMetadata $cache) {
     $children = $storage->findChildren($this->nestedSetNodeKeyFactory->fromEntity($entity));
     $child_entities = $this->entityTreeNodeMapper->loadAndAccessCheckEntitysForTreeNodes('node', $children, $cache);
+
+    $valid_children = [];
     foreach ($children as $child_weight => $nested_node) {
       if (!$child_entities->contains($nested_node)) {
-        // Doesn't exist or is access hidden.
         continue;
       }
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $child_entity */
       $child_entity = $child_entities->offsetGet($nested_node);
-      if (!$child_entity->isDefaultRevision()) {
-        continue;
+      if ($child_entity->isDefaultRevision()) {
+        $valid_children[$child_weight] = $child_entity;
       }
-
-      $cache->addCacheableDependency($child_entity);
-      $hierarchy['children'][] = $this->buildHierarchy($child_entity, $storage, $cache, $child_weight, $flatten_hierarchy, $site);
     }
 
-    return $hierarchy;
+    return $valid_children;
   }
 
 }
