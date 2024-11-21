@@ -47,23 +47,22 @@ class AuditLogCleanupCommand extends DrushCommands {
    * @aliases tcl
    * @description Cleans up audittrail logs older than the configured retention period.
    *
-   * @option yes Skip confirmation and run the cleanup immediately.
+   * @option force-cleanup Skip confirmation and run the cleanup immediately.
    */
-  public function cleanupLogs($options = ['yes' => FALSE]) {
-    // Check if the user passed the --yes option
-    if (!$options['yes']) {
-      // If the -y/--yes flag isn't passed, ask for confirmation.
+  public function cleanupLogs($options = ['force-cleanup' => FALSE]) {
+    // Check if the user passed the --force-cleanup option
+    if (!$options['force-cleanup']) {
+      // If the force-cleanup flag isn't passed, ask for confirmation.
       $confirmation = $this->confirmCleanup();
       if (!$confirmation) {
         $this->output()->writeln('<comment>Cleanup operation cancelled.</comment>');
         return;
       }
     }
-
+    
     $config = $this->configFactory->get('tide_core.settings');
     define('DEFAULT_LOG_RETENTION_DAYS', 30);
     $log_retention_days = $config->get('log_retention_days') ?: DEFAULT_LOG_RETENTION_DAYS;
-
     // Get current date and time
     $current_time = new DateTime();
     $current_time->sub(new DateInterval("P{$log_retention_days}D"));
@@ -106,4 +105,3 @@ class AuditLogCleanupCommand extends DrushCommands {
     $this->output()->writeln("Database optimized to recover space.");
   }
 }
-
