@@ -380,10 +380,10 @@ function tide_landing_page_field_widget_single_element_paragraphs_form_alter(&$e
  *
  * @param array $form
  *   The form.
- * @param FormStateInterface $form_state
+ * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
  *
- * @return AjaxResponse
+ * @return Drupal\Core\Ajax\AjaxResponse
  *   The response.
  */
 function tide_landing_page_change_the_value(array $form, FormStateInterface $form_state): AjaxResponse {
