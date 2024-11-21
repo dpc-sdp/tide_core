@@ -107,11 +107,6 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
         for ($i = 0; $i < $tableCount; $i++) {
           $valueTable = $valueTables->item($i);
           $processedTable = $processedTables->item($i);
-          // Transfer the inline style from valueTable to processedTable.
-          if ($valueTable->hasAttribute('style')) {
-            $styleValue = $valueTable->getAttribute('style');
-            $processedTable->setAttribute('style', $styleValue);
-          }
 
           // Process <col> elements in both DOMs.
           $valueCols = $valueTable->getElementsByTagName('col');
