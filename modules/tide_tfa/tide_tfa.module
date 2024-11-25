@@ -11,6 +11,12 @@ use Drupal\Core\Form\FormStateInterface;
  * Implements hook_form_alter().
  */
 function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // [SD-375] Bypass tfa during reset pass for all users.
+  if ($form_id == 'tfa_settings_form') {
+    if (isset($form['reset_pass_skip_enabled'])) {
+      $form['reset_pass_skip_enabled']['#description'] = t('Allow TFA to be bypassed during password reset by the authenticated user.');
+    }
+  }
   if ($form_id == 'tfa_entry_form') {
     // [SD-294] Change the label of the 'Send' button.
     if (isset($form['actions']['send'])) {
