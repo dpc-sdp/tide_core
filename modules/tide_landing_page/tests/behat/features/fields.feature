@@ -304,3 +304,12 @@ Feature: Fields for Landing Page content type
     # This field can be "seen" but not visible.
     And I see field "field_landing_page_component[0][subform][field_customise][value]"
     And save screenshot
+
+ @api @javascript
+  Scenario: Selecting a value from the field Hero image theme.
+    Given I am logged in as a user with the "create landing_page content" permission
+    When I visit "node/add/landing_page"
+    And I click "Customised Header"
+    Then I select "Corner graphics" from "edit-header-style-options-corner"
+    Then I select "Hero image theme" from "edit-field-landing-page-hero-theme"
+    And save screenshot

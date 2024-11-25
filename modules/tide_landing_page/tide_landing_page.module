@@ -376,7 +376,7 @@ function tide_landing_page_field_widget_single_element_paragraphs_form_alter(&$e
 }
 
 /**
- * Function to change value.
+ * Function to set value to Hero image theme.
  *
  * @param array $form
  *   The form.
@@ -386,7 +386,7 @@ function tide_landing_page_field_widget_single_element_paragraphs_form_alter(&$e
  * @return Drupal\Core\Ajax\AjaxResponse
  *   The response.
  */
-function tide_landing_page_change_the_value(array $form, FormStateInterface $form_state): AjaxResponse {
+function tide_landing_page_set_value_hero_image_theme(array $form, FormStateInterface $form_state): AjaxResponse {
   $response = new AjaxResponse();
   $value = $form_state->getValue('_header_style_options');
   if ($value === 'fullwidth') {
