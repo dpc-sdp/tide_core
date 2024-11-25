@@ -1,0 +1,7 @@
+name: Ckeditor Table Column Resize
+type: module
+description: Provides a ckeditor5 plugin that allows resizing of table columns
+package: Custom
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - drupal:tide_ckeditor
