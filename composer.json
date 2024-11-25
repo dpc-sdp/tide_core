@@ -37,7 +37,7 @@
         "drupal/maxlength": "^2.1",
         "drupal/entity_hierarchy": "4.x",
         "drupal/elasticsearch_connector": "^7.0",
-        "drupal/search_api": "^1.11",
+        "drupal/search_api": "^1.36",
         "drupal/data_pipelines": "1.0.0-alpha22",
         "drupal/data_pipelines_elasticsearch": "^1.0@alpha",
         "drupal/key": "^1.17",
