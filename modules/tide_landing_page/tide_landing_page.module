@@ -82,10 +82,8 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
     if (isset($form['title']['widget'][0]['value']['#description'])) {
       $form['title']['widget'][0]['value']['#description'] = t('Include a short unique title for your page and keywords.');
     }
-    if (isset($form["field_landing_page_key_journeys"]["widget"][0]["subform"]["field_paragraph_title"]["widget"][0]["value"]["#default_value"])) {
-      $placeholder_value = $form["field_landing_page_key_journeys"]["widget"][0]["subform"]["field_paragraph_title"]["widget"][0]["value"]["#default_value"];
-      $form["field_landing_page_key_journeys"]["widget"][0]["subform"]["field_paragraph_title"]["widget"][0]["value"]["#placeholder"] = $placeholder_value;
-      unset($form["field_landing_page_key_journeys"]["widget"][0]["subform"]["field_paragraph_title"]["widget"][0]["value"]["#default_value"]);
+    if (isset($form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_title']['widget'][0])) {
+      $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_title']['widget'][0]['value']['#placeholder'] = t("Want to know more about...");
     }
     // Change form layout.
     $form['#attached']['library'][] = 'tide_landing_page/landing_page_form';
