@@ -32,3 +32,34 @@ function tide_ckeditor_update_10001() {
     }
   }
 }
+
+/**
+ * Update `rich text format` to use new filter for allowing table col styles.
+ */
+function tide_ckeditor_update_10002() {
+  if (\Drupal::moduleHandler()->moduleExists('ckeditor_tablecol_resize') === FALSE) {
+    \Drupal::service('module_installer')->install(['ckeditor_tablecol_resize']);
+  }
+  // Import table col style filter in rich text format.
+  $config_factory = \Drupal::configFactory();
+  $filter = $config_factory->getEditable('filter.format.rich_text');
+  $allowed_html = $filter->get('filters.filter_html.settings.allowed_html');
+  if ($filter) {
+    // Add <colgroup>, <col>, and <col style> to allowed HTML.
+    $additional_allowed_tags = '<colgroup> <col> <col style>';
+    // Append the new tags to the allowed HTML, making sure not to add duplicates
+    $replaced = $allowed_html . ' ' . $additional_allowed_tags;
+    $replaced = trim($replaced, ',');
+    // Set the updated allowed HTML tags in the filter
+    $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+
+    $filter->set('filters.filter_resize_tablecolumns', [
+      'id' => 'filter_resize_tablecolumns',
+      'provider' => 'ckeditor_tablecol_resize',
+      'status' => true,
+      'weight' => 99,
+      'settings' => [],
+    ]);
+    $filter->save();
+  }
+}
