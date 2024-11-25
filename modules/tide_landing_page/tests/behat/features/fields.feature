@@ -306,10 +306,45 @@ Feature: Fields for Landing Page content type
     And save screenshot
 
  @api @javascript
-  Scenario: Selecting a value from the field Hero image theme.
-    Given I am logged in as a user with the "create landing_page content" permission
+  Scenario: Selecting Corner graphics value from header style.
+    Given I am logged in as a user with the "editor" role
     When I visit "node/add/landing_page"
-    And I click "Customised Header"
-    Then I select "Corner graphics" from "edit-header-style-options-corner"
-    Then I select "Hero image theme" from "edit-field-landing-page-hero-theme"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-corner" element
+    And I select "corner" from "edit-header-style-options-corner"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Light"
+    And save screenshot
+
+ @api @javascript
+  Scenario: Selecting Default appearance value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-default" element
+    And I select "corner" from "edit-header-style-options-default"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Light"
+    And save screenshot
+
+@api @javascript
+  Scenario: Selecting Full-width background image value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-fullwidtht" element
+    And I select "corner" from "edit-header-style-options-fullwidth"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Dark"
+    And save screenshot
+
+@api @javascript
+  Scenario: Selecting Call to action banner value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-cta" element
+    And I select "corner" from "edit-header-style-options-cta"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Light"
     And save screenshot
