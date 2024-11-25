@@ -436,7 +436,7 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
       'cta' => t('Call to action banner'),
     ],
     '#ajax' => [
-      'callback' => 'tide_landing_page_change_the_value',
+      'callback' => 'tide_landing_page_set_value_hero_image_theme',
     ],
   ];
   $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme']['#states']['disabled'] = [
