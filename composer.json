@@ -37,7 +37,7 @@
         "drupal/maxlength": "^2.1",
         "drupal/entity_hierarchy": "4.x",
         "drupal/elasticsearch_connector": "^7.0",
-        "drupal/search_api": "^1.11",
+        "drupal/search_api": "^1.36",
         "drupal/data_pipelines": "1.0.0-alpha22",
         "drupal/data_pipelines_elasticsearch": "^1.0@alpha",
         "drupal/key": "^1.17",
@@ -406,7 +406,7 @@
                 "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2020-11-11/tablefield-allowed_data_sources-2337743-16.patch"
             },
             "drupal/search_api": {
-                "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2020-02-08/search_api-index-specific-items-3016809-09.patch"
+                "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
                 "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-15030602": "https://git.drupalcode.org/project/key/-/merge_requests/11/diffs.patch",
