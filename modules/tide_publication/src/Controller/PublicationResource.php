@@ -185,9 +185,7 @@ class PublicationResource extends EntityResource {
     // Try cache first.
     $cid = "tide_publication:hierarchy:{$entity->uuid()}:{$weight}:" . ($site ? $site->id() : 'null');
     if ($cached = $this->cacheData->get($cid)) {
-      $cache->addCacheTags($cached->tags);
-      $flatten_hierarchy = array_merge($flatten_hierarchy, $cached->data['flatten']);
-      return $cached->data['hierarchy'];
+      return $cached->data;
     }
 
     // Build basic node data.
@@ -218,12 +216,7 @@ class PublicationResource extends EntityResource {
       }
     }
 
-    // Cache the results.
-    $cache_data = [
-      'hierarchy' => $hierarchy,
-      'flatten' => $flatten_hierarchy,
-    ];
-    $this->cacheData->set($cid, $cache_data, $cache->getCacheMaxAge(), $cache->getCacheTags());
+    $this->cacheData->set($cid, $hierarchy, $cache->getCacheMaxAge(), $cache->getCacheTags());
 
     return $hierarchy;
   }
