@@ -22,6 +22,11 @@ use Psr\Container\ContainerInterface;
  */
 class FilterResizeTableColumns extends FilterBase implements ContainerFactoryPluginInterface {
 
+  /**
+   * The CKEditor5 plugin manager.
+   *
+   * @var \Drupal\ckeditor5\Plugin\CKEditor5PluginManagerInterface
+   */
   protected CKEditor5PluginManagerInterface $ckeditor5PluginManager;
 
   /**

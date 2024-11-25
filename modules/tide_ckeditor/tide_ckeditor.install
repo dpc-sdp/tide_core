@@ -48,7 +48,7 @@ function tide_ckeditor_update_10002() {
     // Add <colgroup>, <col>, and <col style> to allowed HTML.
     $additional_allowed_tags = '<colgroup> <col> <col style>';
     // Append the new tags to the allowed HTML,
-    // making sure not to add duplicates
+    // making sure not to add duplicates.
     $replaced = $allowed_html . ' ' . $additional_allowed_tags;
     $replaced = trim($replaced, ',');
     // Set the updated allowed HTML tags in the filter.
