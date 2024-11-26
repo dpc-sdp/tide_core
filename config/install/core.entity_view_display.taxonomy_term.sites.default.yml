@@ -6,6 +6,7 @@ dependencies:
     - field.field.taxonomy_term.sites.field_additional_comment
     - field.field.taxonomy_term.sites.field_print_friendly_logo
     - field.field.taxonomy_term.sites.field_prominence_ack_to_country
+    - field.field.taxonomy_term.sites.field_show_exit_site_specific
     - field.field.taxonomy_term.sites.field_show_table_of_contents
     - field.field.taxonomy_term.sites.field_site_domains
     - field.field.taxonomy_term.sites.field_site_footer_logos
@@ -52,6 +53,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 12
+    region: content
+  field_show_exit_site_specific:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 11
     region: content
   field_show_table_of_contents:
     type: boolean
