@@ -69,7 +69,7 @@
         "drupal/viewsreference": "^2.0@beta",
         "drupal/workbench": "^1.4",
         "drupal/dynamic_entity_reference": "^3.0",
-        "drupal/scheduled_transitions": "^2.3",
+        "drupal/scheduled_transitions": "2.5",
         "drupal/link_field_autocomplete_filter": "^2.0",
         "drupal/queue_mail": "^1.5",
         "drupal/token": "^1.15",
