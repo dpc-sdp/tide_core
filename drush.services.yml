@@ -1,0 +1,6 @@
+services:
+  drush.command.tide_core:
+    class: Drupal\tide_core\Command\AuditLogCleanupCommand
+    arguments: ['@config.factory']
+    tags:
+      - { name: drush.command }
