@@ -79,9 +79,8 @@ function tide_site_update_10002() {
   $taxonomy_configs = [
     'entity_form_display' => 'taxonomy_term.sites.default',
     'entity_view_display' => 'taxonomy_term.sites.default',
-    'field_config' => 'taxonomy_term.sites.field_site_show_exit_site'
+    'field_config' => 'taxonomy_term.sites.field_site_show_exit_site',
   ];
-  //$update_service->configMergeDeep('tide_site', TideEntityUpdateHelper::INSTALL_DIR, $taxonomy_configs);
   foreach ($taxonomy_configs as $configs_name => $types) {
     // Check default configuration.
     $config = \Drupal::configFactory()->getEditable($configs_name);

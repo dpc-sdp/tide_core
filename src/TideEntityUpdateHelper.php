@@ -284,12 +284,12 @@ class TideEntityUpdateHelper extends ConfigReverter {
   }
 
   /**
+   * Perform config import from optional folder.
+   *
    * @param string $type
-   * The type of config to import
+   *   The type of config to import.
    * @param string $name
-   * The name of config to import
-   * 
-   * Perform config import from optional folder
+   *   The name of config to import.
    */
   public function updateFromOptional($type, $name) {
     // Read the config from the file. Note: Do not call getFromExtension() here
