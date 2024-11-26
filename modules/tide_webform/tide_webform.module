@@ -43,7 +43,7 @@ function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_i
   if ($form_id == 'webform_ui_element_form') {
     $form['#after_build'][] = 'tide_webform_webform_ui_element_form_after_build';
     $form['#attached']['library'][] = 'tide_webform/webform';
-    if (isset($form['properties']['form']['length_container']['maxlength']) && array_key_exists('#default_value', $form['properties']['form']['length_container']['maxlength'])) {
+    if (isset($form['properties']['form']['length_container']['maxlength']) && array_key_exists('#default_value', $form['properties']['form']['length_container']['maxlength']) && $form['properties']['type']['#value'] === 'textfield') {
       $default_value = NestedArray::getValue($form,
         [
           'properties',
@@ -445,7 +445,7 @@ function tide_webform_webform_update(EntityInterface $entity) {
  */
 function tide_webform_webform_third_party_settings_form_alter(array &$form, FormStateInterface $form_state) {
   $webform = $form_state->getFormObject()->getEntity();
-  $third_party_settings = $webform->getThirdPartySettings('tide_webform_captcha');
+  $third_party_settings = $webform->getThirdPartySettings('tide_webform');
   $user_input = $form_state->getUserInput();
   $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
   $captcha_type = NULL;
@@ -469,8 +469,8 @@ function tide_webform_webform_third_party_settings_form_alter(array &$form, Form
   if (isset($third_party_settings['captcha_type'])) {
     $captcha_type = $third_party_settings['captcha_type'];
   }
-  if (isset($user_input['third_party_settings']['tide_webform_captcha']['captcha_type'])) {
-    $captcha_type = $user_input['third_party_settings']['tide_webform_captcha']['captcha_type'];
+  if (isset($user_input['third_party_settings']['tide_webform']['captcha_type'])) {
+    $captcha_type = $user_input['third_party_settings']['tide_webform']['captcha_type'];
   }
   $query = $taxonomy_storage->getQuery()
     ->accessCheck(TRUE)
@@ -482,19 +482,19 @@ function tide_webform_webform_third_party_settings_form_alter(array &$form, Form
     return $term->label() . ' (' . $term->id() . ')';
   }, $terms);
 
-  $form['third_party_settings']['tide_webform_captcha'] = [
+  $form['third_party_settings']['tide_webform'] = [
     '#type' => 'fieldset',
     '#title' => t('Tide webform CAPTCHA'),
     '#open' => TRUE,
   ];
 
-  $form['third_party_settings']['tide_webform_captcha']['enable_captcha'] = [
+  $form['third_party_settings']['tide_webform']['enable_captcha'] = [
     '#type' => 'checkbox',
     '#default_value' => !empty($third_party_settings['enable_captcha']) ? $third_party_settings['enable_captcha'] : NULL,
     '#title' => t('Enable captcha'),
   ];
 
-  $form['third_party_settings']['tide_webform_captcha']['captcha_type'] = [
+  $form['third_party_settings']['tide_webform']['captcha_type'] = [
     '#type' => 'select',
     '#title' => t('Captcha type'),
     '#options' => [
@@ -502,7 +502,7 @@ function tide_webform_webform_third_party_settings_form_alter(array &$form, Form
     ] + $allowed_values,
     '#default_value' => !empty($third_party_settings['captcha_type']) ? $third_party_settings['captcha_type'] : NULL,
     '#ajax' => [
-      'callback' => '_tide_webform_captcha_type_dropdown_callback',
+      'callback' => '_tide_webform_type_dropdown_callback',
       'wrapper' => 'captcha-type-dropdown-container',
     ],
   ];
@@ -514,7 +514,7 @@ function tide_webform_webform_third_party_settings_form_alter(array &$form, Form
     $score_threshold = (string) $third_party_settings['score_threshold'];
   }
 
-  $form['third_party_settings']['tide_webform_captcha']['score_threshold'] = [
+  $form['third_party_settings']['tide_webform']['score_threshold'] = [
     '#type' => 'textfield',
     '#title' => t('Score threshold (reCAPTCHA v3)'),
     '#size' => 2,
@@ -523,19 +523,19 @@ function tide_webform_webform_third_party_settings_form_alter(array &$form, Form
     '#element_validate' => ['_tide_webform_threshold_validate'],
     '#states' => [
       'visible' => [
-        ':input[name="third_party_settings[tide_webform_captcha][captcha_type]"]' => ['value' => 'google_recaptcha_v3'],
+        ':input[name="third_party_settings[tide_webform][captcha_type]"]' => ['value' => 'google_recaptcha_v3'],
       ],
     ],
     '#default_value' => $score_threshold,
     '#description' => 'Enter a value between 0.0 and 1.0. Use only one decimal place (e.g., 0.0, 0.5, 1.0).',
   ];
 
-  $form['third_party_settings']['tide_webform_captcha']['captcha_type_dropdown_container'] = [
+  $form['third_party_settings']['tide_webform']['captcha_type_dropdown_container'] = [
     '#type' => 'fieldset',
     '#attributes' => ['id' => 'captcha-type-dropdown-container'],
   ];
 
-  $form['third_party_settings']['tide_webform_captcha']['captcha_type_dropdown_container']['captcha_details'] = [
+  $form['third_party_settings']['tide_webform']['captcha_type_dropdown_container']['captcha_details'] = [
     '#type' => \Drupal::moduleHandler()->moduleExists('select2') ? 'select2' : 'select',
     '#title' => ('Site key'),
     '#target_type' => 'taxonomy_term',
@@ -553,14 +553,14 @@ function tide_webform_webform_third_party_settings_form_alter(array &$form, Form
     ],
   ];
 
-  $form['#validate'][] = '_tide_webform_captcha_form_validate';
+  $form['#validate'][] = '_tide_webform_form_validate';
 }
 
 /**
  * Captcha form validate.
  */
-function _tide_webform_captcha_form_validate(&$form, FormStateInterface $form_state) {
-  $settings = &$form_state->getValue(['third_party_settings', 'tide_webform_captcha']);
+function _tide_webform_form_validate(&$form, FormStateInterface $form_state) {
+  $settings = &$form_state->getValue(['third_party_settings', 'tide_webform']);
   $captcha_details = $settings['captcha_type_dropdown_container']['captcha_details'] ?? NULL;
 
   if (is_array($captcha_details) && isset($captcha_details[0]['target_id'])) {
@@ -591,19 +591,19 @@ function _tide_webform_captcha_form_validate(&$form, FormStateInterface $form_st
 /**
  * Captcha options callback.
  */
-function _tide_webform_captcha_type_dropdown_callback($form, FormStateInterface $form_state) {
-  return $form['third_party_settings']['tide_webform_captcha']['captcha_type_dropdown_container'];
+function _tide_webform_type_dropdown_callback($form, FormStateInterface $form_state) {
+  return $form['third_party_settings']['tide_webform']['captcha_type_dropdown_container'];
 }
 
 /**
  * Threshold element validation.
  */
 function _tide_webform_threshold_validate($element, FormStateInterface $form_state) {
-  $number = $form_state->getUserInput()['third_party_settings']['tide_webform_captcha']['score_threshold'];
+  $number = $form_state->getUserInput()['third_party_settings']['tide_webform']['score_threshold'];
   if ($number === 0 || $number === '' || $number === NULL) {
     $form_state->setValue([
       'third_party_settings',
-      'tide_webform_captcha',
+      'tide_webform',
       'score_threshold',
     ], NULL);
     return;
@@ -611,7 +611,7 @@ function _tide_webform_threshold_validate($element, FormStateInterface $form_sta
   if (preg_match('/^(0(\.[0-9])?|1(\.0)?)$/', (string) $number)) {
     $form_state->setValue([
       'third_party_settings',
-      'tide_webform_captcha',
+      'tide_webform',
       'score_threshold',
     ], (float) $number);
   }

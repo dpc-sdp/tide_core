@@ -10,6 +10,7 @@ dependencies:
     - paragraphs.paragraphs_type.card_carousel
     - paragraphs.paragraphs_type.card_keydates
     - paragraphs.paragraphs_type.complex_image
+    - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.latest_events
     - paragraphs.paragraphs_type.media_gallery
     - paragraphs.paragraphs_type.navigation_card
@@ -35,6 +36,7 @@ settings:
     negate: 0
     target_bundles:
       basic_text: basic_text
+      from_library: from_library
       accordion: accordion
       promotion_card: promotion_card
       navigation_card: navigation_card
@@ -106,4 +108,7 @@ settings:
       timelines:
         enabled: true
         weight: -23
+      from_library:
+        weight: 71
+        enabled: true
 field_type: entity_reference_revisions

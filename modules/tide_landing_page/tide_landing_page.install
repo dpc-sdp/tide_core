@@ -8,6 +8,7 @@
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_landing_page\TideLandingPageOperation;
 
 /**
@@ -33,7 +34,8 @@ function tide_landing_page_install() {
  */
 function tide_landing_page_update_dependencies() {
   $dependencies = [];
-  $dependencies['tide_landing_page'][10102] = ['tide_core' => 10005];
+  $dependencies['tide_landing_page'][10101] = ['tide_core' => 10005];
+  $dependencies['tide_landing_page'][10106] = ['tide_core' => 10009];
 
   return $dependencies;
 }
@@ -174,4 +176,30 @@ function tide_landing_page_update_10105() {
     'allowed_values' => $new_field,
   ]);
   $field_storage->save();
+}
+
+/**
+ * Update field_landing_page_component configs.
+ */
+function tide_landing_page_update_10106() {
+  $form_configs = [
+    'field.field.node.landing_page.field_landing_page_component',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $tide_update_helper */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->configMergeDeep('tide_landing_page', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
+  $result = $tide_update_helper->updateFromOptional('base_field_override', 'paragraphs_library_item.paragraphs_library_item.paragraphs');
+  if (!$result) {
+    $tide_update_helper->import('base_field_override', 'paragraphs_library_item.paragraphs_library_item.paragraphs');
+  }
+
+}
+
+/**
+ * Update key_journeys.field_paragraph_title configs.
+ */
+function tide_landing_page_update_10107() {
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $tide_update_helper */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->revert('field_config', 'paragraph.key_journeys.field_paragraph_title');
 }

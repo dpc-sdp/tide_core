@@ -1,0 +1,19 @@
+name: 'Tide Media Secure Files'
+description: 'Gives the author option to create secure files.'
+type: module
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - dpc-sdp:tide_core
+  - dpc-sdp:tide_media
+  - pfdp:pfdp
+config_devel:
+  install:
+    - core.entity_form_display.media.secure_file.default
+    - core.entity_view_display.media.secure_file.default
+    - field.field.media.secure_file.field_secure_file
+    - field.storage.media.field_secure_file
+    - media.type.secure_file
+    - pfdp.pfdp_directory.secure
+    - user.role.dtf_secure_file_user
+  optional: {  }
