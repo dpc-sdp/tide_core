@@ -4,9 +4,7 @@ namespace Drupal\ckeditor_tablecol_resize\Plugin\Filter;
 
 use Drupal\ckeditor5\Plugin\CKEditor5PluginManagerInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
 use Psr\Container\ContainerInterface;
@@ -24,6 +22,11 @@ use Psr\Container\ContainerInterface;
  */
 class FilterResizeTableColumns extends FilterBase implements ContainerFactoryPluginInterface {
 
+  /**
+   * The CKEditor5 plugin manager.
+   *
+   * @var \Drupal\ckeditor5\Plugin\CKEditor5PluginManagerInterface
+   */
   protected CKEditor5PluginManagerInterface $ckeditor5PluginManager;
 
   /**

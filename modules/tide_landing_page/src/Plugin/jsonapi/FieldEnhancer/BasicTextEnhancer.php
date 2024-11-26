@@ -83,6 +83,9 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
     return $data;
   }
 
+  /**
+   * Helper function to add table styles to processed field.
+   */
   public function addTableStylesToProcessed(&$data) {
     // Check if 'value' and 'processed' keys exist in $data.
     if (isset($data['value']) && isset($data['processed'])) {
@@ -91,7 +94,7 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
       $processedDom = new \DOMDocument();
 
       // Suppress warnings for malformed HTML in $value and $processed.
-      libxml_use_internal_errors(true);
+      libxml_use_internal_errors(TRUE);
       $valueDom->loadHTML($data['value']);
       $processedDom->loadHTML($data['processed']);
       libxml_clear_errors();
@@ -117,14 +120,14 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
             $processedCol = $processedCols->item($j);
 
             if ($valueCol->hasAttribute('style')) {
-            // Parse the style attribute.
+              // Parse the style attribute.
               $styleValue = $valueCol->getAttribute('style');
               $styles = explode(';', $styleValue);
 
               foreach ($styles as $style) {
                 $style = trim($style);
                 if (!empty($style)) {
-                  list($property, $value) = explode(':', $style, 2);
+                  [$property, $value] = explode(':', $style, 2);
                   $property = trim($property);
                   $value = trim($value);
 
@@ -149,4 +152,5 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
     }
     return $data;
   }
+
 }
