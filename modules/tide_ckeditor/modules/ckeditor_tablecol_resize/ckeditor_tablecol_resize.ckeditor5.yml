@@ -1,0 +1,20 @@
+ckeditor_tablecol_resize_tableColResize:
+  ckeditor5:
+    plugins:
+      - table.TableColumnResize
+      - tableColResize.TableColResize
+    config:
+      tableColResize:
+        dataAttribute: data-resize-width
+  drupal:
+    label: Table Column Resize
+    library: ckeditor_tablecol_resize/editor
+    conditions:
+      filter: filter_resize_tablecolumns
+      plugins:
+        - ckeditor5_table
+    elements:
+      - <table data-resize-width>
+      - <colgroup>
+      - <col>
+      - <col data-resize-width>
