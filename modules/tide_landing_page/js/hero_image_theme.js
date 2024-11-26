@@ -32,6 +32,8 @@
 
         let defaultHeaderStyle = selectedHeaderStyle.value;
         imageTheme.disabled = defaultHeaderStyle === "corner" ? false : true;
+        imageTheme.value =
+          defaultHeaderStyle === "fullwidth" ? "dark" : "light";
       }
     },
   };
