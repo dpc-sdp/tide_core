@@ -5,7 +5,9 @@
  * Tide Landing Page module functionality.
  */
 
-use Drupal\Core\Cache\Cache;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\InvokeCommand;
+ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -372,6 +374,34 @@ function tide_landing_page_field_widget_single_element_paragraphs_form_alter(&$e
 }
 
 /**
+ * Function to set value to Hero image theme.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ *
+ * @return Drupal\Core\Ajax\AjaxResponse
+ *   The response.
+ */
+function tide_landing_page_set_value_hero_image_theme(array $form, FormStateInterface $form_state): AjaxResponse {
+  $response = new AjaxResponse();
+  $value = $form_state->getValue('_header_style_options');
+  if ($value === 'fullwidth') {
+    return $response->addCommand(new InvokeCommand(
+      '#edit-field-landing-page-hero-theme',
+      'val',
+      ['dark']
+    ));
+  }
+  return $response->addCommand(new InvokeCommand(
+    '#edit-field-landing-page-hero-theme',
+    'val',
+    ['light']
+  ));
+}
+
+/**
  * Node form #process callback.
  *
  * @param array $form
@@ -405,14 +435,18 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
       'corner' => t('Corner graphics'),
       'cta' => t('Call to action banner'),
     ],
+    '#ajax' => [
+      'callback' => 'tide_landing_page_set_value_hero_image_theme',
+    ],
   ];
-
-  $form['field_landing_page_hero_image']['#states']['visible'] = [
+  $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme']['#states']['disabled'] = [
     ':input[name="_header_style_options"]' => [
+      ['value' => 'default'],
       ['value' => 'fullwidth'],
       ['value' => 'cta'],
     ],
   ];
+
   $form['field_graphical_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
