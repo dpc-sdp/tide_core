@@ -1,0 +1,5 @@
+editor:
+  js:
+    js/build/tableColResize.js: { preprocess: false, minified: true }
+  dependencies:
+    - ckeditor5/ckeditor5
