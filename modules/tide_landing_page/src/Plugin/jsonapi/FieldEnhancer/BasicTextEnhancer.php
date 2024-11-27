@@ -89,14 +89,16 @@ class BasicTextEnhancer extends ResourceFieldEnhancerBase {
   public function addTableStylesToProcessed(&$data) {
     // Check if 'value' and 'processed' keys exist in $data.
     if (isset($data['value']) && isset($data['processed'])) {
-      // Load 'value' and 'processed' HTML as DOM objects for manipulation.
-      $valueDom = new \DOMDocument();
-      $processedDom = new \DOMDocument();
-
-      // Suppress warnings for malformed HTML in $value and $processed.
+      // Create DOM objects with proper UTF-8 handling.
+      $valueDom = new \DOMDocument('1.0', 'UTF-8');
+      $processedDom = new \DOMDocument('1.0', 'UTF-8');
+      // Suppress warnings.
       libxml_use_internal_errors(TRUE);
-      $valueDom->loadHTML($data['value']);
-      $processedDom->loadHTML($data['processed']);
+      // Add UTF-8 meta tag and load content.
+      $valueHtml = mb_convert_encoding($data['value'], 'HTML-ENTITIES', 'UTF-8');
+      $processedHtml = mb_convert_encoding($data['processed'], 'HTML-ENTITIES', 'UTF-8');
+      $valueDom->loadHTML($valueHtml);
+      $processedDom->loadHTML($processedHtml);
       libxml_clear_errors();
 
       // Get <table> elements from both value and processed DOMs.
