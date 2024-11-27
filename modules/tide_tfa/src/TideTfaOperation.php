@@ -102,16 +102,25 @@ class TideTfaOperation {
       'tfa_email_otp' => [
         'code_validity_period' => '600',
         'email_setting' => [
-          'subject' => '[site:name] Authentication code',
-          'body' => '[user:display-name],\r\n\r\nThis code is valid for [length] minutes. Your code is: [code]\r\n\r\nThis code will expire once you have logged in.',
+          'subject' => 'Single Digtial Presence CMS two-factor authentication code',
+          'body' => '[user:display-name],\r\n\r\nThis code is valid for [length] minutes. \r\n\r\nYour code is: [code]\r\n\r\nThis code will expire once you have logged in.',
         ],
+      ],
+    ];
+    $mail_settings = [
+      'tfa_enabled_configuration' => [
+        'subject' => 'Your Single Digtial Presence CMS account now has two-factor authentication',
+        'body' => "[user:display-name],\r\n\r\nThanks for configuring two-factor authentication on your Single Digital Presence account!\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nIf you ever lose the device you configured, you should act quickly to delete its association with this account.\r\n\r\nFrom the SDP team\r\n\r\nRead more about 2FA: https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507",
+      ],
+      'tfa_disabled_configuration' => [
+        'subject' => 'Your Single Digtial Presence CMS account now has two-factor authentication',
+        'body' => "[user:display-name],\r\n\r\nThanks for configuring two-factor authentication on your Single Digital Presence account!\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nIf you ever lose the device you configured, you should act quickly to delete its association with this account.\r\n\r\nFrom the SDP team\r\n\r\nRead more about 2FA: https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507",
       ],
     ];
 
     $tfa_settings = \Drupal::configFactory()->getEditable('tfa.settings');
     $tfa_settings->set('enabled', FALSE)
       ->set('required_roles', $tfa_required_roles)
-      ->set('forced', 1)
       ->set('login_plugin_settings', $login_plugin_settings)
       ->set('allowed_validation_plugins', $allowed_validation_plugins)
       ->set('default_validation_plugin', self::DEFAULT_VALIDATION_PLUGIN)
@@ -119,6 +128,7 @@ class TideTfaOperation {
       ->set('encryption', self::ENCRYPTION_PROFILE)
       ->set('users_without_tfa_redirect', TRUE)
       ->set('reset_pass_skip_enabled', TRUE)
+      ->set('mail', $mail_settings)
       ->save();
   }
 
