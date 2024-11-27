@@ -81,3 +81,19 @@ function tide_media_update_10005() {
   $config->set('track_enabled_target_entity_types', $result);
   $config->save();
 }
+
+/**
+ * Adds media_alias_display settings for document type.
+ */
+function tide_media_update_10006() {
+  if (\Drupal::moduleHandler()->moduleExists('media_alias_display') === FALSE) {
+    \Drupal::service('module_installer')->install(['media_alias_display']);
+  }
+
+  $media_config = \Drupal::service('config.factory')->getEditable('media_alias_display.settings');
+  if ($media_config ) {
+   $media_config->set('media_bundles', ['document' => 'document']);
+   $media_config->save();
+  }
+}
+
