@@ -91,9 +91,8 @@ function tide_media_update_10006() {
   }
 
   $media_config = \Drupal::service('config.factory')->getEditable('media_alias_display.settings');
-  if ($media_config ) {
-   $media_config->set('media_bundles', ['document' => 'document']);
-   $media_config->save();
+  if ($media_config) {
+    $media_config->set('media_bundles', ['document' => 'document']);
+    $media_config->save();
   }
 }
-
