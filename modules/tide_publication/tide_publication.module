@@ -132,6 +132,12 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
 
+  $form['field_landing_page_hero_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => [
+      ['value' => 'fullwidth'],
+      ['value' => 'cta'],
+    ],
+  ];
   // Determine the initial value of Header style.
   $node_hero_image_empty = $node->get('field_landing_page_hero_image')->isEmpty();
   $header_style = 'default';
