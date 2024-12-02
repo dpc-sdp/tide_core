@@ -203,3 +203,24 @@ function tide_landing_page_update_10107() {
   $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
   $tide_update_helper->revert('field_config', 'paragraph.key_journeys.field_paragraph_title');
 }
+
+/**
+ * Set field `field_landing_page_hero_theme` to mandatory.
+ */
+function tide_landing_page_update_10108() {
+  $bundles = [
+    'landing_page',
+    'publication',
+    'publication_page',
+  ];
+
+  foreach ($bundles as $bundle) {
+    $field = FieldConfig::loadByName('node', $bundle, 'field_landing_page_hero_theme');
+    if (!empty($field)) {
+      $field->setLabel('Hero image theme');
+      $field->setRequired(TRUE);
+      $field->setDefaultValue('light');
+      $field->save();
+    }
+  }
+}
