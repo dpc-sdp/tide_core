@@ -38,7 +38,8 @@ class AuditTrailSettingsForm extends ConfigFormBase {
       '#type' => 'number',
       '#title' => $this->t('Log retention days'),
       '#description' => $this->t('Enter the number of days after which logs should be deleted.'),
-      '#default_value' => $config->get('log_retention_days', 30), // Default to 30 if not set.
+    // Default to 30 if not set.
+      '#default_value' => $config->get('log_retention_days', 30),
       '#min' => 1,
       '#required' => TRUE,
     ];
@@ -53,8 +54,9 @@ class AuditTrailSettingsForm extends ConfigFormBase {
     $this->config('tide_core.settings')
       ->set('log_retention_days', $form_state->getValue('log_retention_days'))
       ->save();
-    
+
     $this->messenger()->addMessage($this->t('The log retention days have been updated.'));
     parent::submitForm($form, $form_state);
   }
+
 }
