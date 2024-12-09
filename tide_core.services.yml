@@ -34,4 +34,4 @@ services:
       - '@entity_field.manager'
       - '@logger.factory'
       - '@file_system'
-      - '@monitoring.sensor_runner'
+      - '@?monitoring.sensor_runner'

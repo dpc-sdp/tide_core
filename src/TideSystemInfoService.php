@@ -226,10 +226,12 @@ class TideSystemInfoService {
    */
   public function getPackageVersion($packageName) {
     if (empty($packageName)) {
-      $result = $this->sensorRunner->runSensors([SensorConfig::load('tide_times')]);
-      $value = $result[0]->getValue();
-      $decodedValue = json_decode($value, TRUE);
-      return $decodedValue;
+      if ($this->sensorRunner) {
+        $result = $this->sensorRunner->runSensors([SensorConfig::load('tide_times')]);
+        $value = $result[0]->getValue();
+        $decodedValue = json_decode($value, TRUE);
+        return $decodedValue;
+      }
     }
 
     if (strtolower($packageName) === 'php') {
