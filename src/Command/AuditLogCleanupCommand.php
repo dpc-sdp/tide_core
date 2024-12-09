@@ -3,10 +3,8 @@
 namespace Drupal\tide_core\Command;
 
 use Drush\Commands\DrushCommands;
-use Drupal\Core\Database\Database;
-use DateInterval;
-use DateTime;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Database\Database;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -14,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class AuditLogCleanupCommand extends DrushCommands {
 
-/**
+  /**
    * The configuration service.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -50,7 +48,7 @@ class AuditLogCleanupCommand extends DrushCommands {
    * @option force-cleanup Skip confirmation and run the cleanup immediately.
    */
   public function cleanupLogs($options = ['force-cleanup' => FALSE]) {
-    // Check if the user passed the --force-cleanup option
+    // Check if the user passed the --force-cleanup option.
     if (!$options['force-cleanup']) {
       // If the force-cleanup flag isn't passed, ask for confirmation.
       $confirmation = $this->confirmCleanup();
@@ -59,24 +57,22 @@ class AuditLogCleanupCommand extends DrushCommands {
         return;
       }
     }
-    
     $config = $this->configFactory->get('tide_core.settings');
     define('DEFAULT_LOG_RETENTION_DAYS', 30);
     $log_retention_days = $config->get('log_retention_days') ?: DEFAULT_LOG_RETENTION_DAYS;
-    // Get current date and time
+    // Get current date and time.
     $current_time = new DateTime();
     $current_time->sub(new DateInterval("P{$log_retention_days}D"));
     $threshold_timestamp = $current_time->getTimestamp();
-    // Connect to the database
+    // Connect to the database.
     $database = Database::getConnection();
     $deleted = $database->delete('admin_audit_trail')
       ->condition('created', $threshold_timestamp, '<')
       ->execute();
 
-    // Output the result
+    // Output the result.
     $this->output()->writeln("Deleted $deleted log entries older than $log_retention_days days.");
-    
-    // Run a database optimization command to recover space
+    // Run a database optimization command to recover space.
     $this->optimizeDatabase();
   }
 
@@ -90,7 +86,7 @@ class AuditLogCleanupCommand extends DrushCommands {
     $question = 'Are you sure you want to delete log entries older than the configured retention period? (y/n): ';
     $confirmation = $this->io()->ask($question, 'n');
     $confirmation = strtolower($confirmation);
-    // Return TRUE if the user answers 'y' or 'yes'
+    // Return TRUE if the user answers 'y' or 'yes'.
     return in_array($confirmation, ['y', 'yes']);
   }
 
@@ -98,6 +94,7 @@ class AuditLogCleanupCommand extends DrushCommands {
    * Run database optimization (optional).
    *
    * @return void
+   *  TRUE write the message.
    */
   private function optimizeDatabase() {
     $database = Database::getConnection();
