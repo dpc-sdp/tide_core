@@ -2,9 +2,9 @@
 
 namespace Drupal\tide_core\Command;
 
-use Drush\Commands\DrushCommands;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Database;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -57,7 +57,7 @@ class AuditLogCleanupCommand extends DrushCommands {
         return;
       }
     }
-    
+
     $config = $this->configFactory->get('tide_core.settings');
     define('DEFAULT_LOG_RETENTION_DAYS', 30);
     $log_retention_days = $config->get('log_retention_days') ?: DEFAULT_LOG_RETENTION_DAYS;
@@ -95,11 +95,12 @@ class AuditLogCleanupCommand extends DrushCommands {
    * Run database optimization (optional).
    *
    * @return void
-   *  TRUE write the message.
+   *   TRUE write the message.
    */
   private function optimizeDatabase() {
     $database = Database::getConnection();
     $database->query('OPTIMIZE TABLE {admin_audit_trail}');
     $this->output()->writeln("Database optimized to recover space.");
   }
+
 }
