@@ -476,7 +476,7 @@ function tide_media_preprocess_page(&$variables) {
   $roles = $current_user->getRoles();
 
   if ($route_name === 'entity.user.edit_form' && in_array('secure_file_user', $roles)) {
-    $url = \Drupal\Core\Url::fromRoute('entity.user.canonical', ['user' => $current_user->id()]);
+    $url = Url::fromRoute('entity.user.canonical', ['user' => $current_user->id()]);
     $response = new RedirectResponse($url->toString());
     $response->send();
     exit();
