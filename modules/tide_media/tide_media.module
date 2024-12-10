@@ -154,17 +154,6 @@ function tide_media_form_media_form_alter(&$form, FormStateInterface $form_state
  * Implements template_preprocess_field().
  */
 function tide_media_preprocess_field(&$variables) {
-  $route_name = \Drupal::routeMatch()->getRouteName();
-  $current_user = \Drupal::currentUser();
-  $roles = $current_user->getRoles();
-
-  if ($route_name === 'entity.user.edit_form' && in_array('secure_file_user', $roles)) {
-    $url = Url::fromRoute('entity.user.canonical', ['user' => $current_user->id()]);
-    $response = new RedirectResponse($url->toString());
-    $response->send();
-    exit();
-  }
-
   if ($variables['field_name'] == 'field_media_file') {
     $element = $variables['element'];
     if ($element['#entity_type'] == 'media' && $element['#bundle'] == 'document' && $element['#view_mode'] == 'embedded') {
@@ -475,6 +464,22 @@ function tide_media_file_presave(FileInterface $file) {
     $file_service->move($file->getFileUri(), $path['dirname'] . '/' . $filename_new, FileSystemInterface::EXISTS_REPLACE);
     $file->setFileUri($path['dirname'] . '/' . $filename_new);
     $file->setFilename($filename_new);
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function tide_media_preprocess_page(&$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  $current_user = \Drupal::currentUser();
+  $roles = $current_user->getRoles();
+
+  if ($route_name === 'entity.user.edit_form' && in_array('secure_file_user', $roles)) {
+    $url = \Drupal\Core\Url::fromRoute('entity.user.canonical', ['user' => $current_user->id()]);
+    $response = new RedirectResponse($url->toString());
+    $response->send();
+    exit();
   }
 }
 
