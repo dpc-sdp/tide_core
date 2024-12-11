@@ -5,6 +5,7 @@
  * Install file.
  */
 
+use Drupal\search_api\Entity\Index;
 use Drupal\tide_search\TideSearchOperation;
 
 /**
@@ -21,6 +22,7 @@ function tide_search_install() {
 function tide_search_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
+  $dependencies['tide_search'][10005] = ['elasticsearch_connector' => 9802];
   return $dependencies;
 }
 
@@ -116,4 +118,21 @@ function tide_search_update_10004() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
   _tide_core_field_content_category_default_value('tide_search_listing', 'Search listing');
   _tide_core_content_category_form_display('tide_search_listing');
+}
+
+/**
+ * Update for elasticsearch php package version 8.
+ */
+function tide_search_update_10005() {
+  $update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $update_helper->updateFromOptional('search_api_server', 'elasticsearch_bay');
+  $index = Index::load('node');
+  $field_settings = $index->get('field_settings');
+  if (!empty($field_settings['title'])) {
+    $field_settings['title']['type'] = 'tide_search_text_field_with_keyword_and_prefix';
+  }
+  if (!empty($field_settings['summary_processed'])) {
+    $field_settings['summary_processed']['type'] = 'tide_search_text_field_with_keyword_and_prefix';
+  }
+  $index->set('field_settings', $field_settings)->save();
 }

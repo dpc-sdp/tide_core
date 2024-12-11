@@ -1,0 +1,5 @@
+services:
+  tide_search.event_subscriber:
+    class: Drupal\tide_search\EventSubscriber\ElasticSearchEventSubscribers
+    tags:
+      - { name: event_subscriber }
