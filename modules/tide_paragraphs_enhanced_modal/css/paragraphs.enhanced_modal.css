@@ -33,6 +33,7 @@
   box-shadow: none !important;
   border: none !important;
   padding: 0 0 0.5em;
+  text-wrap: auto;
 }
 
 .paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row .description {
