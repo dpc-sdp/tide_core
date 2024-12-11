@@ -1,0 +1,23 @@
+uuid: ff7ac093-067c-4a15-98f4-2ab4dfda7b9c
+langcode: en
+status: true
+dependencies:
+  module:
+    - elasticsearch_connector
+_core:
+  default_config_hash: 4ulEtCC_6q-TNQFpsg_DJsn4keGx1hpp6ZlcMtKggzo
+id: elasticsearch_bay
+name: 'Elasticsearch on Bay'
+description: ''
+backend: elasticsearch
+backend_config:
+  connector: standard
+  connector_config:
+    url: 'http://elasticsearch:9200'
+    enable_debug_logging: true
+  advanced:
+    fuzziness: auto
+    prefix: elasticsearch_index_drupal_
+    suffix: ''
+    synonyms:
+      - ''
