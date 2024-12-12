@@ -316,3 +316,15 @@ function tide_core_update_10010() {
     $module_installer->install(['tide_tfa']);
   }
 }
+
+/**
+ * Enabled tide_data_driven_component module.
+ */
+function tide_core_update_10011() {
+  $moduleHandler = \Drupal::service('module_handler');
+  $moduleInstaller = \Drupal::service('module_installer');
+  // Enable tide_data_driven_component.
+  if (!$moduleHandler->moduleExists('tide_data_driven_component')) {
+    $moduleInstaller->install(['tide_data_driven_component']);
+  }
+}
