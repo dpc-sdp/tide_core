@@ -27,6 +27,7 @@ Feature: Fields for Landing Page content type
     And I should see text matching "Call to action banner"
     And I should see text matching "No Hero Banner with CTA added yet."
     And I should see the button "Add Hero banner with CTA" in the "content" region
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
     And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
@@ -34,6 +35,7 @@ Feature: Fields for Landing Page content type
     And I select the radio button "Corner graphics"
     And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
     And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And I click on the horizontal tab "Header extras"
     And I should see text matching "Header components"
@@ -156,6 +158,7 @@ Feature: Fields for Landing Page content type
     And I should see text matching "Call to action banner"
     And I should see text matching "No Hero Banner with CTA added yet."
     And I should see the button "Add Hero banner with CTA" in the "content" region
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
     And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
@@ -163,6 +166,7 @@ Feature: Fields for Landing Page content type
     And I select the radio button "Corner graphics"
     And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
     And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+    And I should see a "select#edit-field-landing-page-hero-theme" element
 
     And I click on the horizontal tab "Header extras"
     And I should see text matching "Header components"
@@ -299,4 +303,48 @@ Feature: Fields for Landing Page content type
     And I wait for 5 seconds
     # This field can be "seen" but not visible.
     And I see field "field_landing_page_component[0][subform][field_customise][value]"
+    And save screenshot
+
+@api @javascript
+  Scenario: Selecting Corner graphics value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-corner" element
+    And I select "corner" from "edit-header-style-options-corner"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Light"
+    And save screenshot
+
+ @api @javascript
+  Scenario: Selecting Default appearance value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-default" element
+    And I select "corner" from "edit-header-style-options-default"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Light"
+    And save screenshot
+
+@api @javascript
+  Scenario: Selecting Full-width background image value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-fullwidtht" element
+    And I select "corner" from "edit-header-style-options-fullwidth"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Dark"
+    And save screenshot
+
+@api @javascript
+  Scenario: Selecting Call to action banner value from header style.
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/landing_page"
+    And I click on the horizontal tab "Customised Header"
+    Then I should see an "#edit-header-style-options-cta" element
+    And I select "corner" from "edit-header-style-options-cta"
+    Then I should see an "#edit-field-landing-page-hero-theme" element
+    And I should see text matching "Light"
     And save screenshot

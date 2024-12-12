@@ -5,5 +5,6 @@ landing_page_form:
   js:
     js/hide_elements.js: {}
     js/statistics_grid.js: {}
+    js/hero_image_theme.js: {}
   dependencies:
     - core/jquery
