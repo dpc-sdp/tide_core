@@ -89,3 +89,12 @@ function tide_site_update_10002() {
     }
   }
 }
+
+/**
+ * Enable linkset.
+ */
+function tide_site_update_10003() {
+  $system_feature_flags = \Drupal::configFactory()->getEditable('system.feature_flags');
+  $system_feature_flags->set('linkset_endpoint', TRUE)
+    ->save();
+}
