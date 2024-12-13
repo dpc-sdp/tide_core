@@ -5,28 +5,28 @@
  * Contains tide_core.module.
  */
 
- use Drupal\Component\Utility\Html;
- use Drupal\Core\Access\AccessResult;
- use Drupal\Core\Breadcrumb\Breadcrumb;
- use Drupal\Core\Cache\Cache;
- use Drupal\Core\Entity\EntityInterface;
- use Drupal\Core\Field\FieldItemListInterface;
- use Drupal\Core\Form\FormStateInterface;
- use Drupal\Core\Link;
- use Drupal\Core\Render\Markup;
- use Drupal\Core\Routing\RouteMatchInterface;
- use Drupal\Core\Session\AccountInterface;
- use Drupal\Core\Url;
- use Drupal\media\Entity\Media;
- use Drupal\node\Entity\Node;
- use Drupal\node\NodeInterface;
- use Drupal\paragraphs\Entity\Paragraph;
- use Drupal\redirect\Entity\Redirect;
- use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
- use Drupal\tide_core\Render\Element\AdminToolbar;
- use Drupal\user\RoleInterface;
- use Drupal\views\ViewExecutable;
- use Drupal\workflows\Entity\Workflow;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
+use Drupal\media\Entity\Media;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\redirect\Entity\Redirect;
+use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
+use Drupal\tide_core\Render\Element\AdminToolbar;
+use Drupal\user\RoleInterface;
+use Drupal\views\ViewExecutable;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Implements hook_views_data().
