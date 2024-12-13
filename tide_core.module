@@ -798,7 +798,7 @@ function tide_core_media_autopublish($node) {
   // Loop through all fields of the node.
   foreach ($node->getFields() as $field_name => $field) {
 
-    // Check if the field is of type "Entity Reference" to Paragraphs (EntityReferenceRevisions)
+    // Check if the field is of type Entity Reference to Paragraphs.
     if ($field->getFieldDefinition()->getType() == 'entity_reference_revisions' &&
         $field->getFieldDefinition()->getSetting('target_type') == 'paragraph') {
 
