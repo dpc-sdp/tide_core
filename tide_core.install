@@ -5,6 +5,7 @@
  * Installation functions for Tide Core.
  */
 
+use Drupal\field\Entity\FieldConfig;
 use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -326,5 +327,34 @@ function tide_core_update_10011() {
   // Enable tide_data_driven_component.
   if (!$moduleHandler->moduleExists('tide_data_driven_component')) {
     $moduleInstaller->install(['tide_data_driven_component']);
+  }
+  if ($moduleHandler->moduleExists('tide_landing_page')) {
+    // Define the fields to be updated.
+    $fields_to_update = [
+      'field_landing_page_component',
+      'field_landing_page_header',
+    ];
+    $new_component = 'data_driven_component';
+  
+    foreach ($fields_to_update as $field_name) {
+      $field_config = FieldConfig::loadByName('node', 'landing_page', $field_name);
+  
+      if ($field_config) {
+        // Get the current handler settings.
+        $handler_settings = $field_config->getSetting('handler_settings');
+  
+        // Ensure 'target_bundles' exists in handler settings.
+        if (isset($handler_settings['target_bundles'])) {
+          // Add the new component if it does not already exist.
+          if (!array_key_exists($new_component, $handler_settings['target_bundles'])) {
+            $handler_settings['target_bundles'][$new_component] = $new_component;
+  
+            // Update the field configuration with the new handler settings.
+            $field_config->setSetting('handler_settings', $handler_settings);
+            $field_config->save();
+          }
+        }
+      }
+    }
   }
 }
