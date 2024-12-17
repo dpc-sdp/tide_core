@@ -71,24 +71,6 @@ function tide_landing_page_entity_bundle_create($entity_type_id, $bundle) {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $bundles = [
-    'landing_page',
-    'publication',
-    'publication_page',
-  ];
-
-  foreach ($bundles as $bundle) {
-    $field = FieldConfig::loadByName('node', $bundle, 'field_landing_page_hero_theme');
-    // if (!empty($field)) {
-    //   $field->setLabel('Page title display style');
-    //   $field->setRequired(TRUE);
-    //   $field->setDefaultValue('light');
-    //   $field->save();
-    // }
-    dump($field);
-  }
-
-
   if (in_array($form_id, [
     'node_landing_page_form',
     'node_landing_page_edit_form',
