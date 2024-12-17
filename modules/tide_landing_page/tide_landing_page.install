@@ -235,7 +235,7 @@ function tide_landing_page_update_10109() {
     'allowed_values' => [
       'dark" => "Reverse blocked text',
       'light" => "Default',
-    ]
+    ],
   ]);
   $fieldStorage->save();
 }
