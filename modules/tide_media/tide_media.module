@@ -479,7 +479,6 @@ function tide_media_preprocess_page(&$variables) {
     $url = Url::fromRoute('entity.user.canonical', ['user' => $current_user->id()]);
     $response = new RedirectResponse($url->toString());
     $response->send();
-    exit();
   }
 }
 
@@ -489,11 +488,14 @@ function tide_media_preprocess_page(&$variables) {
 function tide_media_menu_local_tasks_alter(&$data, $route_name, RefinableCacheableDependencyInterface &$cacheability) {
   $current_user = \Drupal::currentUser();
   $roles = $current_user->getRoles();
-
-  if (in_array('secure_file_user', $roles)) {
-    foreach ($data['tabs'][0] as $key => $items) {
-      if ($key === 'entity.user.edit_form') {
-        unset($data['tabs'][0][$key]);
+  if (in_array('secure_file_user', $roles, TRUE) && isset($data['tabs'])) {
+    foreach ($data['tabs'] as $key => &$tabs) {
+      if (is_array($tabs)) {
+        foreach ($tabs as $tab_key => $tab) {
+          if ($tab_key === 'entity.user.edit_form') {
+            unset($tabs[$tab_key]);
+          }
+        }
       }
     }
   }
