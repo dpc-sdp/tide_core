@@ -12,10 +12,10 @@ settings:
   allowed_values:
     -
       value: dark
-      label: Dark
+      label: Reverse blocked text
     -
       value: light
-      label: Light
+      label: Default
   allowed_values_function: ''
 module: options
 locked: false
