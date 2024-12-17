@@ -205,7 +205,7 @@ function tide_landing_page_update_10107() {
 }
 
 /**
- * Set field `field_landing_page_hero_theme` to mandatory, description and label.
+ * Set field `field_landing_page_hero_theme` to mandatory, description, label.
  */
 function tide_landing_page_update_10108() {
   $bundles = [
@@ -231,9 +231,11 @@ function tide_landing_page_update_10108() {
  */
 function tide_landing_page_update_10109() {
   $fieldStorage = Drupal::entityTypeManager()->getStorage('field_storage_config')->load('node.field_landing_page_hero_theme');
-  $fieldStorage->setSettings(['allowed_values' => [
-    "dark" => "Reverse blocked text",
-    "light" => "Default",
-  ]]);
+  $fieldStorage->setSettings([
+    'allowed_values' => [
+      'dark" => "Reverse blocked text',
+      'light" => "Default',
+    ]
+  ]);
   $fieldStorage->save();
 }
