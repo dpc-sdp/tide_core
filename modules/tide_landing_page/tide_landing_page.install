@@ -236,7 +236,7 @@ function tide_landing_page_update_10109() {
     if ($allowed_value['label'] === 'Dark') {
       $allowed_value['label'] = 'Reverse blocked text';
     }
-    else if ($allowed_value['label'] === 'Light') {
+    elseif ($allowed_value['label'] === 'Light') {
       $allowed_value['label'] = 'Default';
     }
   }
