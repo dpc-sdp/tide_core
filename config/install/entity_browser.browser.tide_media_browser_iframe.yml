@@ -69,3 +69,14 @@ widgets:
     weight: -9
     label: 'Add audio'
     id: entity_form
+  514a147d-5e8c-4006-8bdd-6959b6239548:
+    id: entity_form
+    uuid: 514a147d-5e8c-4006-8bdd-6959b6239548
+    label: 'Add secure file'
+    weight: 6
+    settings:
+      submit_text: 'Save secure file'
+      entity_type: media
+      bundle: secure_file
+      form_mode: default
+
