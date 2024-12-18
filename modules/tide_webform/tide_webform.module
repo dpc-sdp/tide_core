@@ -73,16 +73,21 @@ function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_i
       if (isset($element_settings[$form_id][$element_key]['searchable'])) {
         $searchable_value = $element_settings[$form_id][$element_key]['searchable'];
       }
-      // Retrieve saved element settings from Webform configuration.
-      $element_settings = \Drupal::configFactory()->get('webform.settings')->get('element_settings') ?: [];
       $form['properties']['element']['searchable'] = [
         '#type' => 'checkbox',
         '#title' => t('Enable search'),
         '#description' => t('Check this box to allow select fields to opt into the searchable display.'),
         '#default_value' => $searchable_value ?? 0,
       ];
+      $current_path = \Drupal::service('path.current')->getPath();
+      $matches = [];
+      if (preg_match('/webform\/manage\/([^\/]+)\/element\/([^\/]+)/', $current_path, $matches)) {
+        // Extract the Parent Webform ID.
+        $webform_id = $matches[1];
+      }
       $form['#submit'][] = 'tide_webform_webform_ui_element_form_submit';
       $form['#webform_id'] = $form_id;
+      $form['#parent_id'] = $webform_id;
     }
   }
 
@@ -143,6 +148,18 @@ function tide_webform_webform_ui_element_form_submit(array $form, FormStateInter
   \Drupal::configFactory()->getEditable('webform.settings')
     ->set('element_settings', $element_settings)
     ->save();
+
+  // Explicitly add elemet to parent webform.
+  $webform = Webform::load($form['#parent_id']);
+  // Get all elements.
+  $elements = $webform->getElementsDecoded();
+  // Check if element exists and its type is 'select' or 'webform_term_select'.
+  if (isset($elements[$element_key]) && in_array($elements[$element_key]['#type'], ['select', 'webform_term_select'])) {
+    $elements[$element_key]['#searchable'] = $searchable_value;
+    // Update the Webform's elements.
+    $webform->setElements($elements);
+    $webform->save();
+  }
 }
 
 /**
