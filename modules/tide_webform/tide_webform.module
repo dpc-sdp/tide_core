@@ -67,24 +67,29 @@ function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_i
     // Check if the field type is either 'select' or 'term_select'.
     $field_type = $form['properties']['type']['#value'] ?? '';
     if (in_array($field_type, ['select', 'webform_term_select'])) {
-      // Fetch already saved default value from config.
-      $element_key = $form['properties']['element']['key']['#default_value'] ?? 'enable_search';
-      $element_settings = \Drupal::configFactory()->get('webform.settings')->get('element_settings') ?: [];
-      if (isset($element_settings[$form_id][$element_key]['searchable'])) {
-        $searchable_value = $element_settings[$form_id][$element_key]['searchable'];
-      }
-      $form['properties']['element']['searchable'] = [
-        '#type' => 'checkbox',
-        '#title' => t('Enable search'),
-        '#description' => t('Check this box to allow select fields to opt into the searchable display.'),
-        '#default_value' => $searchable_value ?? 0,
-      ];
       $current_path = \Drupal::service('path.current')->getPath();
       $matches = [];
       if (preg_match('/webform\/manage\/([^\/]+)\/element\/([^\/]+)/', $current_path, $matches)) {
         // Extract the Parent Webform ID.
         $webform_id = $matches[1];
       }
+      // Fetch already saved default value from config.
+      $element_key = $form['properties']['element']['key']['#default_value'];
+      $element_settings = \Drupal::configFactory()->get('webform.settings')->get('element_settings') ?: [];
+      if (isset($element_key) && isset($element_settings[$webform_id][$element_key]['searchable'])) {
+        // Get the 'searchable' value for the specified element.
+        $searchable_value = $element_settings[$webform_id][$element_key]['searchable'];
+      }
+      else {
+        $searchable_value = 0;
+      }
+      $form['properties']['element']['searchable'] = [
+        '#type' => 'checkbox',
+        '#title' => t('Enable search'),
+        '#description' => t('Check this box to allow select fields to opt into the searchable display.'),
+        '#default_value' => $searchable_value,
+      ];
+
       $form['#submit'][] = 'tide_webform_webform_ui_element_form_submit';
       $form['#webform_id'] = $form_id;
       $form['#parent_id'] = $webform_id;
@@ -139,10 +144,12 @@ function tide_webform_webform_ui_element_form_submit(array $form, FormStateInter
 
   // Get the searchable value.
   $searchable_value = $form_state->getValue(['searchable']) ?? 0;
-  $element_key = $form['properties']['element']['key']['#default_value'] ?? 'enable_search';
+  // Fetch key from from_state for new element.
+  $key_new = $form_state->getValue(['key']) ?? '';
+  $element_key = $form['properties']['element']['key']['#default_value'] ?? $key_new;
   $element_settings = \Drupal::configFactory()->getEditable('webform.settings')->get('element_settings') ?: [];
   // Save the 'searchable' value to the element settings.
-  $element_settings[$form['#webform_id']][$element_key]['searchable'] = $searchable_value;
+  $element_settings[$form['#parent_id']][$element_key]['searchable'] = $searchable_value;
 
   // Save the updated element settings back to the configuration.
   \Drupal::configFactory()->getEditable('webform.settings')
