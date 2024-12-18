@@ -103,7 +103,7 @@ class TideTfaOperation {
         'code_validity_period' => '600',
         'email_setting' => [
           'subject' => 'Single Digtial Presence CMS two-factor authentication code',
-          'body' => '[user:display-name],\r\n\r\nThis code is valid for [length] minutes. \r\n\r\nYour code is: [code]\r\n\r\nThis code will expire once you have logged in.',
+          'body' => 'Hi [user:display-name],\r\n\r\nYour two-factor authentication code is: [code]\r\n\r\nThis code is valid for [length] minutes. \r\n\r\nThis code will expire when you have logged in.\r\n\r\nFrom the SDP team\r\n\r\nRead more about 2FA: https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507',
         ],
       ],
     ];
