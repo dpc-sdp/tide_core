@@ -54,8 +54,6 @@ function tide_media_secure_files_uninstall() {
 
 /**
  * Adds a secure file widget to entity browser.
- *
- * @return void
  */
 function _create_secure_file_widget() {
   if (\Drupal::moduleHandler()->moduleExists('entity_browser')) {
