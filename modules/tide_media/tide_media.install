@@ -81,35 +81,3 @@ function tide_media_update_10005() {
   $config->set('track_enabled_target_entity_types', $result);
   $config->save();
 }
-
-/**
- * Adds secure file widget to entity browser.
- */
-function tide_media_update_10006() {
-  if (\Drupal::moduleHandler()->moduleExists('tide_media_secure_files')) {
-    $uuid = \Drupal::service('uuid')->generate();
-    $secure_file_widget = [
-      'id' => 'entity_form',
-      'uuid' => $uuid,
-      'label' => 'Add secure file',
-      'weight' => 6,
-      'settings' => [
-        'submit_text' => 'Save secure file',
-        'entity_type' => 'media',
-        'bundle' => 'secure_file',
-        'form_mode' => 'default',
-      ],
-    ];
-
-    $config = \Drupal::configFactory()->getEditable('entity_browser.browser.tide_media_browser_iframe');
-    $widgets = $config->get('widgets');
-    if (!is_array($widgets)) {
-      $widgets = [];
-    }
-    if (!in_array($secure_file_widget, $widgets)) {
-      $widgets[$uuid] = $secure_file_widget;
-      $config->set('widgets', $widgets);
-      $config->save();
-    }
-  }
-}
