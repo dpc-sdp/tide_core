@@ -4,3 +4,9 @@ tide_core.moderated_content:
   parent: system.admin_content
   route_name: content_moderation.admin_moderated_content
   weight: 100
+
+audit_trail_settings.admin:
+  title: 'Audit Trail Settings'
+  description: 'Change audit trail log clean time'
+  parent: admin_audit_trail.report_form
+  route_name: audit_trail_settings.admin

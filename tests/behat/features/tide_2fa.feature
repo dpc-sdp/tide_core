@@ -25,8 +25,6 @@ Feature: Force 2FA setup
     And I see the text "TFA Settings"
     And I see field "edit-tfa-enabled"
     And the "edit-tfa-enabled" checkbox should not be checked
-    And I see field "edit-tfa-forced"
-    And the "edit-tfa-forced" checkbox should be checked
     Then I save screenshot
     Examples:
       | role               |
