@@ -86,6 +86,11 @@ function tide_media_update_10005() {
  * Adds media_alias_display settings for document type.
  */
 function tide_media_update_10006() {
+  // Check if the media_library module is enabled, enable it.
+  if (\Drupal::moduleHandler()->moduleExists('media_library') === FALSE) {
+    \Drupal::service('module_installer')->install(['media_library']);
+  }
+
   if (\Drupal::moduleHandler()->moduleExists('media_alias_display') === FALSE) {
     \Drupal::service('module_installer')->install(['media_alias_display']);
   }
