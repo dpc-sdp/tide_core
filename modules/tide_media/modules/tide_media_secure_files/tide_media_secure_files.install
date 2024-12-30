@@ -53,6 +53,38 @@ function tide_media_secure_files_uninstall() {
 }
 
 /**
+ * Adds a secure file widget to entity browser.
+ */
+function _create_secure_file_widget() {
+  if (\Drupal::moduleHandler()->moduleExists('entity_browser')) {
+    $uuid = \Drupal::service('uuid')->generate();
+    $secure_file_widget = [
+      'id' => 'entity_form',
+      'uuid' => $uuid,
+      'label' => 'Add secure file',
+      'weight' => 6,
+      'settings' => [
+        'submit_text' => 'Save secure file',
+        'entity_type' => 'media',
+        'bundle' => 'secure_file',
+        'form_mode' => 'default',
+      ],
+    ];
+
+    $config = \Drupal::configFactory()->getEditable('entity_browser.browser.tide_media_browser_iframe');
+    $widgets = $config->get('widgets');
+    if (!is_array($widgets)) {
+      $widgets = [];
+    }
+    if (!in_array($secure_file_widget, $widgets)) {
+      $widgets[$uuid] = $secure_file_widget;
+      $config->set('widgets', $widgets);
+      $config->save();
+    }
+  }
+}
+
+/**
  * Implements hook_install().
  */
 function tide_media_secure_files_install() {
@@ -71,4 +103,13 @@ function tide_media_secure_files_install() {
       user_role_grant_permissions($role->id(), ['view field_secure_file']);
     }
   }
+
+  _create_secure_file_widget();
+}
+
+/**
+ * Adds secure file widget to entity browser.
+ */
+function tide_media_secure_files_update_10001() {
+  _create_secure_file_widget();
 }
