@@ -358,3 +358,23 @@ function tide_core_update_10011() {
     }
   }
 }
+
+/**
+ * Enable shield module.
+ */
+function tide_core_update_10012() {
+  // Check if the shield module is disabled, enable it.
+  if (\Drupal::moduleHandler()->moduleExists('shield') === FALSE) {
+    \Drupal::service('module_installer')->install(['shield']);
+  }
+  // Add the new paths to exclude.
+  $exclude_paths = [
+    '/oauth',
+    '/oauth/authorize',
+    '/oauth/token',
+    '/sites/default/files/*',
+  ];
+  $paths_string = implode("\r\n", $exclude_paths);
+  $shield_config = \Drupal::configFactory()->getEditable('shield.settings');
+  $shield_config->set('paths', $paths_string)->save();
+}
