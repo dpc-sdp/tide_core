@@ -203,3 +203,31 @@ function tide_landing_page_update_10107() {
   $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
   $tide_update_helper->revert('field_config', 'paragraph.key_journeys.field_paragraph_title');
 }
+
+/**
+ * Update key_journeys.field_paragraph_links configs.
+ */
+function tide_landing_page_update_10108() {
+  $form_configs = [
+    'core.entity_form_display.paragraph.key_journeys.default',
+    'core.entity_view_display.paragraph.key_journeys.default',
+  ];
+
+  foreach ($form_configs as $form_config) {
+    $config = \Drupal::configFactory()->getEditable($form_config);
+    $dependencies = $config->get('dependencies.module');
+    if (!in_array('linkit', $dependencies)) {
+      $dependencies[] = 'linkit';
+      $config->set('dependencies.module', $dependencies);
+    }
+
+    $content = $config->get('content.field_paragraph_links');
+    $content['type'] = 'linkit';
+    $content['settings']['linkit_profile'] = 'content';
+    $content['settings']['linkit_auto_link_text'] = false;
+
+    $config->set('content.field_paragraph_links', $content);
+    $config->save();
+  }
+
+}
