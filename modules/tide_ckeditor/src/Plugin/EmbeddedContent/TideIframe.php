@@ -66,13 +66,11 @@ class TideIframe extends EmbeddedContentPluginBase implements EmbeddedContentInt
       '#type' => 'textfield',
       '#title' => $this->t('Width'),
       '#default_value' => $this->configuration['width'],
-      '#required' => TRUE,
     ];
     $form['height'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Height'),
       '#default_value' => $this->configuration['height'],
-      '#required' => TRUE,
     ];
     return $form;
   }
