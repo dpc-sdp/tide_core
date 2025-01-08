@@ -113,7 +113,6 @@ function tide_media_update_10007() {
 
   $storage = \Drupal::entityTypeManager()->getStorage('view');
 
-  // Handle the view located in config/optional (e.g., 'views.view.media').
   $config_entity_optional = $storage->load('media');
   if ($config_entity_optional !== NULL) {
     $storage->delete([$config_entity_optional]);
