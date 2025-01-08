@@ -5,6 +5,10 @@
  * Contains tide_core.module.
  */
 
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\tide_core\Plugin\Field\BreadcrumbField;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Breadcrumb\Breadcrumb;
@@ -27,6 +31,7 @@ use Drupal\tide_core\Render\Element\AdminToolbar;
 use Drupal\user\RoleInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\tide_core\BreadcrumbCacheDependencyManager;
 
 /**
  * Implements hook_views_data().
@@ -719,6 +724,16 @@ function tide_core_node_presave(NodeInterface $node) {
       admin_audit_trail_insert($log);
     }
   }
+
+  if (!$node->field_breadcrumb_parent->isEmpty()) {
+    $bm = new BreadcrumbCacheDependencyManager();
+    $bm->addDependency($node->id(), $node->field_breadcrumb_parent->target_id);
+    $affected_nodes = $bm->getAllAffectedNodes($node->id());
+    $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
+    if (!empty($tags)) {
+      Cache::invalidateTags($tags);
+    }
+  }
 }
 
 /**
@@ -859,5 +874,21 @@ function tide_core_process_media_entity_status(array $media_uuids) {
         }
       }
     }
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function tide_core_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'node') {
+    $fields['breadcrumb_field'] = BaseFieldDefinition::create('breadcrumb_computed')
+      ->setLabel(t('Breadcrumb'))
+      ->setName('Breadcrumb')
+      ->setDescription(t('Breadcrumb'))
+      ->setComputed(TRUE)
+      ->setClass(BreadcrumbField::class)
+      ->setReadOnly(TRUE)
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
   }
 }
