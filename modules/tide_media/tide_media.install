@@ -108,11 +108,9 @@ function tide_media_update_10006() {
 function tide_media_update_10007() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
 
-  // Define the config locations for both views.
   $config_optional_location = [\Drupal::service('extension.list.module')->getPath('tide_media') . '/config/optional'];
   $config_install_location = [\Drupal::service('extension.list.module')->getPath('tide_media') . '/config/install'];
 
-  // Load the storage for views.
   $storage = \Drupal::entityTypeManager()->getStorage('view');
 
   // Handle the view located in config/optional (e.g., 'views.view.media').
@@ -125,12 +123,12 @@ function tide_media_update_10007() {
   $new_config_entity_optional = $storage->createFromStorageRecord($config_read_optional);
   $new_config_entity_optional->save();
 
-  $config_entity_install = $storage->load('views.view.tide_media_browser');
+  $config_entity_install = $storage->load('tide_media_browser');
   if ($config_entity_install !== NULL) {
     $storage->delete([$config_entity_install]);
   }
 
-  $config_read_install = _tide_read_config('views.view.another_media', $config_install_location, FALSE);
+  $config_read_install = _tide_read_config('views.view.tide_media_browser', $config_install_location, FALSE);
   $new_config_entity_install = $storage->createFromStorageRecord($config_read_install);
   $new_config_entity_install->save();
 }
