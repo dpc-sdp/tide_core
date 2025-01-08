@@ -134,4 +134,3 @@ function tide_media_update_10007() {
   $new_config_entity_install = $storage->createFromStorageRecord($config_read_install);
   $new_config_entity_install->save();
 }
-
