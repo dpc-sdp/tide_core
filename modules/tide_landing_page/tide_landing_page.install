@@ -203,3 +203,43 @@ function tide_landing_page_update_10107() {
   $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
   $tide_update_helper->revert('field_config', 'paragraph.key_journeys.field_paragraph_title');
 }
+
+/**
+ * Set field `field_landing_page_hero_theme` to mandatory, description, label.
+ */
+function tide_landing_page_update_10108() {
+  $bundles = [
+    'landing_page',
+    'publication',
+    'publication_page',
+  ];
+
+  foreach ($bundles as $bundle) {
+    $field = FieldConfig::loadByName('node', $bundle, 'field_landing_page_hero_theme');
+    if (!empty($field)) {
+      $field->setLabel('Page title display style');
+      $field->setRequired(TRUE);
+      $field->setDefaultValue('light');
+      $field->setDescription('By default the page title will display in the site’s primary colour. If you choose ‘Reverse blocked text’ the heading and introduction text will be white with a coloured block behind the text (the site’s ‘accent contrast’ and ‘accent alternate’ colours). See <a href="https://ripple.sdp.vic.gov.au/design-system/components/header">Ripple header page to understand the header </a>component design.');
+      $field->save();
+    }
+  }
+}
+
+/**
+ * Set label options for `field_landing_page_hero_theme`.
+ */
+function tide_landing_page_update_10109() {
+  $config = \Drupal::configFactory()->getEditable('field.storage.node.field_landing_page_hero_theme');
+  $allowed_values = $config->get('settings.allowed_values');
+  foreach ($allowed_values as $key => $allowed_value) {
+    if ($allowed_value['label'] === 'Dark') {
+      $allowed_values[$key]['label'] = 'Reverse blocked text';
+    }
+    elseif ($allowed_value['label'] === 'Light') {
+      $allowed_values[$key]['label'] = 'Default';
+    }
+  }
+  $config->set('settings.allowed_values', $allowed_values);
+  $config->save();
+}

@@ -10,11 +10,13 @@ id: node.publication.field_landing_page_hero_theme
 field_name: field_landing_page_hero_theme
 entity_type: node
 bundle: publication
-label: 'Hero image theme'
-description: 'If your hero image is mostly dark, apply the dark theme. This changes how the page title is displayed.'
-required: false
+label: 'Page title display style'
+description: 'By default the page title will display in the site’s primary colour. If you choose ‘Reverse blocked text’ the heading and introduction text will be white with a coloured block behind the text (the site’s ‘accent contrast’ and ‘accent alternate’ colours). See <a href="https://ripple.sdp.vic.gov.au/design-system/components/header">Ripple header page to understand the header </a>component design.'
+required: true
 translatable: true
-default_value: {  }
+default_value:
+  -
+    value: light
 default_value_callback: ''
 settings: {  }
 field_type: list_string
