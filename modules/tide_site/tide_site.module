@@ -5,6 +5,11 @@
  * Tide Site module functionality.
  */
 
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\tide_site\Plugin\Field\BreadcrumbField;
+use Drupal\tide_site\BreadcrumbCacheDependencyManager;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -25,6 +30,7 @@ use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site\TideSiteMenuAutocreate;
 use Drupal\tide_site\TideSitePathAliasListBuilder;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Implements hook_entity_bundle_create().
@@ -45,7 +51,7 @@ function tide_site_entity_bundle_create($entity_type_id, $bundle) {
 
   // Map of which fields should be created for which entity types.
   $map = [
-    'node' => [$fields_helper::FIELD_SITE, $fields_helper::FIELD_PRIMARY_SITE],
+    'node' => [$fields_helper::FIELD_SITE, $fields_helper::FIELD_PRIMARY_SITE, $fields_helper::FIELD_BREADCRUMB_NAME, $fields_helper::FIELDD_BREADCRUMB_PARENT],
     'media' => [$fields_helper::FIELD_SITE],
   ];
 
@@ -121,6 +127,17 @@ function tide_site_entity_presave(EntityInterface $entity) {
             'third_party_settings' => [],
           ]);
         }
+      }
+    }
+  }
+  if ($entity instanceof NodeInterface) {
+    if (!$entity->field_breadcrumb_parent->isEmpty()) {
+      $bm = new BreadcrumbCacheDependencyManager();
+      $bm->addDependency($entity->id(), $entity->field_breadcrumb_parent->target_id);
+      $affected_nodes = $bm->getAllAffectedNodes($entity->id());
+      $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
+      if (!empty($tags)) {
+        Cache::invalidateTags($tags);
       }
     }
   }
@@ -949,5 +966,21 @@ function tide_site_tide_help(string $route_name, RouteMatchInterface $route_matc
     case 'entity.menu.collection':
     case 'entity.menu.add_form':
       return '<p>' . t('Learn how to create and edit <a href="@sdp-handbook" target="_blank">navigation menus</a>.', ['@sdp-handbook' => 'https://www.singledigitalpresence.vic.gov.au/create-and-edit-menus']) . '</p>';
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function tide_site_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'node') {
+    $fields['breadcrumb_field'] = BaseFieldDefinition::create('breadcrumb_computed')
+      ->setLabel(t('Breadcrumb'))
+      ->setName('Breadcrumb')
+      ->setDescription(t('Breadcrumb'))
+      ->setComputed(TRUE)
+      ->setClass(BreadcrumbField::class)
+      ->setReadOnly(TRUE)
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_core\Plugin\Field\FieldType;
+namespace Drupal\tide_site\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;

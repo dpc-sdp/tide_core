@@ -22,6 +22,10 @@ class TideSiteFields extends TideCoreFields {
    */
   const FIELD_PRIMARY_SITE = 'field_ENTITY_TYPE_primary_site';
 
+  const FIELD_BREADCRUMB_NAME = 'field_breadcrumb_name';
+
+  const FIELDD_BREADCRUMB_PARENT = 'field_breadcrumb_parent';
+
   /**
    * Helper to check if fields name is one of the 'site' fields.
    *
@@ -176,6 +180,64 @@ class TideSiteFields extends TideCoreFields {
     catch (\Exception $exception) {
       watchdog_exception('tide_site', $exception);
     }
+  }
+
+  /**
+   * Config for 'Breadcrumb Name' field.
+   */
+  protected function getFieldBreadcrumbNameConfig() {
+    return [
+      'field_name' => self::FIELD_BREADCRUMB_NAME,
+      'label' => 'Breadcrumb Name',
+      'required' => FALSE,
+      'field_type' => 'string',
+    ];
+  }
+
+  /**
+   * Config for 'Breadcrumb Parent' field.
+   */
+  protected function getFieldBreadcrumbParentConfig() {
+    $node_bundles = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
+    $node_bundles = array_combine(array_keys($node_bundles), array_keys($node_bundles));
+    return [
+      'field_name' => self::FIELDD_BREADCRUMB_PARENT,
+      'label' => 'Breadcrumb Parent',
+      'settings' => [
+        'handler' => 'default:node',
+        'handler_settings' => [
+          'target_bundles' => $node_bundles,
+        ],
+      ],
+      'required' => FALSE,
+      'field_type' => 'entity_reference',
+    ];
+  }
+
+  /**
+   * Config for 'Breadcrumb Name' field form display components.
+   */
+  protected function getFieldBreadcrumbNameFormDisplayComponents() {
+    return [
+      'type' => 'string_textfield',
+      'region' => 'content',
+    ];
+  }
+
+  /**
+   * Config for 'Breadcrumb Parent' field form display components.
+   */
+  protected function getFieldBreadcrumbParentFormDisplayComponents() {
+    return [
+      'type' => 'entity_reference_autocomplete',
+      'region' => 'content',
+      'settings' => [
+        'match_operator' => 'CONTAINS',
+        'size' => '60',
+        'match_limit' => '10',
+        'placeholder' => '',
+      ],
+    ];
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_core\Plugin\Field;
+namespace Drupal\tide_site\Plugin\Field;
 
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
@@ -41,6 +41,9 @@ class BreadcrumbField extends FieldItemList {
       if ($node->hasField('field_breadcrumb_name') && !$node->get('field_breadcrumb_name')->isEmpty()) {
         $title = $node->field_breadcrumb_name->value;
       }
+      else {
+        $title = $node->getTitle();
+      }
       $alias_objects = $storage->loadByProperties(
         [
           'path' => '/node/' . $node->id(),
@@ -70,7 +73,7 @@ class BreadcrumbField extends FieldItemList {
           if (!$exists) {
             $result[$site_id][] = [
               'url' => $url,
-              'name' => empty($title) ? $node->getTitle() : $title,
+              'name' => $title
             ];
           }
         }

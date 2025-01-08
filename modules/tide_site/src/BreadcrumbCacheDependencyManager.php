@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_core;
+namespace Drupal\tide_site;
 
 /**
  * Manages cache dependencies between nodes.

@@ -98,3 +98,17 @@ function tide_site_update_10003() {
   $system_feature_flags->set('linkset_endpoint', TRUE)
     ->save();
 }
+/**
+ * Add breadcrumb fields to all node bundles.
+ */
+function tide_site_update_10004() {
+  /** @var \Drupal\tide_site\TideSiteFields $fields_helper */
+  $fields_helper = \Drupal::service('tide_site.fields');
+  $node_bundles = Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($node_bundles as $bundle_id => $entity) {
+      $fields_helper->provisionField(\Drupal\tide_site\TideSiteFields::FIELD_BREADCRUMB_NAME,
+        'node', $bundle_id);
+      $fields_helper->provisionField(\Drupal\tide_site\TideSiteFields::FIELDD_BREADCRUMB_PARENT,
+        'node', $bundle_id);
+  }
+}
