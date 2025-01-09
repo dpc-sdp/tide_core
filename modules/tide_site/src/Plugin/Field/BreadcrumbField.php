@@ -73,7 +73,7 @@ class BreadcrumbField extends FieldItemList {
           if (!$exists) {
             $result[$site_id][] = [
               'url' => $url,
-              'name' => $title
+              'name' => $title,
             ];
           }
         }

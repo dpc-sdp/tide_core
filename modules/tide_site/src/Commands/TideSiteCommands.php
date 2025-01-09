@@ -4,7 +4,9 @@ namespace Drupal\tide_site\Commands;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\tide_site\BreadcrumbCacheDependencyManager;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 
 /**
  * A Drush commandfile.
@@ -20,6 +22,31 @@ use Drush\Commands\DrushCommands;
 class TideSiteCommands extends DrushCommands {
 
   use StringTranslationTrait;
+
+  /**
+   * Gets the breadcrumb parent relationships.
+   *
+   * @command rebuild-breadcrumb-relationships
+   * @aliases rbr
+   * @usage drush rebuild-breadcrumb-relationships
+   */
+  public function rebuildBreadcrumbRelationships() {
+    try {
+      $query = \Drupal::database()->select('node__field_breadcrumb_parent', 'bp')
+        ->fields('bp', ['entity_id', 'field_breadcrumb_parent_target_id']);
+      $results = $query->execute()->fetchAllKeyed();
+      if (empty($results)) {
+        Drush::output()->writeln("No breadcrumb relationships found.");
+      }
+      $bm = new BreadcrumbCacheDependencyManager();
+      $bm->addDependency($results);
+      Drush::output()->writeln("Breadcrumb relationships have been rebuilt.");
+    }
+    catch (\Exception $e) {
+      $this->logger()->error('Error fetching breadcrumb parent data: ' . $e->getMessage());
+      return [];
+    }
+  }
 
   /**
    * Update the domains on the site taxonomy based on an environment variable.

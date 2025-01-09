@@ -54,41 +54,67 @@ class BreadcrumbCacheDependencyManager {
       return TRUE;
     }
     catch (\Exception $e) {
-      \Drupal::logger('tide_core')->error('Failed to save dependency graph: @message', ['@message' => $e->getMessage()]);
+      \Drupal::logger('tide_site')->error('Failed to save dependency graph: @message', ['@message' => $e->getMessage()]);
       return FALSE;
     }
   }
 
   /**
-   * Adds a node dependency relationship.
+   * Internal helper to add a single dependency relationship to the graph.
    *
+   * @param array &$graph
+   *   Reference to the dependency graph.
    * @param int $nid
    *   Current node ID.
    * @param int $parent_nid
    *   Parent node ID.
+   */
+  private function addSingleDependency(array &$graph, $nid, $parent_nid) {
+    if (!isset($graph['forward'][$parent_nid])) {
+      $graph['forward'][$parent_nid] = [];
+    }
+    if (!in_array($nid, $graph['forward'][$parent_nid])) {
+      $graph['forward'][$parent_nid][] = $nid;
+    }
+
+    if (!isset($graph['reverse'][$nid])) {
+      $graph['reverse'][$nid] = [];
+    }
+    if (!in_array($parent_nid, $graph['reverse'][$nid])) {
+      $graph['reverse'][$nid][] = $parent_nid;
+    }
+  }
+
+  /**
+   * Adds node dependency relationship(s)
+   *
+   * @param int|array $nid
+   *   Current node ID or array of dependencies.
+   * @param int|null $parent_nid
+   *   Parent node ID (optional when $nid is array)
    *
    * @return bool
    *   Whether the operation was successful
    */
-  public function addDependency($nid, $parent_nid) {
+  public function addDependency($nid, $parent_nid = NULL) {
     try {
       $graph = $this->getDependencyGraph();
-      if (!isset($graph['forward'][$parent_nid])) {
-        $graph['forward'][$parent_nid] = [];
+
+      if (is_array($nid)) {
+        // Handle multiple dependencies.
+        foreach ($nid as $child => $parent) {
+          $this->addSingleDependency($graph, $child, $parent);
+        }
       }
-      if (!in_array($nid, $graph['forward'][$parent_nid])) {
-        $graph['forward'][$parent_nid][] = $nid;
+      else {
+        // Handle single dependency.
+        $this->addSingleDependency($graph, $nid, $parent_nid);
       }
-      if (!isset($graph['reverse'][$nid])) {
-        $graph['reverse'][$nid] = [];
-      }
-      if (!in_array($parent_nid, $graph['reverse'][$nid])) {
-        $graph['reverse'][$nid][] = $parent_nid;
-      }
+
       return $this->saveDependencyGraph($graph);
     }
     catch (\Exception $e) {
-      \Drupal::logger('tide_core')->error('Failed to add dependency: @message', ['@message' => $e->getMessage()]);
+      \Drupal::logger('tide_site')->error('Failed to add dependency: @message', ['@message' => $e->getMessage()]);
       return FALSE;
     }
   }
@@ -124,7 +150,7 @@ class BreadcrumbCacheDependencyManager {
       return $this->saveDependencyGraph($graph);
     }
     catch (\Exception $e) {
-      \Drupal::logger('tide_core')->error('Failed to remove dependency: @message', ['@message' => $e->getMessage()]);
+      \Drupal::logger('tide_site')->error('Failed to remove dependency: @message', ['@message' => $e->getMessage()]);
       return FALSE;
     }
   }
@@ -322,7 +348,7 @@ class BreadcrumbCacheDependencyManager {
       return $this->saveDependencyGraph($graph);
     }
     catch (\Exception $e) {
-      \Drupal::logger('tide_core')->error('Failed to remove node: @message', ['@message' => $e->getMessage()]);
+      \Drupal::logger('tide_site')->error('Failed to remove node: @message', ['@message' => $e->getMessage()]);
       return FALSE;
     }
   }
