@@ -10,14 +10,17 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\media\Entity\Media;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
 use Drupal\tide_core\Render\Element\AdminToolbar;
@@ -694,6 +697,7 @@ function tide_core_node_presave(NodeInterface $node) {
   $node_state = isset($node->get('moderation_state')->getValue()[0]) ? $node->get('moderation_state')->getValue()[0]['value'] : '';
 
   if ($node_state === 'published') {
+    tide_core_media_autopublish($node);
     $log = [
       /*
        * Term the 'type' => 'node' as 'type' => 'page'
@@ -784,5 +788,76 @@ function tide_core_user_role_insert(RoleInterface $role): void {
   if ($role->id() === 'site_admin') {
     $role->grantPermission('assign site_admin role');
     $role->save();
+  }
+}
+
+/**
+ * Publish unpublished media(documents) on node publish.
+ */
+function tide_core_media_autopublish($node) {
+  // Loop through all fields of the node.
+  foreach ($node->getFields() as $field_name => $field) {
+
+    // Check if the field is of type Entity Reference to Paragraphs.
+    if ($field->getFieldDefinition()->getType() == 'entity_reference_revisions' &&
+        $field->getFieldDefinition()->getSetting('target_type') == 'paragraph') {
+
+      // Loop through all referenced Paragraph entities.
+      foreach ($field->getValue() as $paragraph_item) {
+        $paragraph = Paragraph::load($paragraph_item['target_id']);
+        if ($paragraph) {
+          // Loop through fields in the paragraph.
+          foreach ($paragraph->getFields() as $sub_field_name => $sub_field) {
+            // Check if the field is of type "Text (formatted, long)".
+            if ($sub_field instanceof FieldItemListInterface &&
+              $sub_field->getFieldDefinition()->getType() == 'text_long') {
+              $text_content = $sub_field->value;
+              preg_match_all('/data-entity-uuid="([a-f0-9\-]+)"/', $text_content, $matches);
+              if (!empty($matches[1])) {
+                tide_core_process_media_entity_status($matches[1]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Check if the field is the "Body" field (common for content types)
+    // Ensure the body field is of type "Text (formatted, long)".
+    elseif ($field_name == 'body' && $field->getFieldDefinition()->getType() == 'text_long') {
+      $body_content = $field->value;
+      // Parse the body content for media entities using a regex pattern.
+      preg_match_all('/data-entity-uuid="([a-f0-9\-]+)"/', $body_content, $matches);
+
+      // Loop through the found media UUIDs.
+      if (!empty($matches[1])) {
+        tide_core_process_media_entity_status($matches[1]);
+      }
+    }
+  }
+}
+
+/**
+ * Helper function to check and update the media entity status.
+ *
+ * @param array $media_uuids
+ *   Array of media UUIDs to process.
+ */
+function tide_core_process_media_entity_status(array $media_uuids) {
+  foreach ($media_uuids as $media_uuid) {
+    // Load the media entity by UUID.
+    $media = \Drupal::entityTypeManager()->getStorage('media')->loadByProperties(['uuid' => $media_uuid]);
+    if ($media) {
+      $media = reset($media);
+      // Check if the media is an instance of Media.
+      if ($media instanceof Media) {
+        $status = $media->get('status')->value;
+        // If unpublished, set the status to published (1)
+        if ($status == 0) {
+          $media->set('status', 1);
+          $media->save();
+        }
+      }
+    }
   }
 }

@@ -72,12 +72,6 @@ function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_
 
     $form['#process'][] = '_tide_publication_form_node_form_process';
 
-    // Move Hero Image theme to Hero Image field group.
-    if (isset($form['field_landing_page_hero_theme']) && isset($form['field_landing_page_hero_image']['widget'])) {
-      $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme'] = $form['field_landing_page_hero_theme'];
-      unset($form['field_landing_page_hero_theme']);
-    }
-
     // Add conditional field for show table of content.
     if (isset($form['field_node_display_headings'])) {
       $form['field_node_display_headings']['#states'] = [
@@ -126,6 +120,13 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
       'default' => t('Default appearance'),
       'fullwidth' => t('Full-width  background image'),
     ],
+    '#ajax' => [
+      'callback' => 'tide_landing_page_set_value_hero_image_theme',
+    ],
+  ];
+
+  $form['field_landing_page_hero_theme']['#states']['enabled'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
 
   $form['field_landing_page_hero_image']['#states']['visible'] = [
