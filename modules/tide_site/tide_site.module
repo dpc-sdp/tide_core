@@ -5,15 +5,14 @@
  * Tide Site module functionality.
  */
 
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\tide_site\Plugin\Field\BreadcrumbField;
-use Drupal\tide_site\BreadcrumbCacheDependencyManager;
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Link;
@@ -26,11 +25,12 @@ use Drupal\path_alias\Entity\PathAlias;
 use Drupal\path_alias\PathAliasInterface;
 use Drupal\search_api\IndexInterface;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\tide_site\BreadcrumbCacheDependencyManager;
+use Drupal\tide_site\Plugin\Field\BreadcrumbField;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site\TideSiteMenuAutocreate;
 use Drupal\tide_site\TideSitePathAliasListBuilder;
 use Drupal\views\ViewExecutable;
-use Drupal\Core\Cache\Cache;
 
 /**
  * Implements hook_entity_bundle_create().
@@ -51,7 +51,12 @@ function tide_site_entity_bundle_create($entity_type_id, $bundle) {
 
   // Map of which fields should be created for which entity types.
   $map = [
-    'node' => [$fields_helper::FIELD_SITE, $fields_helper::FIELD_PRIMARY_SITE, $fields_helper::FIELD_BREADCRUMB_NAME, $fields_helper::FIELDD_BREADCRUMB_PARENT],
+    'node' => [
+      $fields_helper::FIELD_SITE,
+      $fields_helper::FIELD_PRIMARY_SITE,
+      $fields_helper::FIELD_BREADCRUMB_NAME,
+      $fields_helper::FIELDD_BREADCRUMB_PARENT,
+    ],
     'media' => [$fields_helper::FIELD_SITE],
   ];
 
@@ -131,7 +136,7 @@ function tide_site_entity_presave(EntityInterface $entity) {
     }
   }
   if ($entity instanceof NodeInterface) {
-    if (!$entity->field_breadcrumb_parent->isEmpty()) {
+    if ($entity->hasField('field_breadcrumb_parent') && !$entity->field_breadcrumb_parent->isEmpty()) {
       $bm = new BreadcrumbCacheDependencyManager();
       $bm->addDependency($entity->id(), $entity->field_breadcrumb_parent->target_id);
       $affected_nodes = $bm->getAllAffectedNodes($entity->id());
@@ -139,6 +144,36 @@ function tide_site_entity_presave(EntityInterface $entity) {
       if (!empty($tags)) {
         Cache::invalidateTags($tags);
       }
+    }
+    if ($entity->hasField('field_breadcrumb_parent') && $entity->field_breadcrumb_parent->isEmpty()) {
+      try {
+        $entity->set('field_breadcrumb_parent', $entity->field_node_primary_site->entity->field_site_homepage->entity->id());
+        $bm = new BreadcrumbCacheDependencyManager();
+        $bm->addDependency($entity->id(), $entity->field_node_primary_site->entity->field_site_homepage->entity->id());
+        $affected_nodes = $bm->getAllAffectedNodes($entity->id());
+        $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
+        if (!empty($tags)) {
+          Cache::invalidateTags($tags);
+        }
+      }
+      catch (\Exception $e) {
+        \Drupal::messenger()->addMessage($e->getMessage());
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function tide_site_node_delete(NodeInterface $node) {
+  if ($node->hasField('field_breadcrumb_parent')) {
+    $bm = new BreadcrumbCacheDependencyManager();
+    $affected_nodes = $bm->getAllAffectedNodes($node->id());
+    $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
+    if (!empty($tags)) {
+      $bm->removeNode($node->id());
+      Cache::invalidateTags($tags);
     }
   }
 }
