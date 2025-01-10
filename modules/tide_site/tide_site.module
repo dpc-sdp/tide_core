@@ -136,30 +136,71 @@ function tide_site_entity_presave(EntityInterface $entity) {
     }
   }
   if ($entity instanceof NodeInterface) {
-    if ($entity->hasField('field_breadcrumb_parent') && !$entity->field_breadcrumb_parent->isEmpty()) {
-      $bm = new BreadcrumbCacheDependencyManager();
-      $bm->addDependency($entity->id(), $entity->field_breadcrumb_parent->target_id);
-      $affected_nodes = $bm->getAllAffectedNodes($entity->id());
-      $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
-      if (!empty($tags)) {
-        Cache::invalidateTags($tags);
-      }
+    _tide_site_handle_breadcrumb_cache($entity);
+  }
+}
+
+/**
+ * Handles breadcrumb cache operations for a node entity.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node entity.
+ */
+function _tide_site_handle_breadcrumb_cache(NodeInterface $node) {
+  if (!$node->hasField('field_breadcrumb_parent')) {
+    return;
+  }
+
+  $breadcrumbManager = new BreadcrumbCacheDependencyManager();
+
+  // Handle existing breadcrumb parent.
+  if (!$node->field_breadcrumb_parent->isEmpty()) {
+    _tide_site_invalidate_breadcrumb_cache(
+      $breadcrumbManager,
+      $node->id(),
+      $node->field_breadcrumb_parent->target_id
+    );
+    return;
+  }
+
+  // Handle empty breadcrumb parent.
+  try {
+    $primarySite = $node->field_node_primary_site->entity;
+    if (!$primarySite || !$primarySite->hasField('field_site_homepage')) {
+      return;
     }
-    if ($entity->hasField('field_breadcrumb_parent') && $entity->field_breadcrumb_parent->isEmpty()) {
-      try {
-        $entity->set('field_breadcrumb_parent', $entity->field_node_primary_site->entity->field_site_homepage->entity->id());
-        $bm = new BreadcrumbCacheDependencyManager();
-        $bm->addDependency($entity->id(), $entity->field_node_primary_site->entity->field_site_homepage->entity->id());
-        $affected_nodes = $bm->getAllAffectedNodes($entity->id());
-        $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
-        if (!empty($tags)) {
-          Cache::invalidateTags($tags);
-        }
-      }
-      catch (\Exception $e) {
-        \Drupal::messenger()->addMessage($e->getMessage());
-      }
+
+    $homepageNode = $primarySite->field_site_homepage->entity;
+    if (!$homepageNode) {
+      return;
     }
+
+    $node->set('field_breadcrumb_parent', $homepageNode->id());
+    _tide_site_invalidate_breadcrumb_cache(
+      $breadcrumbManager,
+      $node->id(),
+      $homepageNode->id()
+    );
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('tide_site')->error(
+      'Error handling breadcrumb cache: @message',
+      ['@message' => $e->getMessage()]
+    );
+    \Drupal::messenger()->addError(t('Failed to update breadcrumb parent.'));
+  }
+}
+
+/**
+ * Invalidates breadcrumb cache tags for affected nodes.
+ */
+function _tide_site_invalidate_breadcrumb_cache($manager, $nodeId, $parentId) {
+  $manager->addDependency($nodeId, $parentId);
+  $affectedNodes = $manager->getAllAffectedNodes($nodeId);
+  $tags = $manager->NodeIdsToNodeCacheTags($affectedNodes);
+
+  if (!empty($tags)) {
+    Cache::invalidateTags($tags);
   }
 }
 

@@ -100,6 +100,9 @@ function tide_site_update_10003() {
     ->save();
 }
 
+/**
+ * Install field_breadcrumb_name and parent storage.
+ */
 function tide_site_update_10004() {
   $config_update_items = [
     'node.field_breadcrumb_name' => 'field_storage_config',
