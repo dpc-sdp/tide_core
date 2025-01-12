@@ -204,6 +204,11 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '@language-code-list' => $language_code_list_link,
     ]);
   }
+  // Check if the field exists
+  if (isset($form['path'])) {
+    // Hide path field
+    $form['path']['#access'] = FALSE;
+  }
 }
 
 /**
