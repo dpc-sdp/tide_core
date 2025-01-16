@@ -91,7 +91,7 @@ class DatasetPurgeCommand extends DrushCommands {
     try {
       if ($current_url && $username && $password) {
         $parsed_url = parse_url($current_url);
-        $constructed_url = 'http://' . $username . ':' . $password . '@' . $parsed_url['host'];
+        $constructed_url = 'http://' . $username . ':' . $password . '@' . $parsed_url['host'] . ':' . $parsed_url['port'];
         $hosts = [$constructed_url];
       }
 
