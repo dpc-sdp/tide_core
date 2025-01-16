@@ -1,6 +1,6 @@
 services:
   dataset_purge.commands:
-    class: Drupal\tide_data_pipelines\Commands\DatasetPurgeCommand
+    class: Drupal\tide_data_pipeline\Commands\DatasetPurgeCommand
     arguments: ['@config.factory']
     tags:
       - { name: drush.command }

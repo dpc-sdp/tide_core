@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\tide_data_pipelines\Commands;
+namespace Drupal\tide_data_pipeline\Commands;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drush\Commands\DrushCommands;
