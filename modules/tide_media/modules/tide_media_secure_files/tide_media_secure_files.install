@@ -113,3 +113,59 @@ function tide_media_secure_files_install() {
 function tide_media_secure_files_update_10001() {
   _create_secure_file_widget();
 }
+
+/**
+ * Update views.view.media and views.view.tide_media_browser.
+ */
+function tide_media_secure_files_update_10002()
+{
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+
+  // Define config paths for optional and install locations.
+  $config_optional_location = \Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional';
+  $config_install_location = \Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install';
+
+  // Get the config storage for views.
+  $storage = \Drupal::entityTypeManager()->getStorage('view');
+
+  $yaml = \Drupal::service('serialization.yaml');
+  if ($yaml === NULL) {
+    \Drupal::logger('tide_media_secure_files')->error('YAML service is not available.');
+    return;
+  }
+  // Handle 'views.view.media' (Optional).
+  $config_entity_optional = $storage->load('media');
+  if ($config_entity_optional) {
+    $yaml_file_path_optional = $config_optional_location . '/views.view.media.yml';
+    if (file_exists($yaml_file_path_optional)) {
+      $yaml_data_optional = $yaml->decode(file_get_contents($yaml_file_path_optional));
+      if (is_array($yaml_data_optional)) {
+        $config_entity_optional->set('display', $yaml_data_optional['display']);
+        $config_entity_optional->save();
+        \Drupal::logger('tide_media_secure_files')->notice('Updated views.view.media configuration.');
+      }
+    } else {
+      \Drupal::logger('tide_media_secure_files')->error('YAML data for views.view.media is not valid.');
+    }
+  } else {
+    \Drupal::logger('tide_media_secure_files')->error('YAML file does not exist.');
+  }
+
+  // Handle 'views.view.tide_media_browser' (Install).
+  $config_entity_install = $storage->load('tide_media_browser');
+  if ($config_entity_install) {
+    $yaml_file_path_install = $config_install_location . '/views.view.tide_media_browser.yml';
+    if (file_exists($yaml_file_path_install)) {
+      $yaml_data_install = $yaml->decode(file_get_contents($yaml_file_path_install));
+      if (is_array($yaml_data_install)) {
+        $config_entity_install->set('display', $yaml_data_install['display']);
+        $config_entity_install->save();
+        \Drupal::logger('tide_media_secure_files')->notice('Updated views.view.tide_media_browser configuration.');
+      }
+    } else {
+      \Drupal::logger('tide_media_secure_files')->error('YAML data for views.view.tide_media_browser is not valid.');
+    }
+  } else {
+    \Drupal::logger('tide_media_secure_files')->error('YAML file does not exist.');
+  }
+}

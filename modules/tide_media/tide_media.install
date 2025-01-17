@@ -116,7 +116,7 @@ function tide_media_update_10007() {
   $storage = \Drupal::entityTypeManager()->getStorage('view');
 
   $yaml = \Drupal::service('serialization.yaml');
-  if ($yaml === null) {
+  if ($yaml === NULL) {
     \Drupal::logger('tide_media')->error('YAML service is not available.');
     return;
   }
@@ -129,8 +129,13 @@ function tide_media_update_10007() {
       if (is_array($yaml_data_optional)) {
         $config_entity_optional->set('display', $yaml_data_optional['display']);
         $config_entity_optional->save();
+        \Drupal::logger('tide_media')->notice('Updated views.view.media configuration.');
       }
+    } else {
+      \Drupal::logger('tide_media')->error('YAML data for views.view.media is not valid.');
     }
+  } else {
+    \Drupal::logger('tide_media')->error('YAML file does not exist.');
   }
 
   // Handle 'views.view.tide_media_browser' (Install).
@@ -142,7 +147,12 @@ function tide_media_update_10007() {
       if (is_array($yaml_data_install)) {
         $config_entity_install->set('display', $yaml_data_install['display']);
         $config_entity_install->save();
+        \Drupal::logger('tide_media')->notice('Updated views.view.tide_media_browser configuration.');
       }
+    } else {
+      \Drupal::logger('tide_media')->error('YAML data for views.view.tide_media_browser is not valid.');
     }
+  } else {
+    \Drupal::logger('tide_media')->error('YAML file does not exist.');
   }
 }
