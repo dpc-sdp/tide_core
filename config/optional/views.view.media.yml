@@ -170,7 +170,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% set content_variable_sf = filemime_1|render|striptags %}\r\n{% if content_variable_sf is not empty %}\r\n <span class=\"file--tide-media-secure-file\"></span>\r\n{% else %}\r\n{% set content_variable = filemime|render|striptags %}\r\n{% if content_variable == 'msword' %}\r\n <span class=\"file--tide-media-office-document\"></span>\r\n{% elseif content_variable == 'pdf' %}\r\n <span class=\"file--tide-media-application-pdf\"></span>\r\n{% elseif content_variable == 'spreadsheet' %}\r\n <span class=\"file--tide-media-application-spreadsheet\"></span>\r\n{% elseif content_variable == 'presentation' %}\r\n <span class=\"file--tide-media-application-presentation\"></span>\r\n{% elseif content_variable == 'plaintext' %}\r\n <span class=\"file--tide-media-application-plaintext\"></span>\r\n{% elseif content_variable == 'xlsm' %}\r\n <span class=\"file--tide-media-xlsm\"></span>\r\n{% elseif content_variable == 'csv' %}\r\n <span class=\"file--tide-media-csv\"></span>\r\n{% elseif content_variable == 'ppt' %}\r\n <span class=\"file--tide-media-ppt\"></span>\r\n{% elseif content_variable == 'mswordx' %}\r\n <span class=\"file--tide-media-mswordx\"></span>\r\n{% elseif content_variable == 'tiff' %}\r\n <span class=\"file--tide-media-tiff\"></span>\r\n{% elseif content_variable == 'zip' %}\r\n <span class=\"file--tide-media-zip\"></span>\r\n{% elseif content_variable == 'eps' %}\r\n <span class=\"file--tide-media-eps\"></span>\r\n{% elseif content_variable == 'xls' %}\r\n <span class=\"file--tide-media-xls\"></span>\r\n{% elseif content_variable == 'dotx' %}\r\n <span class=\"file--tide-media-dotx\"></span>\r\n{% else %}\r\n {{ thumbnail__target_id }}\r\n{% endif %}\r\n{% endif %}"
+            text: "{% set content_variable_sf = filemime_1|render|striptags %}\r\n{% if content_variable_sf is not empty %}\r\n<span class=\"file--tide-media-secure-file\"></span>\r\n{% else %}\r\n{% set content_variable = filemime|render|striptags %}\r\n{% if content_variable == 'msword' %}\r\n <span class=\"file--tide-media-office-document\"></span>\r\n{% elseif content_variable == 'pdf' %}\r\n <span class=\"file--tide-media-application-pdf\"></span>\r\n{% elseif content_variable == 'spreadsheet' %}\r\n <span class=\"file--tide-media-application-spreadsheet\"></span>\r\n{% elseif content_variable == 'presentation' %}\r\n <span class=\"file--tide-media-application-presentation\"></span>\r\n{% elseif content_variable == 'plaintext' %}\r\n <span class=\"file--tide-media-application-plaintext\"></span>\r\n{% elseif content_variable == 'xlsm' %}\r\n <span class=\"file--tide-media-xlsm\"></span>\r\n{% elseif content_variable == 'csv' %}\r\n <span class=\"file--tide-media-csv\"></span>\r\n{% elseif content_variable == 'ppt' %}\r\n <span class=\"file--tide-media-ppt\"></span>\r\n{% elseif content_variable == 'mswordx' %}\r\n <span class=\"file--tide-media-mswordx\"></span>\r\n{% elseif content_variable == 'tiff' %}\r\n <span class=\"file--tide-media-tiff\"></span>\r\n{% elseif content_variable == 'zip' %}\r\n <span class=\"file--tide-media-zip\"></span>\r\n{% elseif content_variable == 'eps' %}\r\n <span class=\"file--tide-media-eps\"></span>\r\n{% elseif content_variable == 'xls' %}\r\n <span class=\"file--tide-media-xls\"></span>\r\n{% elseif content_variable == 'dotx' %}\r\n <span class=\"file--tide-media-dotx\"></span>\r\n{% else %}\r\n {{ thumbnail__target_id }}\r\n{% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -212,12 +212,12 @@ display:
           settings:
             image_link: ''
             image_style: thumbnail
+            image_loading:
+              attribute: lazy
             svg_attributes:
               width: null
               height: null
             svg_render_as_image: true
-            image_loading:
-              attribute: lazy
           group_column: ''
           group_columns: {  }
           group_rows: true
@@ -529,6 +529,15 @@ display:
             date_format: custom
             custom_date_format: 'd/m/Y - H:i'
             timezone: ''
+            tooltip:
+              date_format: ''
+              custom_date_format: ''
+            time_diff:
+              enabled: false
+              future_format: '@interval hence'
+              past_format: '@interval ago'
+              granularity: 2
+              refresh: 60
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -594,6 +603,7 @@ display:
         type: full
         options:
           offset: 0
+          pagination_heading_level: h4
           items_per_page: 50
           total_pages: null
           id: 0

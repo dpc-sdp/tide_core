@@ -108,26 +108,41 @@ function tide_media_update_10006() {
 function tide_media_update_10007() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
 
-  $config_optional_location = [\Drupal::service('extension.list.module')->getPath('tide_media') . '/config/optional'];
-  $config_install_location = [\Drupal::service('extension.list.module')->getPath('tide_media') . '/config/install'];
+  // Define config paths for optional and install locations.
+  $config_optional_location = \Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional';
+  $config_install_location = \Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install';
 
+  // Get the config storage for views.
   $storage = \Drupal::entityTypeManager()->getStorage('view');
 
+  $yaml = \Drupal::service('serialization.yaml');
+  if ($yaml === null) {
+    \Drupal::logger('tide_media')->error('YAML service is not available.');
+    return;
+  }
+  // Handle 'views.view.media' (Optional).
   $config_entity_optional = $storage->load('media');
-  if ($config_entity_optional !== NULL) {
-    $storage->delete([$config_entity_optional]);
+  if ($config_entity_optional) {
+    $yaml_file_path_optional = $config_optional_location . '/views.view.media.yml';
+    if (file_exists($yaml_file_path_optional)) {
+      $yaml_data_optional = $yaml->decode(file_get_contents($yaml_file_path_optional));
+      if (is_array($yaml_data_optional)) {
+        $config_entity_optional->set('display', $yaml_data_optional['display']);
+        $config_entity_optional->save();
+      }
+    }
   }
 
-  $config_read_optional = _tide_read_config('views.view.media', $config_optional_location, FALSE);
-  $new_config_entity_optional = $storage->createFromStorageRecord($config_read_optional);
-  $new_config_entity_optional->save();
-
+  // Handle 'views.view.tide_media_browser' (Install).
   $config_entity_install = $storage->load('tide_media_browser');
-  if ($config_entity_install !== NULL) {
-    $storage->delete([$config_entity_install]);
+  if ($config_entity_install) {
+    $yaml_file_path_install = $config_install_location . '/views.view.tide_media_browser.yml';
+    if (file_exists($yaml_file_path_install)) {
+      $yaml_data_install = $yaml->decode(file_get_contents($yaml_file_path_install));
+      if (is_array($yaml_data_install)) {
+        $config_entity_install->set('display', $yaml_data_install['display']);
+        $config_entity_install->save();
+      }
+    }
   }
-
-  $config_read_install = _tide_read_config('views.view.tide_media_browser', $config_install_location, FALSE);
-  $new_config_entity_install = $storage->createFromStorageRecord($config_read_install);
-  $new_config_entity_install->save();
 }
