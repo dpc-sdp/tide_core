@@ -388,10 +388,10 @@ function tide_webform_webform_submission_presave(WebformSubmission $webform_subm
     if (isset($element['#type']) && $element['#type'] == 'wizard_page') {
       return;
     }
-    // Remove maxlength if counter_type is set.
+    // It will not validate for textarea if both maxlenth and counter.
     if (isset($element['#type']) && $element['#type'] === 'textarea') {
       if (isset($element['#counter_type']) && isset($element['#maxlength'])) {
-        unset($element['#maxlength']);
+        return;
       }
     }
     if (isset($element['#type']) && $element['#type'] == 'number') {
