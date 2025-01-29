@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\tide_data_pipeline\Source\Resource;
+namespace Drupal\tide_data_pipeline\Source\FileResource;
 
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
