@@ -1,11 +1,15 @@
+uuid: 12276fac-d375-48f9-bbc0-3cb588322bc0
 langcode: en
 status: true
 dependencies:
   config:
+    - entity_browser.browser.tide_image_browser
     - field.field.node.tide_search_listing.field_above_results_content
     - field.field.node.tide_search_listing.field_below_results_content
+    - field.field.node.tide_search_listing.field_content_category
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
+    - field.field.node.tide_search_listing.field_graphical_image
     - field.field.node.tide_search_listing.field_header_components
     - field.field.node.tide_search_listing.field_landing_page_c_secondary
     - field.field.node.tide_search_listing.field_landing_page_intro_text
@@ -28,17 +32,17 @@ dependencies:
     - field.field.node.tide_search_listing.field_topic
     - node.type.tide_search_listing
     - workflows.workflow.editorial
-    - field.field.node.tide_search_listing.field_content_category
   module:
     - content_moderation
+    - entity_browser
     - field_group
     - metatag
     - paragraphs
     - path
     - select2
+    - term_reference_tree
     - text
     - tide_content_collection
-    - term_reference_tree
 third_party_settings:
   field_group:
     group_search_listing_header:
@@ -48,14 +52,15 @@ third_party_settings:
         - field_landing_page_summary
       label: Header
       region: content
-      parent_name: ''
-      weight: 0
+      parent_name: group_header_section
+      weight: 1
       format_type: tab
       format_settings:
         classes: ''
         show_empty_fields: false
         id: ''
-        formatter: open
+        label_as_html: false
+        formatter: closed
         description: ''
         required_fields: true
     group_custom_header:
@@ -64,7 +69,7 @@ third_party_settings:
       label: 'Custom Header'
       region: content
       parent_name: ''
-      weight: 1
+      weight: 3
       format_type: tab
       format_settings:
         classes: ''
@@ -83,7 +88,7 @@ third_party_settings:
       label: 'Listing Configuration'
       region: content
       parent_name: ''
-      weight: 3
+      weight: 5
       format_type: tab
       format_settings:
         classes: ''
@@ -98,7 +103,7 @@ third_party_settings:
       label: 'Global filters'
       region: content
       parent_name: ''
-      weight: 4
+      weight: 6
       format_type: tab
       format_settings:
         classes: ''
@@ -113,7 +118,7 @@ third_party_settings:
       label: 'User filters'
       region: content
       parent_name: ''
-      weight: 5
+      weight: 7
       format_type: tab
       format_settings:
         classes: ''
@@ -130,7 +135,7 @@ third_party_settings:
       label: Results
       region: content
       parent_name: ''
-      weight: 6
+      weight: 8
       format_type: tab
       format_settings:
         classes: ''
@@ -139,6 +144,38 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
+    group_customised_header:
+      children:
+        - field_graphical_image
+      label: 'Customised Header'
+      region: content
+      parent_name: group_header_section
+      weight: 2
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_header_section:
+      children:
+        - group_search_listing_header
+        - group_customised_header
+      label: 'Header Section'
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        direction: horizontal
+        width_breakpoint: 640
 id: node.tide_search_listing.default
 targetEntityType: node
 bundle: tide_search_listing
@@ -146,13 +183,13 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 14
+    weight: 18
     region: content
     settings: {  }
     third_party_settings: {  }
   field_above_results_content:
     type: text_textarea
-    weight: 7
+    weight: 9
     region: content
     settings:
       rows: 5
@@ -160,11 +197,22 @@ content:
     third_party_settings: {  }
   field_below_results_content:
     type: text_textarea
-    weight: 8
+    weight: 11
     region: content
     settings:
       rows: 5
       placeholder: ''
+    third_party_settings: {  }
+  field_content_category:
+    type: term_reference_tree
+    weight: 15
+    region: content
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 0
     third_party_settings: {  }
   field_custom_sort_configuration:
     type: content_collection_configuration_raw
@@ -177,7 +225,7 @@ content:
     third_party_settings: {  }
   field_featured_image:
     type: entity_reference_autocomplete
-    weight: 2
+    weight: 4
     region: content
     settings:
       match_operator: CONTAINS
@@ -185,9 +233,24 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 6
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_header_components:
     type: paragraphs
-    weight: 16
+    weight: 9
     region: content
     settings:
       title: Paragraph
@@ -207,7 +270,7 @@ content:
     third_party_settings: {  }
   field_landing_page_c_secondary:
     type: entity_reference_autocomplete
-    weight: 9
+    weight: 12
     region: content
     settings:
       match_operator: CONTAINS
@@ -233,7 +296,7 @@ content:
     third_party_settings: {  }
   field_layout_component:
     type: select2_entity_reference
-    weight: 11
+    weight: 12
     region: content
     settings:
       width: 100%
@@ -281,7 +344,7 @@ content:
     third_party_settings: {  }
   field_listing_results_per_page:
     type: number
-    weight: 8
+    weight: 9
     region: content
     settings:
       placeholder: ''
@@ -308,7 +371,7 @@ content:
     third_party_settings: {  }
   field_metatags:
     type: metatag_firehose
-    weight: 22
+    weight: 27
     region: content
     settings:
       sidebar: true
@@ -316,21 +379,21 @@ content:
     third_party_settings: {  }
   field_node_primary_site:
     type: options_buttons
-    weight: 24
+    weight: 29
     region: content
     settings: {  }
     third_party_settings: {  }
     field_name: field_node_primary_site
   field_node_site:
     type: options_buttons
-    weight: 23
+    weight: 28
     region: content
     settings: {  }
     third_party_settings: {  }
     field_name: field_node_site
   field_results_component:
     type: select2_entity_reference
-    weight: 12
+    weight: 13
     region: content
     settings:
       width: 100%
@@ -340,7 +403,7 @@ content:
     third_party_settings: {  }
   field_search_configuration:
     type: content_collection_configuration_raw
-    weight: 7
+    weight: 10
     region: content
     settings:
       schema_validation: false
@@ -365,14 +428,14 @@ content:
     third_party_settings: {  }
   field_show_content_rating:
     type: boolean_checkbox
-    weight: 12
+    weight: 16
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   field_tags:
     type: entity_reference_autocomplete
-    weight: 21
+    weight: 26
     region: content
     settings:
       match_operator: CONTAINS
@@ -382,7 +445,7 @@ content:
     third_party_settings: {  }
   field_topic:
     type: entity_reference_autocomplete
-    weight: 10
+    weight: 13
     region: content
     settings:
       match_operator: CONTAINS
@@ -390,51 +453,40 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  field_content_category:
-    type: term_reference_tree
-    weight: 11
-    region: content
-    settings:
-      start_minimized: true
-      leaves_only: true
-      select_parents: false
-      cascading_selection: 0
-      max_depth: 0
-    third_party_settings: { }
   moderation_state:
     type: moderation_state_default
-    weight: 20
+    weight: 24
     region: content
     settings: {  }
     third_party_settings: {  }
   path:
     type: path
-    weight: 16
+    weight: 20
     region: content
     settings: {  }
     third_party_settings: {  }
   promote:
     type: boolean_checkbox
-    weight: 11
+    weight: 14
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   simple_sitemap:
-    weight: 19
+    weight: 23
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 18
+    weight: 22
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
-    weight: 15
+    weight: 19
     region: content
     settings:
       display_label: true
@@ -449,7 +501,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 13
+    weight: 17
     region: content
     settings:
       match_operator: CONTAINS
@@ -458,7 +510,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
   url_redirects:
-    weight: 17
+    weight: 21
     region: content
     settings: {  }
     third_party_settings: {  }

@@ -1,3 +1,4 @@
+uuid: 9a4e99f7-4adc-4132-a7af-3c6a79abff5a
 langcode: en
 status: true
 dependencies:
@@ -7,6 +8,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_below_results_content
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
+    - field.field.node.tide_search_listing.field_graphical_image
     - field.field.node.tide_search_listing.field_header_components
     - field.field.node.tide_search_listing.field_landing_page_c_secondary
     - field.field.node.tide_search_listing.field_landing_page_intro_text
@@ -50,6 +52,7 @@ hidden:
   field_below_results_content: true
   field_custom_sort_configuration: true
   field_featured_image: true
+  field_graphical_image: true
   field_header_components: true
   field_landing_page_c_secondary: true
   field_landing_page_intro_text: true
