@@ -103,7 +103,7 @@ function _tide_search_form_node_form_process(array $form, FormStateInterface $fo
     '#required' => TRUE,
     '#options' => [
       'default' => t('Default appearance'),
-      'corner' => t('Corner graphics'),
+      'corner' => t('Custom top corner graphic'),
     ],
   ];
 
