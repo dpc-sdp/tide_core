@@ -8,8 +8,10 @@
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\search_api\IndexInterface;
 
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
 function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  //dump($form);
   if (in_array($form_id, [
     'node_tide_search_listing_form',
     'node_tide_search_listing_edit_form',
@@ -107,14 +109,14 @@ function _tide_search_form_node_form_process(array $form, FormStateInterface $fo
     ],
   ];
 
-  // Set initial value for Header style based on field_graphical_image
+  // Set initial value for Header style based on field_graphical_image.
   $header_style = 'default';
   if (!$node->get('field_graphical_image')->isEmpty()) {
     $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
-  // Control visibility of the graphical image field based on the selected header style
+  // Control of the graphical image field based on the selected header style.
   $form['field_graphical_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
