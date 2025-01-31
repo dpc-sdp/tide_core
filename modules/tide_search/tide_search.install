@@ -122,7 +122,7 @@ function tide_search_update_10004() {
 /**
  * Add top corner graphic field.
  */
-function tide_site_theming_update_10005() {
+function tide_search_update_10005() {
   $configs = [
     'field.field.node.tide_search_listing.field_graphical_image' => 'field_config',
   ];
