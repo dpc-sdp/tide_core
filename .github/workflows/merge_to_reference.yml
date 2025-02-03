@@ -9,7 +9,7 @@ jobs:
   set_status_in_progress:
     name: set_status_in_progress
     if: always()
-    uses: dpc-sdp/github-actions/.github/workflows/set_status.yml@v1.2.0
+    uses: dpc-sdp/github-actions/.github/workflows/set_status.yml@v1.5.0
     secrets: inherit
     with:
       context: 'tide_merge_to_reference'
@@ -23,7 +23,7 @@ jobs:
     name: set_status
     needs: [tide_merge_to_reference]
     if: always()
-    uses: dpc-sdp/github-actions/.github/workflows/set_status.yml@v1.2.0
+    uses: dpc-sdp/github-actions/.github/workflows/set_status.yml@v1.5.0
     secrets: inherit
     with:
       context: 'tide_merge_to_reference'
