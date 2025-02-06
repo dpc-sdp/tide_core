@@ -27,6 +27,15 @@ Feature: Fields for Publication content type
     And I should see a "input#edit-field-landing-page-hero-image-target-id" element
     And I should see a "select#edit-field-landing-page-hero-theme" element
 
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
+    And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
+
     And I see the text "Date of publication"
     And I should see an "input#edit-field-publication-date-0-value-date" element
 
@@ -55,6 +64,8 @@ Feature: Fields for Publication content type
     And I should see the button "Basic text"
     And I should see the button "Accordion"
     And I should see the button "Complex image"
+    And I should see the button "Reusable content item"
+    And I should see the button "Statistics grid"
     And I press the "Close" button
 
     And I scroll selector "#edit-group-sidebar" into view

@@ -149,7 +149,9 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
   $header_style = 'default';
   if (!$node_hero_image_empty) {
     $header_style = 'fullwidth';
-  } elseif (!$node_hero_top_graphical_empty || !$node_hero_bottom_graphical_empty) {
+  }
+
+  elseif (!$node_hero_top_graphical_empty || !$node_hero_bottom_graphical_empty) {
     $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
@@ -186,7 +188,9 @@ function _tide_publication_form_node_form_after_build(array $form, FormStateInte
   $header_style = 'default';
   if (!$form_hero_image_empty) {
     $header_style = 'fullwidth';
-  } elseif (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
+  }
+
+  elseif (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
     $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
