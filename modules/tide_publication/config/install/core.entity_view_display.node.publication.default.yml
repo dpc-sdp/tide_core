@@ -2,15 +2,19 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.publication.field_bottom_graphical_image
     - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_graphical_image
     - field.field.node.publication.field_landing_page_component
     - field.field.node.publication.field_landing_page_contact
     - field.field.node.publication.field_landing_page_hero_image
     - field.field.node.publication.field_landing_page_hero_theme
+    - field.field.node.publication.field_landing_page_hero_logo
     - field.field.node.publication.field_landing_page_intro_text
     - field.field.node.publication.field_landing_page_show_contact
     - field.field.node.publication.field_landing_page_summary
     - field.field.node.publication.field_license_type
+    - field.field.node.publication.field_metatags
     - field.field.node.publication.field_node_documents
     - field.field.node.publication.field_publication_authors
     - field.field.node.publication.field_publication_date
@@ -22,11 +26,13 @@ dependencies:
     - field.field.node.publication.field_show_table_of_content
     - field.field.node.publication.field_tags
     - field.field.node.publication.field_topic
+    - field.field.node.publication.field_show_topic_term_and_tags
     - field.field.node.publication.field_content_category
     - node.type.publication
   module:
     - datetime
     - entity_reference_revisions
+    - metatag
     - options
     - user
     - term_reference_tree

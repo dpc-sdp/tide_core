@@ -72,6 +72,12 @@ function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_
 
     $form['#process'][] = '_tide_publication_form_node_form_process';
 
+    // Move Hero Image theme to Hero Image field group.
+    if (isset($form['field_landing_page_hero_theme']) && isset($form['field_landing_page_hero_image']['widget'])) {
+      $form['field_landing_page_hero_image']['widget']['field_landing_page_hero_theme'] = $form['field_landing_page_hero_theme'];
+      unset($form['field_landing_page_hero_theme']);
+    }
+
     // Add conditional field for show table of content.
     if (isset($form['field_node_display_headings'])) {
       $form['field_node_display_headings']['#states'] = [
@@ -119,14 +125,8 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     '#options' => [
       'default' => t('Default appearance'),
       'fullwidth' => t('Full-width  background image'),
+      'corner' => t('Corner graphics'),
     ],
-    '#ajax' => [
-      'callback' => 'tide_landing_page_set_value_hero_image_theme',
-    ],
-  ];
-
-  $form['field_landing_page_hero_theme']['#states']['enabled'] = [
-    ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
 
   $form['field_landing_page_hero_image']['#states']['visible'] = [
@@ -135,12 +135,22 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
       ['value' => 'cta'],
     ],
   ];
+  $form['field_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
+  $form['field_bottom_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
 
   // Determine the initial value of Header style.
   $node_hero_image_empty = $node->get('field_landing_page_hero_image')->isEmpty();
+  $node_hero_top_graphical_empty = $node->get('field_graphical_image')->isEmpty();
+  $node_hero_bottom_graphical_empty = $node->get('field_bottom_graphical_image')->isEmpty();
   $header_style = 'default';
   if (!$node_hero_image_empty) {
     $header_style = 'fullwidth';
+  } elseif (!$node_hero_top_graphical_empty || !$node_hero_bottom_graphical_empty) {
+    $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
@@ -165,9 +175,19 @@ function _tide_publication_form_node_form_after_build(array $form, FormStateInte
     'field_landing_page_hero_image',
     'target_id',
   ]));
+  $form_hero_top_graphical_empty = empty($form_state->getValue([
+    'field_graphical_image',
+    'target_id',
+  ]));
+  $form_hero_bottom_graphical_empty = empty($form_state->getValue([
+    'field_bottom_graphical_image',
+    'target_id',
+  ]));
   $header_style = 'default';
   if (!$form_hero_image_empty) {
     $header_style = 'fullwidth';
+  } elseif (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
+    $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
