@@ -261,10 +261,6 @@ function tide_landing_page_update_10110() {
     }
 
     $content = $config->get('content.field_paragraph_links');
-    $content['type'] = 'linkit';
-    $content['settings']['linkit_profile'] = 'content';
-    $content['settings']['linkit_auto_link_text'] = FALSE;
-
     $config->set('content.field_paragraph_links', $content);
     $config->save();
   }
