@@ -8,8 +8,10 @@ dependencies:
     - field.field.taxonomy_term.sites.field_bottom_corner_graphic
     - field.field.taxonomy_term.sites.field_print_friendly_logo
     - field.field.taxonomy_term.sites.field_prominence_ack_to_country
+    - field.field.taxonomy_term.sites.field_short_name
     - field.field.taxonomy_term.sites.field_show_exit_site_specific
     - field.field.taxonomy_term.sites.field_show_table_of_contents
+    - field.field.taxonomy_term.sites.field_site_app_icon
     - field.field.taxonomy_term.sites.field_site_domains
     - field.field.taxonomy_term.sites.field_site_favicon
     - field.field.taxonomy_term.sites.field_site_feature_flags
@@ -118,6 +120,22 @@ third_party_settings:
         open: false
         required_fields: true
         effect: none
+    group_site_app_icon:
+      children:
+        - field_site_app_icon
+      label: 'Site app icon'
+      region: content
+      parent_name: ''
+      weight: 23
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: tide-site-app-icon
+        label_as_html: false
+        open: false
+        description: ''
+        required_fields: true
 id: taxonomy_term.sites.default
 targetEntityType: taxonomy_term
 bundle: sites
@@ -162,6 +180,14 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
+  field_short_name:
+    type: string_textfield
+    weight: 26
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_show_exit_site_specific:
     type: options_select
     weight: 12
@@ -174,6 +200,14 @@ content:
     region: content
     settings:
       display_label: true
+    third_party_settings: {  }
+  field_site_app_icon:
+    type: image_image
+    weight: 25
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
     third_party_settings: {  }
   field_site_domains:
     type: string_textarea
