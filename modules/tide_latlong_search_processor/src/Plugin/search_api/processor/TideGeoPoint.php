@@ -33,7 +33,7 @@ class TideGeoPoint extends ProcessorPluginBase {
       $definition = [
         'label' => $this->t('Geopoint'),
         'description' => $this->t('Concatenates latitude and longitude fields into a single geopoint.'),
-        'type' => 'string',
+        'type' => 'location',
         'processor_id' => $this->getPluginId(),
       ];
       $properties['tide_geopoint'] = new ProcessorProperty($definition);
