@@ -5,10 +5,14 @@
  * Tide Site module functionality.
  */
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Link;
@@ -21,6 +25,8 @@ use Drupal\path_alias\Entity\PathAlias;
 use Drupal\path_alias\PathAliasInterface;
 use Drupal\search_api\IndexInterface;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\tide_site\BreadcrumbCacheDependencyManager;
+use Drupal\tide_site\Plugin\Field\BreadcrumbField;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site\TideSiteMenuAutocreate;
 use Drupal\tide_site\TideSitePathAliasListBuilder;
@@ -45,7 +51,12 @@ function tide_site_entity_bundle_create($entity_type_id, $bundle) {
 
   // Map of which fields should be created for which entity types.
   $map = [
-    'node' => [$fields_helper::FIELD_SITE, $fields_helper::FIELD_PRIMARY_SITE],
+    'node' => [
+      $fields_helper::FIELD_SITE,
+      $fields_helper::FIELD_PRIMARY_SITE,
+      $fields_helper::FIELD_BREADCRUMB_NAME,
+      $fields_helper::FIELDD_BREADCRUMB_PARENT,
+    ],
     'media' => [$fields_helper::FIELD_SITE],
   ];
 
@@ -122,6 +133,88 @@ function tide_site_entity_presave(EntityInterface $entity) {
           ]);
         }
       }
+    }
+  }
+  if ($entity instanceof NodeInterface) {
+    _tide_site_handle_breadcrumb_cache($entity);
+  }
+}
+
+/**
+ * Handles breadcrumb cache operations for a node entity.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node entity.
+ */
+function _tide_site_handle_breadcrumb_cache(NodeInterface $node) {
+  if (!$node->hasField('field_breadcrumb_parent')) {
+    return;
+  }
+
+  $breadcrumbManager = new BreadcrumbCacheDependencyManager();
+
+  // Handle existing breadcrumb parent.
+  if (!$node->field_breadcrumb_parent->isEmpty()) {
+    _tide_site_invalidate_breadcrumb_cache(
+      $breadcrumbManager,
+      $node->id(),
+      $node->field_breadcrumb_parent->target_id
+    );
+    return;
+  }
+
+  // Handle empty breadcrumb parent.
+  try {
+    $primarySite = $node->field_node_primary_site->entity;
+    if (!$primarySite || !$primarySite->hasField('field_site_homepage')) {
+      return;
+    }
+
+    $homepageNode = $primarySite->field_site_homepage->entity;
+    if (!$homepageNode) {
+      return;
+    }
+
+    $node->set('field_breadcrumb_parent', $homepageNode->id());
+    _tide_site_invalidate_breadcrumb_cache(
+      $breadcrumbManager,
+      $node->id(),
+      $homepageNode->id()
+    );
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('tide_site')->error(
+      'Error handling breadcrumb cache: @message',
+      ['@message' => $e->getMessage()]
+    );
+    \Drupal::messenger()->addError(t('Failed to update breadcrumb parent.'));
+  }
+}
+
+/**
+ * Invalidates breadcrumb cache tags for affected nodes.
+ */
+function _tide_site_invalidate_breadcrumb_cache($manager, $nodeId, $parentId) {
+  $manager->addDependency($nodeId, $parentId);
+  $affectedNodes = $manager->getAllAffectedNodes($nodeId);
+  $tags = $manager->NodeIdsToNodeCacheTags($affectedNodes);
+
+  if (!empty($tags)) {
+    Cache::invalidateTags($tags);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function tide_site_node_delete(NodeInterface $node) {
+  if ($node->hasField('field_breadcrumb_parent')) {
+    $bm = new BreadcrumbCacheDependencyManager();
+    $affected_nodes = $bm->getAllAffectedNodes($node->id());
+    $tags = $bm->NodeIdsToNodeCacheTags($affected_nodes);
+    if (!empty($tags)) {
+      $bm->removeNode($node->id());
+      Cache::invalidateTags($tags);
     }
   }
 }
@@ -949,5 +1042,21 @@ function tide_site_tide_help(string $route_name, RouteMatchInterface $route_matc
     case 'entity.menu.collection':
     case 'entity.menu.add_form':
       return '<p>' . t('Learn how to create and edit <a href="@sdp-handbook" target="_blank">navigation menus</a>.', ['@sdp-handbook' => 'https://www.singledigitalpresence.vic.gov.au/create-and-edit-menus']) . '</p>';
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function tide_site_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'node') {
+    $fields['breadcrumb_field'] = BaseFieldDefinition::create('breadcrumb_computed')
+      ->setLabel(t('Breadcrumb'))
+      ->setName('Breadcrumb')
+      ->setDescription(t('Breadcrumb'))
+      ->setComputed(TRUE)
+      ->setClass(BreadcrumbField::class)
+      ->setReadOnly(TRUE)
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
   }
 }
