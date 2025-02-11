@@ -9,7 +9,6 @@ dependencies:
     - paragraphs.paragraphs_type.key_journeys
   module:
     - link
-    - linkit
     - maxlength
 id: paragraph.key_journeys.default
 targetEntityType: paragraph
@@ -29,10 +28,8 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
-      linkit_profile: content
-      linkit_auto_link_text: false
     third_party_settings: {  }
-    type: linkit
+    type: link_default
     region: content
   field_paragraph_title:
     weight: 0
