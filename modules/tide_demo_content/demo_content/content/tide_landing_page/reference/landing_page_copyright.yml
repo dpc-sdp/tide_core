@@ -60,10 +60,16 @@
   field_show_social_sharing: 1
   field_show_content_rating: 1
   field_show_site_section_nav: 1
+  field_show_topic_term_and_tags: 0
   field_landing_page_nav_title: 'Site-section Navigation'
   # Topic and Tags.
-  field_topic: 0
-  field_tags: 0
+  field_topic:
+    - '#process':
+        callback: reference
+        args:
+          - taxonomy_term
+          - vid: topic
+            name: 'Bourke topic demo'
   # Sites.
   field_node_site:
     - '#process':
