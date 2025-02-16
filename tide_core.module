@@ -186,6 +186,10 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     if (isset($form['account']['password_policy_status'])) {
       $form['account']['password_policy_status']['#weight'] = 10;
     }
+    // Check if the field exists then hide path field.
+    if (isset($form['path'])) {
+      $form['path']['#access'] = FALSE;
+    }
   }
   // Update description for og_locale metatag.
   if (
@@ -203,10 +207,6 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['field_metatags']['widget'][0]['open_graph']['og_locale']['#description'] = t("This field is used in SDP to set the page's language, display font and text direction. See our @language-code-list.", [
       '@language-code-list' => $language_code_list_link,
     ]);
-  }
-  // Check if the field exists then hide path field.
-  if (isset($form['path'])) {
-    $form['path']['#access'] = FALSE;
   }
 }
 
