@@ -77,7 +77,7 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
         '#access' => !$params['enabled'],
         '#links' => [
           'admin' => [
-            'title' => $this->t('Enable two-factor autentication via email'),
+            'title' => $this->t('Enable two-factor authentication via email'),
             'url' => Url::fromRoute('tfa.validation.setup', [
               'user' => $params['account']->id(),
               'method' => $params['plugin_id'],

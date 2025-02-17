@@ -41,6 +41,7 @@ function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_i
   }
 
   if ($form_id == 'webform_ui_element_form') {
+    $field_type = $form['properties']['type']['#value'] ?? '';
     $form['#after_build'][] = 'tide_webform_webform_ui_element_form_after_build';
     $form['#attached']['library'][] = 'tide_webform/webform';
     if (isset($form['properties']['form']['length_container']['maxlength']) && array_key_exists('#default_value', $form['properties']['form']['length_container']['maxlength']) && $form['properties']['type']['#value'] === 'textfield') {
@@ -65,7 +66,6 @@ function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_i
       }
     }
     // Check if the field type is either 'select' or 'term_select'.
-    $field_type = $form['properties']['type']['#value'] ?? '';
     if (in_array($field_type, ['select', 'webform_term_select'])) {
       $current_path = \Drupal::service('path.current')->getPath();
       $matches = [];
@@ -388,6 +388,12 @@ function tide_webform_webform_submission_presave(WebformSubmission $webform_subm
     if (isset($element['#type']) && $element['#type'] == 'wizard_page') {
       return;
     }
+    // It will not validate for textarea if both maxlenth and counter.
+    if (isset($element['#type']) && $element['#type'] === 'textarea') {
+      if (isset($element['#counter_type']) && isset($element['#maxlength'])) {
+        return;
+      }
+    }
     if (isset($element['#type']) && $element['#type'] == 'number') {
       if (is_numeric($submission_data[$key])) {
         $submission_data[$key] = strval($submission_data[$key]);
@@ -406,6 +412,7 @@ function tide_webform_webform_submission_presave(WebformSubmission $webform_subm
       }
     }
   }
+
   $errors = WebformSubmissionForm::validateWebformSubmission($webform_submission);
   if ($errors) {
     foreach ($elements as $key => $element) {

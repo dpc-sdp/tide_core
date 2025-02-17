@@ -9,6 +9,7 @@ dependencies:
     - paragraphs.paragraphs_type.key_journeys
   module:
     - link
+    - linkit
 id: paragraph.key_journeys.default
 targetEntityType: paragraph
 bundle: key_journeys
@@ -33,10 +34,11 @@ content:
       trim_length: 80
       url_only: false
       url_plain: false
-      rel: ''
-      target: ''
+      rel: '0'
+      target: '0'
+      linkit_profile: content
     third_party_settings: {  }
-    type: link
+    type: linkit
     region: content
   field_paragraph_title:
     weight: 2
