@@ -5,7 +5,23 @@
  * Tide Search module functionality.
  */
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\search_api\IndexInterface;
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (in_array($form_id, [
+    'node_tide_search_listing_form',
+    'node_tide_search_listing_edit_form',
+    'node_tide_search_listing_quick_node_clone_form',
+  ])) {
+
+    $form['#process'][] = '_tide_search_form_node_form_process';
+    $form['#after_build'][] = '_tide_search_form_node_form_after_build';
+  }
+}
 
 /**
  * Implements hook_search_api_index_items_alter().
@@ -67,4 +83,55 @@ function tide_search_admin_audit_trail_handlers() {
     'title' => t('Tide Search'),
   ];
   return $handlers;
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function _tide_search_form_node_form_process(array $form, FormStateInterface $form_state, array $complete_form = []) {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+
+  // Add pseudo radio buttons for Header style.
+  $form['_header_style'] = [
+    '#type' => 'container',
+    '#group' => 'group_customised_header',
+    '#weight' => -100,
+  ];
+  $form['_header_style']['_header_style_options'] = [
+    '#title' => t('Header style'),
+    '#description' => t('The header can be customised to incorporate a custom top corner graphic.'),
+    '#type' => 'radios',
+    '#required' => TRUE,
+    '#options' => [
+      'default' => t('Default appearance'),
+      'corner' => t('Custom top corner graphic'),
+    ],
+  ];
+
+  // Set initial value for Header style based on field_graphical_image.
+  $header_style = 'default';
+  if (!$node->get('field_graphical_image')->isEmpty()) {
+    $header_style = 'corner';
+  }
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
+  // Control of the graphical image field based on the selected header style.
+  $form['field_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
+
+  return $form;
+}
+
+/**
+ * Implements after build for tide search listings.
+ */
+function _tide_search_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  // Ensure the header style is correctly set based on field state.
+  $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
+  $header_style = $form_hero_top_graphical_empty ? 'default' : 'corner';
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
+  return $form;
 }
