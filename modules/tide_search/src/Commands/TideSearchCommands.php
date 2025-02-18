@@ -20,21 +20,23 @@ class TideSearchCommands extends DrushCommands {
 
   /**
    * Audits node ids that needs to be published/indexed based on search index.
-   * 
+   *
    * The list of items not in the search index can be added using the following
-   * command where '--id-list' is the output from running 'tide:search-audit-nodes'
-   * 
-   * 'drush search-api:index-sample --datasource=entity:node --id-list=1234,4567'
-   * 
-   * @param string $indexId The name of the Search API index to audit, e.g. 'node'
-   * 
+   * command where '--id-list' is the output from running
+   * 'tide:search-audit-nodes'
+   *
+   * 'drush search-api:index-sample --datasource=entity:node --id-list=123,456'
+   *
+   * @param string $indexId
+   *   The name of the Search API index to audit, e.g. 'node'.
+   *
    * @return string
    *   A comma delimited list of ids that can be passed to
    *   'drush search_api:index-sample'
    *
    * @usage drush tide-search-audit-nodes node
    *   Audit 'node' index for missing items
-   * 
+   *
    * @command tide:search-audit-nodes
    * @aliases tide-san,tide-search-audit-nodes
    *
