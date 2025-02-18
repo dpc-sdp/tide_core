@@ -102,14 +102,14 @@ class TideSearchCommands extends DrushCommands {
       throw new ConsoleException(t('@index was not found'));
     }
     $total = $indexes[$indexId]->getTrackerInstance()->getTotalItemsCount();
-    $no_of_batches = ceil($total / 1000);
-    // If the result set is more than 1000 then run it in batch.
+    $no_of_batches = ceil($total / 500);
+    // If the result set is more than 500 then run it in batch.
     if ($no_of_batches > 1) {
       $nid_starting_point = 0;
       for ($i = 1; $i <= $no_of_batches; $i++) {
         try {
           $query = $indexes[$indexId]->query();
-          $query->range(0, 1000);
+          $query->range(0, 500);
           $query->sort('nid');
           $query->addCondition('nid', $nid_starting_point, '>');
           $results = $query->execute();
