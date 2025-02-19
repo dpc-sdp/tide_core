@@ -9,8 +9,7 @@ use Drupal\node\NodeInterface;
  *
  * @package Drupal\tide_core
  */
-class GeoPoint
-{
+class GeoPoint {
 
   /**
    * Helper function to extract and validate latitude and longitude from a node.
@@ -19,7 +18,7 @@ class GeoPoint
    *   The node object to extract latitude and longitude from.
    *
    * @return string|bool
-   *   Returns the valid latitude and longitude as a string in the format "lat,long"
+   *   Returns the valid latitude, longitude as a string in the format "lat,long"
    *   or FALSE if the latitude/longitude is invalid.
    */
   public function extractAndValidateLatLong(NodeInterface $node) {
@@ -32,7 +31,7 @@ class GeoPoint
       $latitude = $node->get('field_latitude')->value;
       $longitude = $node->get('field_longitude')->value;
 
-      // Validate if latitude and longitude are numeric and within the valid ranges.
+      // Validate if latitude, longitude are numeric and within the valid ranges.
       if (is_numeric($latitude) && is_numeric($longitude)) {
         // Cast the values to float after validation.
         $latitude = (float) $latitude;
@@ -50,4 +49,5 @@ class GeoPoint
 
     return FALSE;
   }
+
 }
