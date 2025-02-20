@@ -6,6 +6,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_below_results_content
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
+    - field.field.node.tide_search_listing.field_graphical_image
     - field.field.node.tide_search_listing.field_header_components
     - field.field.node.tide_search_listing.field_landing_page_c_secondary
     - field.field.node.tide_search_listing.field_landing_page_intro_text
@@ -72,6 +73,14 @@ content:
       link: true
     third_party_settings: {  }
     weight: 103
+    region: content
+  field_graphical_image:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 22
     region: content
   field_header_components:
     type: entity_reference_revisions_entity_view
