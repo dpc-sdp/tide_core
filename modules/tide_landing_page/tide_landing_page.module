@@ -153,6 +153,7 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
         }
       }
     }
+    $form['#validate'][] = 'tide_landing_page_header_style_node_form_validate';
   }
 
   // Add conditional field for show table of content.
@@ -167,6 +168,34 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
     if (!isset($form['field_node_display_headings']['widget']['#default_value']) || empty($form['field_node_display_headings']['widget']['#default_value'])) {
       $form['field_node_display_headings']['widget']['#default_value'] = 'showH2';
     }
+  }
+}
+
+/**
+ * Node form validate callback for Header style.
+ */
+function tide_landing_page_header_style_node_form_validate(array &$form, FormStateInterface $form_state) {
+  $header_style = $form_state->getValue('_header_style_options');
+  $hero_theme_value = $form_state->getValue(['field_landing_page_hero_theme', 0, 'value']);
+  $valid = TRUE;
+  $message = '';
+  switch ($header_style) {
+    case 'fullwidth':
+      if ($hero_theme_value !== 'dark') {
+        $valid = FALSE;
+        $message = t('When "Header style" is "Full-width background image", the "Page title display style" must be "Reverse blocked text".');
+      }
+      break;
+
+    case 'cta':
+      if ($hero_theme_value !== 'light') {
+        $valid = FALSE;
+        $message = t('When "Header style" is "Call to action banner", the "Page title display style" must be "Default".');
+      }
+      break;
+  }
+  if (!$valid) {
+    $form_state->setErrorByName('field_landing_page_hero_theme', $message);
   }
 }
 
@@ -432,13 +461,6 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
     ],
     '#ajax' => [
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
-    ],
-  ];
-
-  $form['field_landing_page_hero_theme']['#states']['disabled'] = [
-    ':input[name="_header_style_options"]' => [
-      ['value' => 'fullwidth'],
-      ['value' => 'cta'],
     ],
   ];
 
