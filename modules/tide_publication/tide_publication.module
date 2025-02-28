@@ -91,6 +91,7 @@ function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_
         $form['field_node_display_headings']['widget']['#default_value'] = 'showH2';
       }
     }
+    $form['#validate'][] = 'tide_landing_page_header_style_node_form_validate';
   }
 }
 
