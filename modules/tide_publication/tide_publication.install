@@ -149,10 +149,9 @@ function tide_publication_update_10005() {
 }
 
 /**
- * Imports publication.field_graphical_image, field_landing_page_hero_logo and field_bottom_graphical_image for existing sites.
+ * Imports publication fields for existing sites.
  */
-function tide_publication_update_10006()
-{
+function tide_publication_update_10006() {
   $form_configs = [
     'core.entity_form_display.node.publication.default',
     'core.entity_view_display.node.publication.default',
