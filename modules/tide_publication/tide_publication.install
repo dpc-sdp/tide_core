@@ -147,3 +147,42 @@ function tide_publication_update_10005() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
   _tide_core_content_category_form_display('publication_page');
 }
+
+/**
+ * Imports publication.field_graphical_image, field_landing_page_hero_logo and field_bottom_graphical_image for existing sites.
+ */
+function tide_publication_update_10006()
+{
+  $form_configs = [
+    'core.entity_form_display.node.publication.default',
+    'core.entity_view_display.node.publication.default',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $s */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->configMergeDeep('tide_publication', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
+
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_publication') . '/config/install'];
+  $configs = [
+    'field.field.node.publication.field_bottom_graphical_image' => 'field_config',
+    'field.field.node.publication.field_graphical_image' => 'field_config',
+    'field.field.node.publication.field_landing_page_hero_logo' => 'field_config',
+    'field.field.node.publication.field_metatags' => 'field_config',
+    'field.field.node.publication.field_show_topic_term_and_tags' => 'field_config',
+  ];
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = substr($config, strrpos($config, '.') + 1);
+    if ($storage->load($id) == NULL) {
+      // Try using an extended id as well.
+      $id = substr($config, strrpos($config, '.', strrpos($config, '.') - strlen($config) - 1) + 1);
+      if ($storage->load($id) == NULL) {
+        error_log(" tide_publication - importing config: " . $id);
+        $config_entity = $storage->createFromStorageRecord($config_read);
+        $config_entity->save();
+      }
+    }
+  }
+}
