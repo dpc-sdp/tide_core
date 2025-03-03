@@ -142,8 +142,9 @@ function tide_site_field_widget_single_element_form_alter(&$element, FormStateIn
   }
 
   // Restrict options to 2 levels of depth for Site field.
+  $max_depth = max(2, (int) getenv('MAX_SITE_TAXONOMY_DEPTH') ?: 2);
   if (TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_SITE)) {
-    $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, 2);
+    $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, $max_depth);
     if (isset($element['#options'])) {
       $element['#options'] = array_intersect_key($element['#options'], array_flip(array_column($tree, 'tid')));
     }
@@ -177,8 +178,7 @@ function tide_site_form_taxonomy_overview_terms_alter(&$form, FormStateInterface
  * @todo Extract into a service.
  */
 function _tide_site_form_taxonomy_overview_terms_validate(&$form, FormStateInterface $form_state) {
-  $max_depth = 1;
-
+  $max_depth = max(1, ((int) getenv('MAX_SITE_TAXONOMY_DEPTH') ?: 1) - 1);
   $vocabulary = $form_state->get(['taxonomy', 'vocabulary']);
   if ($vocabulary->id() === 'sites') {
     $invalid_tids = [];
