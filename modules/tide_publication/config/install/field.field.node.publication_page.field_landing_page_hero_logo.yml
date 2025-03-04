@@ -1,15 +1,15 @@
-uuid: c176fe54-2105-48d6-a3df-c278b7e59c8f
+uuid: 40b8960a-35da-4052-ad2a-d4aa6c4ffa6e
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_landing_page_hero_logo
     - media.type.image
-    - node.type.publication
-id: node.publication.field_landing_page_hero_logo
+    - node.type.publication_page
+id: node.publication_page.field_landing_page_hero_logo
 field_name: field_landing_page_hero_logo
 entity_type: node
-bundle: publication
+bundle: publication_page
 label: Logo
 description: 'A small logo can be added above the page title.'
 required: false

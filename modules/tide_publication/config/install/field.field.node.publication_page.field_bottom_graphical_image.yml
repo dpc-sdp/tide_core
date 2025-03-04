@@ -1,15 +1,15 @@
-uuid: 5ee267ad-5942-4132-adb8-7ae2ea59e437
+uuid: 96fc42de-974c-496f-8288-d7412e5b2f55
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_bottom_graphical_image
     - media.type.image
-    - node.type.publication
-id: node.publication.field_bottom_graphical_image
+    - node.type.publication_page
+id: node.publication_page.field_bottom_graphical_image
 field_name: field_bottom_graphical_image
 entity_type: node
-bundle: publication
+bundle: publication_page
 label: 'Bottom corner graphic'
 description: "<p>Corner graphics don't display when a hero image is added.</p><p>See the SDP guide on <a href=\"https://digital-vic.atlassian.net/wiki/spaces/FPSDP/pages/2304212993/Image+ratios+sizes+and+component+use\">image ratios, sizes and component use.</a></p>\r\n"
 required: false

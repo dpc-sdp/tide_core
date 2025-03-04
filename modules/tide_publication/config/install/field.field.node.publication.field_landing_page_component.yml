@@ -1,3 +1,4 @@
+uuid: 2090373e-cdfd-4252-9d4a-db8580e38f3d
 langcode: en
 status: true
 dependencies:
@@ -24,30 +25,282 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    negate: 0
     target_bundles:
       accordion: accordion
+      complex_image: complex_image
       basic_text: basic_text
       from_library: from_library
-      complex_image: complex_image
       statistics_grid: statistics_grid
+    negate: 0
     target_bundles_drag_drop:
       accordion:
-        enabled: true
         weight: 37
+        enabled: true
       accordion_content:
         weight: 38
         enabled: false
+      ambulance_victoria_recomendation:
+        weight: 93
+        enabled: false
+      banner:
+        weight: 39
+        enabled: false
       basic_text:
-        enabled: true
         weight: 40
+        enabled: true
+      business_entity:
+        weight: 96
+        enabled: false
+      call_to_action:
+        weight: 41
+        enabled: false
+      call_to_action_image:
+        weight: 42
+        enabled: false
+      card_carousel:
+        weight: 43
+        enabled: false
+      card_event:
+        weight: 44
+        enabled: false
+      card_event_auto:
+        weight: 45
+        enabled: false
+      card_keydates:
+        weight: 46
+        enabled: false
+      card_promotion:
+        weight: 51
+        enabled: false
+      card_promotion_auto:
+        weight: 52
+        enabled: false
+      clients:
+        weight: 105
+        enabled: false
+      compact_card:
+        weight: 106
+        enabled: false
+      compact_card_collection:
+        weight: 107
+        enabled: false
       complex_image:
-        enabled: true
         weight: 38
-      statistics_grid:
         enabled: true
-        weight: 152
+      contact_us:
+        weight: 53
+        enabled: false
+      content_collection:
+        weight: 110
+        enabled: false
+      content_collection_enhanced:
+        weight: 111
+        enabled: false
+      custom_filters_dtp_tech_docs:
+        weight: 112
+        enabled: false
+      custom_filters_early_childhood:
+        weight: 113
+        enabled: false
+      custom_filters_elcc_resources:
+        weight: 114
+        enabled: false
+      custom_filters_epa_court:
+        weight: 115
+        enabled: false
+      custom_filters_epa_incidents:
+        weight: 116
+        enabled: false
+      custom_filters_mental_health:
+        weight: 117
+        enabled: false
+      custom_filters_school_readiness:
+        weight: 118
+        enabled: false
+      daily_update_statistics:
+        weight: 119
+        enabled: false
+      data_driven_component:
+        weight: 54
+        enabled: false
+      data_table:
+        weight: 121
+        enabled: false
+      embedded_search_form:
+        weight: 55
+        enabled: false
+      embedded_webform:
+        weight: 56
+        enabled: false
+      event_details:
+        weight: 57
+        enabled: false
+      form_embed_openforms:
+        weight: 125
+        enabled: false
       from_library:
-        weight: 71
+        weight: 126
         enabled: true
+      gc_advice:
+        weight: 127
+        enabled: false
+      gc_face_masks:
+        weight: 128
+        enabled: false
+      gc_get_vaccinated:
+        weight: 129
+        enabled: false
+      gc_how_to_stay_safe_and_well:
+        weight: 130
+        enabled: false
+      gc_in_the_vaccine:
+        weight: 131
+        enabled: false
+      gc_kits_for_community:
+        weight: 132
+        enabled: false
+      gc_media:
+        weight: 133
+        enabled: false
+      gc_more_information:
+        weight: 134
+        enabled: false
+      gc_paragraph_100:
+        weight: 135
+        enabled: false
+      gc_paragraph_20:
+        weight: 136
+        enabled: false
+      gc_paragraph_30:
+        weight: 137
+        enabled: false
+      gc_paragraph_40:
+        weight: 138
+        enabled: false
+      gc_paragraph_50:
+        weight: 139
+        enabled: false
+      gc_paragraph_60:
+        weight: 140
+        enabled: false
+      gc_paragraph_70:
+        weight: 141
+        enabled: false
+      gc_paragraph_80:
+        weight: 142
+        enabled: false
+      gc_paragraph_90:
+        weight: 143
+        enabled: false
+      gc_resources:
+        weight: 144
+        enabled: false
+      gc_restrictions_metro:
+        weight: 145
+        enabled: false
+      gc_restrictions_regional_vic:
+        weight: 146
+        enabled: false
+      gc_support:
+        weight: 147
+        enabled: false
+      gc_testing_and_isolation:
+        weight: 148
+        enabled: false
+      gc_text_area_4:
+        weight: 149
+        enabled: false
+      gc_text_area_6:
+        weight: 150
+        enabled: false
+      gc_text_field_video:
+        weight: 151
+        enabled: false
+      gc_vaccinated_first:
+        weight: 152
+        enabled: false
+      gc_vaccine_safety:
+        weight: 153
+        enabled: false
+      gc_victoria_restrictions:
+        weight: 154
+        enabled: false
+      hero_banner_with_cta:
+        weight: 59
+        enabled: false
+      introduction_banner:
+        weight: 60
+        enabled: false
+      key_journeys:
+        weight: 62
+        enabled: false
+      keydates:
+        weight: 61
+        enabled: false
+      kinder_date_calculator:
+        weight: 159
+        enabled: false
+      links:
+        weight: 64
+        enabled: false
+      listing_content_type:
+        weight: 161
+        enabled: false
+      listing_custom_filter:
+        weight: 162
+        enabled: false
+      listing_site:
+        weight: 163
+        enabled: false
+      listing_user_custom_filter:
+        weight: 164
+        enabled: false
+      lobbyist:
+        weight: 165
+        enabled: false
+      media_gallery:
+        weight: 65
+        enabled: false
+      navigation_card:
+        weight: 167
+        enabled: false
+      owner:
+        weight: 168
+        enabled: false
+      phone:
+        weight: 67
+        enabled: false
+      project_information:
+        weight: 170
+        enabled: false
+      promotion_card:
+        weight: 171
+        enabled: false
+      related_links:
+        weight: 68
+        enabled: false
+      search_listing_header_component:
+        weight: 174
+        enabled: false
+      searchable_fields:
+        weight: 173
+        enabled: false
+      social_link:
+        weight: 69
+        enabled: false
+      statistic_block:
+        weight: 177
+        enabled: false
+      statistic_link:
+        weight: 178
+        enabled: false
+      statistics_grid:
+        weight: 176
+        enabled: true
+      timeline:
+        weight: 70
+        enabled: false
+      timelines:
+        weight: 71
+        enabled: false
 field_type: entity_reference_revisions

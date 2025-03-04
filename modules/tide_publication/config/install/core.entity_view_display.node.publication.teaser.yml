@@ -1,8 +1,46 @@
+uuid: b0f14469-2e2b-4c76-a993-aa2f50722af0
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.publication.field_bottom_graphical_image
+    - field.field.node.publication.field_content_category
+    - field.field.node.publication.field_custom_filters
+    - field.field.node.publication.field_department_agency
+    - field.field.node.publication.field_emv_audience
+    - field.field.node.publication.field_emv_owner
+    - field.field.node.publication.field_emv_recovery_env
+    - field.field.node.publication.field_emv_resource_type
+    - field.field.node.publication.field_emv_section
+    - field.field.node.publication.field_emv_subject
+    - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_graphical_image
+    - field.field.node.publication.field_landing_page_component
+    - field.field.node.publication.field_landing_page_contact
+    - field.field.node.publication.field_landing_page_hero_image
+    - field.field.node.publication.field_landing_page_hero_logo
+    - field.field.node.publication.field_landing_page_hero_theme
+    - field.field.node.publication.field_landing_page_intro_text
+    - field.field.node.publication.field_landing_page_show_contact
+    - field.field.node.publication.field_landing_page_summary
+    - field.field.node.publication.field_license_type
+    - field.field.node.publication.field_metatags
+    - field.field.node.publication.field_node_display_headings
+    - field.field.node.publication.field_node_documents
+    - field.field.node.publication.field_node_primary_site
+    - field.field.node.publication.field_node_site
+    - field.field.node.publication.field_publication_authors
+    - field.field.node.publication.field_publication_date
+    - field.field.node.publication.field_related_links
+    - field.field.node.publication.field_show_content_rating
+    - field.field.node.publication.field_show_publication_nav
+    - field.field.node.publication.field_show_related_content
+    - field.field.node.publication.field_show_social_sharing
+    - field.field.node.publication.field_show_table_of_content
+    - field.field.node.publication.field_show_topic_term_and_tags
+    - field.field.node.publication.field_tags
+    - field.field.node.publication.field_topic
     - node.type.publication
   module:
     - user
@@ -12,11 +50,49 @@ bundle: publication
 mode: teaser
 content:
   content_moderation_control:
-    weight: -20
     settings: {  }
     third_party_settings: {  }
+    weight: -20
     region: content
   links:
     weight: 100
     region: content
-hidden: {  }
+hidden:
+  field_bottom_graphical_image: true
+  field_content_category: true
+  field_custom_filters: true
+  field_department_agency: true
+  field_emv_audience: true
+  field_emv_owner: true
+  field_emv_recovery_env: true
+  field_emv_resource_type: true
+  field_emv_section: true
+  field_emv_subject: true
+  field_featured_image: true
+  field_graphical_image: true
+  field_landing_page_component: true
+  field_landing_page_contact: true
+  field_landing_page_hero_image: true
+  field_landing_page_hero_logo: true
+  field_landing_page_hero_theme: true
+  field_landing_page_intro_text: true
+  field_landing_page_show_contact: true
+  field_landing_page_summary: true
+  field_license_type: true
+  field_metatags: true
+  field_node_display_headings: true
+  field_node_documents: true
+  field_node_primary_site: true
+  field_node_site: true
+  field_publication_authors: true
+  field_publication_date: true
+  field_related_links: true
+  field_show_content_rating: true
+  field_show_publication_nav: true
+  field_show_related_content: true
+  field_show_social_sharing: true
+  field_show_table_of_content: true
+  field_show_topic_term_and_tags: true
+  field_tags: true
+  field_topic: true
+  search_api_excerpt: true

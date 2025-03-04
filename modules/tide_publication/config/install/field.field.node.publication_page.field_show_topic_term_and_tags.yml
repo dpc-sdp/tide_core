@@ -1,14 +1,14 @@
-uuid: 0835234c-4296-4ea8-9c39-e4d417f2f47e
+uuid: 1aa7a108-9ab1-4080-b7df-da6766246b27
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.node.field_show_topic_term_and_tags
-    - node.type.publication
-id: node.publication.field_show_topic_term_and_tags
+    - node.type.publication_page
+id: node.publication_page.field_show_topic_term_and_tags
 field_name: field_show_topic_term_and_tags
 entity_type: node
-bundle: publication
+bundle: publication_page
 label: 'Show topic term and tags?'
 description: ''
 required: false
