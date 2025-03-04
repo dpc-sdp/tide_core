@@ -1,13 +1,25 @@
+uuid: 84d24ac1-abf4-4d1e-bf1b-fd2df8aebfd9
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.publication_page.field_bottom_graphical_image
+    - field.field.node.publication_page.field_custom_filters
+    - field.field.node.publication_page.field_department_agency
+    - field.field.node.publication_page.field_graphical_image
     - field.field.node.publication_page.field_landing_page_component
     - field.field.node.publication_page.field_landing_page_contact
+    - field.field.node.publication_page.field_landing_page_hero_image
+    - field.field.node.publication_page.field_landing_page_hero_logo
+    - field.field.node.publication_page.field_landing_page_hero_theme
     - field.field.node.publication_page.field_landing_page_intro_text
     - field.field.node.publication_page.field_landing_page_show_contact
     - field.field.node.publication_page.field_landing_page_summary
+    - field.field.node.publication_page.field_metatags
+    - field.field.node.publication_page.field_node_display_headings
+    - field.field.node.publication_page.field_node_primary_site
+    - field.field.node.publication_page.field_node_site
     - field.field.node.publication_page.field_publication
     - field.field.node.publication_page.field_related_links
     - field.field.node.publication_page.field_show_content_rating
@@ -15,6 +27,7 @@ dependencies:
     - field.field.node.publication_page.field_show_related_content
     - field.field.node.publication_page.field_show_social_sharing
     - field.field.node.publication_page.field_show_table_of_content
+    - field.field.node.publication_page.field_show_topic_term_and_tags
     - node.type.publication_page
   module:
     - user
@@ -24,27 +37,38 @@ bundle: publication_page
 mode: teaser
 content:
   body:
-    label: hidden
     type: text_summary_or_trimmed
-    weight: 101
+    label: hidden
     settings:
       trim_length: 600
     third_party_settings: {  }
+    weight: 101
     region: content
   content_moderation_control:
-    weight: -20
     settings: {  }
     third_party_settings: {  }
+    weight: -20
     region: content
   links:
     weight: 100
     region: content
 hidden:
+  field_bottom_graphical_image: true
+  field_custom_filters: true
+  field_department_agency: true
+  field_graphical_image: true
   field_landing_page_component: true
   field_landing_page_contact: true
+  field_landing_page_hero_image: true
+  field_landing_page_hero_logo: true
+  field_landing_page_hero_theme: true
   field_landing_page_intro_text: true
   field_landing_page_show_contact: true
   field_landing_page_summary: true
+  field_metatags: true
+  field_node_display_headings: true
+  field_node_primary_site: true
+  field_node_site: true
   field_publication: true
   field_related_links: true
   field_show_content_rating: true
@@ -52,3 +76,5 @@ hidden:
   field_show_related_content: true
   field_show_social_sharing: true
   field_show_table_of_content: true
+  field_show_topic_term_and_tags: true
+  search_api_excerpt: true
