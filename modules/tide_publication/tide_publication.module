@@ -120,6 +120,7 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     '#options' => [
       'default' => t('Default appearance'),
       'fullwidth' => t('Full-width  background image'),
+      'corner' => t('Custom top corner graphic'),
     ],
     '#ajax' => [
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
@@ -139,7 +140,15 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
   if (!$node_hero_image_empty) {
     $header_style = 'fullwidth';
   }
+
+  if (!$node->get('field_graphical_image')->isEmpty()) {
+    $header_style = 'corner';
+  }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
+  $form['field_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
 
   $form['#after_build'][] = '_tide_publication_form_node_form_after_build';
   return $form;
@@ -165,6 +174,12 @@ function _tide_publication_form_node_form_after_build(array $form, FormStateInte
   $header_style = 'default';
   if (!$form_hero_image_empty) {
     $header_style = 'fullwidth';
+  }
+
+  $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
+  // If the graphical image is not empty, set the header style to 'corner', otherwise retain 'fullwidth' or 'default'.
+  if (!$form_hero_top_graphical_empty) {
+    $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
