@@ -3,10 +3,13 @@ status: true
 dependencies:
   config:
     - entity_browser.browser.tide_document_browser
+    - field.field.node.publication.field_bottom_graphical_image
     - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_graphical_image
     - field.field.node.publication.field_landing_page_component
     - field.field.node.publication.field_landing_page_contact
     - field.field.node.publication.field_landing_page_hero_image
+    - field.field.node.publication.field_landing_page_hero_logo
     - field.field.node.publication.field_landing_page_hero_theme
     - field.field.node.publication.field_landing_page_intro_text
     - field.field.node.publication.field_landing_page_show_contact
@@ -213,6 +216,21 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_bottom_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 8
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_featured_image:
     weight: -90
     settings:
@@ -228,6 +246,21 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
+  field_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 7
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_landing_page_component:
     type: paragraphs
     weight: 25
@@ -273,6 +306,21 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
+  field_landing_page_hero_logo:
+    type: entity_browser_entity_reference
+    weight: 9
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: default
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_landing_page_hero_theme:
     weight: 25
     settings: {  }

@@ -2,10 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.publication.field_bottom_graphical_image
     - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_graphical_image
     - field.field.node.publication.field_landing_page_component
     - field.field.node.publication.field_landing_page_contact
     - field.field.node.publication.field_landing_page_hero_image
+    - field.field.node.publication.field_landing_page_hero_logo
     - field.field.node.publication.field_landing_page_hero_theme
     - field.field.node.publication.field_landing_page_intro_text
     - field.field.node.publication.field_landing_page_show_contact
@@ -38,6 +41,14 @@ content:
   content_moderation_control:
     weight: -20
     region: content
+  field_bottom_graphical_image:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 131
+    region: content
   field_featured_image:
     weight: 9
     label: above
@@ -45,6 +56,14 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_graphical_image:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 130
     region: content
   field_landing_page_component:
     weight: 1
@@ -71,6 +90,14 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_landing_page_hero_logo:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 132
     region: content
   field_landing_page_hero_theme:
     weight: 122
