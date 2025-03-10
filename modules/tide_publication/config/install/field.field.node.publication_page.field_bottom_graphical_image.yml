@@ -14,7 +14,7 @@ description: '<p>Corner graphics don''t display when a hero image is added.</p><
 required: false
 translatable: false
 default_value: {  }
-default_value_callback: det_150_default_corner_image
+default_value_callback: ''
 settings:
   handler: 'default:media'
   handler_settings:

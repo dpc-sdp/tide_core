@@ -177,7 +177,8 @@ function _tide_publication_form_node_form_after_build(array $form, FormStateInte
   }
 
   $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
-  // If the graphical image is not empty, set the header style to 'corner', otherwise retain 'fullwidth' or 'default'.
+  // If the graphical image is not empty, set the header style to
+  // 'corner', otherwise retain 'fullwidth' or 'default'.
   if (!$form_hero_top_graphical_empty) {
     $header_style = 'corner';
   }
