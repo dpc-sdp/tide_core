@@ -102,22 +102,9 @@ third_party_settings:
         open: false
       label: Contact
       region: content
-    group_section_header:
-      label: 'Header Section'
-      parent_name: ''
-      children:
-        - group_header
-        - group_customised_header
-      format_type: tabs
-      format_settings:
-        direction: horizontal
-        id: node-form-group-header-section
-        classes: ''
-      region: content
-      weight: -100
     group_header:
       label: Header
-      parent_name: group_section_header
+      parent_name: group_header_section
       children:
         - field_publication
         - title
@@ -134,10 +121,13 @@ third_party_settings:
       weight: -99
     group_customised_header:
       label: 'Customised Header'
-      parent_name: group_section_header
+      parent_name: group_header_section
       children:
         - field_landing_page_hero_theme
         - field_landing_page_hero_image
+        - field_graphical_image
+        - field_bottom_graphical_image
+        - field_landing_page_hero_logo
       format_type: tab
       format_settings:
         description: ''
@@ -189,6 +179,22 @@ third_party_settings:
         classes: ''
       region: content
       weight: -61
+    group_header_section:
+      children:
+        - group_header
+        - group_customised_header
+      label: 'Header Section'
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: node-form-group-header-section
+        label_as_html: false
+        direction: horizontal
+        width_breakpoint: 640
     group_publication_metadata:
       children:
         - field_license_type
