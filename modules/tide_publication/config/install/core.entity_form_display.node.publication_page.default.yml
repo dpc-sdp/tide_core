@@ -201,7 +201,7 @@ content:
     third_party_settings: {  }
   field_bottom_graphical_image:
     type: entity_browser_entity_reference
-    weight: 24
+    weight: 23
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -216,7 +216,7 @@ content:
     third_party_settings: {  }
   field_graphical_image:
     type: entity_browser_entity_reference
-    weight: 23
+    weight: 22
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -276,7 +276,7 @@ content:
     region: content
   field_landing_page_hero_logo:
     type: entity_browser_entity_reference
-    weight: 22
+    weight: 24
     region: content
     settings:
       entity_browser: tide_image_browser
