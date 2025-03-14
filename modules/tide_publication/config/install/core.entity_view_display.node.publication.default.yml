@@ -14,6 +14,7 @@ dependencies:
     - field.field.node.publication.field_landing_page_show_contact
     - field.field.node.publication.field_landing_page_summary
     - field.field.node.publication.field_license_type
+    - field.field.node.publication.field_metatags
     - field.field.node.publication.field_node_documents
     - field.field.node.publication.field_publication_authors
     - field.field.node.publication.field_publication_date
@@ -23,6 +24,7 @@ dependencies:
     - field.field.node.publication.field_show_related_content
     - field.field.node.publication.field_show_social_sharing
     - field.field.node.publication.field_show_table_of_content
+    - field.field.node.publication.field_show_topic_term_and_tags
     - field.field.node.publication.field_tags
     - field.field.node.publication.field_topic
     - field.field.node.publication.field_content_category
@@ -30,6 +32,7 @@ dependencies:
   module:
     - datetime
     - entity_reference_revisions
+    - metatag
     - options
     - user
     - term_reference_tree
@@ -138,6 +141,13 @@ content:
     third_party_settings: {  }
     type: entity_reference_label
     region: content
+  field_metatags:
+    type: metatag_empty_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 149
+    region: content
   field_node_documents:
     weight: 108
     label: above
@@ -221,6 +231,16 @@ content:
       format_custom_true: ''
     third_party_settings: {  }
     type: boolean
+    region: content
+  field_show_topic_term_and_tags:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 144
     region: content
   field_tags:
     weight: 5

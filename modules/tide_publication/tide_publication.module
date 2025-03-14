@@ -131,6 +131,7 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     ':input[name="_header_style_options"]' => [
       ['value' => 'fullwidth'],
       ['value' => 'cta'],
+      ['value' => 'corner'],
     ],
   ];
 
