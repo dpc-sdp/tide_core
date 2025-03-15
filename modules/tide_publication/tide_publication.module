@@ -131,7 +131,6 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     ':input[name="_header_style_options"]' => [
       ['value' => 'fullwidth'],
       ['value' => 'cta'],
-      ['value' => 'corner'],
     ],
   ];
 
@@ -142,15 +141,18 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     $header_style = 'fullwidth';
   }
 
-  if (!$node->get('field_graphical_image')->isEmpty()) {
+  if (!$node->get('field_graphical_image')->isEmpty() || !$node->get('field_bottom_graphical_image')->isEmpty()) {
     $header_style = 'corner';
   }
+
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
   $form['field_graphical_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
-
+  $form['field_bottom_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
   $form['#after_build'][] = '_tide_publication_form_node_form_after_build';
   return $form;
 }
@@ -178,9 +180,11 @@ function _tide_publication_form_node_form_after_build(array $form, FormStateInte
   }
 
   $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
+  $form_hero_bottom_graphical_empty = empty($form_state->getValue(['field_bottom_graphical_image', 'target_id']));
+
   // If the graphical image is not empty, set the header style to
   // 'corner', otherwise retain 'fullwidth' or 'default'.
-  if (!$form_hero_top_graphical_empty) {
+  if (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
     $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;

@@ -162,6 +162,8 @@ function tide_publication_update_10006() {
     'field.field.node.publication_page.field_landing_page_hero_logo' => 'field_config',
     'field.field.node.publication_page.field_metatags' => 'field_config',
     'field.field.node.publication_page.field_show_topic_term_and_tags' => 'field_config',
+    'field.field.node.publication.field_metatags' => 'field_config',
+    'field.field.node.publication.field_show_topic_term_and_tags' => 'field_config',
   ];
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_publication') . '/config/install'];
@@ -181,8 +183,8 @@ function tide_publication_update_10006() {
     'core.entity_form_display.node.publication_page.default',
     'core.entity_view_display.node.publication.default',
     'core.entity_view_display.node.publication_page.default',
-    'core.entity_view_display.node.publication_page.teaser',
     'field.field.node.publication_page.field_landing_page_component',
+    'field.field.node.publication.field_landing_page_component',
   ];
   foreach ($form_configs as $form_config) {
     $rewrite = _tide_read_config($form_config, $config_location, FALSE);
