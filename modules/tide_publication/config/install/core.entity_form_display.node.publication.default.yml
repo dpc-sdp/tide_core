@@ -62,7 +62,7 @@ third_party_settings:
       children:
         - field_show_publication_nav
       parent_name: group_sidebar
-      weight: 10
+      weight: 2
       format_type: details
       format_settings:
         id: ''
@@ -78,7 +78,7 @@ third_party_settings:
         - field_show_related_content
         - field_related_links
       parent_name: group_sidebar
-      weight: 20
+      weight: 3
       format_type: details
       format_settings:
         id: ''
@@ -94,7 +94,7 @@ third_party_settings:
         - field_landing_page_show_contact
         - field_landing_page_contact
       parent_name: group_sidebar
-      weight: 30
+      weight: 4
       format_type: details
       format_settings:
         id: ''
@@ -151,7 +151,7 @@ third_party_settings:
         id: node-form-group-content-section
         classes: ''
       region: content
-      weight: -70
+      weight: 3
     group_section_sidebar:
       label: 'Sidebar Section'
       parent_name: ''
@@ -163,7 +163,7 @@ third_party_settings:
         id: node-form-group-sidebar-section
         classes: ''
       region: content
-      weight: -60
+      weight: 4
     group_sidebar:
       label: Sidebar
       parent_name: group_section_sidebar
@@ -221,13 +221,13 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 3
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_bottom_graphical_image:
     type: entity_browser_entity_reference
-    weight: 8
+    weight: 14
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -241,7 +241,7 @@ content:
       selection_mode: selection_append
     third_party_settings: {  }
   field_featured_image:
-    weight: -90
+    weight: 2
     settings:
       entity_browser: tide_image_browser
       field_widget_display: rendered_entity
@@ -257,7 +257,7 @@ content:
     region: content
   field_graphical_image:
     type: entity_browser_entity_reference
-    weight: 7
+    weight: 13
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -272,7 +272,7 @@ content:
     third_party_settings: {  }
   field_landing_page_component:
     type: paragraphs
-    weight: 25
+    weight: 4
     region: content
     settings:
       title: Component
@@ -290,7 +290,7 @@ content:
     third_party_settings: {  }
   field_landing_page_contact:
     type: entity_reference_paragraphs
-    weight: 4
+    weight: 3
     settings:
       title: 'Contact Us block'
       title_plural: 'Contact Us blocks'
@@ -301,7 +301,7 @@ content:
     third_party_settings: {  }
     region: content
   field_landing_page_hero_image:
-    weight: 20
+    weight: 11
     settings:
       entity_browser: tide_image_browser
       field_widget_display: rendered_entity
@@ -317,7 +317,7 @@ content:
     region: content
   field_landing_page_hero_logo:
     type: entity_browser_entity_reference
-    weight: 9
+    weight: 15
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -331,13 +331,13 @@ content:
       selection_mode: selection_append
     third_party_settings: {  }
   field_landing_page_hero_theme:
-    weight: 25
+    weight: 12
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_landing_page_intro_text:
-    weight: 20
+    weight: 3
     settings:
       rows: 5
       placeholder: ''
@@ -352,7 +352,7 @@ content:
     type: boolean_checkbox
     region: content
   field_landing_page_summary:
-    weight: 10
+    weight: 2
     settings:
       rows: 5
       placeholder: ''
@@ -372,14 +372,14 @@ content:
     region: content
   field_metatags:
     type: metatag_firehose
-    weight: 35
+    weight: 29
     region: content
     settings:
       sidebar: true
       use_details: true
     third_party_settings: {  }
   field_node_display_headings:
-    weight: 24
+    weight: 3
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
@@ -430,7 +430,7 @@ content:
     type: boolean_checkbox
     region: content
     field_name: field_show_content_rating
-    weight: 2
+    weight: 9
     settings:
       display_label: true
     third_party_settings: {  }
@@ -450,12 +450,12 @@ content:
     region: content
   field_show_social_sharing:
     type: options_buttons
-    weight: 40
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_show_table_of_content:
-    weight: 23
+    weight: 2
     settings:
       display_label: true
     third_party_settings: {  }
@@ -469,7 +469,7 @@ content:
       display_label: true
     third_party_settings: {  }
   field_tags:
-    weight: 13
+    weight: 17
     settings:
       match_operator: CONTAINS
       size: 60
@@ -490,13 +490,13 @@ content:
     region: content
   moderation_state:
     type: moderation_state_default
-    weight: 7
+    weight: 14
     settings: {  }
     region: content
     third_party_settings: {  }
   path:
     type: path
-    weight: 4
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
