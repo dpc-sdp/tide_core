@@ -5,6 +5,7 @@
  * Tide Publication.
  */
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -328,5 +329,46 @@ function tide_publication_form_alter(&$form, FormStateInterface $form_state, $fo
   }
   if (isset($form['field_publication_authors'])) {
     $form['field_publication_authors']['widget'][0]['target_id']['#placeholder'] = t('Start typing');
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_publication_node_presave(EntityInterface $entity) {
+  if ($entity->bundle() === 'publication_page' && $entity->hasField('field_publication')) {
+    $publication_parent = $entity?->get('field_publication')
+      ?->first()
+      ?->get('entity')
+      ?->getTarget()
+      ?->getValue();
+
+    if (
+      $entity->hasField('field_graphical_image')
+      && $entity->get('field_graphical_image')->isEmpty()
+      && $publication_parent->hasField('field_graphical_image')
+      && !$publication_parent->get('field_graphical_image')->isEmpty()
+    ) {
+      $top_corner_graphic = $publication_parent?->get('field_graphical_image')
+        ?->first()
+        ?->get('entity')
+        ?->getTarget()
+        ?->getValue();
+      $entity->field_graphical_image[] = $top_corner_graphic;
+    }
+
+    if (
+      $entity->hasField('field_bottom_graphical_image')
+      && $entity->get('field_bottom_graphical_image')->isEmpty()
+      && $publication_parent->hasField('field_bottom_graphical_image')
+      && !$publication_parent->get('field_bottom_graphical_image')->isEmpty()
+    ) {
+      $bottom_corner_graphic = $publication_parent?->get('field_bottom_graphical_image')
+        ?->first()
+        ?->get('entity')
+        ?->getTarget()
+        ?->getValue();
+      $entity->field_bottom_graphical_image[] = $bottom_corner_graphic;
+    }
   }
 }
