@@ -206,7 +206,7 @@ third_party_settings:
       label: ''
       region: content
       parent_name: ''
-      weight: -80
+      weight: 0
       format_type: fieldset
       format_settings:
         classes: ''
@@ -430,7 +430,7 @@ content:
     type: boolean_checkbox
     region: content
     field_name: field_show_content_rating
-    weight: 9
+    weight: 8
     settings:
       display_label: true
     third_party_settings: {  }
@@ -463,7 +463,7 @@ content:
     region: content
   field_show_topic_term_and_tags:
     type: boolean_checkbox
-    weight: 8
+    weight: 9
     region: content
     settings:
       display_label: true

@@ -152,7 +152,7 @@ content:
     third_party_settings: {  }
     region: content
   field_show_content_rating:
-    weight: 114
+    weight: 144
     label: above
     settings:
       format: default
@@ -209,7 +209,7 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 144
+    weight: 114
     region: content
   links:
     weight: 100
