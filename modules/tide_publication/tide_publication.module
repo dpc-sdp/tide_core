@@ -121,7 +121,7 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     '#options' => [
       'default' => t('Default appearance'),
       'fullwidth' => t('Full-width  background image'),
-      'corner' => t('Custom top corner graphic'),
+      'corner' => t('Corner graphics'),
     ],
     '#ajax' => [
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
@@ -369,6 +369,20 @@ function tide_publication_node_presave(EntityInterface $entity) {
         ?->getTarget()
         ?->getValue();
       $entity->field_bottom_graphical_image[] = $bottom_corner_graphic;
+    }
+
+    if (
+      $entity->hasField('field_landing_page_hero_logo')
+      && $entity->get('field_landing_page_hero_logo')->isEmpty()
+      && $publication_parent->hasField('field_landing_page_hero_logo')
+      && !$publication_parent->get('field_landing_page_hero_logo')->isEmpty()
+    ) {
+      $field_logo = $publication_parent?->get('field_landing_page_hero_logo')
+        ?->first()
+        ?->get('entity')
+        ?->getTarget()
+        ?->getValue();
+      $entity->field_landing_page_hero_logo[] = $field_logo;
     }
   }
 }
