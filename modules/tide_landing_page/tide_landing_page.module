@@ -126,7 +126,6 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
         if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'])) {
           foreach (Element::children($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget']) as $delta) {
             $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['uri']['#title'] = t("CTA link");
-            $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['uri']['#description'] = t("A link to a page showing a longer list of public holidays or special dates. Start typing the title of a page in the CMS to select it or paste in a full external URL (eg http://www.example.com).");
             $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['title']['#title'] = t("CTA text");
             $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['title']['#description'] = t("Type a strong call to action that describes the content of the link destination (eg Find all public holidays).");
           }

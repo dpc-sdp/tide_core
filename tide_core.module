@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -207,6 +208,22 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     $form['field_metatags']['widget'][0]['open_graph']['og_locale']['#description'] = t("This field is used in SDP to set the page's language, display font and text direction. See our @language-code-list.", [
       '@language-code-list' => $language_code_list_link,
     ]);
+  }
+}
+
+/**
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+ */
+function paragraphs_field_widget_single_element_paragraphs_form_alter(&$element, &$form_state, $context) {
+  if ($element['#paragraph_type'] === 'key_journeys') {
+    $paragraph_links = $element['subform']['field_paragraph_links']['widget'];
+    foreach (Element::children($paragraph_links) as $delta) {
+      $element['subform']['field_paragraph_links']['widget'][$delta]['uri']['#description'] = t('To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code %phone in the URL field, using brackets around the phone number and no spaces.', [
+        '!phone' => '<a href="tel:+123456">tel:+123456</a>',
+            ]);
+    }
+
+    $element['subform']['field_paragraph_cta']['widget'][0]['uri']['#description'] = t('To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code tel:(123456) in the URL field, using brackets around the phone number and no spaces.');
   }
 }
 
