@@ -203,4 +203,17 @@ function tide_publication_update_10006() {
     $display_config_entity->setData($rewritten_config);
     $display_config_entity->save();
   }
+
+  // Deleting the field instance (field config).
+  $field_config = \Drupal\field\Entity\FieldConfig::loadByName('node', 'publication_page', 'field_content_category');
+  if ($field_config) {
+    $field_config->delete();
+  }
+
+  // Deleting the field storage (field storage config).
+  $field_storage_config = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', 'field_content_category');
+  if ($field_storage_config) {
+    $field_storage_config->delete();
+  }
+
 }
