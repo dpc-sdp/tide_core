@@ -7,6 +7,7 @@
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_publication\TidePublicationOperation;
