@@ -19,10 +19,23 @@ use Drush\Commands\DrushCommands;
 class TideSearchCommands extends DrushCommands {
 
   /**
-   * Audit nodeids that needs to be published/indexed based on search index.
+   * Audits node ids that needs to be published/indexed based on search index.
    *
-   * @usage drush tide-search-audit-nodes
-   *   Update the domains on the site taxonomy based on an environment variable.
+   * The list of items not in the search index can be added using the following
+   * command where '--id-list' is the output from running
+   * 'tide:search-audit-nodes'
+   *
+   * 'drush search-api:index-sample --datasource=entity:node --id-list=123,456'
+   *
+   * @param string $indexId
+   *   The name of the Search API index to audit, e.g. 'node'.
+   *
+   * @return string
+   *   A comma delimited list of ids that can be passed to
+   *   'drush search_api:index-sample'
+   *
+   * @usage drush tide-search-audit-nodes node
+   *   Audit 'node' index for missing items
    *
    * @command tide:search-audit-nodes
    * @aliases tide-san,tide-search-audit-nodes
@@ -91,14 +104,14 @@ class TideSearchCommands extends DrushCommands {
       throw new ConsoleException(t('@index was not found'));
     }
     $total = $indexes[$indexId]->getTrackerInstance()->getTotalItemsCount();
-    $no_of_batches = ceil($total / 1000);
-    // If the result set is more than 1000 then run it in batch.
+    $no_of_batches = ceil($total / 500);
+    // If the result set is more than 500 then run it in batch.
     if ($no_of_batches > 1) {
       $nid_starting_point = 0;
       for ($i = 1; $i <= $no_of_batches; $i++) {
         try {
           $query = $indexes[$indexId]->query();
-          $query->range(0, 1000);
+          $query->range(0, 500);
           $query->sort('nid');
           $query->addCondition('nid', $nid_starting_point, '>');
           $results = $query->execute();
@@ -146,6 +159,7 @@ class TideSearchCommands extends DrushCommands {
         ->condition('type', 'alert', '!=')
         ->condition('status', 1)
         ->sort('nid')
+        ->accessCheck(FALSE)
         ->condition('nid', $pointer, '>')
         ->range(0, 100)
         ->execute();

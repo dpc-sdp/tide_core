@@ -64,3 +64,25 @@ function tide_ckeditor_update_10002() {
     $filter->save();
   }
 }
+
+/**
+ * Restrict user to only use left and right text alignment control in WYSIWYG.
+ */
+function tide_ckeditor_update_10003() {
+  $editor_types = ['rich_text', 'summary_text', 'admin_text'];
+
+  // Loop through each editor type to update its configuration.
+  foreach ($editor_types as $editor_type) {
+
+    // Get the editable configuration for the current editor type.
+    $editor_config = \Drupal::configFactory()->getEditable("editor.editor.$editor_type");
+    $settings = $editor_config->get('settings');
+
+    // Check if the 'enabled_alignments' key exists and update it.
+    if (isset($settings['plugins']['ckeditor5_alignment']['enabled_alignments'])) {
+      $settings['plugins']['ckeditor5_alignment']['enabled_alignments'] = ['left', 'right'];
+    }
+
+    $editor_config->set('settings', $settings)->save();
+  }
+}
