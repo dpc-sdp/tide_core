@@ -343,46 +343,48 @@ function tide_publication_node_presave(EntityInterface $entity) {
       ?->getTarget()
       ?->getValue();
 
-    if (
-      $entity->hasField('field_graphical_image')
-      && $entity->get('field_graphical_image')->isEmpty()
-      && $publication_parent->hasField('field_graphical_image')
-      && !$publication_parent->get('field_graphical_image')->isEmpty()
-    ) {
-      $top_corner_graphic = $publication_parent?->get('field_graphical_image')
-        ?->first()
-        ?->get('entity')
-        ?->getTarget()
-        ?->getValue();
-      $entity->field_graphical_image[] = $top_corner_graphic;
-    }
+    if ($publication_parent) {
+      if (
+        $entity->hasField('field_graphical_image')
+        && $entity->get('field_graphical_image')->isEmpty()
+        && $publication_parent->hasField('field_graphical_image')
+        && !$publication_parent->get('field_graphical_image')->isEmpty()
+      ) {
+        $top_corner_graphic = $publication_parent?->get('field_graphical_image')
+          ?->first()
+          ?->get('entity')
+          ?->getTarget()
+          ?->getValue();
+        $entity->field_graphical_image[] = $top_corner_graphic;
+      }
 
-    if (
-      $entity->hasField('field_bottom_graphical_image')
-      && $entity->get('field_bottom_graphical_image')->isEmpty()
-      && $publication_parent->hasField('field_bottom_graphical_image')
-      && !$publication_parent->get('field_bottom_graphical_image')->isEmpty()
-    ) {
-      $bottom_corner_graphic = $publication_parent?->get('field_bottom_graphical_image')
-        ?->first()
-        ?->get('entity')
-        ?->getTarget()
-        ?->getValue();
-      $entity->field_bottom_graphical_image[] = $bottom_corner_graphic;
-    }
+      if (
+        $entity->hasField('field_bottom_graphical_image')
+        && $entity->get('field_bottom_graphical_image')->isEmpty()
+        && $publication_parent->hasField('field_bottom_graphical_image')
+        && !$publication_parent->get('field_bottom_graphical_image')->isEmpty()
+      ) {
+        $bottom_corner_graphic = $publication_parent?->get('field_bottom_graphical_image')
+          ?->first()
+          ?->get('entity')
+          ?->getTarget()
+          ?->getValue();
+        $entity->field_bottom_graphical_image[] = $bottom_corner_graphic;
+      }
 
-    if (
-      $entity->hasField('field_landing_page_hero_logo')
-      && $entity->get('field_landing_page_hero_logo')->isEmpty()
-      && $publication_parent->hasField('field_landing_page_hero_logo')
-      && !$publication_parent->get('field_landing_page_hero_logo')->isEmpty()
-    ) {
-      $field_logo = $publication_parent?->get('field_landing_page_hero_logo')
-        ?->first()
-        ?->get('entity')
-        ?->getTarget()
-        ?->getValue();
-      $entity->field_landing_page_hero_logo[] = $field_logo;
+      if (
+        $entity->hasField('field_landing_page_hero_logo')
+        && $entity->get('field_landing_page_hero_logo')->isEmpty()
+        && $publication_parent->hasField('field_landing_page_hero_logo')
+        && !$publication_parent->get('field_landing_page_hero_logo')->isEmpty()
+      ) {
+        $field_logo = $publication_parent?->get('field_landing_page_hero_logo')
+          ?->first()
+          ?->get('entity')
+          ?->getTarget()
+          ?->getValue();
+        $entity->field_landing_page_hero_logo[] = $field_logo;
+      }
     }
   }
 }
