@@ -214,7 +214,7 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 /**
  * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
  */
-function paragraphs_field_widget_single_element_paragraphs_form_alter(&$element, &$form_state, $context) {
+function tide_core_field_widget_single_element_paragraphs_form_alter(&$element, &$form_state, $context) {
   if ($element['#paragraph_type'] === 'key_journeys') {
     $url = Url::fromUri('tel:(123456)', [
       'attributes' => [
@@ -223,7 +223,7 @@ function paragraphs_field_widget_single_element_paragraphs_form_alter(&$element,
     ]);
     $paragraph_links = $element['subform']['field_paragraph_links']['widget'];
     $phone_link = Link::fromTextAndUrl(t('tel:(123456)'), $url)->toString();
-    $description =  t("To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code @phone-link-url in the URL field, using brackets around the phone number and no spaces.", [
+    $description = t("To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code @phone-link-url in the URL field, using brackets around the phone number and no spaces.", [
       '@phone-link-url' => $phone_link,
     ]);
     foreach (Element::children($paragraph_links) as $delta) {
