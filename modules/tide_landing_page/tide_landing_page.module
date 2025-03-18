@@ -10,7 +10,9 @@ use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\NodeInterface;
 use Drupal\workflows\Entity\Workflow;
@@ -247,6 +249,24 @@ function tide_landing_page_field_widget_single_element_paragraphs_form_alter(&$e
           }
         }
       }
+      break;
+
+    case 'key_journeys':
+      $url = Url::fromUri('tel:(123456)', [
+        'attributes' => [
+          'target' => '_blank',
+        ],
+      ]);
+      $paragraph_links = $element['subform']['field_paragraph_links']['widget'];
+      $phone_link = Link::fromTextAndUrl(t('tel:(123456)'), $url)->toString();
+      $description = t("To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code @phone-link-url in the URL field, using brackets around the phone number and no spaces.", [
+        '@phone-link-url' => $phone_link,
+      ]);
+      foreach (Element::children($paragraph_links) as $delta) {
+        $element['subform']['field_paragraph_links']['widget'][$delta]['uri']['#description'] = $description;
+      }
+
+      $element['subform']['field_paragraph_cta']['widget'][0]['uri']['#description'] = $description;
       break;
   }
   if ($paragraph_field_name === 'field_landing_page_component') {
