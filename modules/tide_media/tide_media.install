@@ -137,3 +137,11 @@ function tide_media_update_10007() {
   $config->set('hidden', $hidden);
   $config->save();
 }
+
+/**
+ * Add edit any media permission to approver.
+ */
+function tide_media_update_10008() {
+  $permission = ['delete any media'];
+  user_role_grant_permissions('approver', $permission);
+}
