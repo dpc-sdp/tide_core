@@ -145,3 +145,31 @@ function tide_media_update_10008() {
   $permission = ['delete any media'];
   user_role_grant_permissions('approver', $permission);
 }
+
+/**
+ * Add replace file option to documents.
+ */
+function tide_media_update_10009() {
+  if (\Drupal::moduleHandler()->moduleExists('media_entity_file_replace') === FALSE) {
+    \Drupal::service('module_installer')->install(['media_entity_file_replace']);
+  }
+
+  $config  = \Drupal::configFactory()->getEditable('core.entity_form_display.media.document.default');
+  $content = $config->get('content');
+  $hidden  = $config->get('hidden');
+  $replaceFile  = [
+    "weight"               => 1,
+    "region"               => "content",
+    "settings"             => [
+      "display_label" => TRUE,
+    ],
+    "third_party_settings" => [],
+  ];
+  if (!empty($hidden['replace_file'])) {
+    unset($hidden['replace_file']);
+    $content['replace_file'] = $replaceFile;
+  }
+  $config->set('content', $content);
+  $config->set('hidden', $hidden);
+  $config->save();
+}
