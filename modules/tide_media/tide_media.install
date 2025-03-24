@@ -154,13 +154,13 @@ function tide_media_update_10009() {
     \Drupal::service('module_installer')->install(['media_entity_file_replace']);
   }
 
-  $config  = \Drupal::configFactory()->getEditable('core.entity_form_display.media.document.default');
+  $config = \Drupal::configFactory()->getEditable('core.entity_form_display.media.document.default');
   $content = $config->get('content');
-  $hidden  = $config->get('hidden');
-  $replaceFile  = [
-    "weight"               => 1,
-    "region"               => "content",
-    "settings"             => [
+  $hidden = $config->get('hidden');
+  $replaceFile = [
+    "weight" => 1,
+    "region" => "content",
+    "settings"  => [
       "display_label" => TRUE,
     ],
     "third_party_settings" => [],
