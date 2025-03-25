@@ -1,0 +1,27 @@
+uuid: 566ed66d-d958-463b-8ec7-046c8e697702
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_custom_filters
+    - node.type.landing_page
+  module:
+    - entity_reference_revisions
+id: node.landing_page.field_custom_filters
+field_name: field_custom_filters
+entity_type: node
+bundle: landing_page
+label: 'Custom filters'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      field_custom_filters: field_custom_filters
+    negate: 0
+    target_bundles_drag_drop:
+field_type: entity_reference_revisions
