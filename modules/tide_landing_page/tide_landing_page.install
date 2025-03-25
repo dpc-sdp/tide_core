@@ -266,12 +266,10 @@ function tide_landing_page_update_10110() {
   }
 }
 
-
 /**
  * Add custom filters field.
  */
-function tide_landing_page_update_10111()
-{
+function tide_landing_page_update_10111() {
   $configs = [
     'field.field.node.landing_page' => 'field_config',
   ];
