@@ -272,6 +272,7 @@ function tide_landing_page_update_10110() {
 function tide_landing_page_update_10111() {
   $configs = [
     'field.field.node.landing_page' => 'field_config',
+    'field.storage.node.field_custom_filters' => 'field_storage_config'
   ];
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
