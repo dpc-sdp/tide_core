@@ -45,10 +45,10 @@ class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInter
   }
   
   /**
-   * Lazy load the vuelio integration.
+   * Load the smtp connection tester.
    *
    * @return \Drupal\smtp\ConnectionTester\ConnectionTester
-   *   The smtp service.
+   *   The smtp connection service.
    */
   protected function getSmtpTesterService() {
     return \Drupal::service('smtp.connection_tester');
