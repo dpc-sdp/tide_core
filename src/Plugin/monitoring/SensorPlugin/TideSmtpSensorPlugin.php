@@ -19,19 +19,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInterface {
-  
+
   /**
    * The module handler.
    *
    * @var Drupal\Core\Extension\ModuleHandler
    */
   protected $moduleHandler;
-  
+
   public function __construct(SensorConfig $sensor_config, $plugin_id, $plugin_definition, ModuleHandlerInterface $module_handler) {
     parent::__construct($sensor_config, $plugin_id, $plugin_definition);
     $this->moduleHandler = $module_handler;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -43,7 +43,7 @@ class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInter
       $container->get('module_handler')
     );
   }
-  
+
   /**
    * Load the smtp connection tester.
    *
@@ -53,7 +53,7 @@ class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInter
   protected function getSmtpTesterService() {
     return \Drupal::service('smtp.connection_tester');
   }
-  
+
   /**
    * Execute the sensor.
    *
@@ -67,7 +67,8 @@ class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInter
         $result->setStatus(SensorResultInterface::STATUS_OK);
         $result->setMessage('OK');
         return;
-      } else {
+      }
+      else {
         $result->setStatus(SensorResultInterface::STATUS_CRITICAL);
         $reqs = $tester->hookRequirements('runtime');
         $result->setMessage($reqs['smtp_connection']['value']);
@@ -78,5 +79,5 @@ class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInter
       $result->setMessage('Exception encountered during SMTP test: ' . $e->getMessage());
     }
   }
-  
+
 }
