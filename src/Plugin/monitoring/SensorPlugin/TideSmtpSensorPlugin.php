@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Monitors the SMTP connection.
  *
  * @SensorPlugin(
- *   id = "tide_smtp",
+ *   id = "tide_smtp_sensor",
  *   label = @Translation("Tide SMTP Sensor"),
  *   description = @Translation("Monitors connectivity to SMTP"),
  * )
@@ -69,7 +69,8 @@ class TideSmtpSensorPlugin extends SensorPluginBase implements SensorPluginInter
         return;
       } else {
         $result->setStatus(SensorResultInterface::STATUS_CRITICAL);
-        $result->setMessage($tester->value);
+        $reqs = $tester->hookRequirements('runtime');
+        $result->setMessage($reqs['smtp_connection']['value']);
       }
     }
     catch (\Exception $e) {
