@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.landing_page.field_bottom_graphical_image
+    - field.field.node.landing_page.field_custom_filters
     - field.field.node.landing_page.field_featured_image
     - field.field.node.landing_page.field_graphical_image
     - field.field.node.landing_page.field_landing_page_bg_colour
@@ -55,6 +56,15 @@ content:
     settings:
       link: true
     third_party_settings: {  }
+    region: content
+  field_custom_filters:
+    type: entity_reference_revisions_label
+    label: above
+    settings:
+      link: false
+      show_revision_number: false
+    third_party_settings: {  }
+    weight: 37
     region: content
   field_featured_image:
     weight: 9
