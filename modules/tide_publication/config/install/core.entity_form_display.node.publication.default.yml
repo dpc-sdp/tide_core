@@ -3,15 +3,19 @@ status: true
 dependencies:
   config:
     - entity_browser.browser.tide_document_browser
+    - field.field.node.publication.field_bottom_graphical_image
     - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_graphical_image
     - field.field.node.publication.field_landing_page_component
     - field.field.node.publication.field_landing_page_contact
     - field.field.node.publication.field_landing_page_hero_image
+    - field.field.node.publication.field_landing_page_hero_logo
     - field.field.node.publication.field_landing_page_hero_theme
     - field.field.node.publication.field_landing_page_intro_text
     - field.field.node.publication.field_landing_page_show_contact
     - field.field.node.publication.field_landing_page_summary
     - field.field.node.publication.field_license_type
+    - field.field.node.publication.field_metatags
     - field.field.node.publication.field_node_display_headings
     - field.field.node.publication.field_node_documents
     - field.field.node.publication.field_publication_authors
@@ -22,6 +26,7 @@ dependencies:
     - field.field.node.publication.field_show_related_content
     - field.field.node.publication.field_show_social_sharing
     - field.field.node.publication.field_show_table_of_content
+    - field.field.node.publication.field_show_topic_term_and_tags
     - field.field.node.publication.field_tags
     - field.field.node.publication.field_topic
     - node.type.publication
@@ -32,6 +37,7 @@ dependencies:
     - field_group
     - inline_entity_form
     - maxlength
+    - metatag
     - paragraphs
     - path
 third_party_settings:
@@ -56,7 +62,7 @@ third_party_settings:
       children:
         - field_show_publication_nav
       parent_name: group_sidebar
-      weight: 10
+      weight: 2
       format_type: details
       format_settings:
         id: ''
@@ -72,7 +78,7 @@ third_party_settings:
         - field_show_related_content
         - field_related_links
       parent_name: group_sidebar
-      weight: 20
+      weight: 3
       format_type: details
       format_settings:
         id: ''
@@ -88,7 +94,7 @@ third_party_settings:
         - field_landing_page_show_contact
         - field_landing_page_contact
       parent_name: group_sidebar
-      weight: 30
+      weight: 4
       format_type: details
       format_settings:
         id: ''
@@ -99,22 +105,9 @@ third_party_settings:
         open: false
       label: Contact
       region: content
-    group_section_header:
-      label: 'Header Section'
-      parent_name: ''
-      children:
-        - group_header
-        - group_customised_header
-      format_type: tabs
-      format_settings:
-        direction: horizontal
-        id: node-form-group-header-section
-        classes: ''
-      region: content
-      weight: -100
     group_header:
       label: Header
-      parent_name: group_section_header
+      parent_name: group_header_section
       children:
         - field_publication
         - title
@@ -131,10 +124,13 @@ third_party_settings:
       weight: -99
     group_customised_header:
       label: 'Customised Header'
-      parent_name: group_section_header
+      parent_name: group_header_section
       children:
         - field_landing_page_hero_theme
         - field_landing_page_hero_image
+        - field_graphical_image
+        - field_bottom_graphical_image
+        - field_landing_page_hero_logo
       format_type: tab
       format_settings:
         description: ''
@@ -155,7 +151,7 @@ third_party_settings:
         id: node-form-group-content-section
         classes: ''
       region: content
-      weight: -70
+      weight: 3
     group_section_sidebar:
       label: 'Sidebar Section'
       parent_name: ''
@@ -167,7 +163,7 @@ third_party_settings:
         id: node-form-group-sidebar-section
         classes: ''
       region: content
-      weight: -60
+      weight: 4
     group_sidebar:
       label: Sidebar
       parent_name: group_section_sidebar
@@ -186,6 +182,22 @@ third_party_settings:
         classes: ''
       region: content
       weight: -61
+    group_header_section:
+      children:
+        - group_header
+        - group_customised_header
+      label: 'Header Section'
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: node-form-group-header-section
+        label_as_html: false
+        direction: horizontal
+        width_breakpoint: 640
     group_publication_metadata:
       children:
         - field_license_type
@@ -194,7 +206,7 @@ third_party_settings:
       label: ''
       region: content
       parent_name: ''
-      weight: -80
+      weight: 0
       format_type: fieldset
       format_settings:
         classes: ''
@@ -209,12 +221,27 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 3
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_bottom_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 14
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_featured_image:
-    weight: -90
+    weight: 2
     settings:
       entity_browser: tide_image_browser
       field_widget_display: rendered_entity
@@ -228,9 +255,24 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
+  field_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 13
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_landing_page_component:
     type: paragraphs
-    weight: 25
+    weight: 4
     region: content
     settings:
       title: Component
@@ -248,7 +290,7 @@ content:
     third_party_settings: {  }
   field_landing_page_contact:
     type: entity_reference_paragraphs
-    weight: 4
+    weight: 3
     settings:
       title: 'Contact Us block'
       title_plural: 'Contact Us blocks'
@@ -259,7 +301,7 @@ content:
     third_party_settings: {  }
     region: content
   field_landing_page_hero_image:
-    weight: 20
+    weight: 11
     settings:
       entity_browser: tide_image_browser
       field_widget_display: rendered_entity
@@ -273,14 +315,29 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
+  field_landing_page_hero_logo:
+    type: entity_browser_entity_reference
+    weight: 15
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: default
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_landing_page_hero_theme:
-    weight: 25
+    weight: 12
     settings: {  }
     third_party_settings: {  }
     type: options_select
     region: content
   field_landing_page_intro_text:
-    weight: 20
+    weight: 3
     settings:
       rows: 5
       placeholder: ''
@@ -295,7 +352,7 @@ content:
     type: boolean_checkbox
     region: content
   field_landing_page_summary:
-    weight: 10
+    weight: 2
     settings:
       rows: 5
       placeholder: ''
@@ -313,8 +370,16 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
+  field_metatags:
+    type: metatag_firehose
+    weight: 29
+    region: content
+    settings:
+      sidebar: true
+      use_details: true
+    third_party_settings: {  }
   field_node_display_headings:
-    weight: 24
+    weight: 3
     settings: {  }
     third_party_settings: {  }
     type: options_buttons
@@ -365,7 +430,7 @@ content:
     type: boolean_checkbox
     region: content
     field_name: field_show_content_rating
-    weight: 2
+    weight: 10
     settings:
       display_label: true
     third_party_settings: {  }
@@ -385,19 +450,26 @@ content:
     region: content
   field_show_social_sharing:
     type: options_buttons
-    weight: 40
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
   field_show_table_of_content:
-    weight: 23
+    weight: 2
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
+  field_show_topic_term_and_tags:
+    type: boolean_checkbox
+    weight: 9
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   field_tags:
-    weight: 13
+    weight: 17
     settings:
       match_operator: CONTAINS
       size: 60
@@ -418,13 +490,13 @@ content:
     region: content
   moderation_state:
     type: moderation_state_default
-    weight: 7
+    weight: 14
     settings: {  }
     region: content
     third_party_settings: {  }
   path:
     type: path
-    weight: 4
+    weight: 11
     region: content
     settings: {  }
     third_party_settings: {  }
