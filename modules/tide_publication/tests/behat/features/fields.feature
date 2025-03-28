@@ -27,6 +27,16 @@ Feature: Fields for Publication content type
     And I should see a "input#edit-field-landing-page-hero-image-target-id" element
     And I should see a "select#edit-field-landing-page-hero-theme" element
 
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
+    And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
+
     And I see the text "Date of publication"
     And I should see an "input#edit-field-publication-date-0-value-date" element
 
@@ -55,6 +65,8 @@ Feature: Fields for Publication content type
     And I should see the button "Basic text"
     And I should see the button "Accordion"
     And I should see the button "Complex image"
+    And I should see the button "Reusable content item"
+    And I should see the button "Statics Grid"
     And I press the "Close" button
 
     And I scroll selector "#edit-group-sidebar" into view
@@ -98,6 +110,9 @@ Feature: Fields for Publication content type
     And I should see an "input#edit-field-topic-0-target-id" element
     And I should see an "input#edit-field-topic-0-target-id.required" element
 
+    And I see field "Show topic term and tags?"
+    And I should see text matching "Social sharing"
+
   @api @javascript @publication
   Scenario: The content type has the expected fields (and labels where we can use them).
     # Given I am logged in as a user with the "editor" role
@@ -124,6 +139,17 @@ Feature: Fields for Publication content type
     And I should see a "input#edit-field-landing-page-hero-image-target-id" element
     And I should see a "select#edit-field-landing-page-hero-theme" element
 
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
+    And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
+
+
     And I click on the horizontal tab "Page content"
     And I see field "Show table of contents"
     And I should see an "input#edit-field-show-table-of-content-value" element
@@ -138,17 +164,19 @@ Feature: Fields for Publication content type
     And I press the "edit-field-landing-page-component-add-more-add-modal-form-area-add-more" button
     And I should see the button "Basic text"
     And I should see the button "Accordion"
+    And I should see the button "Data driven component"
     And I should see the button "Call to action"
     And I should see the button "Card carousel"
-    And I should see the button "Latest events"
     And I should see the button "Promotion card"
     And I should see the button "Navigation card"
     And I should see the button "Key dates"
+    And I should see the button "Data table"
     And I should see the button "Image gallery"
     And I should see the button "Complex image"
     And I should see the button "Form embed (Drupal)"
     And I should see the button "Timelines"
-    And I should see the button "News listing"
+    And I should see the button "Statics grid"
+    And I should see the button "Reusable content item"
     And I press the "Close" button
 
     And I scroll selector "#edit-group-sidebar" into view
@@ -174,10 +202,9 @@ Feature: Fields for Publication content type
     And I should see text matching "No Contact Us block added yet."
     And I should see the button "Add Contact Us" in the "content" region
 
+    And I see field "Show topic term and tags?"
     And I should see text matching "Social sharing"
 
     And I see field "Show content rating?"
     And I should see an "input#edit-field-show-content-rating-value" element
     And I should not see an "input#edit-field-show-content-rating-value.required" element
-
-    And I should see text matching "Content category"

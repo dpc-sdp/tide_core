@@ -10,6 +10,7 @@ dependencies:
     - paragraphs.paragraphs_type.card_carousel
     - paragraphs.paragraphs_type.card_keydates
     - paragraphs.paragraphs_type.complex_image
+    - paragraphs.paragraphs_type.data_table
     - paragraphs.paragraphs_type.from_library
     - paragraphs.paragraphs_type.latest_events
     - paragraphs.paragraphs_type.media_gallery
@@ -38,6 +39,8 @@ settings:
       basic_text: basic_text
       from_library: from_library
       accordion: accordion
+      data_table: data_table
+      data_driven_component: data_driven_component
       promotion_card: promotion_card
       navigation_card: navigation_card
       card_keydates: card_keydates
@@ -75,6 +78,12 @@ settings:
       complex_image:
         enabled: true
         weight: -24
+      data_table:
+        enabled: true
+        weight: -25
+      data_driven_component:
+        enabled: true
+        weight: -29
       embedded_webform:
         enabled: true
         weight: -26
