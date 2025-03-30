@@ -409,7 +409,7 @@ function tide_core_update_10013() {
             'translatable' => FALSE,
             'locked' => FALSE,
           ]);
-          $field_storage_config = $field_storage->save();
+          $field_storage->save();
         }
 
         // Create the field instance for this content type.
@@ -422,8 +422,6 @@ function tide_core_update_10013() {
         $field_instance->save();
 
         $display_repository = \Drupal::service('entity_display.repository');
-
-        // Assign widget settings for the default form mode.
         $display_repository->getFormDisplay($entity_type, $bundle)
           ->setComponent($field_name, [
             'type' => 'paragraphs',
