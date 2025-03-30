@@ -396,7 +396,7 @@ function tide_core_update_10013() {
         'settings' => [
           'target_type' => 'paragraph',
         ],
-        'cardinality' => -1, // Allows multiple values
+        'cardinality' => -1,
       ]);
       $field_storage->save();
 
