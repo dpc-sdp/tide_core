@@ -383,40 +383,31 @@ function tide_core_update_10012() {
  * Implements hook_update_N().
  */
 function tide_core_update_10013() {
-  // Get all content types.
-  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
-
-  // Define the machine name of the field you want to add.
+  $content_types = (['tide_landing_page', 'tide_publication', 'tide_event', 'tide_grant', 'tide_search', 'tide_news']);
   $field_name = 'field_custom_filters';
-
   // Loop through each content type and add the field.
   foreach ($content_types as $content_type) {
-    // Skip the content types that are not part of Tide (replace with actual criteria).
-    // Here you can define the condition to check if it's a Tide content type.
-    if (strpos($content_type->id(), 'tide') !== FALSE) {
-      // Check if the field already exists for this content type.
-      if (!field_exists('node', $field_name)) {
-        // Create the field if it doesn't exist for this content type.
-        $field_storage = FieldStorageConfig::create([
-          'field_name' => $field_name,
-          'entity_type' => 'node',
-          'type' => 'entity_reference_revisions',
-          'settings' => [
-            'target_type' => 'paragraph',
-          ],
-          'cardinality' => -1, // Allows multiple values
-        ]);
-        $field_storage->save();
+    if (!field_exists('node', $field_name)) {
+      // Create the field if it doesn't exist for this content type.
+      $field_storage = FieldStorageConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => 'node',
+        'type' => 'entity_reference_revisions',
+        'settings' => [
+          'target_type' => 'paragraph',
+        ],
+        'cardinality' => -1, // Allows multiple values
+      ]);
+      $field_storage->save();
 
-        // Create the field instance for this content type.
-        $field_instance = FieldConfig::create([
-          'field_storage' => $field_storage,
-          'bundle' => $content_type->id(),
-          'label' => 'Custom Filters',
-          'required' => FALSE,
-        ]);
-        $field_instance->save();
-      }
+      // Create the field instance for this content type.
+      $field_instance = FieldConfig::create([
+        'field_storage' => $field_storage,
+        'bundle' => $content_type->id(),
+        'label' => 'Custom Filters',
+        'required' => FALSE,
+      ]);
+      $field_instance->save();
     }
   }
 }
