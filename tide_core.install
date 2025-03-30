@@ -393,21 +393,24 @@ function tide_core_update_10013() {
     if (in_array($bundle, $content_types)) {
       $all_bundle_fields = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
       if (!isset($all_bundle_fields[$field_name])) {
-        // Create the field if it doesn't exist for this content type.
-        $field_storage = FieldStorageConfig::create([
-          'field_name' => $field_name,
-          'entity_type' => 'node',
-          'type' => 'entity_reference_revisions',
-          'settings' => [
-            'target_type' => 'paragraph',
-          ],
-          'cardinality' => -1,
-        ]);
-        $field_storage->save();
+        $field_storage_config = FieldStorageConfig::loadByName('paragraph', $field_name);
+        if (!$field_storage_config) {
+          // Create the field if it doesn't exist for this content type.
+          $field_storage = FieldStorageConfig::create([
+            'field_name' => $field_name,
+            'entity_type' => 'node',
+            'type' => 'entity_reference_revisions',
+            'settings' => [
+              'target_type' => 'paragraph',
+            ],
+            'cardinality' => -1,
+          ]);
+          $field_storage_config = $field_storage->save();
+        }
 
         // Create the field instance for this content type.
         $field_instance = FieldConfig::create([
-          'field_storage' => $field_storage,
+          'field_storage' => $field_storage_config,
           'bundle' => $bundle,
           'label' => 'Custom Filters',
           'required' => FALSE,
