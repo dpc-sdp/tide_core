@@ -406,6 +406,8 @@ function tide_core_update_10013() {
               'target_type' => 'paragraph',
             ],
             'cardinality' => -1,
+            'translatable' => FALSE,
+            'locked' => FALSE,
           ]);
           $field_storage_config = $field_storage->save();
         }
