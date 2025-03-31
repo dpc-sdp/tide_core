@@ -228,5 +228,5 @@ function tide_publication_update_10007() {
   ];
   /** @var \Drupal\tide_core\TideEntityUpdateHelper $s */
   $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
-  $tide_update_helper->configMergeDeep('tide_landing_page', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
+  $tide_update_helper->configMergeDeep('tide_publication', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
 }
