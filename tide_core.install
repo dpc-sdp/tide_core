@@ -381,70 +381,19 @@ function tide_core_update_10012() {
 }
 
 /**
- * Extend custom filters to all content types.
+ * Add custom filters field storage.
  */
 function tide_core_update_10013() {
-  $content_types = ['landing_page', 'publication', 'publication_page', 'event', 'grant', 'tide_search_listing', 'news'];
-  $field_name = 'field_custom_filters';
-  $entity_type = 'node';
-
-  $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($entity_type);
-  foreach ($bundles as $bundle => $label) {
-    if (in_array($bundle, $content_types)) {
-      $all_bundle_fields = \Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type, $bundle);
-      if (!isset($all_bundle_fields[$field_name])) {
-        // Load the field storage configuration for the node field.
-        $field_storage_config = FieldStorageConfig::loadByName($entity_type, $field_name);
-
-        if (!$field_storage_config) {
-          // Create the field storage if it doesn't exist for this content type.
-          $field_storage = FieldStorageConfig::create([
-            'field_name' => $field_name,
-            'entity_type' => 'node',
-            'type' => 'entity_reference_revisions',
-            'settings' => [
-              'target_type' => 'paragraph',
-            ],
-            'cardinality' => -1,
-            'translatable' => FALSE,
-            'locked' => FALSE,
-          ]);
-          $field_storage_config = $field_storage->save();
-        }
-
-        // Create the field instance for this content type.
-        $field_instance = FieldConfig::create([
-          'field_storage' => $field_storage_config,
-          'bundle' => $bundle,
-          'label' => 'Custom Filters',
-          'required' => FALSE,
-        ]);
-        $field_instance->save();
-
-        $display_repository = \Drupal::service('entity_display.repository');
-        $display_repository->getFormDisplay($entity_type, $bundle)
-          ->setComponent($field_name, [
-            'type' => 'paragraphs',
-            'settings' => [
-              'title' => 'Custom filters',
-              'title_plural' => 'Custom filter',
-              'edit_mode' => 'closed',
-              'closed_mode' => 'summary',
-              'autocollapse' => 'none',
-              'closed_mode_threshold' => 0,
-              'add_mode' => 'modal',
-              'form_display_mode' => 'default',
-              'default_paragraph_type' => '_none',
-              'default_paragraph_count' => 1,
-              'features' => [
-                'add_above' => '0',
-                'collapse_edit_all' => 'collapse_edit_all',
-                'duplicate' => '0',
-              ],
-            ],
-          ])
-          ->save();
-      }
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'node.field_custom_filters' => 'field_storage_config',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    } else {
+      $tideUpdateHelper->import($type, $name);
     }
   }
 }
