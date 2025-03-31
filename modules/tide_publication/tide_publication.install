@@ -218,3 +218,15 @@ function tide_publication_update_10006() {
   }
 
 }
+
+/**
+ * Update publication_page.field_landing_page_component config.
+ */
+function tide_publication_update_10007() {
+  $form_configs = [
+    'field.field.node.publication_page.field_landing_page_component',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $s */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->configMergeDeep('tide_publication', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
+}
