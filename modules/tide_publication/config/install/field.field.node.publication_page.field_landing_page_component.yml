@@ -12,10 +12,8 @@ dependencies:
     - paragraphs.paragraphs_type.complex_image
     - paragraphs.paragraphs_type.data_table
     - paragraphs.paragraphs_type.from_library
-    - paragraphs.paragraphs_type.latest_events
     - paragraphs.paragraphs_type.media_gallery
     - paragraphs.paragraphs_type.navigation_card
-    - paragraphs.paragraphs_type.news_listing
     - paragraphs.paragraphs_type.promotion_card
     - paragraphs.paragraphs_type.statistics_grid
     - paragraphs.paragraphs_type.timelines
@@ -50,8 +48,6 @@ settings:
       complex_image: complex_image
       timelines: timelines
       call_to_action: call_to_action
-      news_listing: news_listing
-      latest_events: latest_events
       statistics_grid: statistics_grid
     target_bundles_drag_drop:
       accordion:
@@ -93,18 +89,12 @@ settings:
       keydates:
         weight: -8
         enabled: false
-      latest_events:
-        enabled: true
-        weight: -13
       media_gallery:
         enabled: true
         weight: -25
       navigation_card:
         enabled: true
         weight: -29
-      news_listing:
-        enabled: true
-        weight: -14
       promotion_card:
         enabled: true
         weight: -30
