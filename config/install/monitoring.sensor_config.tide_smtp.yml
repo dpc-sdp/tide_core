@@ -4,7 +4,6 @@ dependencies:
   module:
     - system
     - monitoring
-    - smtp
 id: tide_smtp
 label: 'Tide SMTP'
 description: 'Monitors connection of SMTP'
