@@ -238,7 +238,8 @@ function tide_publication_update_10007() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     if ($storage->load($name) !== NULL) {
       continue;
-    } else {
+    }
+    else {
       $tideUpdateHelper->import($type, $name);
     }
   }

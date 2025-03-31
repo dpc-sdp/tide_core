@@ -282,7 +282,8 @@ function tide_landing_page_update_10111() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     if ($storage->load($name) !== NULL) {
       continue;
-    } else {
+    }
+    else {
       $tideUpdateHelper->import($type, $name);
     }
   }

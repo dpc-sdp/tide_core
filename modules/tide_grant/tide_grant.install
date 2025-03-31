@@ -79,7 +79,8 @@ function tide_grant_update_10002() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     if ($storage->load($name) !== NULL) {
       continue;
-    } else {
+    }
+    else {
       $tideUpdateHelper->import($type, $name);
     }
   }

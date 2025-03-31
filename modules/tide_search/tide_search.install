@@ -178,7 +178,8 @@ function tide_search_update_10006() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     if ($storage->load($name) !== NULL) {
       continue;
-    } else {
+    }
+    else {
       $tideUpdateHelper->import($type, $name);
     }
   }
