@@ -5,6 +5,7 @@
  * Install file.
  */
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\tide_search\TideSearchOperation;
 use Drupal\Core\Field\BaseFieldDefinition;
 
@@ -120,6 +121,50 @@ function tide_search_update_10004() {
 }
 
 /**
+ * Add top corner graphic field.
+ */
+function tide_search_update_10005() {
+  $configs = [
+    'field.field.node.tide_search_listing.field_graphical_image' => 'field_config',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+
+  $form_configs = [
+    'core.entity_form_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.teaser',
+  ];
+  foreach ($form_configs as $form_config) {
+    $rewrite = _tide_read_config($form_config, $config_location, FALSE);
+    $display_config_entity = \Drupal::configFactory()->getEditable($form_config);
+    $original_config = $display_config_entity->getRawData();
+    $rewritten_config = NestedArray::mergeDeep($original_config, $rewrite);
+    if ($rewritten_config['dependencies']) {
+      $dependencies = $rewritten_config['dependencies'];
+      foreach ($dependencies as $type => $items) {
+        $uniqueItems = array_unique($items);
+        sort($uniqueItems);
+        $dependencies[$type] = $uniqueItems;
+      }
+      $rewritten_config['dependencies'] = $dependencies;
+    }
+    $display_config_entity->setData($rewritten_config);
+    $display_config_entity->save();
+  }
+}
+
+/**
  * Imports columns for private datasets.
  */
 function tide_search_update_10006() {
@@ -150,5 +195,5 @@ function tide_search_update_10006() {
   ]);
   // Install the new field.
   $entity_definition_update_manager->installFieldStorageDefinition('json_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_json);
-  $entity_definition_update_manager->installFieldStorageDefinition('json_private_file_node', 'node', 'node', $storage_definition_json); 
+  $entity_definition_update_manager->installFieldStorageDefinition('json_private_file_node', 'node', 'node', $storage_definition_json);
 }
