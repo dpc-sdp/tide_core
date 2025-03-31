@@ -2,12 +2,9 @@
 
 namespace Drupal\tide_core\Plugin\monitoring\SensorPlugin;
 
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\monitoring\Entity\SensorConfig;
 use Drupal\monitoring\Result\SensorResultInterface;
 use Drupal\monitoring\SensorPlugin\SensorPluginBase;
 use Drupal\monitoring\SensorPlugin\SensorPluginInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Monitors the SMTP connection.
