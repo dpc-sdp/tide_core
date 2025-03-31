@@ -6,6 +6,7 @@
  */
 
 use Drupal\tide_search\TideSearchOperation;
+use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
  * Implements hook_install().
@@ -116,4 +117,38 @@ function tide_search_update_10004() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
   _tide_core_field_content_category_default_value('tide_search_listing', 'Search listing');
   _tide_core_content_category_form_display('tide_search_listing');
+}
+
+/**
+ * Imports columns for private datasets.
+ */
+function tide_search_update_10006() {
+  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
+  // Handling CSV file fields.
+  $storage_definition_csv = BaseFieldDefinition::create('file')
+    ->setLabel('CSV Private_File')
+    ->setDescription('Csv file update to private location.')
+    ->setSetting('file_extensions', 'csv')
+    ->setSetting('uri_scheme', 'private')
+    ->setRequired(FALSE)
+    ->setDisplayOptions('form', [
+      'type' => 'file_generic',
+    ]);
+  // Install the new field.
+  $entity_definition_update_manager->installFieldStorageDefinition('csv_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_csv);
+  $entity_definition_update_manager->installFieldStorageDefinition('csv_private_file_node', 'node', 'node', $storage_definition_csv);
+
+  // Handling Json file fields.
+  $storage_definition_json = BaseFieldDefinition::create('file')
+  ->setLabel('JSON Private_File')
+  ->setDescription('Json file update to private location.')
+  ->setSetting('file_extensions', 'json')
+  ->setSetting('uri_scheme', 'private')
+  ->setRequired(FALSE)
+  ->setDisplayOptions('form', [
+    'type' => 'file_generic',
+  ]);
+  // Install the new field.
+  $entity_definition_update_manager->installFieldStorageDefinition('json_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_json);
+  $entity_definition_update_manager->installFieldStorageDefinition('json_private_file_node', 'node', 'node', $storage_definition_json); 
 }

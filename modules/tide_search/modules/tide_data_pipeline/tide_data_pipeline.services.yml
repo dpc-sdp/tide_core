@@ -1,5 +1,5 @@
 services:
-  tide_data_pipeline.source_resource.privatefile:
-    class: Drupal\tide_data_pipeline\Source\FileResource\PrivateFile
+  tide_data_pipeline.source_resource.private_file:
+    class: Drupal\tide_data_pipeline\Source\Resource\PrivateFile
     tags:
       - { name: data_pipelines_source_resource }
