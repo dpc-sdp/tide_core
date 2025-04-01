@@ -57,6 +57,7 @@ function tide_publication_update_10001() {
 function tide_publication_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_publication'][10003] = ['tide_core' => 10005];
+  $dependencies['tide_publication'][10008] = ['tide_core' => 10014];
   return $dependencies;
 }
 
@@ -220,9 +221,21 @@ function tide_publication_update_10006() {
 }
 
 /**
- * Adds custom filters field on publication and publication page content types.
+ * Update publication_page.field_landing_page_component config.
  */
 function tide_publication_update_10007() {
+  $form_configs = [
+    'field.field.node.publication_page.field_landing_page_component',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $s */
+  $tide_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  $tide_update_helper->configMergeDeep('tide_publication', TideEntityUpdateHelper::INSTALL_DIR, $form_configs);
+}
+
+/**
+ * Adds custom filters field on publication and publication page content types.
+ */
+function tide_publication_update_10008() {
   $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
   $configs = [
     'node.publication.field_custom_filters' => 'field_config',
