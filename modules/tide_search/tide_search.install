@@ -22,6 +22,7 @@ function tide_search_install() {
 function tide_search_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
+  $dependencies['tide_search'][10006] = ['tide_core' => 10014];
   return $dependencies;
 }
 
