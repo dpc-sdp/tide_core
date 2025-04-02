@@ -45,6 +45,23 @@ function tide_publication_entity_bundle_create($entity_type_id, $bundle) {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $field_configs = [
+    'node.publication.field_custom_filters',
+    'node.publication_page.field_custom_filters',
+  ];
+
+  foreach ($field_configs as $field_config) {
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+
+    if ($storage->load($field_config) !== NULL) {
+      $field_config_storage = $storage->load($field_config);
+      $settings = $field_config_storage->getSettings();
+      if ($settings['handler_settings']['target_bundles'] === NULL) {
+        $form['field_custom_filters']['#access'] = FALSE;
+      }
+    }
+  }
+
   $publication_forms = [
     'node_publication_form',
     'node_publication_edit_form',
