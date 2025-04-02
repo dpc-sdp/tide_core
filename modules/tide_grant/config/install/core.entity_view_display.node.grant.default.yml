@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.node.grant.field_audience
     - field.field.node.grant.field_call_to_action
+    - field.field.node.grant.field_custom_filters
     - field.field.node.grant.field_description
     - field.field.node.grant.field_featured_image
     - field.field.node.grant.field_landing_page_contact
@@ -129,6 +130,7 @@ content:
     settings:
       separator: '-'
       format_type: medium
+      from_to: both
       timezone_override: ''
     third_party_settings: {  }
     type: daterange_default
@@ -246,6 +248,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_custom_filters: true
   field_landing_page_nav_title: true
   field_news_intro_text: true
   field_node_author: true

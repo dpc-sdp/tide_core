@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.node.tide_search_listing.field_above_results_content
     - field.field.node.tide_search_listing.field_below_results_content
+    - field.field.node.tide_search_listing.field_custom_filters
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
     - field.field.node.tide_search_listing.field_graphical_image
@@ -184,6 +185,7 @@ content:
     weight: 100
     region: content
 hidden:
+  field_custom_filters: true
   field_listing_global_filters: true
   field_listing_query_config: true
   field_listing_results_per_page: true

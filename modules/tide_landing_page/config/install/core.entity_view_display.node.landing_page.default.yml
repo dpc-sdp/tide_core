@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.landing_page.field_bottom_graphical_image
+    - field.field.node.landing_page.field_custom_filters
     - field.field.node.landing_page.field_featured_image
     - field.field.node.landing_page.field_graphical_image
     - field.field.node.landing_page.field_landing_page_bg_colour
@@ -249,6 +250,7 @@ content:
     type: entity_reference_label
     region: content
 hidden:
+  field_custom_filters: true
   field_landing_page_summary: true
   field_show_content_rating: true
   field_show_related_content: true

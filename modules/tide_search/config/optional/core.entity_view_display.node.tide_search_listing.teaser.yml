@@ -5,6 +5,7 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.tide_search_listing.field_above_results_content
     - field.field.node.tide_search_listing.field_below_results_content
+    - field.field.node.tide_search_listing.field_custom_filters
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
     - field.field.node.tide_search_listing.field_graphical_image
@@ -49,6 +50,7 @@ content:
 hidden:
   field_above_results_content: true
   field_below_results_content: true
+  field_custom_filters: true
   field_custom_sort_configuration: true
   field_featured_image: true
   field_graphical_image: true

@@ -4,6 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.event.body
+    - field.field.node.event.field_custom_filters
     - node.type.event
   module:
     - text
@@ -30,6 +31,7 @@ content:
 hidden:
   field_audience: true
   field_event_category: true
+  field_custom_filters: true
   field_event_description: true
   field_event_details: true
   field_featured_image: true

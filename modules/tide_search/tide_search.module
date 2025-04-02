@@ -12,6 +12,15 @@ use Drupal\search_api\IndexInterface;
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $field_config = 'node.tide_search.field_custom_filters';
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  if ($storage->load($field_config) !== NULL) {
+    $field_config_storage = $storage->load($field_config);
+    $settings = $field_config_storage->getSettings();
+    if ($settings['handler_settings']['target_bundles'] === NULL) {
+      $form['field_custom_filters']['#access'] = FALSE;
+    }
+  }
   if (in_array($form_id, [
     'node_tide_search_listing_form',
     'node_tide_search_listing_edit_form',

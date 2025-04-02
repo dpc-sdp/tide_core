@@ -14,6 +14,15 @@ use Drupal\node\NodeInterface;
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_grant_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $field_config = 'node.grant.field_custom_filters';
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  if ($storage->load($field_config) !== NULL) {
+    $field_config_storage = $storage->load($field_config);
+    $settings = $field_config_storage->getSettings();
+    if ($settings['handler_settings']['target_bundles'] === NULL) {
+      $form['field_custom_filters']['#access'] = FALSE;
+    }
+  }
   /** @var \Drupal\node\NodeInterface $node */
   $node = $form_state->getFormObject()->getEntity();
 

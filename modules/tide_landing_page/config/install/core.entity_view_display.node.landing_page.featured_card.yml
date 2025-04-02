@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.featured_card
+    - field.field.node.landing_page.field_custom_filters
     - field.field.node.landing_page.field_featured_image
     - field.field.node.landing_page.field_landing_page_c_primary
     - field.field.node.landing_page.field_landing_page_c_secondary
@@ -55,6 +56,7 @@ content:
     third_party_settings: {  }
 hidden:
   field_bottom_graphical_image: true
+  field_custom_filters: true
   field_featured_image: true
   field_graphical_image: true
   field_landing_page_bg_colour: true

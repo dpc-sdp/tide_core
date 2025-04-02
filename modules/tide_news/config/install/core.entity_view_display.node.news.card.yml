@@ -4,6 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.card
     - field.field.node.news.body
+    - field.field.node.news.field_custom_filters
     - field.field.node.news.field_featured_image
     - field.field.node.news.field_landing_page_nav_title
     - field.field.node.news.field_metatags
@@ -60,6 +61,7 @@ content:
       timezone_override: ''
     third_party_settings: {  }
 hidden:
+  field_custom_filters: true
   field_featured_image: true
   field_landing_page_nav_title: true
   field_metatags: true

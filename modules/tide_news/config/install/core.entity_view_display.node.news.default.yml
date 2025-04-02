@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.news.body
+    - field.field.node.news.field_custom_filters
     - field.field.node.news.field_featured_image
     - field.field.node.news.field_landing_page_nav_title
     - field.field.node.news.field_location
@@ -149,6 +150,7 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_custom_filters: true
   field_show_content_rating: true
   field_show_related_content: true
   field_show_social_sharing: true
