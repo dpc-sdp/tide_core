@@ -66,6 +66,7 @@ function tide_event_form_node_form_alter(&$form, FormStateInterface $form_state,
     }
   }
 }
+
 /**
  * Implements hook_search_api_index_items_alter().
  */
