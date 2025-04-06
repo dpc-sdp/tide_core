@@ -59,4 +59,3 @@ function tide_event_update_10001() {
   _tide_core_field_content_category_default_value('event', 'Event');
   _tide_core_content_category_form_display('event');
 }
-\
