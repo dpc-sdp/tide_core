@@ -59,14 +59,4 @@ function tide_event_update_10001() {
   _tide_core_field_content_category_default_value('event', 'Event');
   _tide_core_content_category_form_display('event');
 }
-
-/**
- * Set maxlength on title field.
- */
-function tide_event_update_10002() {
-  $config_factory = \Drupal::configFactory();
-  $event_config = $config_factory->getEditable('core.entity_form_display.node.event.default');
-  $event_config->set('content.title.third_party_settings.maxlength.maxlength_js', 250);
-  $event_config->set('content.title.third_party_settings.maxlength.maxlength_js_enforce', TRUE);
-  $event_config->save();
-}
+\
