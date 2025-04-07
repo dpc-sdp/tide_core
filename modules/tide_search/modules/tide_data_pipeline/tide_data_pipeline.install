@@ -24,7 +24,6 @@ function tide_data_pipeline_update_10001() {
     ]);
   // Install the new field.
   $entity_definition_update_manager->installFieldStorageDefinition('csv_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_csv);
-  $entity_definition_update_manager->installFieldStorageDefinition('csv_private_file_node', 'node', 'node', $storage_definition_csv);
 
   // Handling Json file fields.
   $storage_definition_json = BaseFieldDefinition::create('file')
@@ -38,5 +37,4 @@ function tide_data_pipeline_update_10001() {
     ]);
   // Install the new field.
   $entity_definition_update_manager->installFieldStorageDefinition('json_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_json);
-  $entity_definition_update_manager->installFieldStorageDefinition('json_private_file_node', 'node', 'node', $storage_definition_json);
 }
