@@ -53,10 +53,17 @@ function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_
   foreach ($field_configs as $field_config) {
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
 
-    if ($storage->load($field_config) !== NULL) {
+    if ($storage->load($field_config) !== NULL && $form_id === 'node_publication_form') {
       $field_config_storage = $storage->load($field_config);
       $settings = $field_config_storage->getSettings();
-      if ($settings['handler_settings']['target_bundles'] === NULL) {
+      if (
+        (
+          is_array($settings['handler_settings'])
+          && isset($settings['handler_settings']['target_bundles'])
+          && !is_array($settings['handler_settings']['target_bundles'])
+        )
+        || empty($settings['handler_settings'])
+      ) {
         $form['field_custom_filters']['#access'] = FALSE;
       }
     }

@@ -16,10 +16,16 @@ use Drupal\node\NodeInterface;
 function tide_grant_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $field_config = 'node.grant.field_custom_filters';
   $storage = \Drupal::entityTypeManager()->getStorage('field_config');
-  if ($storage->load($field_config) !== NULL) {
+  if ($storage->load($field_config) !== NULL && $form_id === 'node_grant_form') {
     $field_config_storage = $storage->load($field_config);
     $settings = $field_config_storage->getSettings();
-    if ($settings['handler_settings']['target_bundles'] === NULL) {
+    if (
+      (
+        is_array($settings['handler_settings'])
+        && !is_array($settings['handler_settings']['target_bundles'])
+      )
+      || empty($settings['handler_settings'])
+    ) {
       $form['field_custom_filters']['#access'] = FALSE;
     }
   }
