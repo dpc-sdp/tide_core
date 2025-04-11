@@ -162,3 +162,33 @@ function tide_search_update_10005() {
     $display_config_entity->save();
   }
 }
+
+/**
+ * Add exclude field to search index.
+ */
+function tide_search_update_10006() {
+  if (\Drupal::moduleHandler()->moduleExists('search_api_exclude_entity') === FALSE) {
+    \Drupal::service('module_installer')->install(['search_api_exclude_entity']);
+  }
+  $update_service = \Drupal::service('tide_core.entity_update_helper');
+  // Import search exclude fields.
+  $field_configs = [
+    'field.storage.node.field_search_index_exclude' => 'field_storage_config',
+    'field.field.node.landing_page.field_search_index_exclude' => 'field_config',
+    'field.field.node.publication.field_search_index_exclude' => 'field_config',
+    'field.field.node.publication_page.field_search_index_exclude' => 'field_config',
+  ];
+  
+  foreach ($field_configs as $name => $type) {
+    $update_service->import($type, $name);
+  }
+  $config = \Drupal::configFactory()->getEditable('search_api.index.node');
+  $exclude_entities = [
+    'fields' => [
+      'node' => ['field_search_index_exclude'],
+      'taxonomy_term' => [],
+    ],
+  ];
+  $config->set('processor_settings.search_api_exclude_entity_processor', $exclude_entities);
+  $config->save();
+}
