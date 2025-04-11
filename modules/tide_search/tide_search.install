@@ -178,7 +178,6 @@ function tide_search_update_10006() {
     'field.field.node.publication.field_search_index_exclude' => 'field_config',
     'field.field.node.publication_page.field_search_index_exclude' => 'field_config',
   ];
-  
   foreach ($field_configs as $name => $type) {
     $update_service->import($type, $name);
   }
