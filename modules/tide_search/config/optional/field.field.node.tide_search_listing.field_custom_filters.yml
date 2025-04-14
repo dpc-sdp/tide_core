@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_custom_filters
+    - node.type.tide_search_listing
+  module:
+    - entity_reference_revisions
+id: node.tide_search_listing.field_custom_filters
+field_name: field_custom_filters
+entity_type: node
+bundle: tide_search_listing
+label: 'Custom Filters'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings: {  }
+field_type: entity_reference_revisions

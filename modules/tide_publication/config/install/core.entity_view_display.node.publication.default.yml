@@ -5,6 +5,7 @@ dependencies:
     - field.field.node.publication.field_bottom_graphical_image
     - field.field.node.publication.field_featured_image
     - field.field.node.publication.field_graphical_image
+    - field.field.node.publication.field_custom_filters
     - field.field.node.publication.field_landing_page_component
     - field.field.node.publication.field_landing_page_contact
     - field.field.node.publication.field_landing_page_hero_image
@@ -273,3 +274,4 @@ content:
     weight: 100
     region: content
 hidden:
+  field_custom_filters: true
