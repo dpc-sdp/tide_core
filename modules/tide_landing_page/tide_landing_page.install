@@ -313,3 +313,46 @@ function tide_landing_page_update_10111() {
     ])
     ->save();
 }
+
+/**
+ * Adds link_list paragraph type to landing_page_component field.
+ */
+function tide_landing_page_update_10112() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'paragraph.field_paragraph_link_list' => 'field_storage_config',
+    'paragraph.field_paragraph_link_required' => 'field_storage_config',
+    'link_required' => 'paragraphs_type',
+    'link_list' => 'paragraphs_type',
+    'paragraph.link_required.field_paragraph_link_required' => 'field_config',
+    'paragraph.link_list.field_paragraph_link_list' => 'field_config',
+    'paragraph.link_required.default' => 'entity_form_display',
+    'paragraph.link_list.default' => 'entity_form_display',
+    'paragraph--link_required' => 'jsonapi_resource_config',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    }
+    else {
+      $tideUpdateHelper->import($type, $name);
+    }
+  }
+  $field_landing_page_component_config = Drupal::entityTypeManager()->getStorage('field_config')->load('node.landing_page.field_landing_page_component');
+  $settings = $field_landing_page_component_config->getSettings();
+  $target_bundles = $settings['handler_settings']['target_bundles'];
+  if (empty($target_bundles['link_list'])) {
+    $target_bundles['link_list'] = 'link_list';
+  }
+  $positions = $settings['handler_settings']['target_bundles_drag_drop'];
+  if (empty($positions['link_list'])) {
+    $positions['link_list'] = [
+      'weight' => 50,
+      'enabled' => TRUE,
+    ];
+  }
+  $settings['handler_settings']['target_bundles'] = $target_bundles;
+  $settings['handler_settings']['target_bundles_drag_drop'] = $positions;
+  $field_landing_page_component_config->setSettings($settings)->save();
+}
