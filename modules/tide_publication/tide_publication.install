@@ -7,7 +7,6 @@
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_publication\TidePublicationOperation;
@@ -210,12 +209,6 @@ function tide_publication_update_10006() {
   $field_config = FieldConfig::loadByName('node', 'publication_page', 'field_content_category');
   if ($field_config) {
     $field_config->delete();
-  }
-
-  // Deleting the field storage (field storage config).
-  $field_storage_config = FieldStorageConfig::loadByName('node', 'field_content_category');
-  if ($field_storage_config) {
-    $field_storage_config->delete();
   }
 
 }
