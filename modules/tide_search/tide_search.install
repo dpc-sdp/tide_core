@@ -22,6 +22,7 @@ function tide_search_install() {
 function tide_search_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
+  $dependencies['tide_search'][10006] = ['tide_core' => 10014];
   return $dependencies;
 }
 
@@ -161,4 +162,50 @@ function tide_search_update_10005() {
     $display_config_entity->setData($rewritten_config);
     $display_config_entity->save();
   }
+}
+
+/**
+ * Adds custom filters field.
+ */
+function tide_search_update_10006() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'node.tide_search_listing.field_custom_filters' => 'field_config',
+    'node.tide_search_listing.default' => 'entity_form_display',
+    'node.tide_search_listing.default' => 'entity_view_display',
+    'node.tide_search_listing.teaser' => 'entity_view_display',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    }
+    else {
+      $tideUpdateHelper->import($type, $name);
+    }
+  }
+
+  $display_repository = \Drupal::service('entity_display.repository');
+  $display_repository->getFormDisplay('node', 'tide_search_listing')
+    ->setComponent('field_custom_filters', [
+      'type' => 'paragraphs',
+      'settings' => [
+        'title' => 'Custom filters',
+        'title_plural' => 'Custom filter',
+        'edit_mode' => 'closed',
+        'closed_mode' => 'summary',
+        'autocollapse' => 'none',
+        'closed_mode_threshold' => 0,
+        'add_mode' => 'modal',
+        'form_display_mode' => 'default',
+        'default_paragraph_type' => '_none',
+        'default_paragraph_count' => 1,
+        'features' => [
+          'add_above' => '0',
+          'collapse_edit_all' => 'collapse_edit_all',
+          'duplicate' => '0',
+        ],
+      ],
+    ])
+    ->save();
 }

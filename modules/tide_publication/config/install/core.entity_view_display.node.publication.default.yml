@@ -2,15 +2,20 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.publication.field_bottom_graphical_image
     - field.field.node.publication.field_featured_image
+    - field.field.node.publication.field_graphical_image
+    - field.field.node.publication.field_custom_filters
     - field.field.node.publication.field_landing_page_component
     - field.field.node.publication.field_landing_page_contact
     - field.field.node.publication.field_landing_page_hero_image
+    - field.field.node.publication.field_landing_page_hero_logo
     - field.field.node.publication.field_landing_page_hero_theme
     - field.field.node.publication.field_landing_page_intro_text
     - field.field.node.publication.field_landing_page_show_contact
     - field.field.node.publication.field_landing_page_summary
     - field.field.node.publication.field_license_type
+    - field.field.node.publication.field_metatags
     - field.field.node.publication.field_node_documents
     - field.field.node.publication.field_publication_authors
     - field.field.node.publication.field_publication_date
@@ -20,6 +25,7 @@ dependencies:
     - field.field.node.publication.field_show_related_content
     - field.field.node.publication.field_show_social_sharing
     - field.field.node.publication.field_show_table_of_content
+    - field.field.node.publication.field_show_topic_term_and_tags
     - field.field.node.publication.field_tags
     - field.field.node.publication.field_topic
     - field.field.node.publication.field_content_category
@@ -27,6 +33,7 @@ dependencies:
   module:
     - datetime
     - entity_reference_revisions
+    - metatag
     - options
     - user
     - term_reference_tree
@@ -38,6 +45,14 @@ content:
   content_moderation_control:
     weight: -20
     region: content
+  field_bottom_graphical_image:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 131
+    region: content
   field_featured_image:
     weight: 9
     label: above
@@ -45,6 +60,14 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_graphical_image:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 130
     region: content
   field_landing_page_component:
     weight: 1
@@ -71,6 +94,14 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_landing_page_hero_logo:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 132
     region: content
   field_landing_page_hero_theme:
     weight: 122
@@ -110,6 +141,13 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_metatags:
+    type: metatag_empty_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 149
     region: content
   field_node_documents:
     weight: 108
@@ -195,6 +233,16 @@ content:
     third_party_settings: {  }
     type: boolean
     region: content
+  field_show_topic_term_and_tags:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 144
+    region: content
   field_tags:
     weight: 5
     label: above
@@ -226,3 +274,4 @@ content:
     weight: 100
     region: content
 hidden:
+  field_custom_filters: true

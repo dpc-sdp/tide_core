@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.publication.field_custom_filters
     - node.type.publication
   module:
     - user
@@ -19,4 +20,5 @@ content:
   links:
     weight: 100
     region: content
-hidden: {  }
+hidden:
+  field_custom_filters: true

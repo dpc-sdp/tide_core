@@ -261,6 +261,8 @@ Feature: Fields for Landing Page content type
 
     And I see field "Show topic term and tags?"
 
+    And I should see text matching "Custom filters"
+
     And I see field "Background colour"
     And I should see an "select#edit-field-landing-page-bg-colour" element
     And I should see an "select#edit-field-landing-page-bg-colour.required" element
