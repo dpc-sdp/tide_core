@@ -55,6 +55,7 @@ class TideWebformSubmissionsCleanUp extends DrushCommands {
 
       $query = \Drupal::entityQuery('webform_submission')
         ->condition('webform_id', $webform_id)
+        ->condition('processed', 1)
         ->condition('created', $cutoff_date->getTimestamp(), '<')
         ->accessCheck(FALSE)
         ->range(0, 100);
@@ -87,6 +88,7 @@ class TideWebformSubmissionsCleanUp extends DrushCommands {
 
         $query = \Drupal::entityQuery('webform_submission')
           ->condition('webform_id', $webform_id)
+          ->condition('processed', 1)
           ->condition('created', $date_start->getTimestamp(), '>=')
           ->condition('created', $date_end->getTimestamp(), '<=')
           ->accessCheck(FALSE)
@@ -112,11 +114,10 @@ class TideWebformSubmissionsCleanUp extends DrushCommands {
         $date_start->setTime(0, 0, 0);
         $date_end = clone $date;
         $date_end->setTime(23, 59, 59);
-        error_log($date_start->getTimestamp());
-        error_log($date_end->getTimestamp());
 
         $query = \Drupal::entityQuery('webform_submission')
           ->condition('webform_id', $webform_id)
+          ->condition('processed', 1)
           ->condition('created', $date_start->getTimestamp(), '>=')
           ->condition('created', $date_end->getTimestamp(), '<=')
           ->accessCheck(FALSE)
