@@ -242,7 +242,7 @@ class TideJiraAPI {
       'preview_links' => $this->getPreviewLinks($node, TRUE),
       'site' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_node_primary_site')->getValue()[0]['target_id'])->getName(),
       'site_section' => $this->getSiteSections($node),
-      'page_department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
+      'page_department' => $this->getDeptAndProjId($node)['department_name'],
     ];
   }
 
@@ -304,18 +304,16 @@ class TideJiraAPI {
    */
   private function getAuthorInfo(NodeInterface $node) {
     $result = [];
-    if ($node->getRevisionUser()->get('field_department_agency')->first()) {
-      $project = $node->getRevisionUser()->get('field_department_agency')->first() ? $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']) : NULL;
-      $email = $node->getRevisionUser()->getEmail() ? $node->getRevisionUser()->getEmail() : $this->config->get('no_account_email');
-      if ($project) {
-        $result = [
-          'email' => $email,
-          'account_id' => '',
-          'name' => $node->getRevisionUser()->get('field_name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
-          'department' => $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName(),
-          'project' => $project,
-        ];
-      }
+    $deptAndProject = $this->getDeptAndProjId($node);
+    $email = $node->getRevisionUser()->getEmail() ? $node->getRevisionUser()->getEmail() : $this->config->get('no_account_email');
+    if ($deptAndProject['project_id'] && $deptAndProject['department_name']) {
+      $result = [
+        'email' => $email,
+        'account_id' => '',
+        'name' => $node->getRevisionUser()->get('field_name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
+        'department' => $deptAndProject['department_name'],
+        'project' => $deptAndProject['project_id'],
+      ];
     }
     return $result;
   }
@@ -378,6 +376,33 @@ Date & time:   $updated_date
 Notes: $notes
 
 EOT;
+  }
+
+  /**
+   * Get department and project ID from the node.
+   */
+  private function getDeptAndProjId(NodeInterface $node) {
+    $department = NULL;
+    $project = NULL;
+    $fallback_department = (int) $this->config->get('fallback_department');
+    if ($node->getRevisionUser()->hasField('field_department_agency') && !$node->getRevisionUser()->get('field_department_agency')->isEmpty()) {
+      $department = $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName();
+    }
+    else {
+      $department = $this->entityTypeManager->getStorage('taxonomy_term')->load($fallback_department)->getName();
+    }
+
+    if ($node->getRevisionUser()->hasField('field_department_agency') && !$node->getRevisionUser()->get('field_department_agency')->isEmpty()) {
+      $project = $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']);
+    }
+    else {
+      $project = $this->getProjectInfo($fallback_department);
+    }
+
+    return [
+      'department_name' => $department,
+      'project_id' => $project,
+    ];
   }
 
 }
