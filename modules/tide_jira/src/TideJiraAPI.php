@@ -307,10 +307,22 @@ class TideJiraAPI {
     $deptAndProject = $this->getDeptAndProjId($node);
     $email = $node->getRevisionUser()->getEmail() ? $node->getRevisionUser()->getEmail() : $this->config->get('no_account_email');
     if ($deptAndProject['project_id'] && $deptAndProject['department_name']) {
+      // Check if user has name fields and they are not empty.
+      $firstName = ($node->getRevisionUser()->hasField('field_name') && !$node->getRevisionUser()->get('field_name')->isEmpty())
+        ? $node->getRevisionUser()->get('field_name')->value : '';
+      $lastName = ($node->getRevisionUser()->hasField('field_last_name') && !$node->getRevisionUser()->get('field_last_name')->isEmpty())
+        ? $node->getRevisionUser()->get('field_last_name')->value : '';
+
+      // If both name fields exist and have values, concatenate them;
+      // otherwise, use the email as the name.
+      $name = (!empty($firstName) || !empty($lastName))
+        ? trim($firstName . ' ' . $lastName)
+        : $email;
+
       $result = [
         'email' => $email,
         'account_id' => '',
-        'name' => $node->getRevisionUser()->get('field_name')->value . ' ' . $node->getRevisionUser()->get('field_last_name')->value,
+        'name' => $name,
         'department' => $deptAndProject['department_name'],
         'project' => $deptAndProject['project_id'],
       ];
