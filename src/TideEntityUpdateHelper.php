@@ -28,6 +28,8 @@ class TideEntityUpdateHelper extends ConfigReverter {
 
   const INSTALL_DIR = '/config/install';
   const OPTIONAL_DIR = '/config/optional';
+  const POSITION_BEFORE = 'before';
+  const POSITION_AFTER = 'after';
 
   /**
    * The entity type manager.
@@ -410,7 +412,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
    *   $new_component = [
    *    'basic_text4' => ['enabled' => TRUE]
    *    ];
-   *   $tide_helper->repositionComponentsRelativeToKey($components,$new_component,'accordion','after');
+   *   $tide_helper->repositionComponentsRelativeToKey($components,$new_component,'accordion',self::POSITION_AFTER);
    *   result:
    *   $components = [
    *   'accordion' => ['enabled' => TRUE, 'weight' => 0],
@@ -425,7 +427,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
    *   2.
    *   If you want to reposition an existing component('basic_text_2') before
    *   the 'image' key
-   *   $tide_helper->repositionComponentsRelativeToKey($components,['basic_text_2'=>['enabled'=>TRUE]],'image','before');
+   *   $tide_helper->repositionComponentsRelativeToKey($components,['basic_text_2'=>['enabled'=>TRUE]],'image',self::POSITION_BEFORE);
    *   result:
    *   $components = [
    *   'accordion' => ['enabled' => TRUE, 'weight' => 0],
@@ -437,7 +439,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
    *   'basic_text_3' => ['enabled' => TRUE, 'weight' => 6],
    *   ];
    */
-  public function repositionComponentsRelativeToKey(array $components, array $new_items, string $reference_key, string $position = 'after'): array {
+  public function repositionComponentsRelativeToKey(array $components, array $new_items, string $reference_key, string $position = self::POSITION_AFTER): array {
     foreach ($new_items as $new_key => $value) {
       if (isset($components[$new_key])) {
         unset($components[$new_key]);
@@ -448,7 +450,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
     $inserted = FALSE;
 
     foreach ($components as $key => $value) {
-      if ($position === 'before' && $key === $reference_key && !$inserted) {
+      if ($position === self::POSITION_BEFORE && $key === $reference_key && !$inserted) {
         $ref_weight = $value['weight'] ?? 0;
         $offset = -count($new_items);
         foreach ($new_items as $new_key => $new_value) {
@@ -460,7 +462,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
 
       $result[$key] = $value;
 
-      if ($position === 'after' && $key === $reference_key && !$inserted) {
+      if ($position === self::POSITION_AFTER && $key === $reference_key && !$inserted) {
         $ref_weight = $value['weight'] ?? 0;
         $i = 1;
         foreach ($new_items as $new_key => $new_value) {
@@ -496,7 +498,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
    *  ];
    *  $tide_helper->repositionEntityFormDisplayFields('node.landing_page.default', 'field_topic',['field_show_topic_term_and_tags'=>$field_show_topic_term_and_tags])
    */
-  public function repositionEntityFormDisplayFields(string $entity_form_display_id, string $anchor_field, array $fields_to_insert, string $position = 'after'): void {
+  public function repositionEntityFormDisplayFields(string $entity_form_display_id, string $anchor_field, array $fields_to_insert, string $position = self::POSITION_AFTER): void {
     $form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load($entity_form_display_id);
     if (!$form_display) {
       throw new \Exception("Form display not found: $entity_form_display_id");
@@ -541,8 +543,9 @@ class TideEntityUpdateHelper extends ConfigReverter {
         throw new \Exception("Anchor field '{$anchor_field}' not found in group '{$anchor_group}' children.");
       }
 
-      // Adjust insertion position based on 'before' or 'after'.
-      if ($position === 'before') {
+      // Adjust insertion position based on self::POSITION_BEFORE
+      // or self::POSITION_AFTER.
+      if ($position === self::POSITION_BEFORE) {
         $insert_position = $insert_at;
       }
       else {
@@ -557,8 +560,8 @@ class TideEntityUpdateHelper extends ConfigReverter {
       ] + $field_groups[$anchor_group]);
     }
 
-    $weight_offset = $position === 'before' ? -1 * count($fields_to_insert) : 1;
-    $direction = $position === 'before' ? -1 : 1;
+    $weight_offset = $position === self::POSITION_BEFORE ? -1 * count($fields_to_insert) : 1;
+    $direction = $position === self::POSITION_BEFORE ? -1 : 1;
 
     foreach ($fields_to_insert as $field_name => $field_config) {
       $existing = $form_display->getComponent($field_name) ?? [];

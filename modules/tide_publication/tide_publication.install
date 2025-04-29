@@ -290,7 +290,7 @@ function tide_publication_update_10009() {
   if (!isset($data['content']['field_topic']) || !isset($data['content']['field_content_category'])) {
     return;
   }
-  $data['content'] = $tideEntityUpdateHelper->repositionComponentsRelativeToKey($data['content'], ['field_topic' => $data['content']['field_topic']], 'field_content_category', 'before');
+  $data['content'] = $tideEntityUpdateHelper->repositionComponentsRelativeToKey($data['content'], ['field_topic' => $data['content']['field_topic']], 'field_content_category', TideEntityUpdateHelper::POSITION_BEFORE);
   $config->setData($data);
   $config->save();
 }
