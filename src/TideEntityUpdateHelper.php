@@ -496,15 +496,15 @@ class TideEntityUpdateHelper extends ConfigReverter {
    *  ];
    *  $tide_helper->repositionEntityFormDisplayFields('node.landing_page.default', 'field_topic',['field_show_topic_term_and_tags'=>$field_show_topic_term_and_tags])
    */
-  public function repositionEntityFormDisplayFields(string $entity_form_display_id, string $after_field, array $fields_to_insert): void {
+  public function repositionEntityFormDisplayFields(string $entity_form_display_id, string $anchor_field, array $fields_to_insert, string $position = 'after'): void {
     $form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load($entity_form_display_id);
     if (!$form_display) {
       throw new \Exception("Form display not found: $entity_form_display_id");
     }
 
-    $anchor_component = $form_display->getComponent($after_field);
+    $anchor_component = $form_display->getComponent($anchor_field);
     if (!$anchor_component) {
-      throw new \Exception("Anchor field '{$after_field}' not found in form display.");
+      throw new \Exception("Anchor field '{$anchor_field}' not found in form display.");
     }
 
     $anchor_weight = $anchor_component['weight'] ?? 0;
@@ -514,7 +514,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
     $anchor_group = NULL;
 
     foreach ($field_groups as $group_name => $group_data) {
-      if (!empty($group_data['children']) && in_array($after_field, $group_data['children'], TRUE)) {
+      if (!empty($group_data['children']) && in_array($anchor_field, $group_data['children'], TRUE)) {
         $anchor_group = $group_name;
         break;
       }
@@ -536,18 +536,30 @@ class TideEntityUpdateHelper extends ConfigReverter {
 
     if ($anchor_group !== NULL) {
       $children = $field_groups[$anchor_group]['children'];
-      $insert_at = array_search($after_field, $children, TRUE);
+      $insert_at = array_search($anchor_field, $children, TRUE);
       if ($insert_at === FALSE) {
-        throw new \Exception("Anchor field '{$after_field}' not found in group '{$anchor_group}' children.");
+        throw new \Exception("Anchor field '{$anchor_field}' not found in group '{$anchor_group}' children.");
       }
+
+      // Adjust insertion position based on 'before' or 'after'.
+      if ($position === 'before') {
+        $insert_position = $insert_at;
+      }
+      else {
+        $insert_position = $insert_at + 1;
+      }
+
       $new_field_names = array_keys($fields_to_insert);
-      array_splice($children, $insert_at + 1, 0, $new_field_names);
+      array_splice($children, $insert_position, 0, $new_field_names);
+      $children = array_values(array_unique($children));
       $form_display->setThirdPartySetting('field_group', $anchor_group, [
         'children' => $children,
       ] + $field_groups[$anchor_group]);
     }
 
-    $weight_offset = 1;
+    $weight_offset = $position === 'before' ? -1 * count($fields_to_insert) : 1;
+    $direction = $position === 'before' ? -1 : 1;
+
     foreach ($fields_to_insert as $field_name => $field_config) {
       $existing = $form_display->getComponent($field_name) ?? [];
 
@@ -556,7 +568,7 @@ class TideEntityUpdateHelper extends ConfigReverter {
       $new_component['region'] = $anchor_region;
 
       $form_display->setComponent($field_name, $new_component);
-      $weight_offset++;
+      $weight_offset += $direction;
     }
 
     $form_display->save();
@@ -604,6 +616,69 @@ class TideEntityUpdateHelper extends ConfigReverter {
     // Trigger an event notifying of this change.
     $event = new ConfigRevertEvent($type, $name);
     $this->dispatcher->dispatch($event, ConfigRevertInterface::IMPORT);
+
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function revert($type, $name, $prioritise_sync = TRUE) {
+    static $storage;
+    $full_name = $this->getFullName($type, $name);
+    $value = FALSE;
+    if ($prioritise_sync) {
+      if (file_exists(Settings::get('config_sync_directory') . DIRECTORY_SEPARATOR . $full_name . '.yml')) {
+        $storage[Settings::get('config_sync_directory')] = new FileStorage(Settings::get('config_sync_directory'));
+        $value = $storage[Settings::get('config_sync_directory')]->read($full_name);
+      }
+    }
+    if (!$value && $full_name) {
+      $value = $this->extensionConfigStorage->read($full_name);
+      if (!$value) {
+        $value = $this->extensionOptionalConfigStorage->read($full_name);
+      }
+    }
+    if (!$value) {
+      return FALSE;
+    }
+
+    // Make sure the configuration exists currently in active storage.
+    $active_value = $this->activeConfigStorage->read($full_name);
+    if (!$active_value) {
+      return FALSE;
+    }
+
+    // Trigger an event to modify the active configuration value.
+    $event = new ConfigPreRevertEvent($type, $name, $value, $active_value);
+    $this->dispatcher->dispatch($event, ConfigRevertInterface::PRE_REVERT);
+    $value = $event->getValue();
+
+    // Load the current config and replace the value, retaining the config
+    // hash (which is part of the _core config key's value).
+    if ($type === 'system.simple') {
+      $config = $this->configFactory->getEditable($full_name);
+      $core = $config->get('_core');
+      $config
+        ->setData($value)
+        ->set('_core', $core)
+        ->save();
+    }
+    else {
+      $definition = $this->entityManager->getDefinition($type);
+      $id_key = $definition->getKey('id');
+      $id = $value[$id_key];
+      $entity_storage = $this->entityManager->getStorage($type);
+      $entity = $entity_storage->load($id);
+      $core = $entity->get('_core');
+      $entity = $entity_storage->updateFromStorageRecord($entity, $value);
+      $entity->set('_core', $core);
+      $entity->save();
+    }
+
+    // Trigger an event notifying of this change.
+    $event = new ConfigRevertEvent($type, $name);
+    $this->dispatcher->dispatch($event, ConfigRevertInterface::REVERT);
 
     return TRUE;
   }
