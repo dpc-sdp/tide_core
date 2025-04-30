@@ -278,3 +278,19 @@ function tide_publication_update_10008() {
       ->save();
   }
 }
+
+/**
+ * Update the position of field_topic for the publication type.
+ */
+function tide_publication_update_10009() {
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $tideEntityUpdateHelper */
+  $tideEntityUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $config = \Drupal::configFactory()->getEditable('core.entity_form_display.node.publication.default');
+  $data = $config->getRawData();
+  if (!isset($data['content']['field_topic']) || !isset($data['content']['field_content_category'])) {
+    return;
+  }
+  $data['content'] = $tideEntityUpdateHelper->repositionComponentsRelativeToKey($data['content'], ['field_topic' => $data['content']['field_topic']], 'field_content_category', TideEntityUpdateHelper::POSITION_BEFORE);
+  $config->setData($data);
+  $config->save();
+}
