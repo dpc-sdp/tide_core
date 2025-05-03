@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\tide_site\TideSiteFields;
 
 /**
  * Implements hook_install().
@@ -97,4 +98,34 @@ function tide_site_update_10003() {
   $system_feature_flags = \Drupal::configFactory()->getEditable('system.feature_flags');
   $system_feature_flags->set('linkset_endpoint', TRUE)
     ->save();
+}
+
+/**
+ * Install field_breadcrumb_name and parent storage.
+ */
+function tide_site_update_10004() {
+  $config_update_items = [
+    'node.field_breadcrumb_name' => 'field_storage_config',
+    'node.field_breadcrumb_parent' => 'field_storage_config',
+  ];
+  /** @var \Drupal\tide_core\TideEntityUpdateHelper $entity_update_helper */
+  $entity_update_helper = \Drupal::service('tide_core.entity_update_helper');
+  foreach ($config_update_items as $name => $type) {
+    $entity_update_helper->import($type, $name);
+  }
+}
+
+/**
+ * Add breadcrumb fields to all node bundles.
+ */
+function tide_site_update_10005() {
+  /** @var \Drupal\tide_site\TideSiteFields $fields_helper */
+  $fields_helper = \Drupal::service('tide_site.fields');
+  $node_bundles = Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($node_bundles as $bundle_id => $entity) {
+    $fields_helper->provisionField(TideSiteFields::FIELD_BREADCRUMB_NAME,
+        'node', $bundle_id);
+    $fields_helper->provisionField(TideSiteFields::FIELDD_BREADCRUMB_PARENT,
+        'node', $bundle_id);
+  }
 }
