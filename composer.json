@@ -407,7 +407,7 @@
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
-                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-15030602": "https://git.drupalcode.org/project/key/-/merge_requests/11/diffs.patch",
+                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch",
                 "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
             },
             "drupal/data_pipelines": {
