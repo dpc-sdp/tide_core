@@ -407,3 +407,17 @@ function tide_core_update_10014() {
     $tideUpdateHelper->import($config_type, $config_name);
   }
 }
+
+/**
+ * Update user mail templates.
+ */
+function tide_core_update_10015() {
+  $config = \Drupal::configFactory()->getEditable('user.mail');
+  $config->set('password_reset.subject', 'Your Single Digital Presence password reset for [user:display-name] at [site:name]');
+  $config->set('password_reset.body', "[user:display-name], \r\n\r\nYou requested to have your password reset for [site:name]. \r\n\r\nClick this link to log in (or copy and paste into your browser): \r\n\r\n[user:one-time-login-url] \r\n\r\nThis link can only be used once. It will lead you to a page where you can set a new password. This link will expire after 24 hours.  \r\n\r\nFrom the [site:name] team");
+  $config->set('register_admin_created.subject', 'Your Single Digital Presence CMS account has been created');
+  $config->set('register_admin_created.body', "[user:display-name], \r\n\r\nYour Single Digital Presence content management system (CMS) account has been created for [site:name]. \r\n\r\nYou may now log in by clicking this link or copying and pasting it into your browser: \r\n\r\n[user:one-time-login-url] \r\n\r\nYou can only use this link once. It will take you to a page where you set your password.\r\n\r\nAfter setting your password, you will be able to log in at [site:login-url] in the future using the username: [user:name] \r\n\r\nFrom the [site:name] team");
+
+  // Save the configuration.
+  $config->save();
+}
