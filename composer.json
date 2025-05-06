@@ -59,7 +59,7 @@
         "drupal/smtp": "^1.2",
         "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.4",
-        "drupal/tfa": "^1.2",
+        "drupal/tfa": "1.9",
         "drupal/tfa_email_otp": "^1.0@beta",
         "drupal/token_conditions": "dev-compatible-with-d10",
         "drupal/token_filter": "^2.0",
