@@ -190,4 +190,18 @@ function tide_search_update_10006() {
   ];
   $config->set('processor_settings.search_api_exclude_entity_processor', $exclude_entities);
   $config->save();
+  // Update site admin role permissions.
+  $config_site = \Drupal::configFactory()->getEditable('user.role.site_admin');
+  $modules = $config_site->get('dependencies.module') ?? [];
+  if (!in_array('search_api_exclude_entity', $modules)) {
+    $modules[] = 'search_api_exclude_entity';
+    $config_site->set('dependencies.module', $modules);
+  }
+  // Add permission if it's not already present.
+  $permissions = $config_site->get('permissions') ?? [];
+  if (!in_array('edit search api exclude entity', $permissions)) {
+    $permissions[] = 'edit search api exclude entity';
+    $config_site->set('permissions', $permissions);
+  }
+  $config_site->save();
 }
