@@ -424,9 +424,6 @@
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
             },
-            "lesstif/php-jira-rest-client": {
-                "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
-            },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
             },
