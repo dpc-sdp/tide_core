@@ -32,3 +32,22 @@ function tide_jira_update_10001() {
 
   }
 }
+
+/**
+ * Update the field type of field_jira_project_value to varchar(15).
+ */
+function tide_jira_update_10002() {
+  $spec = [
+    'type' => 'varchar',
+    'length' => 15,
+    'not null' => TRUE,
+  ];
+
+  // Update the schema.
+  \Drupal::database()->schema()->changeField(
+    'taxonomy_term__field_jira_project',
+    'field_jira_project_value',
+    'field_jira_project_value',
+    $spec
+  );
+}

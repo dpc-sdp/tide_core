@@ -8,6 +8,7 @@ use Drupal\config_update\ConfigReverter;
 use Drupal\config_update\ConfigRevertEvent;
 use Drupal\config_update\ConfigRevertInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityLastInstalledSchemaRepositoryInterface;
@@ -15,6 +16,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Sql\SqlEntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionListenerInterface;
+use Drupal\Core\Site\Settings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -26,6 +28,8 @@ class TideEntityUpdateHelper extends ConfigReverter {
 
   const INSTALL_DIR = '/config/install';
   const OPTIONAL_DIR = '/config/optional';
+  const POSITION_BEFORE = 'before';
+  const POSITION_AFTER = 'after';
 
   /**
    * The entity type manager.
@@ -386,6 +390,300 @@ class TideEntityUpdateHelper extends ConfigReverter {
       $config_entity->setData($rewritten_config);
       $config_entity->save();
     }
+  }
+
+  /**
+   * Inserts or repositions components relative to a reference key in an array.
+   *
+   * @example
+   *   $components = [
+   *  'accordion' => ['enabled' => TRUE, 'weight' => 0],
+   *  'basic_text' => ['enabled' => TRUE, 'weight' => 1],
+   *  'image' => ['enabled' => TRUE, 'weight' => 2],
+   *  'video' => ['enabled' => TRUE, 'weight' => 3],
+   *  'basic_text_2' => ['enabled' => TRUE, 'weight' => 4],
+   *  'basic_text_3' => ['enabled' => TRUE, 'weight' => 5],
+   *   ];
+   *
+   *
+   *   1.
+   *   If you want to add a new component($new_component) after
+   *   the 'accordion' key
+   *   $new_component = [
+   *    'basic_text4' => ['enabled' => TRUE]
+   *    ];
+   *   $tide_helper->repositionComponentsRelativeToKey($components,$new_component,'accordion',self::POSITION_AFTER);
+   *   result:
+   *   $components = [
+   *   'accordion' => ['enabled' => TRUE, 'weight' => 0],
+   *   'basic_text_4' => ['enabled' => TRUE, 'weight' => 1],
+   *   'basic_text' => ['enabled' => TRUE, 'weight' => 2],
+   *   'image' => ['enabled' => TRUE, 'weight' => 3],
+   *   'video' => ['enabled' => TRUE, 'weight' => 4],
+   *   'basic_text_2' => ['enabled' => TRUE, 'weight' => 5],
+   *   'basic_text_3' => ['enabled' => TRUE, 'weight' => 6],
+   *    ];
+   *
+   *   2.
+   *   If you want to reposition an existing component('basic_text_2') before
+   *   the 'image' key
+   *   $tide_helper->repositionComponentsRelativeToKey($components,['basic_text_2'=>['enabled'=>TRUE]],'image',self::POSITION_BEFORE);
+   *   result:
+   *   $components = [
+   *   'accordion' => ['enabled' => TRUE, 'weight' => 0],
+   *   'basic_text_4' => ['enabled' => TRUE, 'weight' => 1],
+   *   'basic_text' => ['enabled' => TRUE, 'weight' => 2],
+   *   'basic_text_2' => ['enabled' => TRUE, 'weight' => 3],
+   *   'image' => ['enabled' => TRUE, 'weight' => 4],
+   *   'video' => ['enabled' => TRUE, 'weight' => 5],
+   *   'basic_text_3' => ['enabled' => TRUE, 'weight' => 6],
+   *   ];
+   */
+  public function repositionComponentsRelativeToKey(array $components, array $new_items, string $reference_key, string $position = self::POSITION_AFTER): array {
+    foreach ($new_items as $new_key => $value) {
+      if (isset($components[$new_key])) {
+        unset($components[$new_key]);
+      }
+    }
+
+    $result = [];
+    $inserted = FALSE;
+
+    foreach ($components as $key => $value) {
+      if ($position === self::POSITION_BEFORE && $key === $reference_key && !$inserted) {
+        $ref_weight = $value['weight'] ?? 0;
+        $offset = -count($new_items);
+        foreach ($new_items as $new_key => $new_value) {
+          $new_value['weight'] = $ref_weight + $offset++;
+          $result[$new_key] = $new_value;
+        }
+        $inserted = TRUE;
+      }
+
+      $result[$key] = $value;
+
+      if ($position === self::POSITION_AFTER && $key === $reference_key && !$inserted) {
+        $ref_weight = $value['weight'] ?? 0;
+        $i = 1;
+        foreach ($new_items as $new_key => $new_value) {
+          $new_value['weight'] = $ref_weight + $i++;
+          $result[$new_key] = $new_value;
+        }
+        $inserted = TRUE;
+      }
+    }
+
+    if (!$inserted) {
+      $i = 1;
+      foreach ($new_items as $new_key => $new_value) {
+        $new_value['weight'] = 0 + $i++;
+        $result[$new_key] = $new_value;
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Repositions fields in an EntityFormDisplay after a target field.
+   *
+   * @example
+   *   $field_show_topic_term_and_tags = [
+   *  'type' => 'boolean_checkbox',
+   *  'region' => 'content',
+   *  'settings' => [
+   *  'display_label' => true,
+   *  ],
+   *  'third_party_settings' => [],
+   *  ];
+   *  $tide_helper->repositionEntityFormDisplayFields('node.landing_page.default', 'field_topic',['field_show_topic_term_and_tags'=>$field_show_topic_term_and_tags])
+   */
+  public function repositionEntityFormDisplayFields(string $entity_form_display_id, string $anchor_field, array $fields_to_insert, string $position = self::POSITION_AFTER): void {
+    $form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load($entity_form_display_id);
+    if (!$form_display) {
+      throw new \Exception("Form display not found: $entity_form_display_id");
+    }
+
+    $anchor_component = $form_display->getComponent($anchor_field);
+    if (!$anchor_component) {
+      throw new \Exception("Anchor field '{$anchor_field}' not found in form display.");
+    }
+
+    $anchor_weight = $anchor_component['weight'] ?? 0;
+    $anchor_region = $anchor_component['region'] ?? 'content';
+
+    $field_groups = $form_display->getThirdPartySettings('field_group') ?? [];
+    $anchor_group = NULL;
+
+    foreach ($field_groups as $group_name => $group_data) {
+      if (!empty($group_data['children']) && in_array($anchor_field, $group_data['children'], TRUE)) {
+        $anchor_group = $group_name;
+        break;
+      }
+    }
+
+    foreach ($field_groups as $group_name => &$group_data) {
+      if (!empty($group_data['children']) && is_array($group_data['children'])) {
+        foreach (array_keys($fields_to_insert) as $field_name) {
+          $key = array_search($field_name, $group_data['children'], TRUE);
+          if ($key !== FALSE) {
+            unset($group_data['children'][$key]);
+            // Reindex.
+            $group_data['children'] = array_values($group_data['children']);
+            $form_display->setThirdPartySetting('field_group', $group_name, $group_data);
+          }
+        }
+      }
+    }
+
+    if ($anchor_group !== NULL) {
+      $children = $field_groups[$anchor_group]['children'];
+      $insert_at = array_search($anchor_field, $children, TRUE);
+      if ($insert_at === FALSE) {
+        throw new \Exception("Anchor field '{$anchor_field}' not found in group '{$anchor_group}' children.");
+      }
+
+      // Adjust insertion position based on self::POSITION_BEFORE
+      // or self::POSITION_AFTER.
+      if ($position === self::POSITION_BEFORE) {
+        $insert_position = $insert_at;
+      }
+      else {
+        $insert_position = $insert_at + 1;
+      }
+
+      $new_field_names = array_keys($fields_to_insert);
+      array_splice($children, $insert_position, 0, $new_field_names);
+      $children = array_values(array_unique($children));
+      $form_display->setThirdPartySetting('field_group', $anchor_group, [
+        'children' => $children,
+      ] + $field_groups[$anchor_group]);
+    }
+
+    $weight_offset = $position === self::POSITION_BEFORE ? -1 * count($fields_to_insert) : 1;
+    $direction = $position === self::POSITION_BEFORE ? -1 : 1;
+
+    foreach ($fields_to_insert as $field_name => $field_config) {
+      $existing = $form_display->getComponent($field_name) ?? [];
+
+      $new_component = array_merge($existing, $field_config);
+      $new_component['weight'] = $anchor_weight + $weight_offset;
+      $new_component['region'] = $anchor_region;
+
+      $form_display->setComponent($field_name, $new_component);
+      $weight_offset += $direction;
+    }
+
+    $form_display->save();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function import($type, $name, $prioritise_sync = TRUE) {
+    static $storage;
+    $full_name = $this->getFullName($type, $name);
+    $value = FALSE;
+    if ($prioritise_sync) {
+      if (file_exists(Settings::get('config_sync_directory') . DIRECTORY_SEPARATOR . $full_name . '.yml')) {
+        $storage[Settings::get('config_sync_directory')] = new FileStorage(Settings::get('config_sync_directory'));
+        $value = $storage[Settings::get('config_sync_directory')]->read($full_name);
+      }
+    }
+
+    if (!$value && $full_name) {
+      $value = $this->extensionConfigStorage->read($full_name);
+      if (!$value) {
+        $value = $this->extensionOptionalConfigStorage->read($full_name);
+      }
+    }
+    if (!$value) {
+      return FALSE;
+    }
+
+    // Trigger an event to modify the configuration value.
+    $event = new ConfigPreRevertEvent($type, $name, $value, NULL);
+    $this->dispatcher->dispatch($event, ConfigRevertInterface::PRE_IMPORT);
+    $value = $event->getValue();
+
+    // Save it as a new config entity or simple config.
+    if ($type === 'system.simple') {
+      $this->configFactory->getEditable($full_name)->setData($value)->save();
+    }
+    else {
+      $entity_storage = $this->entityManager->getStorage($type);
+      $entity = $entity_storage->createFromStorageRecord($value);
+      $entity->save();
+    }
+
+    // Trigger an event notifying of this change.
+    $event = new ConfigRevertEvent($type, $name);
+    $this->dispatcher->dispatch($event, ConfigRevertInterface::IMPORT);
+
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function revert($type, $name, $prioritise_sync = TRUE) {
+    static $storage;
+    $full_name = $this->getFullName($type, $name);
+    $value = FALSE;
+    if ($prioritise_sync) {
+      if (file_exists(Settings::get('config_sync_directory') . DIRECTORY_SEPARATOR . $full_name . '.yml')) {
+        $storage[Settings::get('config_sync_directory')] = new FileStorage(Settings::get('config_sync_directory'));
+        $value = $storage[Settings::get('config_sync_directory')]->read($full_name);
+      }
+    }
+    if (!$value && $full_name) {
+      $value = $this->extensionConfigStorage->read($full_name);
+      if (!$value) {
+        $value = $this->extensionOptionalConfigStorage->read($full_name);
+      }
+    }
+    if (!$value) {
+      return FALSE;
+    }
+
+    // Make sure the configuration exists currently in active storage.
+    $active_value = $this->activeConfigStorage->read($full_name);
+    if (!$active_value) {
+      return FALSE;
+    }
+
+    // Trigger an event to modify the active configuration value.
+    $event = new ConfigPreRevertEvent($type, $name, $value, $active_value);
+    $this->dispatcher->dispatch($event, ConfigRevertInterface::PRE_REVERT);
+    $value = $event->getValue();
+
+    // Load the current config and replace the value, retaining the config
+    // hash (which is part of the _core config key's value).
+    if ($type === 'system.simple') {
+      $config = $this->configFactory->getEditable($full_name);
+      $core = $config->get('_core');
+      $config
+        ->setData($value)
+        ->set('_core', $core)
+        ->save();
+    }
+    else {
+      $definition = $this->entityManager->getDefinition($type);
+      $id_key = $definition->getKey('id');
+      $id = $value[$id_key];
+      $entity_storage = $this->entityManager->getStorage($type);
+      $entity = $entity_storage->load($id);
+      $core = $entity->get('_core');
+      $entity = $entity_storage->updateFromStorageRecord($entity, $value);
+      $entity->set('_core', $core);
+      $entity->save();
+    }
+
+    // Trigger an event notifying of this change.
+    $event = new ConfigRevertEvent($type, $name);
+    $this->dispatcher->dispatch($event, ConfigRevertInterface::REVERT);
+
+    return TRUE;
   }
 
 }

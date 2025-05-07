@@ -393,3 +393,17 @@ function tide_core_update_10013() {
     $config_entity->save();
   }
 }
+
+/**
+ * Add custom filters field storage.
+ */
+function tide_core_update_10014() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $config_name = 'node.field_custom_filters';
+  $config_type = 'field_storage_config';
+
+  $storage = \Drupal::entityTypeManager()->getStorage($config_type);
+  if ($storage->load($config_name) === NULL) {
+    $tideUpdateHelper->import($config_type, $config_name);
+  }
+}

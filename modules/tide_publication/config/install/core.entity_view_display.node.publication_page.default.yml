@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.node.publication_page.field_bottom_graphical_image
     - field.field.node.publication_page.field_graphical_image
+    - field.field.node.publication_page.field_custom_filters
     - field.field.node.publication_page.field_landing_page_component
     - field.field.node.publication_page.field_landing_page_contact
     - field.field.node.publication_page.field_landing_page_hero_image
@@ -217,3 +218,4 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_custom_filters: true

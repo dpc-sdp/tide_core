@@ -59,7 +59,7 @@
         "drupal/smtp": "^1.2",
         "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.4",
-        "drupal/tfa": "^1.2",
+        "drupal/tfa": "1.9",
         "drupal/tfa_email_otp": "^1.0@beta",
         "drupal/token_conditions": "dev-compatible-with-d10",
         "drupal/token_filter": "^2.0",
@@ -408,7 +408,7 @@
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
-                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-15030602": "https://git.drupalcode.org/project/key/-/merge_requests/11/diffs.patch",
+                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch",
                 "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
             },
             "drupal/data_pipelines": {
@@ -424,9 +424,6 @@
             },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
-            },
-            "lesstif/php-jira-rest-client": {
-                "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
             },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"

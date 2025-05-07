@@ -173,3 +173,14 @@ function _tide_alert_assign_necessary_permissions() {
   }
 
 }
+
+/**
+ * Set maxlength on title field.
+ */
+function tide_alert_update_10001() {
+  $config_factory = \Drupal::configFactory();
+  $event_config = $config_factory->getEditable('core.entity_form_display.node.alert.default');
+  $event_config->set('content.title.third_party_settings.maxlength.maxlength_js', 250);
+  $event_config->set('content.title.third_party_settings.maxlength.maxlength_js_enforce', TRUE);
+  $event_config->save();
+}
