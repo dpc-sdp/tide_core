@@ -396,19 +396,24 @@ EOT;
   private function getDeptAndProjId(NodeInterface $node) {
     $department = NULL;
     $project = NULL;
-    $fallback_department = (int) $this->config->get('fallback_department');
-    if ($node->getRevisionUser()->hasField('field_department_agency') && !$node->getRevisionUser()->get('field_department_agency')->isEmpty()) {
-      $department = $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName();
-    }
-    else {
-      $department = $this->entityTypeManager->getStorage('taxonomy_term')->load($fallback_department)->getName();
-    }
+    try {
+      $fallback_department = (int) $this->config->get('fallback_department');
+      if ($node->getRevisionUser()->hasField('field_department_agency') && !$node->getRevisionUser()->get('field_department_agency')->isEmpty()) {
+        $department = $this->entityTypeManager->getStorage('taxonomy_term')->load($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id'])->getName();
+      }
+      else {
+        $department = $this->entityTypeManager->getStorage('taxonomy_term')->load($fallback_department)->getName();
+      }
 
-    if ($node->getRevisionUser()->hasField('field_department_agency') && !$node->getRevisionUser()->get('field_department_agency')->isEmpty()) {
-      $project = $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']);
+      if ($node->getRevisionUser()->hasField('field_department_agency') && !$node->getRevisionUser()->get('field_department_agency')->isEmpty()) {
+        $project = $this->getProjectInfo($node->getRevisionUser()->get('field_department_agency')->first()->getValue()['target_id']);
+      }
+      else {
+        $project = $this->getProjectInfo($fallback_department);
+      }
     }
-    else {
-      $project = $this->getProjectInfo($fallback_department);
+    catch (\Throwable $e) {
+      $this->logger->debug('Error getting department and project ID: ' . $e->getMessage());
     }
 
     return [
