@@ -77,7 +77,7 @@ class TideJiraSensorPlugin extends SensorPluginBase implements SensorPluginInter
     $account_id = '';
     try {
       $us = $this->connector->getUserService();
-      $account_id = $us->findUserByEmail($default_email);
+      $account_id = $us->findUsers(['query' => $default_email])[0];
     }
     catch (\Exception $e) {
       $sensor_result->setStatus(SensorResultInterface::STATUS_CRITICAL);
