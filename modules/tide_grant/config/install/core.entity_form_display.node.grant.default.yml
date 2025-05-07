@@ -4,10 +4,12 @@ dependencies:
   config:
     - entity_browser.browser.tide_document_browser
     - field.field.node.grant.field_audience
+    - field.field.node.grant.field_bottom_graphical_image
     - field.field.node.grant.field_call_to_action
     - field.field.node.grant.field_custom_filters
     - field.field.node.grant.field_description
     - field.field.node.grant.field_featured_image
+    - field.field.node.grant.field_graphical_image
     - field.field.node.grant.field_landing_page_contact
     - field.field.node.grant.field_landing_page_intro_text
     - field.field.node.grant.field_landing_page_nav_title
@@ -123,6 +125,7 @@ third_party_settings:
       parent_name: ''
       children:
         - group_header
+        - group_customised_header
       format_type: tabs
       format_settings:
         direction: horizontal
@@ -204,6 +207,23 @@ third_party_settings:
         open: false
       region: content
       weight: 20
+    group_customised_header:
+      children:
+        - field_graphical_image
+        - field_bottom_graphical_image
+      label: 'Customised Header'
+      region: content
+      parent_name: group_section_header
+      weight: -98
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: closed
+        description: ''
+        required_fields: true
     group_section_timeline:
       label: 'Timeline Section'
       parent_name: ''
@@ -249,6 +269,21 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
+  field_bottom_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 20
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
   field_call_to_action:
     weight: 20
     settings:

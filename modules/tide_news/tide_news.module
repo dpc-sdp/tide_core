@@ -92,6 +92,38 @@ function _tide_news_form_node_form_process(array $form, FormStateInterface $form
   /** @var \Drupal\node\NodeInterface $node */
   $node = $form_state->getFormObject()->getEntity();
 
+  // Add pseudo radio buttons for Header style.
+  $form['_header_style'] = [
+    '#type' => 'container',
+    '#group' => 'group_customised_header',
+    '#weight' => -100,
+  ];
+  $form['_header_style']['_header_style_options'] = [
+    '#title' => t('Header style'),
+    '#description' => t('The header can be customised to incorporate corner graphics.'),
+    '#type' => 'radios',
+    '#required' => TRUE,
+    '#options' => [
+      'default' => t('Default appearance'),
+      'corner' => t('Corner graphics'),
+    ],
+  ];
+
+  // Set initial value for Header style based on field_graphical_image/field_bottom_graphical_image.
+  $header_style = 'default';
+  if (!$node->get('field_graphical_image')->isEmpty() || !$node->get('field_bottom_graphical_image')->isEmpty()) {
+    $header_style = 'corner';
+  }
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
+  // Control of the graphical image field based on the selected header style.
+  $form['field_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
+  $form['field_bottom_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
+
   $form['field_node_department']['#group'] = 'group_author_detail';
 
   // At this stage, the form has not been fully built yet, so we need an
@@ -112,6 +144,22 @@ function _tide_news_form_node_form_process(array $form, FormStateInterface $form
  *   The processed form.
  */
 function _tide_news_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  // Ensure the header style is correctly set based on field state.
+  $form_hero_top_graphical_empty = empty($form_state->getValue([
+    'field_graphical_image',
+    'target_id',
+  ]));
+
+  $form_hero_bottom_graphical_empty = empty($form_state->getValue([
+    'field_bottom_graphical_image',
+    'target_id',
+  ]));
+  $header_style = 'default';
+  if (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
+    $header_style = 'corner';
+  }
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+
   $form['field_node_department']['#group'] = 'group_author_detail';
 
   return $form;

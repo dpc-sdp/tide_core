@@ -91,3 +91,24 @@ function tide_news_update_10002() {
     ])
     ->save();
 }
+
+/**
+ * Add corner graphic fields.
+ */
+function tide_news_update_10003() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'node.news.field_bottom_graphical_image' => 'field_config',
+    'node.news.field_graphical_image' => 'field_config',
+    'node.news.default' => 'entity_form_display',
+    'node.news.default' => 'entity_view_display',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    } else {
+      $tideUpdateHelper->import($type, $name);
+    }
+  }
+}

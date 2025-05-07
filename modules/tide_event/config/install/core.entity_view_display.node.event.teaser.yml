@@ -5,6 +5,8 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.event.body
     - field.field.node.event.field_custom_filters
+    - field.field.node.event.field_bottom_graphical_image
+    - field.field.node.event.field_graphical_image
     - node.type.event
   module:
     - text
@@ -30,11 +32,13 @@ content:
     region: content
 hidden:
   field_audience: true
+  field_bottom_graphical_image: true
   field_event_category: true
   field_custom_filters: true
   field_event_description: true
   field_event_details: true
   field_featured_image: true
+  field_graphical_image: true
   field_landing_page_contact: true
   field_landing_page_show_contact: true
   field_landing_page_summary: true

@@ -1,0 +1,29 @@
+uuid: 8c09bcad-27dd-4355-988c-c1d8bf93a097
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_graphical_image
+    - media.type.image
+    - node.type.event
+id: node.event.field_graphical_image
+field_name: field_graphical_image
+entity_type: node
+bundle: event
+label: 'Top corner graphic'
+description: "<p>Corner graphics don't display when a hero image is added.</p><p>See the SDP guide on <a href=\"https://digital-vic.atlassian.net/wiki/spaces/FPSDP/pages/2304212993/Image+ratios+sizes+and+component+use\">image ratios, sizes and component use.</a></p>\r\n"
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      image: image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
