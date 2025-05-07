@@ -107,7 +107,8 @@ function tide_news_update_10003() {
     $storage = \Drupal::entityTypeManager()->getStorage($type);
     if ($storage->load($name) !== NULL) {
       continue;
-    } else {
+    }
+    else {
       $tideUpdateHelper->import($type, $name);
     }
   }

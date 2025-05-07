@@ -114,7 +114,7 @@ function _tide_grant_form_node_form_process(array $form, FormStateInterface $for
     ],
   ];
 
-  // Set initial value for Header style based on field_graphical_image/field_bottom_graphical_image.
+  // Set initial value for Header style.
   $header_style = 'default';
   if (!$node->get('field_graphical_image')->isEmpty() || !$node->get('field_bottom_graphical_image')->isEmpty()) {
     $header_style = 'corner';
