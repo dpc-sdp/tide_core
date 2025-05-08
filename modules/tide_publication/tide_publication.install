@@ -308,4 +308,44 @@ function tide_publication_update_10010() {
   foreach ($field_configs as $name => $type) {
     $update_service->import($type, $name);
   }
+
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('node.publication.default');
+
+  if ($form_display) {
+    // Move field to the 'content' region.
+    $form_display->setComponent('field_search_index_exclude', [
+      'type' => 'search_api_exclude_entity_widget',
+      'weight' => 20,
+      'region' => 'content',
+      'settings' => [
+        'field_label' => 'Yes, exclude this entity from the search indexes.',
+        'use_details_container' => TRUE,
+      ],
+      'third_party_settings' => [],
+    ]);
+
+    $form_display->save();
+  }
+  $form_publication = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('node.publication_page.default');
+
+  if ($form_publication) {
+    // Move field to the 'content' region.
+    $form_publication->setComponent('field_search_index_exclude', [
+      'type' => 'search_api_exclude_entity_widget',
+      'weight' => 17,
+      'region' => 'content',
+      'settings' => [
+        'field_label' => 'Yes, exclude this entity from the search indexes.',
+        'use_details_container' => TRUE,
+      ],
+      'third_party_settings' => [],
+    ]);
+
+    $form_publication->save();
+  }
+
 }
