@@ -205,9 +205,12 @@ function tide_search_update_10006() {
     $config_site->set('permissions', $permissions);
   }
   $config_site->save();
+}
+
+/**
  * Adds custom filters field.
  */
-function tide_search_update_10006() {
+function tide_search_update_10007() {
   $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
   $configs = [
     'node.tide_search_listing.field_custom_filters' => 'field_config',
