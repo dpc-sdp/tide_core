@@ -276,38 +276,4 @@ access:
       - authenticated
     users: {  }
     permissions: {  }
-handlers:
-  event_submission_email:
-    id: email
-    label: 'Event Submission Email'
-    handler_id: event_submission_email
-    status: true
-    conditions: {  }
-    weight: 0
-    settings:
-      states:
-        - completed
-      to_mail: contact.dpc@dsdbi.desk-mail.com
-      to_options: {  }
-      cc_mail: ''
-      cc_options: {  }
-      bcc_mail: ''
-      bcc_options: {  }
-      from_mail: contact.dpc@dsdbi.desk-mail.com
-      from_options: {  }
-      from_name: _default
-      subject: 'Event Submission'
-      body: _default
-      excluded_elements:
-        agree_privacy_statement: agree_privacy_statement
-      ignore_access: false
-      exclude_empty: true
-      exclude_empty_checkbox: true
-      html: true
-      attachments: false
-      twig: false
-      debug: false
-      reply_to: ''
-      return_path: ''
-      sender_mail: ''
-      sender_name: ''
+handlers: { }
