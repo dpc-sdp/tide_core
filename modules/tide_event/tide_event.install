@@ -128,14 +128,16 @@ function tide_event_update_10003() {
 
   // Go through each handler.
   foreach ($handlers as $handler_id => $handler) {
-    $configuration = $handler->getConfiguration();
+    if ($handler_id == 'event_submission_email') {
+      $configuration = $handler->getConfiguration();
 
-    // Check if this is an email handler with the specific to_mail address.
-    if (isset($configuration['settings']['to_mail']) &&
-      $configuration['settings']['to_mail'] === 'contact.dpc@dsdbi.desk-mail.com') {
-      // Delete this handler.
-      $webform->deleteWebformHandler($handler_id);
-      $updated = TRUE;
+      // Check if this is an email handler with the specific to_mail address.
+      if (isset($configuration['settings']['to_mail']) &&
+        $configuration['settings']['to_mail'] === 'contact.dpc@dsdbi.desk-mail.com') {
+        // Delete this handler.
+        $webform->deleteWebformHandler($handler_id);
+        $updated = TRUE;
+      }
     }
   }
 
