@@ -19,6 +19,15 @@ Feature: Fields for News content type
     And I should see an "textarea#edit-field-news-intro-text-0-value" element
     And I should not see an "textarea#edit-field-news-intro-text-0-value.required" element
 
+    And I click on the horizontal tab "Customised Header"
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+
+
     And the "#edit-field-featured-image" element should contain "Featured Image"
     And I should see an "input#edit-field-featured-image-entity-browser-entity-browser-open-modal" element
 
