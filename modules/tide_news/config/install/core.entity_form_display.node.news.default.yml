@@ -4,10 +4,8 @@ dependencies:
   config:
     - entity_browser.browser.tide_image_browser
     - field.field.node.news.body
-    - field.field.node.news.field_bottom_graphical_image
     - field.field.node.news.field_custom_filters
     - field.field.node.news.field_featured_image
-    - field.field.node.news.field_graphical_image
     - field.field.node.news.field_landing_page_contact
     - field.field.node.news.field_landing_page_nav_title
     - field.field.node.news.field_landing_page_show_contact
@@ -62,7 +60,6 @@ third_party_settings:
       parent_name: ''
       children:
         - group_header
-        - group_customised_header
       format_type: tabs
       format_settings:
         direction: horizontal
@@ -190,23 +187,6 @@ third_party_settings:
         open: false
         required_fields: true
       label: 'Site-section Navigation'
-    group_customised_header:
-      children:
-        - field_graphical_image
-        - field_bottom_graphical_image
-      label: 'Customised Header'
-      region: content
-      parent_name: group_section_header
-      weight: -98
-      format_type: tab
-      format_settings:
-        classes: ''
-        show_empty_fields: false
-        id: ''
-        label_as_html: false
-        formatter: closed
-        description: ''
-        required_fields: true
 id: node.news.default
 targetEntityType: node
 bundle: news
@@ -227,21 +207,6 @@ content:
     weight: 11
     region: content
     settings: {  }
-    third_party_settings: {  }
-  field_bottom_graphical_image:
-    type: entity_browser_entity_reference
-    weight: 19
-    region: content
-    settings:
-      entity_browser: tide_image_browser
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      field_widget_replace: false
-      open: true
-      field_widget_display_settings:
-        view_mode: media_browser_preview
-      selection_mode: selection_append
     third_party_settings: {  }
   field_custom_filters:
     type: paragraphs
@@ -278,21 +243,6 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
-  field_graphical_image:
-    type: entity_browser_entity_reference
-    weight: 18
-    region: content
-    settings:
-      entity_browser: tide_image_browser
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      field_widget_replace: false
-      open: true
-      field_widget_display_settings:
-        view_mode: media_browser_preview
-      selection_mode: selection_append
-    third_party_settings: {  }
   field_landing_page_contact:
     weight: 10
     settings:

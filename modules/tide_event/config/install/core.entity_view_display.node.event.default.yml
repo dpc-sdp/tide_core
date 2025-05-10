@@ -4,13 +4,11 @@ dependencies:
   config:
     - field.field.node.event.body
     - field.field.node.event.field_audience
-    - field.field.node.event.field_bottom_graphical_image
     - field.field.node.event.field_custom_filters
     - field.field.node.event.field_event_category
     - field.field.node.event.field_event_description
     - field.field.node.event.field_event_details
     - field.field.node.event.field_featured_image
-    - field.field.node.event.field_graphical_image
     - field.field.node.event.field_landing_page_contact
     - field.field.node.event.field_landing_page_show_contact
     - field.field.node.event.field_landing_page_summary
@@ -56,14 +54,6 @@ content:
     third_party_settings: {  }
     type: entity_reference_label
     region: content
-  field_bottom_graphical_image:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 38
-    region: content
   field_event_category:
     weight: 5
     label: above
@@ -95,14 +85,6 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
-    region: content
-  field_graphical_image:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 22
     region: content
   field_landing_page_contact:
     weight: 16

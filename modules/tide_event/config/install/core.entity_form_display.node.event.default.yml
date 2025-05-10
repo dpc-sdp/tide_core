@@ -5,14 +5,12 @@ dependencies:
     - entity_browser.browser.tide_image_browser
     - field.field.node.event.body
     - field.field.node.event.field_audience
-    - field.field.node.event.field_bottom_graphical_image
     - field.field.node.event.field_content_category
     - field.field.node.event.field_custom_filters
     - field.field.node.event.field_event_category
     - field.field.node.event.field_event_description
     - field.field.node.event.field_event_details
     - field.field.node.event.field_featured_image
-    - field.field.node.event.field_graphical_image
     - field.field.node.event.field_landing_page_contact
     - field.field.node.event.field_landing_page_show_contact
     - field.field.node.event.field_landing_page_summary
@@ -46,7 +44,6 @@ third_party_settings:
     group_section_1:
       children:
         - group_page_header
-        - group_customised_header
         - group_body_content
         - group_event_author
       parent_name: ''
@@ -168,23 +165,6 @@ third_party_settings:
         required_fields: true
       label: 'Event Author'
       region: content
-    group_customised_header:
-      children:
-        - field_graphical_image
-        - field_bottom_graphical_image
-      label: 'Customised Header'
-      region: content
-      parent_name: group_section_1
-      weight: 9
-      format_type: tab
-      format_settings:
-        classes: ''
-        show_empty_fields: false
-        id: ''
-        label_as_html: false
-        formatter: closed
-        description: ''
-        required_fields: true
 id: node.event.default
 targetEntityType: node
 bundle: event
@@ -214,21 +194,6 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
-  field_bottom_graphical_image:
-    type: entity_browser_entity_reference
-    weight: 19
-    region: content
-    settings:
-      entity_browser: tide_image_browser
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      field_widget_replace: false
-      open: true
-      field_widget_display_settings:
-        view_mode: media_browser_preview
-      selection_mode: selection_append
-    third_party_settings: {  }
   field_event_category:
     weight: 10
     settings:
@@ -304,21 +269,6 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
-  field_graphical_image:
-    type: entity_browser_entity_reference
-    weight: 18
-    region: content
-    settings:
-      entity_browser: tide_image_browser
-      field_widget_display: rendered_entity
-      field_widget_edit: true
-      field_widget_remove: true
-      field_widget_replace: false
-      open: true
-      field_widget_display_settings:
-        view_mode: media_browser_preview
-      selection_mode: selection_append
-    third_party_settings: {  }
   field_landing_page_contact:
     weight: 8
     settings:

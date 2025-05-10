@@ -3,12 +3,10 @@ status: true
 dependencies:
   config:
     - field.field.node.grant.field_audience
-    - field.field.node.grant.field_bottom_graphical_image
     - field.field.node.grant.field_call_to_action
     - field.field.node.grant.field_custom_filters
     - field.field.node.grant.field_description
     - field.field.node.grant.field_featured_image
-    - field.field.node.grant.field_graphical_image
     - field.field.node.grant.field_landing_page_contact
     - field.field.node.grant.field_landing_page_intro_text
     - field.field.node.grant.field_landing_page_nav_title
@@ -85,14 +83,6 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
-    region: content
-  field_graphical_image:
-    type: entity_reference_label
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    weight: 22
     region: content
   field_landing_page_contact:
     weight: 14
@@ -258,7 +248,6 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
-  field_bottom_graphical_image: true
   field_custom_filters: true
   field_landing_page_nav_title: true
   field_news_intro_text: true
