@@ -48,6 +48,15 @@ Feature: Fields for Grant content type
     And I see field "Department"
     And I should see an "select#edit-field-node-department" element
 
+    And I click on the horizontal tab "Customised Header"
+    And I select the radio button "Corner graphics"
+
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+
     And I click on the horizontal tab "Grant timeline"
     Then I should see an "#edit-field-node-timeline-0-top-type" element
     And I see field "field_node_timeline[0][subform][field_timeline][0][subform][field_paragraph_title][0][value]"
