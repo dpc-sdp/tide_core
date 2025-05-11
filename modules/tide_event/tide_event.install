@@ -179,7 +179,7 @@ function tide_event_update_10003() {
     ],
     'label' => 'Customised Header',
     'region' => 'content',
-    'parent_name' => 'group_section_header',
+    'parent_name' => 'group_section_1',
     'weight' => 9,
     'format_type' => 'tab',
     'format_settings' => [
