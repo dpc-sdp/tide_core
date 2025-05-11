@@ -107,7 +107,6 @@ function tide_event_update_10002() {
     ->save();
 }
 
-
 /**
  * Add corner graphic fields.
  */

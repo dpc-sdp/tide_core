@@ -15,7 +15,6 @@ use Drupal\smart_trim\TruncateHTML;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
 
-
 /**
  * Node form #process callback.
  *
@@ -29,6 +28,7 @@ use Drupal\workflows\Entity\Workflow;
  * @return array
  *   The processed form.
  */
+
 function _tide_event_form_node_form_process(array $form, FormStateInterface $form_state, array $complete_form = []) {
   /** @var \Drupal\node\NodeInterface $node */
   $node = $form_state->getFormObject()->getEntity();
@@ -101,6 +101,7 @@ function _tide_event_form_node_form_after_build(array $form, FormStateInterface 
 
   return $form;
 }
+
 /**
  * Implements hook_entity_bundle_create().
  */
