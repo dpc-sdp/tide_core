@@ -157,6 +157,8 @@ function tide_event_form_node_form_alter(&$form, FormStateInterface $form_state,
     ) {
       $form['field_custom_filters']['#access'] = FALSE;
     }
+
+    $form['#process'][] = '_tide_event_form_node_form_process';
   }
 }
 
