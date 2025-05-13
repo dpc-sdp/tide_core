@@ -1,0 +1,192 @@
+diff --git a/core/modules/menu_ui/src/Form/MenuFilterForm.php b/core/modules/menu_ui/src/Form/MenuFilterForm.php
+new file mode 100644
+index 0000000000..705b8814a8
+--- /dev/null
++++ b/core/modules/menu_ui/src/Form/MenuFilterForm.php
+@@ -0,0 +1,78 @@
++<?php
++
++namespace Drupal\menu_ui\Form;
++
++use Drupal\Core\Form\FormBase;
++use Drupal\Core\Form\FormStateInterface;
++
++/**
++ * Provides the menu filter form.
++ *
++ * @internal
++ */
++class MenuFilterForm extends FormBase {
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getFormId() {
++    return 'menu_filter_form';
++  }
++
++  /**
++   * {@inheritdoc}
++   *
++   * @param array $form
++   *   An associative array containing the structure of the form.
++   * @param \Drupal\Core\Form\FormStateInterface $form_state
++   *   The current state of the form.
++   * @param string|null $keys
++   *   The filter value.
++   */
++  public function buildForm(array $form, FormStateInterface $form_state, $keys = NULL) {
++    $form['basic'] = [
++      '#type' => 'details',
++      '#title' => $this->t('Filter menus by title'),
++      '#open' => TRUE,
++      '#attributes' => ['class' => ['container-inline']],
++    ];
++    $form['basic']['filter'] = [
++      '#type' => 'search',
++      '#title' => $this->t('Title'),
++      '#title_display' => 'invisible',
++      '#default_value' => $keys,
++      '#maxlength' => 128,
++      '#size' => 25,
++    ];
++    $form['basic']['submit'] = [
++      '#type' => 'submit',
++      '#value' => $this->t('Filter'),
++    ];
++    if ($keys) {
++      $form['basic']['reset'] = [
++        '#type' => 'submit',
++        '#value' => $this->t('Reset'),
++        '#submit' => ['::resetForm'],
++      ];
++    }
++
++    return $form;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function submitForm(array &$form, FormStateInterface $form_state) {
++    $form_state->setRedirect('entity.menu.collection', [], [
++      'query' => ['search' => trim($form_state->getValue('filter'))],
++    ]);
++  }
++
++  /**
++   * Resets the filter selections.
++   */
++  public function resetForm(array &$form, FormStateInterface $form_state) {
++    $form_state->setRedirect('entity.menu.collection');
++  }
++
++}
+diff --git a/core/modules/menu_ui/src/MenuListBuilder.php b/core/modules/menu_ui/src/MenuListBuilder.php
+index e0ac874c5b9..ca67e090c41 100644
+--- a/core/modules/menu_ui/src/MenuListBuilder.php
++++ b/core/modules/menu_ui/src/MenuListBuilder.php
+@@ -4,7 +4,13 @@
+ 
+ use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
+ use Drupal\Core\Entity\EntityInterface;
++use Drupal\Core\Entity\EntityStorageInterface;
++use Drupal\Core\Entity\EntityTypeInterface;
++use Drupal\Core\Form\FormBuilderInterface;
+ use Drupal\Core\Url;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++use Symfony\Component\HttpFoundation\Request;
++use Drupal\menu_ui\Form\MenuFilterForm;
+ 
+ /**
+  * Defines a class to build a listing of menu entities.
+@@ -19,6 +25,51 @@ class MenuListBuilder extends ConfigEntityListBuilder {
+    */
+   protected const SORT_KEY = 'label';
+ 
++  /**
++   * The current request.
++   *
++   * @var \Symfony\Component\HttpFoundation\Request
++   */
++  protected $currentRequest;
++
++  /**
++   * The form builder.
++   *
++   * @var \Drupal\Core\Form\FormBuilderInterface
++   */
++  protected $formBuilder;
++
++  /**
++   * Constructs a new MenuListBuilder object.
++   *
++   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
++   *   The entity type definition.
++   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
++   *   The entity storage class.
++   * @param \Symfony\Component\HttpFoundation\Request $current_request
++   *   The current request.
++   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
++   *   The form builder.
++   */
++  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Request $current_request, FormBuilderInterface $form_builder) {
++    parent::__construct($entity_type, $storage);
++
++    $this->currentRequest = $current_request;
++    $this->formBuilder = $form_builder;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
++    return new static(
++      $entity_type,
++      $container->get('entity_type.manager')->getStorage($entity_type->id()),
++      $container->get('request_stack')->getCurrentRequest(),
++      $container->get('form_builder')
++    );
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -66,6 +117,26 @@ public function getDefaultOperations(EntityInterface $entity) {
+     return $operations;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  protected function getEntityIds() {
++    $query = $this->getStorage()
++      ->getQuery()
++      ->sort('label', 'ASC');
++
++    $search = $this->currentRequest->query->get('search');
++    if ($search) {
++      $query->condition('label', $search, 'CONTAINS');
++    }
++
++    if ($this->limit) {
++      $query->pager($this->limit);
++    }
++
++    return $query->execute();
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -80,7 +151,9 @@ protected function ensureDestination(Url $url) {
+    * {@inheritdoc}
+    */
+   public function render() {
+-    $build = parent::render();
++    $keys = $this->currentRequest->query->get('search');
++    $build['menu_filter_form'] = $this->formBuilder->getForm(MenuFilterForm::class, $keys);
++    $build += parent::render();
+     $build['#attached']['library'][] = "menu_ui/drupal.menu_ui.adminforms";
+     return $build;
+   }
