@@ -1,0 +1,13 @@
+# Ignore files for distribution archives.
+.gitattributes            export-ignore
+.gitignore                export-ignore
+.github                   export-ignore
+.circleci                 export-ignore
+.circleci/config.yml      export-ignore
+.env                      export-ignore
+dev-init.sh               export-ignore
+
+# linguist configuration for syntax highlighting in github UI.
+*.module  linguist-language=PHP
+*.install linguist-language=PHP
+*.inc     linguist-language=PHP
