@@ -5,6 +5,7 @@
  * Install file.
  */
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\tide_search\TideSearchOperation;
 
 /**
@@ -21,6 +22,7 @@ function tide_search_install() {
 function tide_search_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
+  $dependencies['tide_search'][10006] = ['tide_core' => 10014];
   return $dependencies;
 }
 
@@ -116,4 +118,134 @@ function tide_search_update_10004() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/updates');
   _tide_core_field_content_category_default_value('tide_search_listing', 'Search listing');
   _tide_core_content_category_form_display('tide_search_listing');
+}
+
+/**
+ * Add top corner graphic field.
+ */
+function tide_search_update_10005() {
+  $configs = [
+    'field.field.node.tide_search_listing.field_graphical_image' => 'field_config',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+
+  $form_configs = [
+    'core.entity_form_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.default',
+    'core.entity_view_display.node.tide_search_listing.teaser',
+  ];
+  foreach ($form_configs as $form_config) {
+    $rewrite = _tide_read_config($form_config, $config_location, FALSE);
+    $display_config_entity = \Drupal::configFactory()->getEditable($form_config);
+    $original_config = $display_config_entity->getRawData();
+    $rewritten_config = NestedArray::mergeDeep($original_config, $rewrite);
+    if ($rewritten_config['dependencies']) {
+      $dependencies = $rewritten_config['dependencies'];
+      foreach ($dependencies as $type => $items) {
+        $uniqueItems = array_unique($items);
+        sort($uniqueItems);
+        $dependencies[$type] = $uniqueItems;
+      }
+      $rewritten_config['dependencies'] = $dependencies;
+    }
+    $display_config_entity->setData($rewritten_config);
+    $display_config_entity->save();
+  }
+}
+
+/**
+ * Adds custom filters field.
+ */
+function tide_search_update_10006() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'node.tide_search_listing.field_custom_filters' => 'field_config',
+    'node.tide_search_listing.default' => 'entity_form_display',
+    'node.tide_search_listing.default' => 'entity_view_display',
+    'node.tide_search_listing.teaser' => 'entity_view_display',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    }
+    else {
+      $tideUpdateHelper->import($type, $name);
+    }
+  }
+
+  $display_repository = \Drupal::service('entity_display.repository');
+  $display_repository->getFormDisplay('node', 'tide_search_listing')
+    ->setComponent('field_custom_filters', [
+      'type' => 'paragraphs',
+      'settings' => [
+        'title' => 'Custom filters',
+        'title_plural' => 'Custom filter',
+        'edit_mode' => 'closed',
+        'closed_mode' => 'summary',
+        'autocollapse' => 'none',
+        'closed_mode_threshold' => 0,
+        'add_mode' => 'modal',
+        'form_display_mode' => 'default',
+        'default_paragraph_type' => '_none',
+        'default_paragraph_count' => 1,
+        'features' => [
+          'add_above' => '0',
+          'collapse_edit_all' => 'collapse_edit_all',
+          'duplicate' => '0',
+        ],
+      ],
+    ])
+    ->save();
+}
+
+/**
+ * Add exclude field to search index.
+ */
+function tide_search_update_10007() {
+  if (\Drupal::moduleHandler()->moduleExists('search_api_exclude_entity') === FALSE) {
+    \Drupal::service('module_installer')->install(['search_api_exclude_entity']);
+  }
+  $update_service = \Drupal::service('tide_core.entity_update_helper');
+  // Import search exclude fields.
+  $field_configs = [
+    'field.storage.node.field_search_index_exclude' => 'field_storage_config',
+  ];
+  foreach ($field_configs as $name => $type) {
+    $update_service->import($type, $name);
+  }
+  $config = \Drupal::configFactory()->getEditable('search_api.index.node');
+  $exclude_entities = [
+    'fields' => [
+      'node' => ['field_search_index_exclude'],
+      'taxonomy_term' => [],
+    ],
+  ];
+  $config->set('processor_settings.search_api_exclude_entity_processor', $exclude_entities);
+  $config->save();
+  // Update site admin role permissions.
+  $config_site = \Drupal::configFactory()->getEditable('user.role.site_admin');
+  $modules = $config_site->get('dependencies.module') ?? [];
+  if (!in_array('search_api_exclude_entity', $modules)) {
+    $modules[] = 'search_api_exclude_entity';
+    $config_site->set('dependencies.module', $modules);
+  }
+  // Add permission if it's not already present.
+  $permissions = $config_site->get('permissions') ?? [];
+  if (!in_array('edit search api exclude entity', $permissions)) {
+    $permissions[] = 'edit search api exclude entity';
+    $config_site->set('permissions', $permissions);
+  }
+  $config_site->save();
 }

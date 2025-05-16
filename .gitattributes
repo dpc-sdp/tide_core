@@ -6,3 +6,8 @@
 .circleci/config.yml      export-ignore
 .env                      export-ignore
 dev-init.sh               export-ignore
+
+# linguist configuration for syntax highlighting in github UI.
+*.module  linguist-language=PHP
+*.install linguist-language=PHP
+*.inc     linguist-language=PHP

@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.link_list.field_paragraph_link_list
+    - paragraphs.paragraphs_type.link_list
+id: paragraph.link_list.preview
+targetEntityType: paragraph
+bundle: link_list
+mode: preview
+content:
+  field_paragraph_link_list:
+    type: entity_reference_revisions_entity_view
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_paragraph_link_list: true
+  search_api_excerpt: true

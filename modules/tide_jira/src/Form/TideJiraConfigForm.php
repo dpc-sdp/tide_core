@@ -110,6 +110,13 @@ class TideJiraConfigForm extends ConfigFormBase {
       '#title' => $this->t('Editor Department Field ID'),
     ];
 
+    $form['field_mappings']['fallback_department'] = [
+      '#type' => 'textfield',
+      '#default_value' => $config->get('fallback_department'),
+      '#title' => $this->t('Fallback department'),
+      '#description' => $this->t('This is the department ID (taxonomy ID) that will be used if no other department is available.'),
+    ];
+
     $form['no_account_email'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Email to use when user does not have an active JIRA account.'),
@@ -146,6 +153,7 @@ class TideJiraConfigForm extends ConfigFormBase {
     $config->set('site_section', $form_state->getValue('site_section'));
     $config->set('page_department', $form_state->getValue('page_department'));
     $config->set('editor_department', $form_state->getValue('editor_department'));
+    $config->set('fallback_department', $form_state->getValue('fallback_department'));
     $config->save();
 
   }

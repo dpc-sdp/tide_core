@@ -5,6 +5,7 @@
  * Tide Publication.
  */
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -44,6 +45,30 @@ function tide_publication_entity_bundle_create($entity_type_id, $bundle) {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $field_configs = [
+    'node.publication.field_custom_filters',
+    'node.publication_page.field_custom_filters',
+  ];
+
+  foreach ($field_configs as $field_config) {
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+
+    if ($storage->load($field_config) !== NULL && $form_id === 'node_publication_form') {
+      $field_config_storage = $storage->load($field_config);
+      $settings = $field_config_storage->getSettings();
+      if (
+        (
+          is_array($settings['handler_settings'])
+          && isset($settings['handler_settings']['target_bundles'])
+          && !is_array($settings['handler_settings']['target_bundles'])
+        )
+        || empty($settings['handler_settings'])
+      ) {
+        $form['field_custom_filters']['#access'] = FALSE;
+      }
+    }
+  }
+
   $publication_forms = [
     'node_publication_form',
     'node_publication_edit_form',
@@ -85,6 +110,7 @@ function tide_publication_form_node_form_alter(&$form, FormStateInterface $form_
         $form['field_node_display_headings']['widget']['#default_value'] = 'showH2';
       }
     }
+    $form['#validate'][] = 'tide_landing_page_header_style_node_form_validate';
   }
 }
 
@@ -119,14 +145,11 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
     '#options' => [
       'default' => t('Default appearance'),
       'fullwidth' => t('Full-width  background image'),
+      'corner' => t('Corner graphics'),
     ],
     '#ajax' => [
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
     ],
-  ];
-
-  $form['field_landing_page_hero_theme']['#states']['enabled'] = [
-    ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
 
   $form['field_landing_page_hero_image']['#states']['visible'] = [
@@ -142,8 +165,19 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
   if (!$node_hero_image_empty) {
     $header_style = 'fullwidth';
   }
+
+  if (!$node->get('field_graphical_image')->isEmpty() || !$node->get('field_bottom_graphical_image')->isEmpty()) {
+    $header_style = 'corner';
+  }
+
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
+  $form['field_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
+  $form['field_bottom_graphical_image']['#states']['visible'] = [
+    ':input[name="_header_style_options"]' => ['value' => 'corner'],
+  ];
   $form['#after_build'][] = '_tide_publication_form_node_form_after_build';
   return $form;
 }
@@ -168,6 +202,15 @@ function _tide_publication_form_node_form_after_build(array $form, FormStateInte
   $header_style = 'default';
   if (!$form_hero_image_empty) {
     $header_style = 'fullwidth';
+  }
+
+  $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
+  $form_hero_bottom_graphical_empty = empty($form_state->getValue(['field_bottom_graphical_image', 'target_id']));
+
+  // If the graphical image is not empty, set the header style to
+  // 'corner', otherwise retain 'fullwidth' or 'default'.
+  if (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
+    $header_style = 'corner';
   }
   $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
@@ -310,5 +353,62 @@ function tide_publication_form_alter(&$form, FormStateInterface $form_state, $fo
   }
   if (isset($form['field_publication_authors'])) {
     $form['field_publication_authors']['widget'][0]['target_id']['#placeholder'] = t('Start typing');
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function tide_publication_node_presave(EntityInterface $entity) {
+  if ($entity->bundle() === 'publication_page' && $entity->hasField('field_publication')) {
+    $publication_parent = $entity?->get('field_publication')
+      ?->first()
+      ?->get('entity')
+      ?->getTarget()
+      ?->getValue();
+
+    if ($publication_parent) {
+      if (
+        $entity->hasField('field_graphical_image')
+        && $entity->get('field_graphical_image')->isEmpty()
+        && $publication_parent->hasField('field_graphical_image')
+        && !$publication_parent->get('field_graphical_image')->isEmpty()
+      ) {
+        $top_corner_graphic = $publication_parent?->get('field_graphical_image')
+          ?->first()
+          ?->get('entity')
+          ?->getTarget()
+          ?->getValue();
+        $entity->field_graphical_image[] = $top_corner_graphic;
+      }
+
+      if (
+        $entity->hasField('field_bottom_graphical_image')
+        && $entity->get('field_bottom_graphical_image')->isEmpty()
+        && $publication_parent->hasField('field_bottom_graphical_image')
+        && !$publication_parent->get('field_bottom_graphical_image')->isEmpty()
+      ) {
+        $bottom_corner_graphic = $publication_parent?->get('field_bottom_graphical_image')
+          ?->first()
+          ?->get('entity')
+          ?->getTarget()
+          ?->getValue();
+        $entity->field_bottom_graphical_image[] = $bottom_corner_graphic;
+      }
+
+      if (
+        $entity->hasField('field_landing_page_hero_logo')
+        && $entity->get('field_landing_page_hero_logo')->isEmpty()
+        && $publication_parent->hasField('field_landing_page_hero_logo')
+        && !$publication_parent->get('field_landing_page_hero_logo')->isEmpty()
+      ) {
+        $field_logo = $publication_parent?->get('field_landing_page_hero_logo')
+          ?->first()
+          ?->get('entity')
+          ?->getTarget()
+          ?->getValue();
+        $entity->field_landing_page_hero_logo[] = $field_logo;
+      }
+    }
   }
 }

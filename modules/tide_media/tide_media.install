@@ -101,3 +101,47 @@ function tide_media_update_10006() {
     $media_config->save();
   }
 }
+
+/**
+ * Adds path and status fields to media document form display.
+ */
+function tide_media_update_10007() {
+  $config  = \Drupal::configFactory()->getEditable('core.entity_form_display.media.document.default');
+  $content = $config->get('content');
+  $hidden  = $config->get('hidden');
+  $path    = [
+    "type"                 => "path",
+    "weight"               => 9,
+    "region"               => "content",
+    "settings"             => [],
+    "third_party_settings" => [],
+  ];
+  $status  = [
+    "type"                 => "boolean_checkbox",
+    "weight"               => 8,
+    "region"               => "content",
+    "settings"             => [
+      "display_label" => TRUE,
+    ],
+    "third_party_settings" => [],
+  ];
+  if (!empty($hidden['path'])) {
+    unset($hidden['path']);
+    $content['path'] = $path;
+  }
+  if (!empty($hidden['status'])) {
+    unset($hidden['status']);
+    $content['status'] = $status;
+  }
+  $config->set('content', $content);
+  $config->set('hidden', $hidden);
+  $config->save();
+}
+
+/**
+ * Add edit any media permission to approver.
+ */
+function tide_media_update_10008() {
+  $permission = ['delete any media'];
+  user_role_grant_permissions('approver', $permission);
+}

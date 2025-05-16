@@ -10,7 +10,9 @@ use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\NodeInterface;
 use Drupal\workflows\Entity\Workflow;
@@ -73,6 +75,23 @@ function tide_landing_page_entity_bundle_create($entity_type_id, $bundle) {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $field_config = 'node.landing_page.field_custom_filters';
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  if ($storage->load($field_config) !== NULL && $form_id === 'node_landing_page_form') {
+    $field_config_storage = $storage->load($field_config);
+    $settings = $field_config_storage->getSettings();
+    if (
+      (
+        is_array($settings['handler_settings'])
+        && isset($settings['handler_settings']['target_bundles'])
+        && !is_array($settings['handler_settings']['target_bundles'])
+      )
+      || empty($settings['handler_settings'])
+    ) {
+      $form['field_custom_filters']['#access'] = FALSE;
+    }
+  }
+
   if (in_array($form_id, [
     'node_landing_page_form',
     'node_landing_page_edit_form',
@@ -86,6 +105,22 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
     }
     if (isset($form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_title']['widget'][0])) {
       $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_title']['widget'][0]['value']['#placeholder'] = t("Want to know more about...");
+
+      $url = Url::fromUri('tel:(123456)', [
+        'attributes' => [
+          'target' => '_blank',
+        ],
+      ]);
+      $paragraph_links = $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_links']['widget'];
+      $phone_link = Link::fromTextAndUrl(t('tel:(123456)'), $url)->toString();
+      $description = t("To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code @phone-link-url in the URL field, using brackets around the phone number and no spaces.", [
+        '@phone-link-url' => $phone_link,
+      ]);
+      foreach (Element::children($paragraph_links) as $delta) {
+        $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_links']['widget'][$delta]['uri']['#description'] = $description;
+      }
+
+      $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_cta']['widget'][0]['uri']['#description'] = $description;
     }
     // Change form layout.
     $form['#attached']['library'][] = 'tide_landing_page/landing_page_form';
@@ -126,7 +161,6 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
         if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'])) {
           foreach (Element::children($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget']) as $delta) {
             $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['uri']['#title'] = t("CTA link");
-            $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['uri']['#description'] = t("A link to a page showing a longer list of public holidays or special dates. Start typing the title of a page in the CMS to select it or paste in a full external URL (eg http://www.example.com).");
             $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['title']['#title'] = t("CTA text");
             $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['title']['#description'] = t("Type a strong call to action that describes the content of the link destination (eg Find all public holidays).");
           }
@@ -153,6 +187,7 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
         }
       }
     }
+    $form['#validate'][] = 'tide_landing_page_header_style_node_form_validate';
   }
 
   // Add conditional field for show table of content.
@@ -167,6 +202,34 @@ function tide_landing_page_form_node_form_alter(&$form, FormStateInterface $form
     if (!isset($form['field_node_display_headings']['widget']['#default_value']) || empty($form['field_node_display_headings']['widget']['#default_value'])) {
       $form['field_node_display_headings']['widget']['#default_value'] = 'showH2';
     }
+  }
+}
+
+/**
+ * Node form validate callback for Header style.
+ */
+function tide_landing_page_header_style_node_form_validate(array &$form, FormStateInterface $form_state) {
+  $header_style = $form_state->getValue('_header_style_options');
+  $hero_theme_value = $form_state->getValue(['field_landing_page_hero_theme', 0, 'value']);
+  $valid = TRUE;
+  $message = '';
+  switch ($header_style) {
+    case 'fullwidth':
+      if ($hero_theme_value !== 'dark') {
+        $valid = FALSE;
+        $message = t('When "Header style" is "Full-width background image", the "Page title display style" must be "Reverse blocked text".');
+      }
+      break;
+
+    case 'cta':
+      if ($hero_theme_value !== 'light') {
+        $valid = FALSE;
+        $message = t('When "Header style" is "Call to action banner", the "Page title display style" must be "Default".');
+      }
+      break;
+  }
+  if (!$valid) {
+    $form_state->setErrorByName('field_landing_page_hero_theme', $message);
   }
 }
 
@@ -432,13 +495,6 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
     ],
     '#ajax' => [
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
-    ],
-  ];
-
-  $form['field_landing_page_hero_theme']['#states']['disabled'] = [
-    ':input[name="_header_style_options"]' => [
-      ['value' => 'fullwidth'],
-      ['value' => 'cta'],
     ],
   ];
 

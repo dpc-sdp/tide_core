@@ -36,6 +36,7 @@ function tide_landing_page_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_landing_page'][10101] = ['tide_core' => 10005];
   $dependencies['tide_landing_page'][10106] = ['tide_core' => 10009];
+  $dependencies['tide_landing_page'][10111] = ['tide_core' => 10014];
 
   return $dependencies;
 }
@@ -242,4 +243,150 @@ function tide_landing_page_update_10109() {
   }
   $config->set('settings.allowed_values', $allowed_values);
   $config->save();
+}
+
+/**
+ * Update key_journeys.field_paragraph_links configs.
+ */
+function tide_landing_page_update_10110() {
+  $form_configs = [
+    'core.entity_view_display.paragraph.key_journeys.default',
+  ];
+
+  foreach ($form_configs as $form_config) {
+    $config = \Drupal::configFactory()->getEditable($form_config);
+    $dependencies = $config->get('dependencies.module');
+    if (!in_array('linkit', $dependencies)) {
+      $dependencies[] = 'linkit';
+      $config->set('dependencies.module', $dependencies);
+    }
+
+    $content = $config->get('content.field_paragraph_links');
+    $config->set('content.field_paragraph_links', $content);
+    $config->save();
+  }
+}
+
+/**
+ * Adds custom filters field.
+ */
+function tide_landing_page_update_10111() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'node.landing_page.field_custom_filters' => 'field_config',
+    'node.landing_page.default' => 'entity_form_display',
+    'node.landing_page.default' => 'entity_view_display',
+    'node.landing_page.card' => 'entity_view_display',
+    'node.landing_page.featured_card' => 'entity_view_display',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    }
+    else {
+      $tideUpdateHelper->import($type, $name);
+    }
+  }
+
+  $display_repository = \Drupal::service('entity_display.repository');
+  $display_repository->getFormDisplay('node', 'landing_page')
+    ->setComponent('field_custom_filters', [
+      'type' => 'paragraphs',
+      'settings' => [
+        'title' => 'Custom filters',
+        'title_plural' => 'Custom filter',
+        'edit_mode' => 'closed',
+        'closed_mode' => 'summary',
+        'autocollapse' => 'none',
+        'closed_mode_threshold' => 0,
+        'add_mode' => 'modal',
+        'form_display_mode' => 'default',
+        'default_paragraph_type' => '_none',
+        'default_paragraph_count' => 1,
+        'features' => [
+          'add_above' => '0',
+          'collapse_edit_all' => 'collapse_edit_all',
+          'duplicate' => '0',
+        ],
+      ],
+    ])
+    ->save();
+}
+
+/**
+ * Adds link_list paragraph type to landing_page_component field.
+ */
+function tide_landing_page_update_10112() {
+  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
+  $configs = [
+    'paragraph.field_paragraph_link_list' => 'field_storage_config',
+    'paragraph.field_paragraph_link_required' => 'field_storage_config',
+    'link_required' => 'paragraphs_type',
+    'link_list' => 'paragraphs_type',
+    'paragraph.link_required.field_paragraph_link_required' => 'field_config',
+    'paragraph.link_list.field_paragraph_link_list' => 'field_config',
+    'paragraph.link_required.default' => 'entity_form_display',
+    'paragraph.link_list.default' => 'entity_form_display',
+    'paragraph--link_required' => 'jsonapi_resource_config',
+  ];
+  foreach ($configs as $name => $type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    if ($storage->load($name) !== NULL) {
+      continue;
+    }
+    else {
+      $tideUpdateHelper->import($type, $name);
+    }
+  }
+  $field_landing_page_component_config = Drupal::entityTypeManager()->getStorage('field_config')->load('node.landing_page.field_landing_page_component');
+  $settings = $field_landing_page_component_config->getSettings();
+  $target_bundles = $settings['handler_settings']['target_bundles'];
+  if (empty($target_bundles['link_list'])) {
+    $target_bundles['link_list'] = 'link_list';
+  }
+  $positions = $settings['handler_settings']['target_bundles_drag_drop'];
+  if (empty($positions['link_list'])) {
+    $positions['link_list'] = [
+      'weight' => 50,
+      'enabled' => TRUE,
+    ];
+  }
+  $settings['handler_settings']['target_bundles'] = $target_bundles;
+  $settings['handler_settings']['target_bundles_drag_drop'] = $positions;
+  $field_landing_page_component_config->setSettings($settings)->save();
+}
+
+/**
+ * Add search exclude field.
+ */
+function tide_landing_page_update_10113() {
+  $update_service = \Drupal::service('tide_core.entity_update_helper');
+  // Import search exclude fields.
+  $field_configs = [
+    'field.field.node.landing_page.field_search_index_exclude' => 'field_config',
+  ];
+  foreach ($field_configs as $name => $type) {
+    $update_service->import($type, $name);
+  }
+
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('node.landing_page.default');
+
+  if ($form_display) {
+    // Move field to the 'content' region.
+    $form_display->setComponent('field_search_index_exclude', [
+      'type' => 'search_api_exclude_entity_widget',
+      'weight' => 23,
+      'region' => 'content',
+      'settings' => [
+        'field_label' => 'Yes, exclude this entity from the search indexes.',
+        'use_details_container' => TRUE,
+      ],
+      'third_party_settings' => [],
+    ]);
+
+    $form_display->save();
+  }
 }

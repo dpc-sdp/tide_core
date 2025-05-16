@@ -4,6 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.featured_card
     - field.field.node.news.body
+    - field.field.node.news.field_custom_filters
     - field.field.node.news.field_featured_image
     - field.field.node.news.field_landing_page_nav_title
     - field.field.node.news.field_metatags
@@ -78,6 +79,7 @@ content:
       link: true
     third_party_settings: {  }
 hidden:
+  field_custom_filters: true
   field_landing_page_nav_title: true
   field_metatags: true
   field_news_intro_text: true

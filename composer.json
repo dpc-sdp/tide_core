@@ -25,7 +25,7 @@
         "drupal/editor_advanced_link": "^2.2.3",
         "drupal/entity_browser": "^2.9",
         "drupal/entity_reference_revisions": "^1.10",
-        "drupal/entity_embed": "1.x-dev@dev",
+        "drupal/entity_embed": "1.7",
         "drupal/environment_indicator": "^4.0",
         "drupal/fast_404": "^3.0",
         "drupal/field_group": "^3.6",
@@ -59,7 +59,7 @@
         "drupal/smtp": "^1.2",
         "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.4",
-        "drupal/tfa": "^1.2",
+        "drupal/tfa": "1.9",
         "drupal/tfa_email_otp": "^1.0@beta",
         "drupal/token_conditions": "dev-compatible-with-d10",
         "drupal/token_filter": "^2.0",
@@ -122,7 +122,8 @@
         "jquery/intl-tel-input": "17.0.19",
         "progress-tracker/progress-tracker": "2.0.7",
         "drupal/shield": "^1.8",
-        "drupal/media_alias_display": "^2.1"
+        "drupal/media_alias_display": "^2.1",
+        "drupal/search_api_exclude_entity": "^3.0"
     },
     "repositories": {
         "drupal": {
@@ -376,10 +377,6 @@
             "drupal/migrate_plus": {
                 "Simple XML broken with UTF-16LE - https://www.drupal.org/project/migrate_plus/issues/3051858#comment-15138496": "https://www.drupal.org/files/issues/2023-07-06/3051858-migrate_plus-simplexml_remove_trim-5.patch"
             },
-            "drupal/entity_embed": {
-                "More defensive handling of data-entity-embed-display-settings - https://www.drupal.org/project/entity_embed/issues/3010942": "https://www.drupal.org/files/issues/2019-12-11/3077225-10.reduce-invalid-config-logs.patch",
-                "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132#comment-15546646": "https://www.drupal.org/files/issues/2024-04-11/Fixes-custom-data-attributes-issue-11.patch"
-            },
             "drupal/yaml_content": {
                 "Alter parsed values before nodes created. - https://www.drupal.org/project/yaml_content/issues/3261689#comment-15167530": "https://www.drupal.org/files/issues/2023-07-27/yaml_content-3261689_4.patch",
                 "Warnings when importing menus using module. - https://www.drupal.org/project/yaml_content/issues/3340448": "https://www.drupal.org/files/issues/2023-07-28/warnings-when-importing_3340448_7.patch"
@@ -411,7 +408,7 @@
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
-                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-15030602": "https://git.drupalcode.org/project/key/-/merge_requests/11/diffs.patch",
+                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch",
                 "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
             },
             "drupal/data_pipelines": {
@@ -427,9 +424,6 @@
             },
             "drupal/content_lock": {
                 "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
-            },
-            "lesstif/php-jira-rest-client": {
-                "Supports email lookup": "https://patch-diff.githubusercontent.com/raw/dpc-sdp/php-jira-rest-client/pull/1.diff"
             },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
