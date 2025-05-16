@@ -45,7 +45,7 @@ Feature: Fields for Event content type
 
     And I should see text matching "Related links"
     And I should see the button "Add Related links" in the "content" region
-    
+
     And I see field "Show Social Sharing?"
     And I should see an "input#edit-field-show-social-sharing-value" element
     And I should not see an "input#edit-field-show-social-sharing-value.required" element
@@ -89,3 +89,12 @@ Feature: Fields for Event content type
     And I should see text matching "Contact Phone Number"
     And I should see an "input#edit-field-node-phone-0-value" element
     And I should not see an "input#edit-field-node-phone-0-value.required" element
+
+    And I click on the horizontal tab "Customised Header"
+
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
