@@ -1,0 +1,508 @@
+{
+    "name": "myorg/mysite",
+    "description": "Drupal 8 site for MYSITE",
+    "license": "proprietary",
+    "require": {
+        "composer/installers": "^1.9",
+        "cweagans/composer-patches": "^1.6.0",
+        "drupal/core-composer-scaffold": "^10.0",
+        "drupal/core": "10.3.x",
+        "drupal/core-recommended": "10.3.x",
+        "drush/drush": "^12",
+        "vlucas/phpdotenv": "^4.1",
+        "webflo/drupal-finder": "^1.0"
+    },
+    "require-dev": {
+        "behat/behat": "~3.5",
+        "behat/mink": "^1.11",
+        "behat/mink-browserkit-driver": "^2.2",
+        "behat/mink-selenium2-driver": "^1.4",
+        "chi-teck/drupal-code-generator": "^3.0",
+        "squizlabs/php_codesniffer": "3.7.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+        "doctrine/persistence": "^3.3",
+        "drupal/coder": "^8.3.10",
+        "drupal/console": "dev-feature/Symfony-config-d10-compatibility",
+        "drupal/drupal-extension": "^5.0.0rc1",
+        "drevops/behat-screenshot": "^1.0",
+        "drevops/behat-steps": "^1.2.0",
+        "phpcompatibility/php-compatibility": "^9.1",
+        "ubirak/rest-api-behat-extension": "dev-rename_ambiguous_match as 8.2.0",
+        "symfony/filesystem": "^6.2",
+        "php-http/curl-client": "*",
+        "phpunit/phpunit": "^8.5.14 || ^9",
+        "drupal/core-dev":"^10.1.0",
+        "phpspec/prophecy-phpunit":"^2",
+        "weitzman/drupal-test-traits": "^1.5",
+        "php-http/message": "~1.13",
+        "php-http/message-factory": "^1.1",
+        "guzzlehttp/psr7": "~2.6.2",
+        "dpc-sdp/tide_test": "^4.0.0",
+        "drupal/test_helpers": "^1.2"
+    },
+    "provide": {
+        "drupal/ckeditor": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tide\\Tests\\Context\\": "tests/behat/bootstrap/"
+        },
+        "classmap": [
+            "scripts/composer/"
+        ]
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "allow-plugins": {
+          "composer/installers": true,
+          "oomphinc/composer-installers-extender": true,
+          "drupal/*": true,
+          "cweagans/composer-patches": true,
+          "zaporylie/composer-drupal-optimizations": false,
+          "dealerdirect/phpcodesniffer-composer-installer": true,
+          "php-http/discovery": true,
+          "phpstan/extension-installer": true
+        }
+    },
+    "repositories": {
+        "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8",
+            "exclude": ["drupal/token_conditions", "drupal/console", "drupal/console-core", "drupal/console-extend-plugin", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+        },
+        "asset-packagist": {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        },
+        "dpc-sdp/tide": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide.git"
+        },
+        "drupal/create_menus_permission": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/create_menus_permission.git"
+        },
+        "dpc-sdp/tide_alert": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_alert.git"
+        },
+        "dpc-sdp/tide_api": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_api.git"
+        },
+        "dpc-sdp/tide_authenticated_content": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_authenticated_content.git"
+        },
+        "dpc-sdp/tide_core": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_core.git"
+        },
+        "dpc-sdp/tide_data_driven_component": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_data_driven_component.git"
+        },
+        "dpc-sdp/tide_demo_content": {
+            "url": "https://github.com/dpc-sdp/tide_demo_content.git",
+            "type": "vcs",
+            "no-api": true
+        },
+        "dpc-sdp/tide_event": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_event.git"
+        },
+        "dpc-sdp/tide_event_atdw": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_event_atdw.git"
+        },
+        "dpc-sdp/tide_grant": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_grant.git"
+        },
+        "dpc-sdp/tide_landing_page": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_landing_page.git"
+        },
+        "dpc-sdp/tide_media": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_media.git"
+        },
+        "dpc-sdp/tide_monsido": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_monsido.git"
+        },
+        "dpc-sdp/tide_page": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_page.git"
+        },
+        "dpc-sdp/tide_profile": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_profile.git"
+        },
+        "dpc-sdp/tide_publication": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_publication.git"
+        },
+        "dpc-sdp/tide_news": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_news.git"
+        },
+        "dpc-sdp/tide_search": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_search.git"
+        },
+        "dpc-sdp/tide_site": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_site.git"
+        },
+        "dpc-sdp/tide_test": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_test.git"
+        },
+        "dpc-sdp/tide_webform": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/tide_webform.git"
+        },
+        "library/dropzone": {
+            "type": "package",
+            "package": {
+                "name": "library/dropzone",
+                "version": "4.3.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/enyo/dropzone/archive/v4.3.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        "ckeditor.autogrow": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "ckeditor/autogrow",
+                "version": "4.16.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://download.ckeditor.com/autogrow/releases/autogrow_4.16.1.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "ckeditor.codemirror": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "ckeditor/codemirror",
+                "version": "v1.17.12",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/w8tcha/CKEditor-CodeMirror-Plugin/releases/download/v1.17.12/CKEditor-CodeMirror-Plugin.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "ckeditor.image": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "ckeditor/image",
+                "version": "4.16.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://download.ckeditor.com/image/releases/image_4.16.1.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "ckeditor.link": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "ckeditor/link",
+                "version": "4.16.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://download.ckeditor.com/link/releases/link_4.16.1.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "ckeditor/templates": {
+            "type": "package",
+            "package": {
+                "name": "ckeditor/templates",
+                "type": "drupal-library",
+                "version": "4.11.1",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://download.ckeditor.com/templates/releases/templates_4.11.1.zip"
+                }
+            }
+        },
+        "jquery.timepicker": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "jquery/timepicker",
+                "version": "1.14.0",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "jquery.timepicker"
+                },
+                "dist": {
+                    "url": "https://github.com/jonthornton/jquery-timepicker/archive/refs/tags/1.14.0.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "jquery.textcounter": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "jquery/textcounter",
+                "version": "0.9.1",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "jquery.textcounter"
+                },
+                "dist": {
+                    "url": "https://github.com/ractoon/jQuery-Text-Counter/archive/0.9.1.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "choices": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "choices/choices",
+                "version": "9.0.1",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "choices"
+                },
+                "dist": {
+                    "url": "https://github.com/jshjohnson/Choices/archive/v9.0.1.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "codemirror": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "codemirror/codemirror",
+                "version": "5.65.12",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "codemirror"
+                },
+                "dist": {
+                    "url": "https://github.com/components/codemirror/archive/5.65.12.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "jquery.inputmask": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "jquery/inputmask",
+                "version": "5.0.8",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "jquery.inputmask"
+                },
+                "dist": {
+                    "url": "https://github.com/RobinHerbots/jquery.inputmask/archive/5.0.8.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "jquery.intl-tel-input": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "jquery/intl-tel-input",
+                "version": "17.0.19",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "jquery.intl-tel-input"
+                },
+                "dist": {
+                    "url": "https://github.com/jackocnr/intl-tel-input/archive/v17.0.19.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "progress-tracker": {
+            "_webform": true,
+            "type": "package",
+            "package": {
+                "name": "progress-tracker/progress-tracker",
+                "version": "2.0.7",
+                "type": "drupal-library",
+                "extra": {
+                    "installer-name": "progress-tracker"
+                },
+                "dist": {
+                    "url": "https://github.com/NigelOToole/progress-tracker/archive/refs/tags/2.0.7.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        "ubirak/rest-api-behat-extension": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/rest-api-behat-extension.git"
+        },
+        "drupal/token_conditions": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/token_conditions.git"
+        },
+        "drupal/ckeditor_templates": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
+        },
+        "drupal/console": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/drupal-console.git"
+        },
+        "drupal/console-core": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/drupal-console-core.git"
+        },
+        "drupal/console-extend-plugin": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/drupal-console-extend-plugin.git"
+        }
+    },
+    "scripts": {
+        "pre-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "pre-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "post-install-cmd": [
+            "composer drupal:scaffold",
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
+            "Utilities\\composer\\DrupalSettings::create"
+        ],
+        "post-update-cmd": [
+            "composer drupal:scaffold",
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
+            "Utilities\\composer\\DrupalSettings::create"
+        ]
+    },
+    "extra": {
+        "drupal-scaffold": {
+            "allowed-packages": [
+              "drupal/core"
+            ],
+            "file-mapping": {
+              "[web-root]/robots.txt": false
+            },
+            "locations": {
+              "web-root": "./docroot"
+            }
+        },
+        "enable-patching": true,
+        "composer-exit-on-patch-failure": true,
+        "installer-paths": {
+            "docroot/core": [
+                "type:drupal-core"
+            ],
+            "docroot/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "docroot/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "docroot/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "docroot/libraries/{$name}": [
+                "type:drupal-library"
+            ],
+            "drush/contrib/{$name}": [
+                "type:drupal-drush"
+            ]
+        },
+        "preserve-paths": [
+            "docroot/modules/custom",
+            "docroot/themes/custom",
+            "docroot/drush",
+            "docroot/sites/default/settings.php",
+            "docroot/sites/default/default.settings.local.php",
+            "docroot/sites/default/default.services.local.yml",
+            "docroot/sites/default/settings.local.php",
+            "docroot/sites/default/services.local.yml",
+            "docroot/sites/default/files",
+            "docroot/robots.txt",
+            "docroot/.htaccess"
+        ]
+    }
+}
