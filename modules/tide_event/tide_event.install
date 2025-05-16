@@ -106,3 +106,52 @@ function tide_event_update_10002() {
     ])
     ->save();
 }
+
+/**
+ * Remove outdated email handler from tide_event_submission webform.
+ */
+function tide_event_update_10003() {
+  $webform_id = 'tide_event_submission';
+
+  // Load the webform entity.
+  $webform = \Drupal::entityTypeManager()
+    ->getStorage('webform')
+    ->load($webform_id);
+
+  if (!$webform) {
+    return \Drupal::translation()->translate('Webform @id not found.', ['@id' => $webform_id]);
+  }
+
+  // Get the handlers.
+  $handlers = $webform->getHandlers();
+  $updated = FALSE;
+
+  // Go through each handler.
+  foreach ($handlers as $handler_id => $handler) {
+    if ($handler_id == 'event_submission_email') {
+      $configuration = $handler->getConfiguration();
+
+      // Check if this is an email handler with the specific to_mail address.
+      if (isset($configuration['settings']['to_mail']) &&
+        $configuration['settings']['to_mail'] === 'contact.dpc@dsdbi.desk-mail.com') {
+        // Delete this handler.
+        $webform->deleteWebformHandler($handler_id);
+        $updated = TRUE;
+      }
+    }
+  }
+
+  if ($updated) {
+    // Save the updated webform.
+    $webform->save();
+    return \Drupal::translation()->translate(
+      'Removed outdated email handler from @webform webform.',
+      ['@webform' => $webform_id]
+    );
+  }
+
+  return \Drupal::translation()->translate(
+    'No handlers with the specified email address were found in @webform webform.',
+    ['@webform' => $webform_id]
+  );
+}
