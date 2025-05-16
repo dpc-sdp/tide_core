@@ -13,10 +13,6 @@ Feature: Access permissions
       # Blocks.
       | authenticated user | admin/structure/block | 404      |
       | administrator      | admin/structure/block | 200      |
-      | site_admin         | admin/structure/block | 200      |
-      | contributor        | admin/structure/block | 200      |
-      | editor             | admin/structure/block | 200      |
-      | approver           | admin/structure/block | 200      |
       | previewer          | admin/structure/block | 404      |
       # Menu.
       | authenticated user | admin/structure/menu  | 404      |

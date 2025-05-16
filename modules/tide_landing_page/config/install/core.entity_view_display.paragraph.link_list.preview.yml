@@ -4,20 +4,20 @@ dependencies:
   config:
     - core.entity_view_mode.paragraph.preview
     - field.field.paragraph.link_list.field_paragraph_link_list
-    - field.field.paragraph.link_list.field_paragraph_title
     - paragraphs.paragraphs_type.link_list
 id: paragraph.link_list.preview
 targetEntityType: paragraph
 bundle: link_list
 mode: preview
 content:
-  field_paragraph_title:
-    type: string
-    label: hidden
+  field_paragraph_link_list:
+    type: entity_reference_revisions_entity_view
+    label: above
     settings:
-      link_to_entity: false
+      view_mode: default
+      link: ''
     third_party_settings: {  }
-    weight: 0
+    weight: 1
     region: content
 hidden:
   field_paragraph_link_list: true
