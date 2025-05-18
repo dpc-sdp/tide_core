@@ -108,17 +108,73 @@ function tide_event_update_10002() {
 }
 
 /**
- * Add corner graphic fields.
+ * Remove outdated email handler from tide_event_submission webform.
  */
 function tide_event_update_10003() {
-  $tideUpdateHelper = \Drupal::service('tide_core.entity_update_helper');
-  $field_configs = [
+  $webform_id = 'tide_event_submission';
+
+  // Load the webform entity.
+  $webform = \Drupal::entityTypeManager()
+    ->getStorage('webform')
+    ->load($webform_id);
+
+  if (!$webform) {
+    return \Drupal::translation()->translate('Webform @id not found.', ['@id' => $webform_id]);
+  }
+
+  // Get the handlers.
+  $handlers = $webform->getHandlers();
+  $updated = FALSE;
+
+  // Go through each handler.
+  foreach ($handlers as $handler_id => $handler) {
+    if ($handler_id == 'event_submission_email') {
+      $configuration = $handler->getConfiguration();
+
+      // Check if this is an email handler with the specific to_mail address.
+      if (isset($configuration['settings']['to_mail']) &&
+        $configuration['settings']['to_mail'] === 'contact.dpc@dsdbi.desk-mail.com') {
+        // Delete this handler.
+        $webform->deleteWebformHandler($handler_id);
+        $updated = TRUE;
+      }
+    }
+  }
+
+  if ($updated) {
+    // Save the updated webform.
+    $webform->save();
+    return \Drupal::translation()->translate(
+      'Removed outdated email handler from @webform webform.',
+      ['@webform' => $webform_id]
+    );
+  }
+
+  return \Drupal::translation()->translate(
+    'No handlers with the specified email address were found in @webform webform.',
+    ['@webform' => $webform_id]
+  );
+}
+
+/**
+ * Add corner graphic fields.
+ */
+function tide_event_update_10004() {
+  $configs = [
     'field.field.node.event.field_bottom_graphical_image' => 'field_config',
     'field.field.node.event.field_graphical_image' => 'field_config',
   ];
-
-  foreach ($field_configs as $name => $type) {
-    $tideUpdateHelper->import($type, $name);
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_event') . '/config/install'];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
   }
 
   // Load the form display entity.

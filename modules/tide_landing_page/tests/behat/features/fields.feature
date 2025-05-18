@@ -261,7 +261,7 @@ Feature: Fields for Landing Page content type
 
     And I see field "Show topic term and tags?"
 
-    And I should see text matching "Custom filters"
+    And I should not see text matching "Custom filters"
 
     And I see field "Background colour"
     And I should see an "select#edit-field-landing-page-bg-colour" element
@@ -335,7 +335,7 @@ Feature: Fields for Landing Page content type
     Given I am logged in as a user with the "editor" role
     When I visit "node/add/landing_page"
     And I click on the horizontal tab "Customised Header"
-    Then I should see an "#edit-header-style-options-fullwidtht" element
+    Then I should see an "#edit-header-style-options-fullwidth" element
     And I select "corner" from "edit-header-style-options-fullwidth"
     Then I should see an "#edit-field-landing-page-hero-theme" element
     And I should see text matching "Reverse blocked text"
