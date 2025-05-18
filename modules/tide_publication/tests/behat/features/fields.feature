@@ -5,8 +5,7 @@ Feature: Fields for Publication content type
 
   @api @javascript
   Scenario: The content type has the expected fields (and labels where we can use them).
-    # Given I am logged in as a user with the "editor" role
-    Given I am logged in as a user with the "create publication content" permission
+    Given I am logged in as a user with the "create publication content, access toolbar" permission
     When I visit "node/add/publication"
     And save screenshot
 
@@ -66,7 +65,7 @@ Feature: Fields for Publication content type
     And I should see the button "Accordion"
     And I should see the button "Complex image"
     And I should see the button "Reusable content item"
-    And I should see the button "Statics Grid"
+    And I should see the button "Statistics Grid"
     And I press the "Close" button
 
     And I scroll selector "#edit-group-sidebar" into view
@@ -149,7 +148,6 @@ Feature: Fields for Publication content type
     And the "#edit-field-landing-page-hero-logo" element should contain "Logo"
     And I should see an "input#edit-field-landing-page-hero-logo-entity-browser-entity-browser-open-modal" element
 
-
     And I click on the horizontal tab "Page content"
     And I see field "Show table of contents"
     And I should see an "input#edit-field-show-table-of-content-value" element
@@ -175,7 +173,7 @@ Feature: Fields for Publication content type
     And I should see the button "Complex image"
     And I should see the button "Form embed (Drupal)"
     And I should see the button "Timelines"
-    And I should see the button "Statics grid"
+    And I should see the button "Statistics grid"
     And I should see the button "Reusable content item"
     And I press the "Close" button
 

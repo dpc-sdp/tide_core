@@ -5,7 +5,7 @@ Feature: Fields for Grant content type
 
   @api @javascript
   Scenario: The content type has the expected fields (and labels where we can use them).
-    Given I am logged in as a user with the "create grant content" permission
+    Given I am logged in as a user with the "create grant content, access toolbar" permission
     When I visit "node/add/grant"
     And save screenshot
     Then I see field "Title"

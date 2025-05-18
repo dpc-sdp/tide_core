@@ -5,7 +5,7 @@ Feature: Webform "Event Submission" exists.
 
   @api
   Scenario: The form has the expected fields (and labels where we can use them).
-    Given I am logged in as a user with the "administer webform" permission
+    Given I am logged in as a user with the "administer webform, access toolbar" permission
     When I visit "admin/structure/webform"
     Then I should see the link "Event Submission"
 
