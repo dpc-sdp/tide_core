@@ -135,7 +135,7 @@ function tide_event_update_10003() {
       if (isset($configuration['settings']['to_mail']) &&
         $configuration['settings']['to_mail'] === 'contact.dpc@dsdbi.desk-mail.com') {
         // Delete this handler.
-        $webform->deleteWebformHandler($handler_id);
+        $webform->deleteWebformHandler($handler);
         $updated = TRUE;
       }
     }
