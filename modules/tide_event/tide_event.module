@@ -59,7 +59,6 @@ function _tide_event_form_node_form_after_build(array $form, FormStateInterface 
     'field_graphical_image',
     'field_bottom_graphical_image',
   ]);
-  return $form;
 }
 
 /**

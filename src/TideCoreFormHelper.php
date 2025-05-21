@@ -3,8 +3,8 @@
 namespace Drupal\tide_core;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\NodeInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\node\NodeInterface;
 
 /**
  * Helper functions for altering node forms.
@@ -101,4 +101,5 @@ class TideCoreFormHelper {
 
     return $form;
   }
+
 }
