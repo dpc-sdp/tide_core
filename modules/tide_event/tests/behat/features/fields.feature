@@ -61,7 +61,7 @@ Feature: Fields for Event content type
     And I should see an "input#edit-field-tags-0-target-id" element
     And I should not see an "input#edit-field-tags-0-target-id.required" element
 
-    nd I click on the horizontal tab "Contact"
+    And I click on the horizontal tab "Contact"
 
     And I should see text matching "Contact Us"
     And I should see text matching "No Contact Us block added yet."
