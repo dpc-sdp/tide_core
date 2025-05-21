@@ -7,6 +7,7 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\workflows\Entity\Workflow;
 
 /**
@@ -91,6 +92,14 @@ function tide_news_form_node_form_alter(&$form, FormStateInterface $form_state, 
 function _tide_news_form_node_form_process(array $form, FormStateInterface $form_state, array $complete_form = []) {
   /** @var \Drupal\node\NodeInterface $node */
   $node = $form_state->getFormObject()->getEntity();
+  TideCoreFormHelper::addHeaderStyleSelector($form, $form_state, $node, [
+    'group' => 'group_customised_header',
+    'fields' => [
+      'field_graphical_image',
+      'field_bottom_graphical_image',
+    ],
+    'after_build' => '_tide_event_form_node_form_after_build',
+  ]);
 
   $form['field_node_department']['#group'] = 'group_author_detail';
 
@@ -112,7 +121,10 @@ function _tide_news_form_node_form_process(array $form, FormStateInterface $form
  *   The processed form.
  */
 function _tide_news_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  return TideCoreFormHelper::updateHeaderStyleFromState($form, $form_state, [
+    'field_graphical_image',
+    'field_bottom_graphical_image',
+  ]);
   $form['field_node_department']['#group'] = 'group_author_detail';
-
   return $form;
 }
