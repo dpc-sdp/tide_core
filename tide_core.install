@@ -421,3 +421,23 @@ function tide_core_update_10015() {
   // Save the configuration.
   $config->save();
 }
+
+/**
+ * Add code deployed tag to environment.
+ */
+function tide_core_update_10016() {
+  $env = getenv('LAGOON_ENVIRONMENT_TYPE') ?: 'development';
+  $moduleHandler = \Drupal::service('module_installer');
+  if (!$moduleHandler->moduleExists('environment_indicator')) {
+    $moduleHandler->install(['environment_indicator']);
+  }
+
+  if ($env !== 'production') {
+    $config = \Drupal::configFactory()->getEditable('user.role.authenticated');
+    $permissions = $config->get('permissions') ?? [];
+    if (!in_array('access environment indicator', $permissions)) {
+      $permissions[] = 'access environment indicator';
+      $config->set('permissions', $permissions)->save();
+    }
+  }
+}
