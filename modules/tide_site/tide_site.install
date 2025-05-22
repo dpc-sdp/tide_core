@@ -98,3 +98,79 @@ function tide_site_update_10003() {
   $system_feature_flags->set('linkset_endpoint', TRUE)
     ->save();
 }
+
+/**
+ * New field site name.
+ */
+function tide_site_update_10004() {
+  $update_service = \Drupal::service('tide_core.entity_update_helper');
+  // Import extra fields.
+  $field_configs = [
+    'taxonomy_term.field_taxonomy_machine_name' => 'field_storage_config',
+    'taxonomy_term.sites.field_taxonomy_machine_name' => 'field_config',
+  ];
+  /** @var \Drupal\config_update\ConfigReverter $config_update */
+  foreach ($field_configs as $name => $type) {
+    $update_service->import($type, $name);
+  }
+
+  $field_name = 'field_taxonomy_machine_name';
+  $field_dep = 'field.field.taxonomy_term.sites.' . $field_name;
+
+  // Form display config.
+  $form_config_name = 'core.entity_form_display.taxonomy_term.sites.default';
+  $form_config = \Drupal::configFactory()->getEditable($form_config_name);
+
+  $form_content = $form_config->get('content') ?? [];
+  $form_content[$field_name] = [
+    'type' => 'string_textfield',
+    'weight' => 0,
+    'region' => 'content',
+    'settings' => ['size' => 60, 'placeholder' => ''],
+    'third_party_settings' => [],
+  ];
+  $form_config->set('content', $form_content);
+
+  $form_hidden = $form_config->get('hidden') ?? [];
+  if (isset($form_hidden[$field_name])) {
+    unset($form_hidden[$field_name]);
+    $form_config->set('hidden', $form_hidden);
+  }
+
+  $form_deps = $form_config->get('dependencies.config') ?? [];
+  if (!in_array($field_dep, $form_deps)) {
+    $form_deps[] = $field_dep;
+    $form_config->set('dependencies.config', $form_deps);
+  }
+
+  $form_config->save();
+
+  // View display config.
+  $view_config_name = 'core.entity_view_display.taxonomy_term.sites.default';
+  $view_config = \Drupal::configFactory()->getEditable($view_config_name);
+
+  $view_content = $view_config->get('content') ?? [];
+  $view_content[$field_name] = [
+    'type' => 'string',
+    'label' => 'above',
+    'settings' => ['link_to_entity' => FALSE],
+    'third_party_settings' => [],
+    'weight' => 2,
+    'region' => 'content',
+  ];
+  $view_config->set('content', $view_content);
+
+  $view_hidden = $view_config->get('hidden') ?? [];
+  if (isset($view_hidden[$field_name])) {
+    unset($view_hidden[$field_name]);
+    $view_config->set('hidden', $view_hidden);
+  }
+
+  $view_deps = $view_config->get('dependencies.config') ?? [];
+  if (!in_array($field_dep, $view_deps)) {
+    $view_deps[] = $field_dep;
+    $view_config->set('dependencies.config', $view_deps);
+  }
+
+  $view_config->save();
+}
