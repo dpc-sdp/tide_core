@@ -106,7 +106,6 @@ function tide_site_update_10004() {
   $update_service = \Drupal::service('tide_core.entity_update_helper');
   // Import extra fields.
   $field_configs = [
-    'taxonomy_term.field_taxonomy_machine_name' => 'field_storage_config',
     'taxonomy_term.sites.field_taxonomy_machine_name' => 'field_config',
   ];
   /** @var \Drupal\config_update\ConfigReverter $config_update */
