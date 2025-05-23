@@ -390,3 +390,86 @@ function tide_landing_page_update_10113() {
     $form_display->save();
   }
 }
+
+/**
+ * Add search exclude field.
+ */
+function tide_landing_page_update_10114() {
+  $site_title = 'field_landing_page_nav_title';
+  $field_dep = 'field.field.node.landing_page.' . $site_title;
+  // List of view display modes.
+  $view_display_modes = [
+    'card',
+    'default',
+    'featured_card',
+  ];
+
+  // Form display configuration to update.
+  $form_display_name = 'core.entity_form_display.node.landing_page.default';
+
+  // Bundle and entity type.
+  $bundle = 'landing_page';
+  $entity_type = 'node';
+
+  // Process view displays.
+  foreach ($view_display_modes as $mode) {
+    $config_name = "core.entity_view_display.$entity_type.$bundle.$mode";
+    $config = \Drupal::configFactory()->getEditable($config_name);
+    if (!$config->isNew()) {
+      $content = $config->get('content') ?? [];
+      $hidden = $config->get('hidden') ?? [];
+      $dependencies = $config->get('dependencies.config') ?? [];
+
+      // Remove the field from content display.
+      if (isset($content[$site_title])) {
+        unset($content[$site_title]);
+      }
+
+      // Remove the field from hidden fields.
+      if (isset($hidden[$site_title])) {
+        unset($hidden[$site_title]);
+      }
+
+      // Remove the field from dependencies.
+      if (($key = array_search($field_dep, $dependencies)) !== FALSE) {
+        unset($dependencies[$key]);
+        $dependencies = array_values($dependencies);
+      }
+
+      $config
+        ->set('content', $content)
+        ->set('hidden', $hidden)
+        ->set('dependencies.config', $dependencies)
+        ->save();
+    }
+  }
+
+  // Process form display for landing_page.
+  $config_form = \Drupal::configFactory()->getEditable($form_display_name);
+
+  if (!$config_form->isNew()) {
+    $content = $config_form->get('content') ?? [];
+    $third_party_settings = $config_form->get('third_party_settings') ?? [];
+    $dependencies = $config_form->get('dependencies.config') ?? [];
+    if (isset($content[$site_title])) {
+      unset($content[$site_title]);
+    }
+    if (!empty($third_party_settings['field_group'])) {
+      foreach ($third_party_settings['field_group'] as &$group) {
+        if (!empty($group['children']) && in_array($site_title, $group['children'])) {
+          $group['children'] = array_values(array_diff($group['children'], [$site_title]));
+        }
+      }
+    }
+
+    // Remove the field from dependencies.config.
+    if (in_array($field_dep, $dependencies)) {
+      $dependencies = array_values(array_diff($dependencies, [$field_dep]));
+    }
+    $config
+      ->set('content', $content)
+      ->set('third_party_settings', $third_party_settings)
+      ->set('dependencies.config', $dependencies)
+      ->save();
+  }
+}
