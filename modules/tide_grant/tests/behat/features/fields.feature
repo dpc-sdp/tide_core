@@ -5,7 +5,7 @@ Feature: Fields for Grant content type
 
   @api @javascript
   Scenario: The content type has the expected fields (and labels where we can use them).
-    Given I am logged in as a user with the "create grant content" permission
+    Given I am logged in as a user with the "create grant content, access toolbar" permission
     When I visit "node/add/grant"
     And save screenshot
     Then I see field "Title"
@@ -47,6 +47,15 @@ Feature: Fields for Grant content type
     And I click on the horizontal tab "Grant Author"
     And I see field "Department"
     And I should see an "select#edit-field-node-department" element
+
+    And I click on the horizontal tab "Customised Header"
+    And I select the radio button "Corner graphics"
+
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
 
     And I click on the horizontal tab "Grant timeline"
     Then I should see an "#edit-field-node-timeline-0-top-type" element

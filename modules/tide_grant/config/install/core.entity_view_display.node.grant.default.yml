@@ -3,10 +3,12 @@ status: true
 dependencies:
   config:
     - field.field.node.grant.field_audience
+    - field.field.node.grant.field_bottom_graphical_image
     - field.field.node.grant.field_call_to_action
     - field.field.node.grant.field_custom_filters
     - field.field.node.grant.field_description
     - field.field.node.grant.field_featured_image
+    - field.field.node.grant.field_graphical_image
     - field.field.node.grant.field_landing_page_contact
     - field.field.node.grant.field_landing_page_intro_text
     - field.field.node.grant.field_landing_page_nav_title

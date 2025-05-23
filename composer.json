@@ -448,6 +448,9 @@
             },
             "drupal/tfa_email_otp": {
                 "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
+            },
+            "drupal/admin_toolbar": {
+                "Warning: Trying to access array offset on null in admin_toolbar_toolbar_alter() - https://www.drupal.org/project/admin_toolbar/issues/3525987#comment-16119710": "https://www.drupal.org/files/issues/2025-05-22/admin_toolbar-array-offset-on-null-3525987-12.patch"
             }
         },
         "installer-paths": {

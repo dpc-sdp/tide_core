@@ -4,10 +4,12 @@ dependencies:
   config:
     - entity_browser.browser.tide_document_browser
     - field.field.node.grant.field_audience
+    - field.field.node.grant.field_bottom_graphical_image
     - field.field.node.grant.field_call_to_action
     - field.field.node.grant.field_custom_filters
     - field.field.node.grant.field_description
     - field.field.node.grant.field_featured_image
+    - field.field.node.grant.field_graphical_image
     - field.field.node.grant.field_landing_page_contact
     - field.field.node.grant.field_landing_page_intro_text
     - field.field.node.grant.field_landing_page_nav_title
@@ -228,6 +230,23 @@ third_party_settings:
         classes: ''
       region: content
       weight: -50
+    group_customised_header:
+      children:
+        - field_graphical_image
+        - field_bottom_graphical_image
+      label: 'Customised Header'
+      region: content
+      parent_name: group_section_header
+      weight: 9
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: closed
+        description: ''
+        required_fields: true
 id: node.grant.default
 targetEntityType: node
 bundle: grant
@@ -249,6 +268,23 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
+  field_bottom_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 19
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
+    visible: true
+    group: group_customised_header
   field_call_to_action:
     weight: 20
     settings:
@@ -300,6 +336,23 @@ content:
     third_party_settings: {  }
     type: entity_browser_entity_reference
     region: content
+  field_graphical_image:
+    type: entity_browser_entity_reference
+    weight: 18
+    region: content
+    settings:
+      entity_browser: tide_image_browser
+      field_widget_display: rendered_entity
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: false
+      open: true
+      field_widget_display_settings:
+        view_mode: media_browser_preview
+      selection_mode: selection_append
+    third_party_settings: {  }
+    visible: true
+    group: group_customised_header
   field_landing_page_contact:
     weight: 10
     settings:
