@@ -2,10 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.taxonomy_term.field_taxonomy_machine_name
+    - field.storage.taxonomy_term.field_site_name
     - taxonomy.vocabulary.sites
-id: taxonomy_term.sites.field_taxonomy_machine_name
-field_name: field_taxonomy_machine_name
+id: taxonomy_term.sites.field_site_name
+field_name: field_site_name
 entity_type: taxonomy_term
 bundle: sites
 label: 'Site name'
