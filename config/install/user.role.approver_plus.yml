@@ -1,0 +1,384 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - entity_browser.browser.media_brit_document_browser
+    - entity_browser.browser.paragraphs_library_items
+    - filter.format.admin_text
+    - filter.format.rich_text
+    - filter.format.summary_text
+    - filter.format.webform_default
+    - media.type.audio
+    - media.type.document
+    - media.type.embedded_video
+    - media.type.file
+    - media.type.image
+    - node.type.aboriginal_honour_roll
+    - node.type.det_150_content
+    - node.type.event
+    - node.type.fv_recommendation
+    - node.type.job
+    - node.type.lobbyist
+    - node.type.media_birt
+    - node.type.media_buying_for_vic
+    - node.type.project_infrastructure
+    - node.type.sr_profile
+    - node.type.test
+    - node.type.tide_search_listing
+    - node.type.vada_profile
+    - node.type.vdrp_profile
+    - node.type.vgso_profile
+  module:
+    - block
+    - block_content
+    - ckeditor5_embedded_content
+    - config_perms
+    - content_lock
+    - content_moderation
+    - entity_browser
+    - entity_hierarchy
+    - entity_usage
+    - file
+    - filter
+    - media
+    - node
+    - override_node_options
+    - paragraphs_library
+    - path
+    - quick_node_clone
+    - redirect
+    - scheduled_transitions
+    - simple_oauth
+    - system
+    - tablefield
+    - tide_alert
+    - tide_ckeditor
+    - tide_core
+    - tide_edit_protection
+    - tide_event
+    - tide_grant
+    - tide_landing_page
+    - tide_media
+    - tide_news
+    - tide_profile
+    - tide_publication
+    - tide_search
+    - tide_share_link
+    - tide_site_preview
+    - tide_ui_restriction
+    - toolbar
+    - webform
+    - workbench
+id: approver_plus
+label: Approver+
+weight: 103
+is_admin: null
+permissions:
+  - 'Bulk update url aliases'
+  - 'access admin_config pages'
+  - 'access administration pages'
+  - 'access block library'
+  - 'access content overview'
+  - 'access entity usage statistics'
+  - 'access files overview'
+  - 'access media overview'
+  - 'access media_brit_document_browser entity browser pages'
+  - 'access paragraphs_library_items entity browser pages'
+  - 'access share link token entities listing'
+  - 'access tide_document_browser entity browser pages'
+  - 'access tide_embedded_video_browser entity browser pages'
+  - 'access tide_image_browser entity browser pages'
+  - 'access tide_media_browser entity browser pages'
+  - 'access tide_media_browser_iframe entity browser pages'
+  - 'access toolbar'
+  - 'access user profiles'
+  - 'access webform overview'
+  - 'access workbench'
+  - 'add scheduled transitions node aboriginal_honour_roll'
+  - 'add scheduled transitions node alert'
+  - 'add scheduled transitions node det_150_content'
+  - 'add scheduled transitions node event'
+  - 'add scheduled transitions node fv_recommendation'
+  - 'add scheduled transitions node grant'
+  - 'add scheduled transitions node landing_page'
+  - 'add scheduled transitions node media_birt'
+  - 'add scheduled transitions node media_buying_for_vic'
+  - 'add scheduled transitions node news'
+  - 'add scheduled transitions node profile'
+  - 'add scheduled transitions node publication'
+  - 'add scheduled transitions node publication_page'
+  - 'add scheduled transitions node sr_profile'
+  - 'add scheduled transitions node translated_page'
+  - 'add scheduled transitions node vada_profile'
+  - 'add scheduled transitions node vgso_profile'
+  - 'add share link token entities'
+  - 'addrow tablefield'
+  - 'admin lock content view'
+  - 'administer block content'
+  - 'administer block types'
+  - 'administer blocks'
+  - 'administer menu'
+  - 'administer permissions'
+  - 'administer redirects'
+  - 'administer share link token entities'
+  - 'administer url aliases'
+  - 'administer users'
+  - 'administer webform element access'
+  - 'break content lock'
+  - 'change own username'
+  - 'clone aboriginal_honour_roll content'
+  - 'clone alert content'
+  - 'clone event content'
+  - 'clone fv_recommendation content'
+  - 'clone grant content'
+  - 'clone job content'
+  - 'clone landing_page content'
+  - 'clone lobbyist content'
+  - 'clone media_birt content'
+  - 'clone media_buying_for_vic content'
+  - 'clone news content'
+  - 'clone profile content'
+  - 'clone project_infrastructure content'
+  - 'clone publication content'
+  - 'clone publication_page content'
+  - 'clone sr_profile content'
+  - 'clone vada_profile content'
+  - 'clone vdrp_profile content'
+  - 'clone vgso_profile content'
+  - 'create aboriginal_honour_roll content'
+  - 'create alert content'
+  - 'create det_150_content content'
+  - 'create document media'
+  - 'create embedded_video media'
+  - 'create event content'
+  - 'create file media'
+  - 'create fv_recommendation content'
+  - 'create grant content'
+  - 'create image media'
+  - 'create landing_page content'
+  - 'create media_birt content'
+  - 'create media_buying_for_vic content'
+  - 'create news content'
+  - 'create paragraph library item'
+  - 'create profile content'
+  - 'create publication content'
+  - 'create publication_page content'
+  - 'create sr_profile content'
+  - 'create test content'
+  - 'create url aliases'
+  - 'create vada_profile content'
+  - 'create vdrp_profile content'
+  - 'create vgso_profile content'
+  - 'create webform'
+  - 'delete aboriginal_honour_roll revisions'
+  - 'delete alert revisions'
+  - 'delete any audio media'
+  - 'delete any document media'
+  - 'delete any embedded_video media'
+  - 'delete any file media'
+  - 'delete any grant content'
+  - 'delete any image media'
+  - 'delete any landing_page content'
+  - 'delete any media'
+  - 'delete any news content'
+  - 'delete any profile content'
+  - 'delete any publication content'
+  - 'delete any publication_page content'
+  - 'delete any test content'
+  - 'delete any webform'
+  - 'delete any webform submission'
+  - 'delete fv_recommendation revisions'
+  - 'delete grant revisions'
+  - 'delete media'
+  - 'delete media_birt revisions'
+  - 'delete media_buying_for_vic revisions'
+  - 'delete own aboriginal_honour_roll content'
+  - 'delete own alert content'
+  - 'delete own audio media'
+  - 'delete own det_150_content content'
+  - 'delete own document media'
+  - 'delete own embedded_video media'
+  - 'delete own event content'
+  - 'delete own file media'
+  - 'delete own files'
+  - 'delete own fv_recommendation content'
+  - 'delete own grant content'
+  - 'delete own image media'
+  - 'delete own job content'
+  - 'delete own landing_page content'
+  - 'delete own lobbyist content'
+  - 'delete own media_birt content'
+  - 'delete own media_buying_for_vic content'
+  - 'delete own news content'
+  - 'delete own profile content'
+  - 'delete own project_infrastructure content'
+  - 'delete own publication content'
+  - 'delete own publication_page content'
+  - 'delete own sr_profile content'
+  - 'delete own test content'
+  - 'delete own vada_profile content'
+  - 'delete own vdrp_profile content'
+  - 'delete own vgso_profile content'
+  - 'delete own webform submission'
+  - 'delete project_infrastructure revisions'
+  - 'delete share link token entities'
+  - 'delete sr_profile revisions'
+  - 'delete test revisions'
+  - 'delete vada_profile revisions'
+  - 'delete vdrp_profile revisions'
+  - 'delete vgso_profile revisions'
+  - 'edit any aboriginal_honour_roll content'
+  - 'edit any alert content'
+  - 'edit any audio media'
+  - 'edit any det_150_content content'
+  - 'edit any document media'
+  - 'edit any embedded_video media'
+  - 'edit any event content'
+  - 'edit any file media'
+  - 'edit any fv_recommendation content'
+  - 'edit any grant content'
+  - 'edit any image media'
+  - 'edit any job content'
+  - 'edit any landing_page content'
+  - 'edit any lobbyist content'
+  - 'edit any media_birt content'
+  - 'edit any media_buying_for_vic content'
+  - 'edit any news content'
+  - 'edit any profile content'
+  - 'edit any project_infrastructure content'
+  - 'edit any publication content'
+  - 'edit any publication_page content'
+  - 'edit any sr_profile content'
+  - 'edit any test content'
+  - 'edit any vada_profile content'
+  - 'edit any vdrp_profile content'
+  - 'edit any vgso_profile content'
+  - 'edit any webform'
+  - 'edit own aboriginal_honour_roll content'
+  - 'edit own alert content'
+  - 'edit own det_150_content content'
+  - 'edit own event content'
+  - 'edit own fv_recommendation content'
+  - 'edit own grant content'
+  - 'edit own job content'
+  - 'edit own landing_page content'
+  - 'edit own lobbyist content'
+  - 'edit own media_birt content'
+  - 'edit own media_buying_for_vic content'
+  - 'edit own news content'
+  - 'edit own profile content'
+  - 'edit own project_infrastructure content'
+  - 'edit own publication content'
+  - 'edit own publication_page content'
+  - 'edit own sr_profile content'
+  - 'edit own test content'
+  - 'edit own vada_profile content'
+  - 'edit own vdrp_profile content'
+  - 'edit own vgso_profile content'
+  - 'edit own webform'
+  - 'edit own webform submission'
+  - 'edit paragraph library item'
+  - 'enter all revision log entry'
+  - 'grant simple_oauth codes'
+  - 'import tablefield'
+  - 'rebuild tablefield'
+  - 'reorder entity_hierarchy children'
+  - 'reschedule scheduled transitions node aboriginal_honour_roll'
+  - 'reschedule scheduled transitions node alert'
+  - 'reschedule scheduled transitions node event'
+  - 'reschedule scheduled transitions node fv_recommendation'
+  - 'reschedule scheduled transitions node grant'
+  - 'reschedule scheduled transitions node landing_page'
+  - 'reschedule scheduled transitions node media_birt'
+  - 'reschedule scheduled transitions node media_buying_for_vic'
+  - 'reschedule scheduled transitions node news'
+  - 'reschedule scheduled transitions node profile'
+  - 'reschedule scheduled transitions node publication'
+  - 'reschedule scheduled transitions node publication_page'
+  - 'reschedule scheduled transitions node sr_profile'
+  - 'reschedule scheduled transitions node vada_profile'
+  - 'reschedule scheduled transitions node vgso_profile'
+  - 'revert aboriginal_honour_roll revisions'
+  - 'revert alert revisions'
+  - 'revert all revisions'
+  - 'revert event revisions'
+  - 'revert fv_recommendation revisions'
+  - 'revert grant revisions'
+  - 'revert landing_page revisions'
+  - 'revert media_birt revisions'
+  - 'revert media_buying_for_vic revisions'
+  - 'revert news revisions'
+  - 'revert profile revisions'
+  - 'revert project_infrastructure revisions'
+  - 'revert publication revisions'
+  - 'revert publication_page revisions'
+  - 'revert sr_profile revisions'
+  - 'revert test revisions'
+  - 'revert vada_profile revisions'
+  - 'revert vdrp_profile revisions'
+  - 'revert vgso_profile revisions'
+  - 'tide node bulk update'
+  - 'update grant author details'
+  - 'update media'
+  - 'use ckeditor5 embedded content'
+  - 'use editorial transition archive'
+  - 'use editorial transition archive_pending'
+  - 'use editorial transition archived_draft'
+  - 'use editorial transition archived_published'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition needs_review'
+  - 'use editorial transition needs_review_draft'
+  - 'use editorial transition publish'
+  - 'use text format admin_text'
+  - 'use text format advanced'
+  - 'use text format rich_text'
+  - 'use text format summary_text'
+  - 'use text format webform_default'
+  - 'view aboriginal_honour_roll revisions'
+  - 'view alert revisions'
+  - 'view all media revisions'
+  - 'view all revisions'
+  - 'view all scheduled transitions'
+  - 'view any unpublished content'
+  - 'view any webform submission'
+  - 'view event revisions'
+  - 'view fv_recommendation revisions'
+  - 'view grant revisions'
+  - 'view job revisions'
+  - 'view landing_page revisions'
+  - 'view landing_page revisions'
+  - 'view latest version'
+  - 'view lobbyist revisions'
+  - 'view media_birt revisions'
+  - 'view media_buying_for_vic revisions'
+  - 'view news revisions'
+  - 'view own unpublished content'
+  - 'view own webform submission'
+  - 'view profile revisions'
+  - 'view project_infrastructure revisions'
+  - 'view publication revisions'
+  - 'view publication_page revisions'
+  - 'view scheduled transitions node aboriginal_honour_roll'
+  - 'view scheduled transitions node alert'
+  - 'view scheduled transitions node det_150_content'
+  - 'view scheduled transitions node event'
+  - 'view scheduled transitions node fv_recommendation'
+  - 'view scheduled transitions node grant'
+  - 'view scheduled transitions node landing_page'
+  - 'view scheduled transitions node media_birt'
+  - 'view scheduled transitions node media_buying_for_vic'
+  - 'view scheduled transitions node news'
+  - 'view scheduled transitions node profile'
+  - 'view scheduled transitions node publication'
+  - 'view scheduled transitions node publication_page'
+  - 'view scheduled transitions node sr_profile'
+  - 'view scheduled transitions node tide_search_listing'
+  - 'view scheduled transitions node vada_profile'
+  - 'view scheduled transitions node vgso_profile'
+  - 'view sr_profile revisions'
+  - 'view test revisions'
+  - 'view the administration theme'
+  - 'view tide_search_listing revisions'
+  - 'view tide_site preview links'
+  - 'view unpublished share link token entities'
+  - 'view user email addresses'

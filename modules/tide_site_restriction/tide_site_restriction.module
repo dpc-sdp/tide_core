@@ -128,44 +128,47 @@ function tide_site_restriction_user_presave(UserInterface $user) {
  * Implements hook_views_pre_view().
  */
 function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
-  // Pre-select user sites in Summary Content admin view.
-  $view_ids = ['summary_contents_filters', 'media'];
-  $display_ids = [
-    'page_1' => 'sub_sites_filter',
-    'media_page_list' => 'field_media_site_target_id',
+  $display_filters = [
+    'summary_contents_filters' => [
+      'page_1' => 'sub_sites_filter',
+    ],
+    'user_admin_people' => [
+      'page_1' => 'field_user_site_target_id_1',
+    ],
+    'media' => [
+      'media_page_list' => 'field_media_site_target_id',
+    ],
   ];
+
   $account = \Drupal::currentUser();
-  foreach ($view_ids as $view_id) {
-    if ($view->id() == $view_id) {
-      foreach ($display_ids as $id => $filter) {
-        if ($display_id == $id) {
-          /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
-          $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
-          $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
+  $view_id = $view->id();
 
-          $filters = $view->display_handler->getOption('filters');
-          if (!empty($filters[$filter])) {
-            // Change the filter to accept multiple values.
-            $filters[$filter]['expose']['multiple'] = TRUE;
-            $view->display_handler->setOption('filters', $filters);
+  // Apply site restriction filters for supported views.
+  if (isset($display_filters[$view_id][$display_id])) {
+    $filter = $display_filters[$view_id][$display_id];
 
-            // Pre-select the user sites if the filter is empty.
-            if (!$user_can_bypass_restriction) {
-              /** @var \Drupal\user\Entity\User $user */
-              $user = User::load($account->id());
-              $user_sites = $site_restriction_helper->getUserSites($user);
-              $exposed_input = $view->getExposedInput();
-              if (!empty($user_sites) && empty($exposed_input)) {
-                $exposed_input[$filter] = $user_sites;
-                $view->setExposedInput($exposed_input);
-              }
-            }
-          }
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
+
+    $filters = $view->display_handler->getOption('filters');
+    if (!empty($filters[$filter])) {
+      $filters[$filter]['expose']['multiple'] = TRUE;
+      $view->display_handler->setOption('filters', $filters);
+
+      if (!$user_can_bypass_restriction) {
+        /** @var \Drupal\user\Entity\User $user */
+        $user = User::load($account->id());
+        $user_sites = $site_restriction_helper->getUserSites($user);
+        $exposed_input = $view->getExposedInput();
+        if (!empty($user_sites) && empty($exposed_input)) {
+          $exposed_input[$filter] = $user_sites;
+          $view->setExposedInput($exposed_input);
         }
       }
     }
   }
-  // Add site restriction field to user list view.
+  // Add site restriction field to user list data export view.
   if ($view->id() === 'user_list_data_export') {
     $site_field = [
       'label' => t('Site restriction'),
@@ -175,6 +178,32 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
       'alter' => [],
     ];
     $view->addHandler($display_id, 'field', 'user__field_user_site', 'field_user_site', $site_field, '0');
+  }
+
+  // Restrict user_admin_people by department for approver_plus.
+  if ($view->id() === 'user_admin_people' && $display_id === 'page_1') {
+    // Only apply for approver_plus role.
+    if (in_array('approver_plus', $account->getRoles())) {
+      $filters = $view->display_handler->getOption('filters');
+
+      // Check if field_department_agency is an exposed filter.
+      if (!empty($filters['field_department_agency_target_id'])) {
+        $filters['field_department_agency_target_id']['expose']['multiple'] = TRUE;
+        $view->display_handler->setOption('filters', $filters);
+
+        /** @var \Drupal\user\Entity\User $user */
+        $user = User::load($account->id());
+        $department = $user->get('field_department_agency')->target_id;
+
+        if ($department) {
+          $exposed_input = $view->getExposedInput();
+          if (empty($exposed_input['field_department_agency_target_id'])) {
+            $exposed_input['field_department_agency_target_id'] = [$department];
+            $view->setExposedInput($exposed_input);
+          }
+        }
+      }
+    }
   }
 }
 

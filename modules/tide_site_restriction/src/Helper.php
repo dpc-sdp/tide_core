@@ -129,7 +129,7 @@ class Helper extends TideSiteHelper {
    *   Array.
    */
   public function getSiteFieldsName() {
-    return ['field_node_site', 'field_node_primary_site', 'field_media_site'];
+    return ['field_node_site', 'field_node_primary_site', 'field_media_site', 'field_user_site'];
   }
 
   /**
