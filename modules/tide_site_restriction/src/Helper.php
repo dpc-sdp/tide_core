@@ -111,8 +111,13 @@ class Helper extends TideSiteHelper {
     }
     $field_names = $this->getSiteFieldsName();
     foreach ($field_names as $field_name) {
+      // print '<pre>'.print_r($entity->toArray(),1).'<pre>';
+      if ($field_name == 'field_user_site_target_id_1' && $entity->hasField($field_name)) {
+        // print '<pre>'.print_r($field_name,1).'<pre>';
+      }
       if ($entity->hasField($field_name) && !$entity->get($field_name)->isEmpty()) {
         $values = $entity->get($field_name)->getValue();
+        // print '<pre>'.print_r($values,1).'<pre>';
         $site_ids = array_column($values, 'target_id');
         if (count(array_intersect($site_ids, $user_sites)) > 0) {
           return TRUE;
@@ -151,6 +156,32 @@ class Helper extends TideSiteHelper {
       $result[$site] = $site;
     }
     return $result;
+  }
+
+  /**
+   * Recursively retrieves all descendant term IDs of a given term.
+   *
+   * @param int $tid
+   *   The taxonomy term ID.
+   * @param object $term_storage
+   *   The taxonomy term storage service.
+   *
+   * @return array
+   *   An array of descendant term IDs.
+   */
+  public function getAllDescendants($tid, $term_storage) {
+    $descendants = [];
+    $children = $term_storage->loadChildren($tid);
+
+    if (!empty($children)) {
+      foreach ($children as $child) {
+        $descendants[] = $child->id();
+        // Recurse into children.
+        $descendants = array_merge($descendants, $this->getAllDescendants($child->id(), $term_storage));
+      }
+    }
+
+    return $descendants;
   }
 
 }

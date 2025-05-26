@@ -38,6 +38,7 @@ dependencies:
     - entity_browser
     - entity_hierarchy
     - entity_usage
+    - field_permissions
     - file
     - filter
     - media
@@ -65,6 +66,7 @@ dependencies:
     - tide_search
     - tide_share_link
     - tide_site_preview
+    - tide_site_restriction
     - tide_ui_restriction
     - toolbar
     - webform
@@ -121,6 +123,7 @@ permissions:
   - 'administer permissions'
   - 'administer redirects'
   - 'administer share link token entities'
+  - 'administer site restriction'
   - 'administer url aliases'
   - 'administer users'
   - 'administer webform element access'
@@ -254,6 +257,8 @@ permissions:
   - 'edit any vdrp_profile content'
   - 'edit any vgso_profile content'
   - 'edit any webform'
+  - 'edit field_business_contact_number'
+  - 'edit field_business_name'
   - 'edit own aboriginal_honour_roll content'
   - 'edit own alert content'
   - 'edit own det_150_content content'
@@ -342,6 +347,8 @@ permissions:
   - 'view any unpublished content'
   - 'view any webform submission'
   - 'view event revisions'
+  - 'view field_business_contact_number'
+  - 'view field_business_name'
   - 'view fv_recommendation revisions'
   - 'view grant revisions'
   - 'view job revisions'

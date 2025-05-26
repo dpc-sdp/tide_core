@@ -139,23 +139,23 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
       'media_page_list' => 'field_media_site_target_id',
     ],
   ];
-
+  
   $account = \Drupal::currentUser();
   $view_id = $view->id();
 
   // Apply site restriction filters for supported views.
   if (isset($display_filters[$view_id][$display_id])) {
     $filter = $display_filters[$view_id][$display_id];
-
+  
     /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
     $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
     $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
-
+  
     $filters = $view->display_handler->getOption('filters');
     if (!empty($filters[$filter])) {
       $filters[$filter]['expose']['multiple'] = TRUE;
       $view->display_handler->setOption('filters', $filters);
-
+  
       if (!$user_can_bypass_restriction) {
         /** @var \Drupal\user\Entity\User $user */
         $user = User::load($account->id());
@@ -168,6 +168,7 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
       }
     }
   }
+  
   // Add site restriction field to user list data export view.
   if ($view->id() === 'user_list_data_export') {
     $site_field = [
@@ -178,32 +179,6 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
       'alter' => [],
     ];
     $view->addHandler($display_id, 'field', 'user__field_user_site', 'field_user_site', $site_field, '0');
-  }
-
-  // Restrict user_admin_people by department for approver_plus.
-  if ($view->id() === 'user_admin_people' && $display_id === 'page_1') {
-    // Only apply for approver_plus role.
-    if (in_array('approver_plus', $account->getRoles())) {
-      $filters = $view->display_handler->getOption('filters');
-
-      // Check if field_department_agency is an exposed filter.
-      if (!empty($filters['field_department_agency_target_id'])) {
-        $filters['field_department_agency_target_id']['expose']['multiple'] = TRUE;
-        $view->display_handler->setOption('filters', $filters);
-
-        /** @var \Drupal\user\Entity\User $user */
-        $user = User::load($account->id());
-        $department = $user->get('field_department_agency')->target_id;
-
-        if ($department) {
-          $exposed_input = $view->getExposedInput();
-          if (empty($exposed_input['field_department_agency_target_id'])) {
-            $exposed_input['field_department_agency_target_id'] = [$department];
-            $view->setExposedInput($exposed_input);
-          }
-        }
-      }
-    }
   }
 }
 
@@ -422,4 +397,40 @@ function tide_site_restriction_views_data_alter(array &$data) {
  */
 function tide_site_restriction_views_plugins_field_alter(array &$plugins) {
   $plugins['node_bulk_form']['class'] = 'Drupal\\tide_site_restriction\\Plugin\\views\\field\\TideNodeBulkForm';
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ */
+function tide_site_restriction_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
+  $field_definition = $context['items']->getFieldDefinition();
+  $user = User::load(\Drupal::currentUser()->id());
+
+  if ($field_definition->getName() !== 'field_user_site' || !$user->hasRole('approver_plus')) {
+    return;
+  }
+
+  // Get allowed site IDs from service.
+  /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+  $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+  $allowed_site_ids = $site_restriction_helper->getUserSites($user);
+
+  // Add child sites for each allowed site.
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  foreach ($allowed_site_ids as $tid) {
+    $descendants = $site_restriction_helper->getAllDescendants($tid, $term_storage);
+    $allowed_site_ids = array_merge($allowed_site_ids, $descendants);
+  }
+
+  // Remove duplicates.
+  $allowed_site_ids = array_unique($allowed_site_ids);
+
+  // Filter the options.
+  if (isset($element['#options']) && is_array($element['#options'])) {
+    foreach ($element['#options'] as $key => $label) {
+      if (!in_array($key, $allowed_site_ids)) {
+        unset($element['#options'][$key]);
+      }
+    }
+  }
 }

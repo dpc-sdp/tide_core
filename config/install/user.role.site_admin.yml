@@ -50,6 +50,7 @@ permissions:
   - 'edit paragraph library item'
   - 'access taxonomy overview'
   - 'access toolbar'
+  - 'access user creation page'
   - 'administer blocks'
   - 'addrow tablefield'
   - 'administer menu'

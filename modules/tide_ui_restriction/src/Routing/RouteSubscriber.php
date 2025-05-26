@@ -34,11 +34,22 @@ class RouteSubscriber extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) : void {
-    // Set _admin_config_access_check for all routes starting with admin/config.
+    $customPermissions = [
+      '/admin/people/create' => 'access user creation page',
+      '/admin/people/roles' => 'access role management page',
+      '/admin/people/permissions' => 'access permissions management page',
+    ];
     foreach ($collection as $route) {
       $path = $route->getPath();
+      // Set _admin_config_access_check for all routes starting with admin/config.
       if (strpos($path, '/admin/config/') === 0 && !$this->isExcluded($path)) {
         $route->setRequirement('_admin_config_access_check', 'TRUE');
+      }
+      // Restricts admin routes with custom permissions.
+      foreach ($customPermissions as $routePath => $permission) {
+        if (strpos($path, $routePath) === 0) {
+          $route->setRequirement('_permission', $permission);
+        }
       }
     }
   }
