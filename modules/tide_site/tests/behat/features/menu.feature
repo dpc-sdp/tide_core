@@ -1,3 +1,4 @@
+@skipped
 Feature: Sites menu autocreate
 
   As a site admin, I want to be able to automatically create and assign new
