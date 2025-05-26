@@ -3,9 +3,9 @@ Feature: Fields for Event content type
 
   Ensure that Event content has the expected fields.
 
-  @api
+  @api @javascript
   Scenario: The content type has the expected fields (and labels where we can use them).
-    Given I am logged in as a user with the "create event content" permission
+    Given I am logged in as a user with the "create event content, access toolbar" permissions
     When I visit "node/add/event"
     And save screenshot
     Then I see field "Title"
@@ -45,7 +45,7 @@ Feature: Fields for Event content type
 
     And I should see text matching "Related links"
     And I should see the button "Add Related links" in the "content" region
-    
+
     And I see field "Show Social Sharing?"
     And I should see an "input#edit-field-show-social-sharing-value" element
     And I should not see an "input#edit-field-show-social-sharing-value.required" element
@@ -61,6 +61,8 @@ Feature: Fields for Event content type
     And I should see an "input#edit-field-tags-0-target-id" element
     And I should not see an "input#edit-field-tags-0-target-id.required" element
 
+    And I click on the horizontal tab "Contact"
+
     And I should see text matching "Contact Us"
     And I should see text matching "No Contact Us block added yet."
     And I should see the button "Add Contact Us" in the "content" region
@@ -69,14 +71,26 @@ Feature: Fields for Event content type
     And I should see an "input#edit-field-show-content-rating-value" element
     And I should not see an "input#edit-field-show-content-rating-value.required" element
 
+    And I click on the horizontal tab "Body Content"
+
     And I should see text matching "Event Details"
     And I should see text matching "Book"
     And I should not see an "input#edit-field-event-details-0-subform-field-paragraph-link-0-uri.required" element
     And I should not see an "input#edit-field-event-details-0-subform-field-paragraph-link-0-title.required" element
-
     And I should see text matching "Website URL"
     And I should see an "input#edit-field-node-link-0-uri" element
     And I should not see an "input#edit-field-node-link-0-uri.required" element
+
+    And I click on the horizontal tab "Customised Header"
+
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
+
+    And I click on the horizontal tab "Event Author"
 
     And I should see text matching "Full Name"
     And I should see an "input#edit-field-node-author-0-value" element
