@@ -1,0 +1,88 @@
+default:
+  autoload: [ '%paths.base%/tests/behat/bootstrap' ]
+  gherkin:
+    # Disable caching during development. It is enabled for profiles below.
+    cache: ~
+    filters:
+      tags: "~@suggest&&~@skipped"
+  suites:
+    default:
+      paths: 
+        - '%paths.base%/tests/behat/features'
+        - '%paths.base%/modules/tide_event/tests/behat/features'
+        - '%paths.base%/modules/tide_news/tests/behat/features'
+        - '%paths.base%/modules/tide_grant/tests/behat/features'
+        - '%paths.base%/modules/tide_site/tests/behat/features'
+        - '%paths.base%/modules/tide_landing_page/tests/behat/features'
+        - '%paths.base%/modules/tide_api/tests/behat/features'
+        - '%paths.base%/modules/tide_media/tests/behat/features'
+        - '%paths.base%/modules/tide_webform/tests/behat/features'
+        - '%paths.base%/modules/tide_publication/tests/behat/features'
+        - '%paths.base%/modules/tide_alert/tests/behat/features'
+      contexts:
+      - Tide\Tests\Context\FeatureContext
+      - Drupal\DrupalExtension\Context\MinkContext
+      - Drupal\DrupalExtension\Context\MarkupContext
+      - Drupal\DrupalExtension\Context\MessageContext
+      - DrevOps\BehatScreenshotExtension\Context\ScreenshotContext
+      - Ubirak\RestApiBehatExtension\RestApiContext
+      - Ubirak\RestApiBehatExtension\Json\JsonContext
+
+  extensions:
+    Drupal\MinkExtension:
+      files_path: '%paths.base%/tests/behat/fixtures'
+      selenium2:
+        wd_host: "http://chrome:4444/wd/hub"
+        capabilities: { "browser": "chrome", "version": "*", "marionette": true }
+      browserkit_http: ~
+      ajax_timeout: 5
+      browser_name: chrome
+      javascript_session: selenium2
+      base_url: http://nginx:8080
+    # Provides integration with Drupal APIs.
+    Drupal\DrupalExtension:
+      blackbox: ~
+      api_driver: drupal
+      drush_driver: drush
+      drupal:
+        drupal_root: docroot
+      drush:
+        root: docroot
+      selectors:
+        message_selector: '.messages'
+        error_message_selector: '.messages.messages--error'
+        success_message_selector: '.messages.messages--status'
+        warning_message_selector: '.messages.messages--warning'
+      region_map:
+        alert: '.region-alert'
+        header: '.region-header'
+        header_search: '.region-header-search'
+        menu: '.region-menu'
+        breadcrumb: '.region-breadcrumb'
+        feature: '.region-feature'
+        above_content: '.region-above-content'
+        content: '.region-content'
+        sidebar: '.region-sidebar'
+        above_footer: '.region-above-footer'
+        footer_first: '.region-footer-first'
+        footer_second: '.region-footer-second'
+        footer_third: '.region-footer-third'
+        footer_fourth: '.region-footer-fourth'
+        footer_fifth: '.region-footer-fifth'
+        footer_sixth: '.region-footer-sixth'
+        splash: '.region-splash'
+
+    # Allows to capture HTML and JPG screenshots (based on the driver used).
+    DrevOps\BehatScreenshotExtension:
+      dir: '%paths.base%/screenshots'
+      fail: true
+      purge: false
+    Ubirak\RestApiBehatExtension\Extension:
+      rest:
+        base_url: http://nginx:8080
+        store_response: true
+
+suggest:
+  gherkin:
+    filters:
+      tags: "~@nosuggest&&~@skipped"

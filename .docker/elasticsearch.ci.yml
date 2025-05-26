@@ -1,0 +1,14 @@
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+transport.host: localhost
+
+discovery.type: single-node
+xpack.license.self_generated.type: basic
+xpack.security.enabled: false
+
+path.repo: ["/usr/share/elasticsearch/data/snapshots"]
+
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+http.cors.allow-methods : OPTIONS, HEAD, GET
+http.cors.allow-headers : X-Requested-With, X-Auth-Token, Content-Type, Content-Length

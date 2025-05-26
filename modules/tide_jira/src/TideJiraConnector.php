@@ -92,7 +92,7 @@ class TideJiraConnector {
       $us = $this->jiraRestWrapperService->getUserService();
 
       try {
-        $user = $us->findUserByEmail($email);
+        $user = $us->findUsers(['query' => $email])[0];
       }
       catch (\Exception $e) {
         $this->logger->warning('Could not find JIRA account for ' . $email);
