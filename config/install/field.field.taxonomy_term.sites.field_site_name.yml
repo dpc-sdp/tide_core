@@ -8,7 +8,7 @@ id: taxonomy_term.sites.field_site_name
 field_name: field_site_name
 entity_type: taxonomy_term
 bundle: sites
-label: 'Site name'
+label: 'Site title'
 description: 'Enter the public-facing name of the microsite/site section.'
 required: false
 translatable: false

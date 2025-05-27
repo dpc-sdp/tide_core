@@ -124,7 +124,7 @@ function tide_site_update_10004() {
   $form_content = $form_config->get('content') ?? [];
   $form_content[$field_name] = [
     'type' => 'string_textfield',
-    'weight' => 0,
+    'weight' => 1,
     'region' => 'content',
     'settings' => ['size' => 60, 'placeholder' => ''],
     'third_party_settings' => [],
