@@ -432,8 +432,8 @@ function tide_core_update_10016() {
 
   // Load approver_plus role config.
   $config_read = _tide_read_config('user.role.approver_plus', $config_location, TRUE);
-  $permissions = isset($config_read['permissions']) ? $config_read['permissions'] : [];
-  $weight = isset($config_read['weight']) ? $config_read['weight'] : 0;
+  $permissions = $config_read['permissions'] ?? [];
+  $weight = $config_read['weight'] ?? 0;
 
   // Create approver_plus role if it doesn't exist.
   if (!Role::load('approver_plus')) {
