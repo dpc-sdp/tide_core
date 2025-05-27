@@ -36,6 +36,7 @@ class RouteSubscriber extends RouteSubscriberBase {
   protected function alterRoutes(RouteCollection $collection) : void {
     $customPermissions = [
       '/admin/people/create' => 'access user creation page',
+      '/admin/people/role-settings' => 'access role management page',
       '/admin/people/roles' => 'access role management page',
       '/admin/people/permissions' => 'access permissions management page',
     ];

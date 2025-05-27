@@ -33,6 +33,7 @@ id: approver_plus
 label: Approver+
 weight: -9
 is_admin: null
+permissions:
   - 'access administration pages'
   - 'access block library'
   - 'access content overview'
