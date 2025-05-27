@@ -12,8 +12,54 @@ use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\search_api\IndexInterface;
 use Drupal\smart_trim\TruncateHTML;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Node form #process callback.
+ *
+ * @param array $form
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param array $complete_form
+ *   The complete form.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_event_form_node_form_process(array $form, FormStateInterface $form_state, array $complete_form = []) {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+  TideCoreFormHelper::addHeaderStyleSelector($form, $form_state, $node, [
+    'group' => 'group_customised_header',
+    'fields' => [
+      'field_graphical_image',
+      'field_bottom_graphical_image',
+    ],
+    'after_build' => '_tide_event_form_node_form_after_build',
+  ]);
+  return $form;
+}
+
+/**
+ * Node form #after_build callback.
+ *
+ * @param array $form
+ *   Form that is being processed.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ *
+ * @return array
+ *   The processed form.
+ */
+function _tide_event_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  return TideCoreFormHelper::updateHeaderStyleFromState($form, $form_state, [
+    'field_graphical_image',
+    'field_bottom_graphical_image',
+  ]);
+}
 
 /**
  * Implements hook_entity_bundle_create().
@@ -71,6 +117,7 @@ function tide_event_form_node_form_alter(&$form, FormStateInterface $form_state,
     ) {
       $form['field_custom_filters']['#access'] = FALSE;
     }
+    $form['#process'][] = '_tide_event_form_node_form_process';
   }
 }
 
@@ -157,7 +204,7 @@ function tide_event_webform_submission_presave($submission) {
       ],
       'field_paragraph_date_range' => [
         [
-          'value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['open_date']))) ,
+          'value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['open_date']))),
           'end_value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['close_date']))),
         ],
       ],
