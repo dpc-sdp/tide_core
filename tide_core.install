@@ -452,6 +452,11 @@ function tide_core_update_10016() {
     $admin_role->save();
   }
 
+  // This module defines access user creation page permission .
+  if (\Drupal::moduleHandler()->moduleExists('tide_ui_restriction') === FALSE) {
+    \Drupal::service('module_installer')->install(['tide_ui_restriction']);
+  }
+
   // Update site_admin role weight and permissions.
   if ($site_admin_role = Role::load('site_admin')) {
     $site_admin_role->setWeight(-10);
