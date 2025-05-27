@@ -34,10 +34,9 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
       $data['markup']['#markup'] = $this->processText($data['markup']['#markup']);
     }
     // Process any other fields that may contain token replacements.
-    foreach ($data as $key => $value) {
+    foreach ($data as $key => &$value) {
       if (!empty($value['#default_value'])) {
-        $rendered = $token_service->replace($value['#default_value']);
-        $data[$key]['#default_value'] = $rendered;
+        $value['#default_value'] = $token_service->replace($value['#default_value']);
       }
     }
 
