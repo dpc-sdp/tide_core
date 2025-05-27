@@ -111,13 +111,8 @@ class Helper extends TideSiteHelper {
     }
     $field_names = $this->getSiteFieldsName();
     foreach ($field_names as $field_name) {
-      // print '<pre>'.print_r($entity->toArray(),1).'<pre>';
-      if ($field_name == 'field_user_site_target_id_1' && $entity->hasField($field_name)) {
-        // print '<pre>'.print_r($field_name,1).'<pre>';
-      }
       if ($entity->hasField($field_name) && !$entity->get($field_name)->isEmpty()) {
         $values = $entity->get($field_name)->getValue();
-        // print '<pre>'.print_r($values,1).'<pre>';
         $site_ids = array_column($values, 'target_id');
         if (count(array_intersect($site_ids, $user_sites)) > 0) {
           return TRUE;

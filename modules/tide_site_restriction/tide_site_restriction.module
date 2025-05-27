@@ -139,23 +139,23 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
       'media_page_list' => 'field_media_site_target_id',
     ],
   ];
-  
+
   $account = \Drupal::currentUser();
   $view_id = $view->id();
 
   // Apply site restriction filters for supported views.
   if (isset($display_filters[$view_id][$display_id])) {
     $filter = $display_filters[$view_id][$display_id];
-  
+
     /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
     $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
     $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
-  
+
     $filters = $view->display_handler->getOption('filters');
     if (!empty($filters[$filter])) {
       $filters[$filter]['expose']['multiple'] = TRUE;
       $view->display_handler->setOption('filters', $filters);
-  
+
       if (!$user_can_bypass_restriction) {
         /** @var \Drupal\user\Entity\User $user */
         $user = User::load($account->id());
@@ -168,7 +168,7 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
       }
     }
   }
-  
+
   // Add site restriction field to user list data export view.
   if ($view->id() === 'user_list_data_export') {
     $site_field = [

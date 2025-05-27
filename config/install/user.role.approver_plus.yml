@@ -73,7 +73,7 @@ dependencies:
     - workbench
 id: approver_plus
 label: Approver+
-weight: 103
+weight: -9
 is_admin: null
 permissions:
   - 'Bulk update url aliases'

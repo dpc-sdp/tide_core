@@ -421,3 +421,41 @@ function tide_core_update_10015() {
   // Save the configuration.
   $config->save();
 }
+
+/**
+ * Create approver_plus role from config.
+ */
+function tide_core_update_10016() {
+  // Load helper to read config file.
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  // Load approver_plus role config.
+  $config_read = _tide_read_config('user.role.approver_plus', $config_location, TRUE);
+  $permissions = isset($config_read['permissions']) ? $config_read['permissions'] : [];
+  $weight = isset($config_read['weight']) ? $config_read['weight'] : 0;
+
+  // Create approver_plus role if it doesn't exist.
+  if (!Role::load('approver_plus')) {
+    $role = Role::create([
+      'id' => 'approver_plus',
+      'label' => 'Approver+',
+      'permissions' => $permissions,
+    ]);
+    $role->setWeight($weight);
+    $role->save();
+  }
+
+  // Update administrator role weight.
+  if ($admin_role = Role::load('administrator')) {
+    $admin_role->setWeight(-11);
+    $admin_role->save();
+  }
+
+  // Update site_admin role weight and permissions.
+  if ($site_admin_role = Role::load('site_admin')) {
+    $site_admin_role->setWeight(-10);
+    $site_admin_role->grantPermission('access user creation page');
+    $site_admin_role->save();
+  }
+}

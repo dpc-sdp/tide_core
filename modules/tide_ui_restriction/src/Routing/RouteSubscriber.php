@@ -41,7 +41,8 @@ class RouteSubscriber extends RouteSubscriberBase {
     ];
     foreach ($collection as $route) {
       $path = $route->getPath();
-      // Set _admin_config_access_check for all routes starting with admin/config.
+      // Set _admin_config_access_check.
+      // For all routes starting with admin/config.
       if (strpos($path, '/admin/config/') === 0 && !$this->isExcluded($path)) {
         $route->setRequirement('_admin_config_access_check', 'TRUE');
       }
