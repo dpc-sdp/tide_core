@@ -459,3 +459,170 @@ function tide_core_update_10016() {
     $site_admin_role->save();
   }
 }
+
+/**
+ * Assigns permissions to 'approver_plus' role.
+ */
+function tide_core_update_10017() {
+  $role = Role::load('approver_plus');
+
+  if (!$role) {
+    return;
+  }
+
+  // Generic permissions not tied to specific content types or modules.
+  $generic_permissions = [
+    'Bulk update url aliases',
+    'access admin_config pages',
+    'access share link token entities listing',
+    'access tide_document_browser entity browser pages',
+    'access tide_embedded_video_browser entity browser pages',
+    'access tide_image_browser entity browser pages',
+    'access tide_media_browser entity browser pages',
+    'access tide_media_browser_iframe entity browser pages',
+    'access webform overview',
+    'access workbench',
+    'add share link token entities',
+    'admin lock content view',
+    'administer share link token entities',
+    'administer site restriction',
+    'administer webform element access',
+    'create test content',
+    'create webform',
+    'delete any test content',
+    'delete any webform',
+    'delete any webform submission',
+    'delete own embedded_video media',
+    'delete own file media',
+    'delete own files',
+    'delete own test content',
+    'delete own webform submission',
+    'delete share link token entities',
+    'delete test revisions',
+    'edit any test content',
+    'edit own test content',
+    'edit own webform',
+    'edit own webform submission',
+    'grant simple_oauth codes',
+    'reorder entity_hierarchy children',
+    'revert test revisions',
+    'use text format advanced',
+    'use text format webform_default',
+    'view any webform submission',
+    'view latest version',
+    'view own webform submission',
+    'view test revisions',
+    'view tide_site preview links',
+    'view unpublished share link token entities',
+  ];
+
+  // Conditional permissions grouped by their owning module.
+  $module_permissions = [
+    'tide_alert' => [
+      'add scheduled transitions node alert',
+      'reschedule scheduled transitions node alert',
+      'revert alert revisions',
+      'view alert revisions',
+      'view scheduled transitions node alert',
+      'edit any alert content',
+      'edit own alert content',
+      'delete alert revisions',
+      'delete own alert content',
+      'create alert content',
+      'clone alert content',
+    ],
+    'tide_event' => [
+      'add scheduled transitions node event',
+      'reschedule scheduled transitions node event',
+      'revert event revisions',
+      'view event revisions',
+      'view scheduled transitions node event',
+      'edit any event content',
+      'edit own event content',
+      'delete own event content',
+      'create event content',
+      'clone event content',
+    ],
+    'tide_landing_page' => [
+      'add scheduled transitions node landing_page',
+      'reschedule scheduled transitions node landing_page',
+      'view scheduled transitions node landing_page',
+      'revert landing_page revisions',
+      'view landing_page revisions',
+      'edit any landing_page content',
+      'edit own landing_page content',
+      'delete any landing_page content',
+      'delete own landing_page content',
+      'create landing_page content',
+      'clone landing_page content',
+    ],
+    'tide_news' => [
+      'add scheduled transitions node news',
+      'reschedule scheduled transitions node news',
+      'view scheduled transitions node news',
+      'revert news revisions',
+      'view news revisions',
+      'edit any news content',
+      'edit own news content',
+      'delete any news content',
+      'delete own news content',
+      'create news content',
+      'clone news content',
+    ],
+    'tide_profile' => [
+      'add scheduled transitions node profile',
+      'reschedule scheduled transitions node profile',
+      'view scheduled transitions node profile',
+      'revert profile revisions',
+      'view profile revisions',
+      'edit any profile content',
+      'edit own profile content',
+      'delete any profile content',
+      'delete own profile content',
+      'create profile content',
+      'clone profile content',
+    ],
+    'tide_publication' => [
+      'add scheduled transitions node publication',
+      'add scheduled transitions node publication_page',
+      'reschedule scheduled transitions node publication',
+      'reschedule scheduled transitions node publication_page',
+      'view scheduled transitions node publication',
+      'view scheduled transitions node publication_page',
+      'revert publication revisions',
+      'revert publication_page revisions',
+      'view publication revisions',
+      'view publication_page revisions',
+      'edit any publication content',
+      'edit any publication_page content',
+      'edit own publication content',
+      'edit own publication_page content',
+      'delete any publication content',
+      'delete any publication_page content',
+      'delete own publication content',
+      'delete own publication_page content',
+      'create publication content',
+      'create publication_page content',
+      'clone publication content',
+      'clone publication_page content',
+    ],
+    'tide_search_listing' => [
+      'view scheduled transitions node tide_search_listing',
+      'view tide_search_listing revisions',
+    ],
+  ];
+
+  // Start with generic permissions.
+  $permissions_to_grant = $generic_permissions;
+
+  // Add module-based permissions only if module is enabled.
+  foreach ($module_permissions as $module => $permissions) {
+    if (\Drupal::moduleHandler()->moduleExists($module)) {
+      $permissions_to_grant = array_merge($permissions_to_grant, $permissions);
+    }
+  }
+
+  // Apply permissions.
+  $role->grantPermissions(array_unique($permissions_to_grant));
+  $role->save();
+}
