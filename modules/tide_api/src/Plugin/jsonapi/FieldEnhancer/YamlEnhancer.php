@@ -24,12 +24,21 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
   protected function doUndoTransform($data, Context $context) {
     $data = Yaml::decode($data);
 
+    // Include the token service to process any tokens in the YAML data.
+    $token_service = \Drupal::service('token');
     if (!empty($data['processed_text']['#text'])) {
       $data['processed_text']['#text'] = $this->processText($data['processed_text']['#text']);
     }
 
     if (!empty($data['markup']['#markup'])) {
       $data['markup']['#markup'] = $this->processText($data['markup']['#markup']);
+    }
+    // Process any other fields that may contain token replacements.
+    foreach ($data as $key => $value) {
+      if (!empty($value['#default_value'])) {
+        $rendered = $token_service->replace($value['#default_value']);
+        $data[$key]['#default_value'] = $rendered;
+      }
     }
 
     return $data;
