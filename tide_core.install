@@ -459,7 +459,7 @@ function tide_core_update_10016() {
   $approver_plus_role = Role::load('approver_plus');
 
   foreach ($merged_permissions as $permission) {
-    if (in_array($permission, $existing_permission_keys, true)) {
+    if (in_array($permission, $existing_permission_keys, TRUE)) {
       if (!$approver_plus_role->hasPermission($permission)) {
         $approver_plus_role->grantPermission($permission);
       }
