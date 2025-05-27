@@ -628,6 +628,6 @@ function tide_core_update_10017() {
   }
 
   // Apply permissions.
-  $role->grantPermissions(array_unique($permissions_to_grant));
+  $role->grantPermission(array_unique($permissions_to_grant));
   $role->save();
 }
