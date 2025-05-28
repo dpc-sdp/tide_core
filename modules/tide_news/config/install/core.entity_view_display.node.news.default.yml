@@ -3,8 +3,10 @@ status: true
 dependencies:
   config:
     - field.field.node.news.body
+    - field.field.node.news.field_bottom_graphical_image
     - field.field.node.news.field_custom_filters
     - field.field.node.news.field_featured_image
+    - field.field.node.news.field_graphical_image
     - field.field.node.news.field_landing_page_nav_title
     - field.field.node.news.field_location
     - field.field.node.news.field_metatags

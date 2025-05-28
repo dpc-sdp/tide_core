@@ -5,7 +5,7 @@ Feature: Fields for News content type
 
   @api @javascript
   Scenario: The content type has the expected fields (and labels where we can use them).
-    Given I am logged in as a user with the "create news content" permission
+    Given I am logged in as a user with the "create news content, access toolbar" permission
     When I visit "node/add/news"
     And save screenshot
     Then I see field "Title"
@@ -18,6 +18,14 @@ Feature: Fields for News content type
     And I see field "Introduction Text"
     And I should see an "textarea#edit-field-news-intro-text-0-value" element
     And I should not see an "textarea#edit-field-news-intro-text-0-value.required" element
+
+    And I click on the horizontal tab "Customised Header"
+    And I select the radio button "Corner graphics"
+    And the "#edit-field-graphical-image" element should contain "Top Corner Graphic"
+    And I should see an "input#edit-field-graphical-image-entity-browser-target" element
+
+    And the "#edit-field-bottom-graphical-image" element should contain "Bottom Corner Graphic"
+    And I should see an "input#edit-field-bottom-graphical-image-entity-browser-target" element
 
     And the "#edit-field-featured-image" element should contain "Featured Image"
     And I should see an "input#edit-field-featured-image-entity-browser-entity-browser-open-modal" element

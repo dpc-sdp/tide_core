@@ -106,3 +106,141 @@ function tide_event_update_10002() {
     ])
     ->save();
 }
+
+/**
+ * Remove outdated email handler from tide_event_submission webform.
+ */
+function tide_event_update_10003() {
+  $webform_id = 'tide_event_submission';
+
+  // Load the webform entity.
+  $webform = \Drupal::entityTypeManager()
+    ->getStorage('webform')
+    ->load($webform_id);
+
+  if (!$webform) {
+    return \Drupal::translation()->translate('Webform @id not found.', ['@id' => $webform_id]);
+  }
+
+  // Get the handlers.
+  $handlers = $webform->getHandlers();
+  $updated = FALSE;
+
+  // Go through each handler.
+  foreach ($handlers as $handler_id => $handler) {
+    if ($handler_id == 'event_submission_email') {
+      $configuration = $handler->getConfiguration();
+
+      // Check if this is an email handler with the specific to_mail address.
+      if (isset($configuration['settings']['to_mail']) &&
+        $configuration['settings']['to_mail'] === 'contact.dpc@dsdbi.desk-mail.com') {
+        // Delete this handler.
+        $webform->deleteWebformHandler($handler);
+        $updated = TRUE;
+      }
+    }
+  }
+
+  if ($updated) {
+    // Save the updated webform.
+    $webform->save();
+    return \Drupal::translation()->translate(
+      'Removed outdated email handler from @webform webform.',
+      ['@webform' => $webform_id]
+    );
+  }
+
+  return \Drupal::translation()->translate(
+    'No handlers with the specified email address were found in @webform webform.',
+    ['@webform' => $webform_id]
+  );
+}
+
+/**
+ * Add corner graphic fields.
+ */
+function tide_event_update_10004() {
+  $configs = [
+    'field.field.node.event.field_bottom_graphical_image' => 'field_config',
+    'field.field.node.event.field_graphical_image' => 'field_config',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_event') . '/config/install'];
+  // Check if field already exported to config/sync.
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+
+  // Load the form display entity.
+  $form_display_id = 'node.event.default';
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load($form_display_id);
+
+  if (!$form_display) {
+    return;
+  }
+
+  // Common settings for Entity Browser widget.
+  $widget_base = [
+    'type' => 'entity_browser_entity_reference',
+    'region' => 'content',
+    'settings' => [
+      'entity_browser' => 'tide_image_browser',
+      'field_widget_display' => 'rendered_entity',
+      'field_widget_edit' => TRUE,
+      'field_widget_remove' => TRUE,
+      'field_widget_replace' => FALSE,
+      'open' => TRUE,
+      'field_widget_display_settings' => [
+        'view_mode' => 'media_browser_preview',
+      ],
+      'selection_mode' => 'selection_append',
+    ],
+    'third_party_settings' => [],
+    'visible' => TRUE,
+    'group' => 'group_customised_header',
+  ];
+
+  // Apply individual weights and set component config.
+  $fields = [
+    'field_graphical_image' => 18,
+    'field_bottom_graphical_image' => 19,
+  ];
+
+  foreach ($fields as $field => $weight) {
+    $component = $widget_base;
+    $component['weight'] = $weight;
+    $form_display->setComponent($field, $component);
+  }
+
+  // Define the field group using field_group's third-party settings.
+  $form_display->setThirdPartySetting('field_group', 'group_customised_header', [
+    'children' => [
+      'field_graphical_image',
+      'field_bottom_graphical_image',
+    ],
+    'label' => 'Customised Header',
+    'region' => 'content',
+    'parent_name' => 'group_section_1',
+    'weight' => 9,
+    'format_type' => 'tab',
+    'format_settings' => [
+      'classes' => '',
+      'show_empty_fields' => FALSE,
+      'id' => '',
+      'label_as_html' => FALSE,
+      'formatter' => 'closed',
+      'description' => '',
+      'required_fields' => TRUE,
+    ],
+  ]);
+
+  $form_display->save();
+}
