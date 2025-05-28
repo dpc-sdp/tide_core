@@ -90,8 +90,29 @@ class TideSiteRestrictionOperation {
     foreach ($bundles as $bundle) {
       $config_name = 'core.entity_form_display.node.' . $bundle->id() . '.default';
       $config = \Drupal::configFactory()->getEditable($config_name);
-      $config->set('content.field_node_primary_site.type', 'tide_site_restriction_field_widget');
-      $config->set('content.field_node_site.type', 'tide_site_restriction_field_widget');
+
+      // Keep original widget for field_node_primary_site.
+      if ($config->get('content.field_node_primary_site')) {
+        $config->set('content.field_node_primary_site.type', 'tide_site_restriction_field_widget');
+      }
+
+      // Set term_reference_tree with custom settings for field_node_site.
+      $site_display = $config->get('content.field_node_site');
+      if ($site_display) {
+        $config->set('content.field_node_site', [
+          'type' => 'term_reference_tree',
+          'weight' => isset($site_display['weight']) ? $site_display['weight'] : 0,
+          'settings' => [
+            'start_minimized' => true,
+            'leaves_only' => true,
+            'select_parents' => false,
+            'cascading_selection' => 0,
+            'max_depth' => 3,
+          ],
+          'third_party_settings' => [],
+          'region' => isset($site_display['region']) ? $site_display['region'] : 'content', // optional, but often expected
+        ]);
+      }
       $config->save();
     }
   }
