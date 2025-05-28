@@ -1,4 +1,4 @@
-@tide @install:tide_ui_restriction
+@tide
 Feature: Access permissions
 
   Ensure that configuration permissions are set correctly for designated roles.
@@ -73,9 +73,3 @@ Feature: Access permissions
     Given I am logged in as a user with the "approver" role
     When I go to "admin/structure/taxonomy/add"
     Then I should get a 404 HTTP response
-
-  @api
-  Scenario: Approver plus role should not have access to create new user.
-    Given I am logged in as a user with the "approver_plus" role
-    When I go to "admin/people/create"
-    Then I should get a 500 HTTP response
