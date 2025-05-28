@@ -101,16 +101,16 @@ class TideSiteRestrictionOperation {
       if ($site_display) {
         $config->set('content.field_node_site', [
           'type' => 'term_reference_tree',
-          'weight' => isset($site_display['weight']) ? $site_display['weight'] : 0,
+          'weight' => $site_display['weight'] ?? 0,
           'settings' => [
-            'start_minimized' => true,
-            'leaves_only' => true,
-            'select_parents' => false,
+            'start_minimized' => TRUE,
+            'leaves_only' => TRUE,
+            'select_parents' => FALSE,
             'cascading_selection' => 0,
             'max_depth' => 3,
           ],
           'third_party_settings' => [],
-          'region' => isset($site_display['region']) ? $site_display['region'] : 'content', // optional, but often expected
+          'region' => $site_display['region'] ?? 'content',
         ]);
       }
       $config->save();
