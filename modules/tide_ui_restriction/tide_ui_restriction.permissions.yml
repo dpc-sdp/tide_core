@@ -4,3 +4,12 @@ access admin_config pages:
 'access event log track':
   title: 'Access event log track'
   description: 'Allow user to access event log track.'
+access user creation page:
+  title: 'Access the user creation page'
+  description: 'Allow users to access the /admin/people/create page'
+access role management page:
+  title: 'Access role management page'
+  description: 'Allow access to /admin/people/roles'
+access permissions management page:
+  title: 'Access permissions management page'
+  description: 'Allow access to /admin/people/permissions'
