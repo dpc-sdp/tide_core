@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.node.alert.field_alert_type
     - field.field.node.alert.field_call_to_action
+    - field.field.node.alert.field_node_site
     - node.type.alert
   module:
     - content_moderation
@@ -38,6 +39,17 @@ content:
       placeholder_title: ''
     type: link_default
     region: content
+    third_party_settings: {  }
+  field_node_site:
+    type: term_reference_tree
+    weight: 11
+    region: content
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 3
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
