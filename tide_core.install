@@ -431,10 +431,7 @@ function tide_core_update_10016() {
     'field.field.taxonomy_term.sites.field_notes' => 'field_config',
   ];
 
-  // Include helper if you use _tide_read_config().
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-
-  // Path where the config files live — assuming tide_core/config/install.
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
 
   foreach ($configs as $config => $type) {
@@ -478,6 +475,4 @@ function tide_core_update_10016() {
       'third_party_settings' => [],
     ])->save();
   }
-
-  \Drupal::logger('tide_core')->info('Added field_notes to taxonomy_term.sites.');
 }
