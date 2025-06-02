@@ -3,8 +3,5 @@
  * Fix overlapping table header in webforms.
  */
  table.sticky-header thead {
-  /*   position: sticky;
-    top: 0;
-    background: white; */
     z-index: 100;
   }
