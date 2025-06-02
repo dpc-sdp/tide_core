@@ -27,6 +27,7 @@ dependencies:
     - field.field.node.grant.field_node_link
     - field.field.node.grant.field_node_on_going
     - field.field.node.grant.field_node_phone
+    - field.field.node.grant.field_node_site
     - field.field.node.grant.field_node_timeline
     - field.field.node.grant.field_overview_title
     - field.field.node.grant.field_show_content_rating
@@ -495,6 +496,17 @@ content:
     third_party_settings: {  }
     type: telephone_default
     region: content
+  field_node_site:
+    type: term_reference_tree
+    weight: 21
+    region: content
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 3
+    third_party_settings: {  }
   field_node_timeline:
     type: paragraphs
     weight: 19
