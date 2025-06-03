@@ -892,3 +892,12 @@ function tide_core_cloned_node_alter(NodeInterface &$node, NodeInterface $origin
   // Unsets the value of field_published_date on a cloned entity.
   $node->set('field_published_date', NULL);
 }
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function tide_core_field_widget_complete_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+  if ($context['items']->getName() === 'moderation_state' && $field_widget_complete_form['widget'][0]['current']['#markup'] === 'Published') {
+    $field_widget_complete_form['widget'][0]['state']['#default_value'] = 'draft';
+  }
+}
