@@ -52,6 +52,7 @@ permissions:
   - 'access toolbar'
   - 'administer blocks'
   - 'addrow tablefield'
+  - 'admin tfa settings'
   - 'administer menu'
   - 'administer nodes'
   - 'administer pathauto'
