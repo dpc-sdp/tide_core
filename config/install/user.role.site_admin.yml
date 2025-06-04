@@ -34,7 +34,6 @@ dependencies:
     - scheduled_transitions
     - system
     - taxonomy
-    - tfa
     - toolbar
 id: site_admin
 label: 'Site Admin'
@@ -53,7 +52,6 @@ permissions:
   - 'access toolbar'
   - 'administer blocks'
   - 'addrow tablefield'
-  - 'admin tfa settings'
   - 'administer menu'
   - 'administer nodes'
   - 'administer pathauto'
