@@ -197,7 +197,7 @@ function tide_alert_update_10002() {
       'view alert revisions',
       'view scheduled transitions node alert',
     ],
-    'contributer' => [
+    'contributor' => [
       'create alert content',
       'delete alert revisions',
       'delete any alert content',
