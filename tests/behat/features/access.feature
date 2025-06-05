@@ -21,6 +21,7 @@ Feature: Access permissions
       | contributor        | admin/structure/menu  | 200      |
       | editor             | admin/structure/menu  | 200      |
       | approver           | admin/structure/menu  | 200      |
+      | approver_plus      | admin/structure/menu  | 200      |
       | previewer          | admin/structure/menu  | 404      |
       # User management.
       | authenticated user | admin/people          | 404      |
@@ -29,6 +30,7 @@ Feature: Access permissions
       | contributor        | admin/people          | 404      |
       | editor             | admin/people          | 404      |
       | approver           | admin/people          | 404      |
+      | approver_plus      | admin/people          | 200      |
       | previewer          | admin/people          | 404      |
 
   @api

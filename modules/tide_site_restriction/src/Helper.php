@@ -129,7 +129,7 @@ class Helper extends TideSiteHelper {
    *   Array.
    */
   public function getSiteFieldsName() {
-    return ['field_node_site', 'field_node_primary_site', 'field_media_site'];
+    return ['field_node_site', 'field_node_primary_site', 'field_media_site', 'field_user_site'];
   }
 
   /**
@@ -151,6 +151,32 @@ class Helper extends TideSiteHelper {
       $result[$site] = $site;
     }
     return $result;
+  }
+
+  /**
+   * Recursively retrieves all descendant term IDs of a given term.
+   *
+   * @param int $tid
+   *   The taxonomy term ID.
+   * @param object $term_storage
+   *   The taxonomy term storage service.
+   *
+   * @return array
+   *   An array of descendant term IDs.
+   */
+  public function getAllDescendants($tid, $term_storage) {
+    $descendants = [];
+    $children = $term_storage->loadChildren($tid);
+
+    if (!empty($children)) {
+      foreach ($children as $child) {
+        $descendants[] = $child->id();
+        // Recurse into children.
+        $descendants = array_merge($descendants, $this->getAllDescendants($child->id(), $term_storage));
+      }
+    }
+
+    return $descendants;
   }
 
 }

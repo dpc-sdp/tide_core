@@ -138,6 +138,11 @@ class TideSiteRestrictionOperation {
       $role->grantPermission('bypass site restriction');
       $role->save();
     }
+    $role = Role::load('approver_plus');
+    if ($role) {
+      $role->grantPermission('administer site restriction');
+      $role->save();
+    }
   }
 
 }
