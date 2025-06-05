@@ -61,6 +61,7 @@ permissions:
   - 'administer url aliases'
   - 'administer users'
   - 'assign approver role'
+  - 'assign approver_plus role'
   - 'assign contributor role'
   - 'assign editor role'
   - 'assign previewer role'

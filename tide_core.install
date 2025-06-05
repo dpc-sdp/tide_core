@@ -484,6 +484,7 @@ function tide_core_update_10016() {
   if ($site_admin_role = Role::load('site_admin')) {
     $site_admin_role->setWeight(-10);
     $site_admin_role->grantPermission('access user creation page');
+    $site_admin_role->grantPermission('assign approver_plus role');
     $site_admin_role->save();
   }
 }
