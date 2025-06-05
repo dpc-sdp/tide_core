@@ -457,6 +457,8 @@ function tide_core_update_10016() {
   $all_permissions = $permission_service->getPermissions();
   $existing_permission_keys = array_keys($all_permissions);
   $approver_plus_role = Role::load('approver_plus');
+  // Add the extra permission.
+  $merged_permissions[] = 'administer site restriction';
 
   foreach ($merged_permissions as $permission) {
     if (in_array($permission, $existing_permission_keys, TRUE)) {

@@ -87,6 +87,12 @@ function tide_ui_restriction_form_user_form_alter(&$form, FormStateInterface $fo
     return;
   }
 
+  // Show in the edit form but not editable.
+  if (isset($form['field_department_agency'])) {
+    $form['field_department_agency']['#disabled'] = TRUE;
+    $form['field_department_agency']['#attributes']['class'][] = 'readonly-field';
+  }
+
   // Hide higher roles.
   if (isset($form['account']['roles']) && is_array($form['account']['roles']['#options'])) {
     unset($form['account']['roles']['#options']['administrator']);
