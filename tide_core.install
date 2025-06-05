@@ -458,7 +458,23 @@ function tide_core_update_10016() {
   $existing_permission_keys = array_keys($all_permissions);
   $approver_plus_role = Role::load('approver_plus');
   // Add the extra permission.
-  $merged_permissions[] = 'administer site restriction';
+  $additional_permissions = [
+    'administer site restriction',
+    'add scheduled transitions node alert',
+    'clone alert content',
+    'create alert content',
+    'delete alert revisions',
+    'delete any alert content',
+    'delete own alert content',
+    'edit any alert content',
+    'edit own alert content',
+    'reschedule scheduled transitions node alert',
+    'revert alert revisions',
+    'view alert revisions',
+    'view scheduled transitions node alert',
+  ];
+  // Merge and remove duplicates.
+  $merged_permissions = array_unique(array_merge($merged_permissions, $additional_permissions));
 
   foreach ($merged_permissions as $permission) {
     if (in_array($permission, $existing_permission_keys, TRUE)) {
