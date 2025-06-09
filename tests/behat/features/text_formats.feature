@@ -5,7 +5,7 @@ Feature: Text formats
 
   @api
   Scenario: Text formats are available
-    Given I am logged in as a user with the "administer filters" permission
+    Given I am logged in as a user with the "administrator" role
     When I go to "admin/config/content/formats"
 
     Then I should see the text "Administrator" in the "Admin Text" row
