@@ -890,5 +890,7 @@ function tide_core_entity_base_field_info_alter(&$fields, EntityTypeInterface $e
  */
 function tide_core_cloned_node_alter(NodeInterface &$node, NodeInterface $original): void {
   // Unsets the value of field_published_date on a cloned entity.
-  $node->set('field_published_date', NULL);
+  if ($node->hasField('field_published_date')) {
+    $node->set('field_published_date', NULL);
+  }
 }
