@@ -140,16 +140,13 @@ function tide_site_field_widget_single_element_form_alter(&$element, FormStateIn
     $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
   }
 
-  // Restrict max depth — only relevant if the widget supports depth filtering.
-  $max_depth = max(2, (int) getenv('MAX_SITE_TAXONOMY_DEPTH') ?: 2);
-
-  if (
-    TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_SITE)
-    || TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_PRIMARY_SITE)
-  ) {
-    if (isset($element['target_id']) && isset($element['target_id']['#type']) && $element['target_id']['#type'] === 'term_reference_tree') {
-      // Add a depth limit using widget settings.
-      $element['target_id']['#selection_settings']['depth'] = TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_SITE) ? $max_depth : 1;
+  // Restrict options to 1 level of depth for Primary Site field.
+  if (TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_PRIMARY_SITE)) {
+    $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, 1);
+    if (isset($element['#options'])) {
+      $element['#options'] = array_intersect_key($element['#options'], array_flip(array_column($tree, 'tid')));
+    } else {
+      $element['#options'] = array_flip(array_column($tree, 'tid'));
     }
   }
 }
