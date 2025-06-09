@@ -145,7 +145,8 @@ function tide_site_field_widget_single_element_form_alter(&$element, FormStateIn
     $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, 1);
     if (isset($element['#options'])) {
       $element['#options'] = array_intersect_key($element['#options'], array_flip(array_column($tree, 'tid')));
-    } else {
+    }
+    else {
       $element['#options'] = array_flip(array_column($tree, 'tid'));
     }
   }
