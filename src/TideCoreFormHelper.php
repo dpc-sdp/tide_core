@@ -112,13 +112,13 @@ class TideCoreFormHelper {
     $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
     $form_display_id = "node.$content_type.default";
 
-    // Delete existing form display config if it exists
+    // Delete existing form display config if it exists.
     $existing = $storage->load($form_display_id);
     if ($existing) {
       $storage->delete([$existing]);
     }
 
-    // Create a fresh form display entity
+    // Create a fresh form display entity.
     $form_display = $storage->create([
       'targetEntityType' => 'node',
       'bundle' => $content_type,
@@ -142,4 +142,5 @@ class TideCoreFormHelper {
 
     $form_display->save();
   }
+
 }
