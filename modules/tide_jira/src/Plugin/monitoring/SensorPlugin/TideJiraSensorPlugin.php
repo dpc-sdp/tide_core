@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @SensorPlugin(
  *   id = "tide_jira",
+ *   addable = false,
  *   label = @Translation("Tide Jira Sensor"),
  *   description = @Translation("Monitors connectivity to the Jira Service Desk API"),
  * )

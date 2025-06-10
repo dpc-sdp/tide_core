@@ -1,0 +1,7 @@
+/**
+ * @file
+ * Fix overlapping table header in webforms.
+ */
+ table.sticky-header thead {
+    z-index: 100;
+  }
