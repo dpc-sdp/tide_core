@@ -429,7 +429,7 @@ function tide_site_restriction_field_widget_single_element_form_alter(&$element,
   if (isset($element['#options']) && is_array($element['#options'])) {
     foreach ($element['#options'] as $key => $label) {
       if (!in_array($key, $allowed_site_ids)) {
-        unset($element['#options'][$key]);
+        $element[$key]['#disabled'] = TRUE;
       }
     }
   }
