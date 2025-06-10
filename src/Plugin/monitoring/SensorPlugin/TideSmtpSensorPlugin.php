@@ -11,6 +11,7 @@ use Drupal\monitoring\SensorPlugin\SensorPluginInterface;
  *
  * @SensorPlugin(
  *   id = "tide_smtp_sensor",
+ *   addable = false,
  *   label = @Translation("Tide SMTP Sensor"),
  *   description = @Translation("Monitors connectivity to SMTP"),
  * )
