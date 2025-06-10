@@ -102,4 +102,44 @@ class TideCoreFormHelper {
     return $form;
   }
 
+  /**
+   * Update the widget for field_node_site on a specific content type.
+   *
+   * @param string $content_type
+   *   The machine name of the content type.
+   */
+  public static function updateFieldNodeSiteWidget(string $content_type): void {
+    $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
+    $form_display_id = "node.$content_type.default";
+
+    // Delete existing form display config if it exists
+    $existing = $storage->load($form_display_id);
+    if ($existing) {
+      $storage->delete([$existing]);
+    }
+
+    // Create a fresh form display entity
+    $form_display = $storage->create([
+      'targetEntityType' => 'node',
+      'bundle' => $content_type,
+      'mode' => 'default',
+      'status' => TRUE,
+    ]);
+
+    $form_display->setComponent('field_node_site', [
+      'type' => 'term_reference_tree',
+      'weight' => 15,
+      'region' => 'content',
+      'settings' => [
+        'start_minimized' => TRUE,
+        'leaves_only' => TRUE,
+        'select_parents' => FALSE,
+        'cascading_selection' => 0,
+        'max_depth' => 3,
+      ],
+      'third_party_settings' => [],
+    ]);
+
+    $form_display->save();
+  }
 }
