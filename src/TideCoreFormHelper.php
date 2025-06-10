@@ -112,20 +112,15 @@ class TideCoreFormHelper {
     $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
     $form_display_id = "node.$content_type.default";
 
-    // Delete existing form display config if it exists.
-    $existing = $storage->load($form_display_id);
-    if ($existing) {
-      $storage->delete([$existing]);
+    // Load existing form display
+    $form_display = $storage->load($form_display_id);
+
+    // Only proceed if the form display exists
+    if (!$form_display) {
+      return;
     }
 
-    // Create a fresh form display entity.
-    $form_display = $storage->create([
-      'targetEntityType' => 'node',
-      'bundle' => $content_type,
-      'mode' => 'default',
-      'status' => TRUE,
-    ]);
-
+    // Update only the field_node_site widget config
     $form_display->setComponent('field_node_site', [
       'type' => 'term_reference_tree',
       'weight' => 15,
@@ -140,6 +135,7 @@ class TideCoreFormHelper {
       'third_party_settings' => [],
     ]);
 
+    // Save the updated form display without affecting other fields
     $form_display->save();
   }
 
