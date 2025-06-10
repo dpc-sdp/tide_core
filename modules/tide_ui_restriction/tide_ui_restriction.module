@@ -57,6 +57,7 @@ function tide_ui_restriction_admin_config_access_check_exclude($path) : bool {
     '/admin/config/search',
     '/admin/config/search/path',
     '/admin/config/search/redirect',
+    '/admin/config/people/tfa',
     '/admin/config/content/ckeditor-templates/template-selector/{editor}',
   ];
   if (in_array($path, $paths, TRUE)) {
