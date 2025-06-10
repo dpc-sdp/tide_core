@@ -304,7 +304,7 @@ Feature: Workflow states and transitions
     Then I should see the success message "[TEST] Editor Test title has been updated."
     And I should see a "article.node--unpublished" element
 
-  @api @skipped
+  @api
   Scenario: Users with permission to Archive content can use Archive operation on content
     Given test content:
       | title                       | body | moderation_state |
@@ -312,16 +312,16 @@ Feature: Workflow states and transitions
     # Verify the Archive operation link is available.
     Given I am logged in as a user with the administrator role
     And I go to "admin/content"
-    Then the ".views-field views-field-operations" element should contain "Archive"
+    Then the ".views-field-operations .archive" element should contain "Archive"
     # Check the action.
     When I click "Archive" in the "[TEST] Published article" row
     Then I should see "This action will unpublish the content."
     And I press "Archive"
-    Then I should see the success message containing "[TEST] Archived article"
+    Then I should see the success message containing "Content test: Archived [TEST] Published article"
     # Verify the status of the
     When I edit test "[TEST] Published article"
     Then the response status code should be 200
-    And the "Current state" element should contain "Archived"
+    And the "#edit-moderation-state-0-current" element should contain "Archived"
 
   @api
   Scenario: Previewer has access to unpublished content
