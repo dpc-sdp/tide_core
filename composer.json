@@ -371,9 +371,6 @@
                 "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch",
                 "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://www.drupal.org/files/issues/2024-03-25/3088239-50.patch"
             },
-            "drupal/monitoring": {
-                "Undefined array key addable - https://www.drupal.org/project/monitoring/issues/3528392#comment-16134392": "https://www.drupal.org/files/issues/2025-06-04/undefined-array-key-3528392-1.patch"
-            },
             "drupal/video_embed_field": {
                 "Add support for Ckeditor 5 - https://www.drupal.org/project/video_embed_field/issues/3311063": "./patches/video_embed_field/video_embed_field_6.patch"
             },

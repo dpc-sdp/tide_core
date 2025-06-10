@@ -11,6 +11,7 @@ use Drupal\monitoring\SensorPlugin\SensorPluginBase;
  *
  * @SensorPlugin(
  *   id = "tide_times_sensor",
+ *   addable = false,
  *   label = @Translation("Tide Times Sensor"),
  *   description = @Translation("Monitors tide modules."),
  * )
