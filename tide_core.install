@@ -421,3 +421,58 @@ function tide_core_update_10015() {
   // Save the configuration.
   $config->save();
 }
+
+/**
+ * Adds the 'Notes' field to the Sites taxonomy terms.
+ */
+function tide_core_update_10016() {
+  $configs = [
+    'field.storage.taxonomy_term.field_notes' => 'field_storage_config',
+    'field.field.taxonomy_term.sites.field_notes' => 'field_config',
+  ];
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+
+    if ($storage->load($id) === NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+
+  // Update the form and view displays to show the new field.
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('taxonomy_term.sites.default');
+
+  if ($form_display) {
+    $form_display->setComponent('field_notes', [
+      'type' => 'string_textfield',
+      'weight' => 10,
+      'region' => 'content',
+      'settings' => [],
+      'third_party_settings' => [],
+      'visible' => TRUE,
+    ])->save();
+  }
+
+  $view_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display')
+    ->load('taxonomy_term.sites.default');
+
+  if ($view_display) {
+    $view_display->setComponent('field_notes', [
+      'type' => 'string',
+      'weight' => 10,
+      'region' => 'content',
+      'settings' => [],
+      'label' => 'above',
+      'third_party_settings' => [],
+    ])->save();
+  }
+}
