@@ -5,7 +5,7 @@ Feature: Workflow states and transitions
 
   @api
   Scenario: Workflow states are available
-    Given I am logged in as a user with the administrator role
+    Given I am logged in as a user with the "administer workflows" permission
     When I go to "admin/config/workflow/workflows/manage/editorial"
     Then the "#edit-states-container" element should contain "Draft"
     And the "#edit-states-container" element should contain "Needs Review"
