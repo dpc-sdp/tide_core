@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\NestedArray;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_publication\TidePublicationOperation;
 
@@ -348,4 +349,12 @@ function tide_publication_update_10010() {
     $form_publication->save();
   }
 
+}
+
+/**
+ * Update the widget for field_node_site on the publication content type.
+ */
+function tide_publication_update_10011() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('publication');
+  TideCoreFormHelper::updateFieldNodeSiteWidget('publication_page');
 }

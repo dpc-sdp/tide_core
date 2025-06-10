@@ -5,6 +5,7 @@
  * Tide News module install file..
  */
 
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_news\TideNewsOperation;
 
 /**
@@ -179,4 +180,11 @@ function tide_news_update_10003() {
   ]);
 
   $form_display->save();
+}
+
+/**
+ * Update the widget for field_node_site on the news content type.
+ */
+function tide_news_update_10004() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('news');
 }
