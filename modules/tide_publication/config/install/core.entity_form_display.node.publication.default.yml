@@ -19,6 +19,7 @@ dependencies:
     - field.field.node.publication.field_metatags
     - field.field.node.publication.field_node_display_headings
     - field.field.node.publication.field_node_documents
+    - field.field.node.publication.field_node_site
     - field.field.node.publication.field_publication_authors
     - field.field.node.publication.field_publication_date
     - field.field.node.publication.field_related_links
@@ -435,6 +436,17 @@ content:
     third_party_settings: {  }
     type: datetime_default
     region: content
+  field_node_site:
+    type: term_reference_tree
+    weight: 20
+    region: content
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 3
+    third_party_settings: {  }
   field_related_links:
     type: entity_reference_paragraphs
     weight: 5

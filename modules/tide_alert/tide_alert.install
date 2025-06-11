@@ -6,6 +6,7 @@
  */
 
 use Drupal\taxonomy\Entity\Term;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
 
@@ -183,4 +184,11 @@ function tide_alert_update_10001() {
   $event_config->set('content.title.third_party_settings.maxlength.maxlength_js', 250);
   $event_config->set('content.title.third_party_settings.maxlength.maxlength_js_enforce', TRUE);
   $event_config->save();
+}
+
+/**
+ * Update the widget for field_node_site on the alert content type.
+ */
+function tide_alert_update_10002() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('alert');
 }

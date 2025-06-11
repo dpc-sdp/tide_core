@@ -5,6 +5,7 @@
  * Install file.
  */
 
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_event\TideEventOperation;
 
 /**
@@ -243,4 +244,11 @@ function tide_event_update_10004() {
   ]);
 
   $form_display->save();
+}
+
+/**
+ * Update the widget for field_node_site on the event content type.
+ */
+function tide_event_update_10005() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('event');
 }

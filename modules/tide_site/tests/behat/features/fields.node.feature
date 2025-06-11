@@ -73,7 +73,7 @@ Feature: Site and Primary Site fields on nodes
 
     Then the "#edit-field-node-site" element should contain "Test Site 1"
     Then the "#edit-field-node-site" element should contain "Test Section 11"
-    Then the "#edit-field-node-site" element should not contain "Test Sub Section 111"
+    Then the "#edit-field-node-site" element should contain "Test Sub Section 111"
     Then the "#edit-field-node-site" element should contain "Test Section 12"
     Then the "#edit-field-node-site" element should contain "Test Site 2"
     Then the "#edit-field-node-site" element should contain "Test Site 3"

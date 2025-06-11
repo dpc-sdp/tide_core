@@ -405,12 +405,16 @@ content:
     third_party_settings: {  }
     field_name: field_node_primary_site
   field_node_site:
-    type: options_buttons
+    type: term_reference_tree
     weight: 28
     region: content
-    settings: {  }
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 3
     third_party_settings: {  }
-    field_name: field_node_site
   field_results_component:
     type: select2_entity_reference
     weight: 13
