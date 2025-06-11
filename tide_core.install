@@ -423,9 +423,92 @@ function tide_core_update_10015() {
 }
 
 /**
- * Adds the 'Notes' field to the Sites taxonomy terms.
+ * Create approver_plus role from config.
  */
 function tide_core_update_10016() {
+  // Load helper to read config file.
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  // Load approver_plus role config.
+  $config_read = _tide_read_config('user.role.approver_plus', $config_location, FALSE);
+  $new_permissions = $config_read['permissions'];
+  $weight = $config_read['weight'];
+
+  // Get same level of permissions from approver.
+  $config = \Drupal::configFactory()->getEditable('user.role.approver');
+  $same_level_permissions = $config->get('permissions');
+
+  // Merge and remove duplicates.
+  $merged_permissions = array_unique(array_merge($new_permissions, $same_level_permissions));
+
+  // Create approver_plus role if it doesn't exist.
+  if (!Role::load('approver_plus')) {
+    $role = Role::create([
+      'id' => 'approver_plus',
+      'label' => 'Approver+',
+    ]);
+    $role->setWeight($weight);
+    $role->save();
+  }
+
+  // Apply permissions.
+  $permission_service = \Drupal::service('user.permissions');
+  $all_permissions = $permission_service->getPermissions();
+  $existing_permission_keys = array_keys($all_permissions);
+  $approver_plus_role = Role::load('approver_plus');
+  // Add the extra permission.
+  $additional_permissions = [
+    'administer site restriction',
+    'add scheduled transitions node alert',
+    'clone alert content',
+    'create alert content',
+    'delete alert revisions',
+    'delete any alert content',
+    'delete own alert content',
+    'edit any alert content',
+    'edit own alert content',
+    'reschedule scheduled transitions node alert',
+    'revert alert revisions',
+    'view alert revisions',
+    'view scheduled transitions node alert',
+  ];
+  // Merge and remove duplicates.
+  $merged_permissions = array_unique(array_merge($merged_permissions, $additional_permissions));
+
+  foreach ($merged_permissions as $permission) {
+    if (in_array($permission, $existing_permission_keys, TRUE)) {
+      if (!$approver_plus_role->hasPermission($permission)) {
+        $approver_plus_role->grantPermission($permission);
+      }
+    }
+  }
+  $approver_plus_role->save();
+
+  // Update administrator role weight.
+  if ($admin_role = Role::load('administrator')) {
+    $admin_role->setWeight(-11);
+    $admin_role->save();
+  }
+
+  // This module defines access user creation page permission .
+  if (\Drupal::moduleHandler()->moduleExists('tide_ui_restriction') === FALSE) {
+    \Drupal::service('module_installer')->install(['tide_ui_restriction']);
+  }
+
+  // Update site_admin role weight and permissions.
+  if ($site_admin_role = Role::load('site_admin')) {
+    $site_admin_role->setWeight(-10);
+    $site_admin_role->grantPermission('access user creation page');
+    $site_admin_role->grantPermission('assign approver_plus role');
+    $site_admin_role->save();
+  }
+}
+
+/**
+ * Adds the 'Notes' field to the Sites taxonomy terms.
+ */
+function tide_core_update_10017() {
   $configs = [
     'field.storage.taxonomy_term.field_notes' => 'field_storage_config',
     'field.field.taxonomy_term.sites.field_notes' => 'field_config',
