@@ -24,7 +24,7 @@ class TideSiteHelper {
    *
    * @var array
    */
-  protected $supportedEntityTypes = ['node', 'media'];
+  protected $supportedEntityTypes = ['node', 'media', 'user'];
 
   /**
    * List of entity types restricted from accessing by Site.

@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.taxonomy_term.sites.field_acknowledgement_to_country
     - field.field.taxonomy_term.sites.field_additional_comment
+    - field.field.taxonomy_term.sites.field_notes
     - field.field.taxonomy_term.sites.field_print_friendly_logo
     - field.field.taxonomy_term.sites.field_prominence_ack_to_country
     - field.field.taxonomy_term.sites.field_short_name
@@ -40,6 +41,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 9
+    region: content
+  field_notes:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 19
     region: content
   field_print_friendly_logo:
     type: file_default
