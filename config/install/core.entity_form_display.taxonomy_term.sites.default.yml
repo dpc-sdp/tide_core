@@ -6,6 +6,7 @@ dependencies:
     - field.field.taxonomy_term.sites.field_acknowledgement_to_country
     - field.field.taxonomy_term.sites.field_additional_comment
     - field.field.taxonomy_term.sites.field_bottom_corner_graphic
+    - field.field.taxonomy_term.sites.field_notes
     - field.field.taxonomy_term.sites.field_print_friendly_logo
     - field.field.taxonomy_term.sites.field_prominence_ack_to_country
     - field.field.taxonomy_term.sites.field_short_name
@@ -164,6 +165,14 @@ content:
     settings:
       progress_indicator: throbber
       preview_image_style: thumbnail
+    third_party_settings: {  }
+  field_notes:
+    type: string_textarea
+    weight: 27
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
     third_party_settings: {  }
   field_print_friendly_logo:
     type: file_generic

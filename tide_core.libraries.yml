@@ -42,3 +42,9 @@ pseudo_required_field:
   css:
     theme:
       css/pseudo_required_field.css: {}
+
+fix-sticky-header:
+  version: 1.x
+  css:
+    theme:
+      css/fix-sticky-header.css: {}
