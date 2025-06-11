@@ -5,6 +5,8 @@
  * Contains tide_ui_restriction.module.
  */
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Implements hook_menu_links_discovered_alter().
  */
@@ -74,4 +76,38 @@ function tide_ui_restriction_admin_config_access_check_exclude($path) : bool {
   }
 
   return FALSE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_ui_restriction_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $current_user = \Drupal::currentUser();
+  if (!$current_user->hasRole('approver_plus')) {
+    return;
+  }
+
+  // Show in the edit form but not editable.
+  if (isset($form['field_department_agency'])) {
+    $form['field_department_agency']['#disabled'] = TRUE;
+    $form['field_department_agency']['#attributes']['class'][] = 'readonly-field';
+  }
+
+  // Hide higher roles.
+  if (isset($form['account']['roles']) && is_array($form['account']['roles']['#options'])) {
+    unset($form['account']['roles']['#options']['administrator']);
+    unset($form['account']['roles']['#options']['site_admin']);
+  }
+
+  // Check if user is editing their own profile.
+  // User can not change their own role and assign sites.
+  $user_being_edited = $form_state->getFormObject()->getEntity();
+  if ($current_user->id() == $user_being_edited->id()) {
+    if (isset($form['account']['roles'])) {
+      unset($form['account']['roles']);
+    }
+    if (isset($form['field_user_site'])) {
+      unset($form['field_user_site']);
+    }
+  }
 }

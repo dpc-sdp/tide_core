@@ -124,14 +124,6 @@ function _tide_alert_should_not_be_indexed() {
  */
 function _tide_alert_assign_necessary_permissions() {
   $role_permissions = [
-    'editor' => [
-      'create alert content',
-      'edit any alert content',
-      'edit own alert content',
-      'revert alert revisions',
-      'view alert revisions',
-      'clone alert content',
-    ],
     'site_admin' => [
       'create alert content',
       'delete alert revisions',
@@ -143,26 +135,19 @@ function _tide_alert_assign_necessary_permissions() {
       'view alert revisions',
       'clone alert content',
     ],
-    'approver' => [
-      'create alert content',
-      'delete alert revisions',
-      'delete any alert content',
-      'delete own alert content',
-      'edit any alert content',
-      'edit own alert content',
-      'revert alert revisions',
-      'view alert revisions',
-    ],
-    'contributer' => [
-      'create alert content',
-      'delete alert revisions',
-      'delete any alert content',
-      'delete own alert content',
-      'edit any alert content',
-      'edit own alert content',
-      'revert alert revisions',
-      'view alert revisions',
+    'approver_plus' => [
+      'add scheduled transitions node alert',
       'clone alert content',
+      'create alert content',
+      'delete alert revisions',
+      'delete any alert content',
+      'delete own alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'reschedule scheduled transitions node alert',
+      'revert alert revisions',
+      'view alert revisions',
+      'view scheduled transitions node alert',
     ],
   ];
 
@@ -183,4 +168,58 @@ function tide_alert_update_10001() {
   $event_config->set('content.title.third_party_settings.maxlength.maxlength_js', 250);
   $event_config->set('content.title.third_party_settings.maxlength.maxlength_js_enforce', TRUE);
   $event_config->save();
+}
+
+/**
+ * Update permissions.
+ */
+function tide_alert_update_10002() {
+  $role_permissions_map = [
+    'editor' => [
+      'create alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'revert alert revisions',
+      'view alert revisions',
+      'clone alert content',
+    ],
+    'approver' => [
+      'add scheduled transitions node alert',
+      'clone alert content',
+      'create alert content',
+      'delete alert revisions',
+      'delete any alert content',
+      'delete own alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'reschedule scheduled transitions node alert',
+      'revert alert revisions',
+      'view alert revisions',
+      'view scheduled transitions node alert',
+    ],
+    'contributor' => [
+      'create alert content',
+      'delete alert revisions',
+      'delete any alert content',
+      'delete own alert content',
+      'edit any alert content',
+      'edit own alert content',
+      'revert alert revisions',
+      'view alert revisions',
+      'clone alert content',
+    ],
+  ];
+
+  foreach ($role_permissions_map as $role_id => $permissions) {
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = Role::load($role_id);
+    if ($role) {
+      foreach ($permissions as $permission) {
+        if ($role->hasPermission($permission)) {
+          $role->revokePermission($permission);
+        }
+      }
+      $role->save();
+    }
+  }
 }

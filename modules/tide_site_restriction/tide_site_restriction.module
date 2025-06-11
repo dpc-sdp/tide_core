@@ -128,44 +128,48 @@ function tide_site_restriction_user_presave(UserInterface $user) {
  * Implements hook_views_pre_view().
  */
 function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
-  // Pre-select user sites in Summary Content admin view.
-  $view_ids = ['summary_contents_filters', 'media'];
-  $display_ids = [
-    'page_1' => 'sub_sites_filter',
-    'media_page_list' => 'field_media_site_target_id',
+  $display_filters = [
+    'summary_contents_filters' => [
+      'page_1' => 'sub_sites_filter',
+    ],
+    'user_admin_people' => [
+      'page_1' => 'field_user_site_target_id_1',
+    ],
+    'media' => [
+      'media_page_list' => 'field_media_site_target_id',
+    ],
   ];
+
   $account = \Drupal::currentUser();
-  foreach ($view_ids as $view_id) {
-    if ($view->id() == $view_id) {
-      foreach ($display_ids as $id => $filter) {
-        if ($display_id == $id) {
-          /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
-          $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
-          $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
+  $view_id = $view->id();
 
-          $filters = $view->display_handler->getOption('filters');
-          if (!empty($filters[$filter])) {
-            // Change the filter to accept multiple values.
-            $filters[$filter]['expose']['multiple'] = TRUE;
-            $view->display_handler->setOption('filters', $filters);
+  // Apply site restriction filters for supported views.
+  if (isset($display_filters[$view_id][$display_id])) {
+    $filter = $display_filters[$view_id][$display_id];
 
-            // Pre-select the user sites if the filter is empty.
-            if (!$user_can_bypass_restriction) {
-              /** @var \Drupal\user\Entity\User $user */
-              $user = User::load($account->id());
-              $user_sites = $site_restriction_helper->getUserSites($user);
-              $exposed_input = $view->getExposedInput();
-              if (!empty($user_sites) && empty($exposed_input)) {
-                $exposed_input[$filter] = $user_sites;
-                $view->setExposedInput($exposed_input);
-              }
-            }
-          }
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
+
+    $filters = $view->display_handler->getOption('filters');
+    if (!empty($filters[$filter])) {
+      $filters[$filter]['expose']['multiple'] = TRUE;
+      $view->display_handler->setOption('filters', $filters);
+
+      if (!$user_can_bypass_restriction) {
+        /** @var \Drupal\user\Entity\User $user */
+        $user = User::load($account->id());
+        $user_sites = $site_restriction_helper->getUserSites($user);
+        $exposed_input = $view->getExposedInput();
+        if (!empty($user_sites) && empty($exposed_input)) {
+          $exposed_input[$filter] = $user_sites;
+          $view->setExposedInput($exposed_input);
         }
       }
     }
   }
-  // Add site restriction field to user list view.
+
+  // Add site restriction field to user list data export view.
   if ($view->id() === 'user_list_data_export') {
     $site_field = [
       'label' => t('Site restriction'),
@@ -393,4 +397,40 @@ function tide_site_restriction_views_data_alter(array &$data) {
  */
 function tide_site_restriction_views_plugins_field_alter(array &$plugins) {
   $plugins['node_bulk_form']['class'] = 'Drupal\\tide_site_restriction\\Plugin\\views\\field\\TideNodeBulkForm';
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ */
+function tide_site_restriction_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
+  $field_definition = $context['items']->getFieldDefinition();
+  $user = User::load(\Drupal::currentUser()->id());
+
+  if ($field_definition->getName() !== 'field_user_site' || !$user->hasRole('approver_plus')) {
+    return;
+  }
+
+  // Get allowed site IDs from service.
+  /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+  $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+  $allowed_site_ids = $site_restriction_helper->getUserSites($user);
+
+  // Add child sites for each allowed site.
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  foreach ($allowed_site_ids as $tid) {
+    $descendants = $site_restriction_helper->getAllDescendants($tid, $term_storage);
+    $allowed_site_ids = array_merge($allowed_site_ids, $descendants);
+  }
+
+  // Remove duplicates.
+  $allowed_site_ids = array_unique($allowed_site_ids);
+
+  // Filter the options.
+  if (isset($element['#options']) && is_array($element['#options'])) {
+    foreach ($element['#options'] as $key => $label) {
+      if (!in_array($key, $allowed_site_ids)) {
+        $element[$key]['#disabled'] = TRUE;
+      }
+    }
+  }
 }
