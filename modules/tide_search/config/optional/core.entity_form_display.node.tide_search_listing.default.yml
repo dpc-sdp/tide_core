@@ -22,6 +22,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_listing_user_filters
     - field.field.node.tide_search_listing.field_metatags
     - field.field.node.tide_search_listing.field_node_primary_site
+    - field.field.node.tide_search_listing.field_node_site
     - field.field.node.tide_search_listing.field_results_component
     - field.field.node.tide_search_listing.field_search_configuration
     - field.field.node.tide_search_listing.field_search_input_placeholder
@@ -403,6 +404,17 @@ content:
     settings: {  }
     third_party_settings: {  }
     field_name: field_node_primary_site
+  field_node_site:
+    type: term_reference_tree
+    weight: 28
+    region: content
+    settings:
+      start_minimized: true
+      leaves_only: true
+      select_parents: false
+      cascading_selection: 0
+      max_depth: 3
+    third_party_settings: {  }
   field_results_component:
     type: select2_entity_reference
     weight: 13
