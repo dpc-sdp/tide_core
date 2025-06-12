@@ -450,7 +450,7 @@
                 "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
             },
             "drupal/user_expire": {
-                "If a user is activated, deactivated by the module, and reactivated by an admin, reset their expiration period - https://www.drupal.org/project/user_expire/issues/2855005#comment-14797184": "https://www.drupal.org/files/issues/2022-11-22/2855005-13.patch"
+                "If a user is activated, deactivated by the module, and reactivated by an admin, reset their expiration period - https://www.drupal.org/project/user_expire/issues/2855005#comment-14797184": "https://www.drupal.org/files/issues/2025-06-12/user_expire_0.patch"
             }
         },
         "installer-paths": {
