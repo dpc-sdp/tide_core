@@ -136,6 +136,7 @@ function tide_core_entity_operation(EntityInterface $entity) {
  * Implements hook_form_alter().
  */
 function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['#attached']['library'][] = 'tide_core/fix-sticky-header';
   $info = \Drupal::service('entity_type.bundle.info');
   foreach ($info->getBundleInfo('node') as $bundle => $item) {
     if ($form_id == 'node_' . $bundle . '_scheduled_transitions_add_form_form') {
@@ -892,5 +893,14 @@ function tide_core_cloned_node_alter(NodeInterface &$node, NodeInterface $origin
   // Unsets the value of field_published_date on a cloned entity.
   if ($node->hasField('field_published_date')) {
     $node->set('field_published_date', NULL);
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function tide_core_field_widget_complete_form_alter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+  if ($context['items']->getName() === 'moderation_state' && $field_widget_complete_form['widget'][0]['current']['#markup'] === 'Published') {
+    $field_widget_complete_form['widget'][0]['state']['#default_value'] = 'draft';
   }
 }
