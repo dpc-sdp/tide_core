@@ -20,5 +20,4 @@ roles:
   html_editor: '0'
   emergency_recovery_resource: '0'
   data_importer: '0'
-  site_auditor: '0'
   jobs_editor: '0'

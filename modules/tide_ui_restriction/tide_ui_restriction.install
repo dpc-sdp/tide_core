@@ -25,7 +25,7 @@ function _tide_ui_restriction_tighten_permissions() {
   $admin_only = ['administrator'];
   $site_admin_only = ['administrator', 'site_admin'];
   $approver_only = ['administrator', 'site_admin', 'approver'];
-  $auditor_only = ['site_auditor', 'administrator', 'site_admin'];
+  $auditor_only = ['administrator', 'site_admin'];
   $editor_only = ['administrator', 'site_admin', 'approver', 'editor'];
 
   $custom_perms = [
