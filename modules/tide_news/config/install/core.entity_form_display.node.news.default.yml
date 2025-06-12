@@ -17,7 +17,6 @@ dependencies:
     - field.field.node.news.field_news_date
     - field.field.node.news.field_news_intro_text
     - field.field.node.news.field_node_department
-    - field.field.node.event.field_node_site
     - field.field.node.news.field_related_links
     - field.field.node.news.field_show_content_rating
     - field.field.node.news.field_show_related_content
@@ -360,17 +359,6 @@ content:
       autocomplete: false
       match_operator: CONTAINS
       match_limit: 10
-    third_party_settings: {  }
-  field_node_site:
-    type: term_reference_tree
-    weight: 19
-    region: content
-    settings:
-      start_minimized: true
-      leaves_only: true
-      select_parents: false
-      cascading_selection: 0
-      max_depth: 3
     third_party_settings: {  }
   field_related_links:
     weight: 10

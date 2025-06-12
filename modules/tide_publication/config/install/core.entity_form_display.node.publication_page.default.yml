@@ -16,7 +16,6 @@ dependencies:
     - field.field.node.publication_page.field_landing_page_summary
     - field.field.node.publication_page.field_metatags
     - field.field.node.publication_page.field_node_display_headings
-    - field.field.node.publication_page.field_node_site
     - field.field.node.publication_page.field_publication
     - field.field.node.publication_page.field_related_links
     - field.field.node.publication_page.field_show_content_rating
@@ -370,17 +369,6 @@ content:
     third_party_settings: {  }
     type: entity_reference_hierarchy_autocomplete
     region: content
-  field_node_site:
-    type: term_reference_tree
-    weight: 12
-    region: content
-    settings:
-      start_minimized: true
-      leaves_only: true
-      select_parents: false
-      cascading_selection: 0
-      max_depth: 3
-    third_party_settings: {  }
   field_related_links:
     type: entity_reference_paragraphs
     weight: 7
