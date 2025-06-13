@@ -23,6 +23,7 @@ function tide_search_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
   $dependencies['tide_search'][10006] = ['tide_core' => 10014];
+  $dependencies['tide_search'][10007] = ['tide_core' => 10018];
   return $dependencies;
 }
 
@@ -214,17 +215,6 @@ function tide_search_update_10006() {
  * Add exclude field to search index.
  */
 function tide_search_update_10007() {
-  if (\Drupal::moduleHandler()->moduleExists('search_api_exclude_entity') === FALSE) {
-    \Drupal::service('module_installer')->install(['search_api_exclude_entity']);
-  }
-  $update_service = \Drupal::service('tide_core.entity_update_helper');
-  // Import search exclude fields.
-  $field_configs = [
-    'field.storage.node.field_search_index_exclude' => 'field_storage_config',
-  ];
-  foreach ($field_configs as $name => $type) {
-    $update_service->import($type, $name);
-  }
   $config = \Drupal::configFactory()->getEditable('search_api.index.node');
   $exclude_entities = [
     'fields' => [
@@ -234,18 +224,4 @@ function tide_search_update_10007() {
   ];
   $config->set('processor_settings.search_api_exclude_entity_processor', $exclude_entities);
   $config->save();
-  // Update site admin role permissions.
-  $config_site = \Drupal::configFactory()->getEditable('user.role.site_admin');
-  $modules = $config_site->get('dependencies.module') ?? [];
-  if (!in_array('search_api_exclude_entity', $modules)) {
-    $modules[] = 'search_api_exclude_entity';
-    $config_site->set('dependencies.module', $modules);
-  }
-  // Add permission if it's not already present.
-  $permissions = $config_site->get('permissions') ?? [];
-  if (!in_array('edit search api exclude entity', $permissions)) {
-    $permissions[] = 'edit search api exclude entity';
-    $config_site->set('permissions', $permissions);
-  }
-  $config_site->save();
 }

@@ -57,6 +57,7 @@ function tide_publication_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_publication'][10003] = ['tide_core' => 10005];
   $dependencies['tide_publication'][10008] = ['tide_core' => 10014];
+  $dependencies['tide_publication'][10010] = ['tide_core' => 10018];
   return $dependencies;
 }
 
@@ -299,14 +300,22 @@ function tide_publication_update_10009() {
  * Add search exclude field.
  */
 function tide_publication_update_10010() {
-  $update_service = \Drupal::service('tide_core.entity_update_helper');
   // Import search exclude fields.
   $field_configs = [
     'field.field.node.publication.field_search_index_exclude' => 'field_config',
     'field.field.node.publication_page.field_search_index_exclude' => 'field_config',
   ];
-  foreach ($field_configs as $name => $type) {
-    $update_service->import($type, $name);
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_publication') . '/config/install'];
+  // Check if field already exported to config/sync.
+  foreach ($field_configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
   }
 
   $form_display = \Drupal::entityTypeManager()
