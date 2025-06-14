@@ -61,7 +61,7 @@ function tide_site_entity_bundle_create($entity_type_id, $bundle) {
         // Create/update form display. View display is not created to avoid
         // unexpected fields appearing in UI.
         $field_config = $fields_helper->provisionField($field_name, $entity_type_id, $bundle);
-        // If this is field_node_site on a node, apply the term_reference_tree widget.
+        // If this is field_node_site apply the term_reference_tree widget.
         if ($field_name === $fields_helper::FIELD_SITE && $entity_type_id === 'node') {
           TideCoreFormHelper::updateFieldNodeSiteWidget($bundle);
         }
