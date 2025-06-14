@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_search\TideSearchOperation;
 
 /**
@@ -248,4 +249,11 @@ function tide_search_update_10007() {
     $config_site->set('permissions', $permissions);
   }
   $config_site->save();
+}
+
+/**
+ * Update the widget for field_node_site on the search content type.
+ */
+function tide_search_update_10008() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('tide_search_listing');
 }

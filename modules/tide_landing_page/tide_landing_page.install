@@ -8,6 +8,7 @@
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_landing_page\TideLandingPageOperation;
 
@@ -472,4 +473,11 @@ function tide_landing_page_update_10114() {
       ->set('dependencies.config', $dependencies)
       ->save();
   }
+}
+
+/**
+ * Update the widget for field_node_site on the landing page content type.
+ */
+function tide_landing_page_update_10115() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('landing_page');
 }
