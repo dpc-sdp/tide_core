@@ -120,7 +120,7 @@ function tide_site_entity_presave(EntityInterface $entity) {
         // Add the site field if missing.
         if (!isset($components[$field_name])) {
           $entity->setComponent($field_name, [
-            'type' => 'options_buttons',
+            'type' => 'term_reference_tree',
             'region' => 'content',
             'field_name' => $field_name,
             'settings' => [],

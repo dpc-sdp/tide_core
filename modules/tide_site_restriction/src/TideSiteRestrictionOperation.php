@@ -104,7 +104,7 @@ class TideSiteRestrictionOperation {
           'weight' => $site_display['weight'] ?? 0,
           'settings' => [
             'start_minimized' => TRUE,
-            'leaves_only' => TRUE,
+            'leaves_only' => FALSE,
             'select_parents' => FALSE,
             'cascading_selection' => 0,
             'max_depth' => 3,
