@@ -38,7 +38,7 @@ function tide_landing_page_update_dependencies() {
   $dependencies['tide_landing_page'][10101] = ['tide_core' => 10005];
   $dependencies['tide_landing_page'][10106] = ['tide_core' => 10009];
   $dependencies['tide_landing_page'][10111] = ['tide_core' => 10014];
-
+  $dependencies['tide_landing_page'][10113] = ['tide_core' => 10018];
   return $dependencies;
 }
 
@@ -362,13 +362,13 @@ function tide_landing_page_update_10112() {
  * Add search exclude field.
  */
 function tide_landing_page_update_10113() {
-  $update_service = \Drupal::service('tide_core.entity_update_helper');
-  // Import search exclude fields.
-  $field_configs = [
-    'field.field.node.landing_page.field_search_index_exclude' => 'field_config',
-  ];
-  foreach ($field_configs as $name => $type) {
-    $update_service->import($type, $name);
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
+  $config_read = _tide_read_config('field.field.node.landing_page.field_search_index_exclude', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  if ($storage->load('node.landing_page.field_search_index_exclude') == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
   }
 
   $form_display = \Drupal::entityTypeManager()

@@ -559,3 +559,21 @@ function tide_core_update_10017() {
     ])->save();
   }
 }
+
+/**
+ * Adds search_api_exclude_entity table to node.
+ */
+function tide_core_update_10018() {
+  if (!\Drupal::moduleHandler()->moduleExists('search_api_exclude_entity')) {
+    \Drupal::service('module_installer')->install(['search_api_exclude_entity']);
+  }
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('field.storage.node.field_search_index_exclude', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  if ($storage->load('node.field_search_index_exclude') == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  Role::load('site_admin')->grantPermission('edit search api exclude entity')->save();
+}
