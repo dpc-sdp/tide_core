@@ -102,6 +102,7 @@ function tide_site_entity_presave(EntityInterface $entity) {
           $fields_helper::FIELD_PRIMARY_SITE,
         ],
         'media' => [$fields_helper::FIELD_SITE],
+        'user' => [$fields_helper::FIELD_SITE],
       ];
       foreach ($map[$entity_type] as $field_name) {
         $field_name = $fields_helper::normaliseFieldName($field_name, $entity_type);
