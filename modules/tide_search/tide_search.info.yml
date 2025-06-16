@@ -4,7 +4,6 @@ type: module
 package: Tide
 core_version_requirement: ^9 || ^10
 dependencies:
-  - search_api:search_api
   - elasticsearch_connector:elasticsearch_connector
   - tide_core:tide_core
   - tide_core:tide_api
