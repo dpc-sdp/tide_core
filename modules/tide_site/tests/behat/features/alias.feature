@@ -5,19 +5,19 @@ Feature: Node path alias with site prefix
     Given topic terms:
       | name       |
       | Test Topic |
-    And sites terms:
+    Given sites terms:
       | name        | parent | tid    |
       | Test Site 1 | 0      | 999991 |
       | Test Site 2 | 0      | 999992 |
       | Test Site 3 | 0      | 999993 |
-    And test content:
+    Given test content:
       | title               | moderation_state | field_node_site          | field_node_primary_site | field_topic | body | nid    |
       | [TEST] Test content | published        | Test Site 1, Test Site 2 | Test Site 1             | Test Topic  | Test | 999999 |
-    And I am logged in as a user with the "administrator" role
+    Given I am logged in as a user with the "approver" role
 
-    Then I edit test "[TEST] Test content"
+    When I edit test "[TEST] Test content"
 
-    And I should see the text "URL ALIAS"
+    Then I should see the text "URL ALIAS"
     # The default path/pathauto form elements should be disabled.
     And I should not see an "#edit-path-0" element
     And I should not see the text "Specify an alternative path by which this data can be accessed."
