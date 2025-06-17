@@ -6,7 +6,6 @@
  */
 
 use Drupal\Component\Utility\NestedArray;
-use Drupal\tide_core\TideCoreFormHelper;
 
 /**
  * Implements hook_install().
@@ -17,8 +16,6 @@ function tide_site_install() {
   foreach ($info as $type => $bundles) {
     foreach (array_keys($bundles) as $bundle) {
       tide_site_entity_bundle_create($type, $bundle);
-
-      TideCoreFormHelper::updateFieldNodeSiteWidget($bundle);
     }
   }
 }
