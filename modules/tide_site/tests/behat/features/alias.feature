@@ -13,7 +13,7 @@ Feature: Node path alias with site prefix
     And test content:
       | title               | moderation_state | field_node_site          | field_node_primary_site | field_topic | body | nid    |
       | [TEST] Test content | published        | Test Site 1, Test Site 2 | Test Site 1             | Test Topic  | Test | 999999 |
-    And I am logged in as a user with the "site_admin" role
+    And I am logged in as a user with the "administrator" role
 
     Then I edit test "[TEST] Test content"
 
