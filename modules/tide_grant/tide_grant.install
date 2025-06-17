@@ -5,6 +5,7 @@
  * Tide Grant module install file..
  */
 
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_grant\TideGrantOperation;
 
 /**
@@ -198,4 +199,11 @@ function tide_grant_update_10003() {
   ]);
 
   $form_display->save();
+}
+
+/**
+ * Update the widget for field_node_site on the grant content type.
+ */
+function tide_grant_update_10004() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('grant');
 }
