@@ -108,7 +108,8 @@ class TideSitePreviewHelper {
         $clean_url = preg_replace($pattern, $site_base_url . '/', $url->toString());
       }
       return $clean_url ? Url::fromUri($clean_url, $url_options) : $url;
-    } catch (Exception $exception) {
+    }
+    catch (Exception $exception) {
       watchdog_exception('tide_site_preview', $exception);
     }
     return '';
