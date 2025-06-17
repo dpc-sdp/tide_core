@@ -115,7 +115,7 @@ function tide_site_entity_presave(EntityInterface $entity) {
         // Add the site field if missing.
         if (!isset($components[$field_name])) {
           $entity->setComponent($field_name, [
-            'type' => 'options_buttons',
+            'type' => 'term_reference_tree',
             'region' => 'content',
             'field_name' => $field_name,
             'settings' => [],
@@ -134,24 +134,11 @@ function tide_site_entity_presave(EntityInterface $entity) {
  */
 function tide_site_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
   $field_definition = $context['items']->getFieldDefinition();
-  // Site specific exit button state change.
-  $vocabulary = $form_state->get(['taxonomy', 'vocabulary']);
-  if (!empty($vocabulary)) {
-    if ($vocabulary->id() === 'sites') {
-      $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
-    }
-  }
 
-  // Restrict options to 2 levels of depth for Site field.
-  $max_depth = max(2, (int) getenv('MAX_SITE_TAXONOMY_DEPTH') ?: 2);
-  if (TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_SITE)) {
-    $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, $max_depth);
-    if (isset($element['#options'])) {
-      $element['#options'] = array_intersect_key($element['#options'], array_flip(array_column($tree, 'tid')));
-    }
-    else {
-      $element['#options'] = array_flip(array_column($tree, 'tid'));
-    }
+  // Attach JS for specific vocabulary (same as before).
+  $vocabulary = $form_state->get(['taxonomy', 'vocabulary']);
+  if (!empty($vocabulary) && $vocabulary->id() === 'sites') {
+    $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
   }
 
   // Restrict options to 1 level of depth for Primary Site field.

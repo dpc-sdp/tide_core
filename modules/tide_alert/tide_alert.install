@@ -6,6 +6,7 @@
  */
 
 use Drupal\taxonomy\Entity\Term;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
 
@@ -222,4 +223,11 @@ function tide_alert_update_10002() {
       $role->save();
     }
   }
+}
+
+/**
+ * Update the widget for field_node_site on the alert content type.
+ */
+function tide_alert_update_10003() {
+  TideCoreFormHelper::updateFieldNodeSiteWidget('alert');
 }
