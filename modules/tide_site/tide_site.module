@@ -21,6 +21,7 @@ use Drupal\path_alias\Entity\PathAlias;
 use Drupal\path_alias\PathAliasInterface;
 use Drupal\search_api\IndexInterface;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\tide_core\TideCoreFormHelper;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site\TideSiteMenuAutocreate;
 use Drupal\tide_site\TideSitePathAliasListBuilder;
@@ -75,6 +76,8 @@ function tide_site_entity_bundle_create($entity_type_id, $bundle) {
       }
     }
   }
+
+  TideCoreFormHelper::updateFieldNodeSiteWidget($bundle);
 }
 
 /**
