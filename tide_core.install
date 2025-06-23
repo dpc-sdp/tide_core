@@ -596,3 +596,23 @@ function tide_core_update_10018() {
   }
 
 }
+
+/**
+ * remove alternative text field.
+ */
+function tide_core_update_10019() {
+  $config_factory = \Drupal::configFactory();
+
+  $field_names = [
+    'field_top_corner_graphic',
+    'field_bottom_corner_graphic',
+  ];
+
+  foreach ($field_names as $field_name) {
+    $config_name = "field.field.taxonomy_term.sites.$field_name";
+    $config = $config_factory->getEditable($config_name);
+    $config->set('settings.alt_field', false);
+    $config->set('settings.alt_field_required', false);
+    $config->save();
+  }
+}
