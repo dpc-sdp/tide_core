@@ -598,9 +598,29 @@ function tide_core_update_10018() {
 }
 
 /**
- * Removes the redundant 'site_auditor' role.
+ * Remove alternative text field.
  */
 function tide_core_update_10019() {
+  $config_factory = \Drupal::configFactory();
+
+  $field_names = [
+    'field_top_corner_graphic',
+    'field_bottom_corner_graphic',
+  ];
+
+  foreach ($field_names as $field_name) {
+    $config_name = "field.field.taxonomy_term.sites.$field_name";
+    $config = $config_factory->getEditable($config_name);
+    $config->set('settings.alt_field', FALSE);
+    $config->set('settings.alt_field_required', FALSE);
+    $config->save();
+  }
+}
+
+/**
+ * Removes the redundant 'site_auditor' role.
+ */
+function tide_core_update_10020() {
   $role_id = 'site_auditor';
 
   /** @var \Drupal\user\RoleInterface|null $role */
