@@ -499,9 +499,22 @@ function tide_core_update_10016() {
   // Update site_admin role weight and permissions.
   if ($site_admin_role = Role::load('site_admin')) {
     $site_admin_role->setWeight(-10);
-    $site_admin_role->grantPermission('access user creation page');
-    $site_admin_role->grantPermission('assign approver_plus role');
-    $site_admin_role->save();
+    $site_admin_permissions = _tide_retrieve_config_sync('user.role.site_admin', 'permissions');
+    $changed = FALSE;
+    // List of permissions to ensure.
+    $permissions_to_grant = [
+      'access user creation page',
+      'assign approver_plus role',
+    ];
+    foreach ($permissions_to_grant as $permission) {
+      if (!in_array($permission, $site_admin_permissions)) {
+        $site_admin_role->grantPermission($permission);
+        $changed = TRUE;
+      }
+    }
+    if ($changed) {
+      $site_admin_role->save();
+    }
   }
 }
 
@@ -561,9 +574,33 @@ function tide_core_update_10017() {
 }
 
 /**
- * Removes the redundant 'site_auditor' role.
+ * Adds search_api_exclude_entity table to node.
  */
 function tide_core_update_10018() {
+  if (!\Drupal::moduleHandler()->moduleExists('search_api_exclude_entity')) {
+    \Drupal::service('module_installer')->install(['search_api_exclude_entity']);
+  }
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('field.storage.node.field_search_index_exclude', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  if ($storage->load('node.field_search_index_exclude') == NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+  $current_permissions = _tide_retrieve_config_sync('user.role.site_admin', 'permissions');
+  if (!in_array('edit search api exclude entity', $current_permissions)) {
+    $role = Role::load('site_admin');
+    $role->grantPermission('edit search api exclude entity');
+    $role->save();
+  }
+
+}
+
+/**
+ * Removes the redundant 'site_auditor' role.
+ */
+function tide_core_update_10019() {
   $role_id = 'site_auditor';
 
   /** @var \Drupal\user\RoleInterface|null $role */

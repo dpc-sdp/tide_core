@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\yaml_content\ContentLoader\ContentLoaderInterface;
 
@@ -47,7 +46,7 @@ function tide_demo_content_tide_demo_content_entity_imported(EntityInterface $en
               $entity->$field_primary_site_field_name->target_id = $site_id;
             }
             // Should not create a new revision.
-            if ($entity instanceof RevisionableInterface) {
+            if ($entity->getEntityType()->isRevisionable()) {
               $entity->setNewRevision(FALSE);
             }
             $entity->save();

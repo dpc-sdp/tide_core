@@ -180,6 +180,56 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
     ];
     $view->addHandler($display_id, 'field', 'user__field_user_site', 'field_user_site', $site_field, '0');
   }
+
+  // Add Site field and exposed filter to the supported views.
+  $views = [
+    'media' => [
+      'media_page_list',
+    ],
+    'tide_media_browser' => [
+      'media_browser',
+      'image_browser',
+      'document_browser',
+      'embedded_video_browser',
+    ],
+  ];
+
+  $view_id = $view->id();
+  if (isset($views[$view_id]) && in_array($display_id, $views[$view_id])) {
+    // Get user sites.
+    $current_user = \Drupal::currentUser()->id();
+    $user = User::load($current_user);
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    $user_sites = $site_restriction_helper->getUserSites($user);
+
+    $site_filter = [
+      'exposed' => TRUE,
+      'expose' => [
+        'operator_id' => 'field_media_site_target_id_op',
+        'label' => t('Site'),
+        'id' => 'media__field_media_site',
+        'use_operator' => FALSE,
+        'operator' => 'field_media_site_target_id_op',
+        'identifier' => 'field_media_site_target_id',
+        'required' => FALSE,
+        'remember' => FALSE,
+        'multiple' => TRUE,
+      ],
+      'group_type' => 'group',
+      'operator' => 'or',
+      'group' => 1,
+      'vid' => 'sites',
+      'type' => 'select',
+      'reduce_duplicates' => TRUE,
+      'limit' => TRUE,
+      'hierarchy' => TRUE,
+      'alter' => [],
+      'value' => $user_sites,
+    ];
+    $view->addHandler($display_id, 'filter', 'media__field_media_site', 'field_media_site_target_id', $site_filter, 'field_media_site_target_id');
+  }
+
 }
 
 /**
