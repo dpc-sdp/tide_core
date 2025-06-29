@@ -16,4 +16,3 @@ Feature: Roles
       | approver      |
       | editor        |
       | previewer     |
-      | site_auditor  |
