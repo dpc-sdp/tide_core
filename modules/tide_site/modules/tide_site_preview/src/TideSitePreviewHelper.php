@@ -96,6 +96,7 @@ class TideSitePreviewHelper {
    */
   public function getNodeFrontendUrl(NodeInterface $node, $site_base_url = '', array $url_options = []) {
     try {
+      $clean_url = NULL;
       $url = $node->toUrl('canonical', [
         'absolute' => TRUE,
         'base_url' => $site_base_url,
@@ -104,8 +105,8 @@ class TideSitePreviewHelper {
       $pattern = '/^\/site\-(\d+)\//';
       if ($site_base_url) {
         $pattern = '/' . preg_quote($site_base_url, '/') . '\/site\-(\d+)\//';
+        $clean_url = preg_replace($pattern, $site_base_url . '/', $url->toString());
       }
-      $clean_url = preg_replace($pattern, $site_base_url . '/', $url->toString());
       return $clean_url ? Url::fromUri($clean_url, $url_options) : $url;
     }
     catch (Exception $exception) {
