@@ -145,7 +145,8 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
     $site_field = [
       'label' => t('Site restriction'),
       'group_rows' => TRUE,
-      'multi_type' => 'ul',
+      'multi_type' => 'separator',
+      'separator' => ', ',
       'plugin_id' => 'field',
       'alter' => [],
     ];
