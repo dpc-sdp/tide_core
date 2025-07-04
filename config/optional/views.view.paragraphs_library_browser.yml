@@ -610,7 +610,6 @@ display:
               editor: '0'
               previewer: '0'
               contributor: '0'
-              site_auditor: '0'
             reduce: true
           is_grouped: false
           group_info:
@@ -737,7 +736,6 @@ display:
               html_editor: '0'
               emergency_recovery_resource: '0'
               data_importer: '0'
-              site_auditor: '0'
               jobs_editor: '0'
             reduce: false
           is_grouped: false
@@ -795,7 +793,6 @@ display:
               html_editor: '0'
               emergency_recovery_resource: '0'
               data_importer: '0'
-              site_auditor: '0'
               jobs_editor: '0'
             reduce: false
           is_grouped: false
