@@ -4,6 +4,7 @@ namespace Drupal\tide_tfa\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
+use Drupal\Core\Routing\RoutingEvents;
 
 /**
  * Listens to the dynamic route events.
@@ -27,4 +28,12 @@ class TideTfaRouteSubscriber extends RouteSubscriberBase {
     }
   }
 
+  /**
+   * Run after TFA route subscriber to ensure our changes take priority.
+   */
+  public static function getSubscribedEvents(): array {
+    return [
+      RoutingEvents::ALTER => ['onAlterRoutes', PHP_INT_MIN - 1],
+    ];
+  }
 }
