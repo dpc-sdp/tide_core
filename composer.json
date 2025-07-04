@@ -358,7 +358,7 @@
                 "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
             },
             "drupal/core": {
-                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-15443091": "https://www.drupal.org/files/issues/2024-02-15/drupal-n3109650-72-102x.patch",
+                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16076908": "https://www.drupal.org/files/issues/2025-01-08/xss-refactor-filter-attributes-10.4.x-3109650-75.patch",
                 "PathBasedBreadcrumbBuilder needs to be able to exclude pointless paths - https://www.drupal.org/project/drupal/issues/3344200": "https://www.drupal.org/files/issues/2024-06-26/3344200-17.patch",
                 "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749#comment-15361693": "https://www.drupal.org/files/issues/2024-06-21/machine-name-widget-2685749-140.patch",
                 "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
@@ -366,7 +366,7 @@
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
                 "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
                 "ModuleHandler skips all hook implementations when invoked before the module files have been loaded - https://www.drupal.org/project/drupal/issues/3207813": "https://www.drupal.org/files/issues/2022-06-21/3207813-15.patch",
-                "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-15553421": "https://www.drupal.org/files/issues/2024-04-16/3170906-menu-filter-12.patch",
+                "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-16107432": "https://www.drupal.org/files/issues/2025-05-14/menu-filter.patch",
                 "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
                 "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch",
                 "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://www.drupal.org/files/issues/2024-03-25/3088239-50.patch"
