@@ -616,3 +616,26 @@ function tide_core_update_10019() {
     $config->save();
   }
 }
+
+/**
+ * Removes the redundant 'site_auditor' role.
+ */
+function tide_core_update_10020() {
+  $role_id = 'site_auditor';
+
+  /** @var \Drupal\user\RoleInterface|null $role */
+  $role = Role::load($role_id);
+  if ($role) {
+    $role->delete();
+  }
+
+  $admin_role_id = 'site_admin';
+  $permission_to_remove = 'assign site_auditor role';
+
+  /** @var \Drupal\user\RoleInterface|null $admin_role */
+  $admin_role = Role::load($admin_role_id);
+  if ($admin_role && $admin_role->hasPermission($permission_to_remove)) {
+    $admin_role->revokePermission($permission_to_remove);
+    $admin_role->save();
+  }
+}
