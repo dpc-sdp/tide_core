@@ -4,6 +4,7 @@ tide_core.demo:
       - tide_core
   content:
     - tide_core
+    - 'tide_core/reusable_paragraph.yml'
 tide_alert.demo:
   dependencies:
     modules:
