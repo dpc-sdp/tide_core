@@ -358,3 +358,104 @@ function tide_publication_update_10010() {
   }
 
 }
+
+/**
+ * Remove publication_nav field configs.
+ */
+function tide_publication_update_10011() {
+  $configs = [
+    // Form and view display configs.
+    'core.entity_form_display.node.publication.default',
+    'core.entity_view_display.node.publication.default',
+    'core.entity_view_display.node.publication.teaser',
+    'core.entity_form_display.node.publication_page.default',
+    'core.entity_view_display.node.publication_page.default',
+    'core.entity_view_display.node.publication_page.teaser',
+  ];
+
+  foreach ($configs as $config_name) {
+    $config = \Drupal::configFactory()->getEditable($config_name);
+    $changed = FALSE;
+
+    // Remove dependency config entries.
+    $dependencies = $config->get('dependencies.config');
+    if (is_array($dependencies)) {
+      $dependencies = array_filter($dependencies, function ($item) {
+        return $item !== 'field.field.node.publication.field_show_publication_nav'
+            && $item !== 'field.field.node.publication_page.field_show_publication_nav';
+      });
+      $config->set('dependencies.config', array_values($dependencies));
+      $changed = TRUE;
+    }
+
+    // Remove third_party field group if it's a form display.
+    if (
+      in_array($config_name, [
+        'core.entity_form_display.node.publication.default',
+        'core.entity_form_display.node.publication_page.default',
+      ])
+    ) {
+      if ($config->get('third_party_settings.field_group.group_publication_navigation')) {
+        $third_party = $config->get('third_party_settings');
+        unset($third_party['field_group']['group_publication_navigation']);
+        $config->set('third_party_settings', $third_party);
+        $changed = TRUE;
+      }
+    }
+
+    // Remove from content.
+    if ($config->get('content.field_show_publication_nav')) {
+      $content = $config->get('content');
+      unset($content['field_show_publication_nav']);
+      $config->set('content', $content);
+      $changed = TRUE;
+    }
+
+    // Remove from hidden.
+    if ($config->get('hidden.field_show_publication_nav')) {
+      $hidden = $config->get('hidden');
+      unset($hidden['field_show_publication_nav']);
+      $config->set('hidden', $hidden);
+      $changed = TRUE;
+    }
+
+    if ($changed) {
+      $config->save();
+    }
+  }
+
+  // Delete field config definitions.
+  $field_configs = [
+    'field.field.node.publication.field_show_publication_nav',
+    'field.field.node.publication_page.field_show_publication_nav',
+  ];
+
+  foreach ($field_configs as $field_config_name) {
+    $field_config = \Drupal::configFactory()->getEditable($field_config_name);
+    if (!$field_config->isNew()) {
+      $field_config->delete();
+    }
+  }
+
+  // Delete field storage.
+  $storage_config_name = 'field.storage.node.field_show_publication_nav';
+  $storage_config = \Drupal::configFactory()->getEditable($storage_config_name);
+  if (!$storage_config->isNew()) {
+    $storage_config->delete();
+  }
+
+  // Update JSON:API Extras resource configs.
+  $jsonapi_configs = [
+    'jsonapi_extras.jsonapi_resource_config.node--publication',
+    'jsonapi_extras.jsonapi_resource_config.node--publication_page',
+  ];
+
+  foreach ($jsonapi_configs as $jsonapi_config_name) {
+    $jsonapi_config = \Drupal::configFactory()->getEditable($jsonapi_config_name);
+    $resource_fields = $jsonapi_config->get('resourceFields');
+    if (isset($resource_fields['field_show_publication_nav'])) {
+      unset($resource_fields['field_show_publication_nav']);
+      $jsonapi_config->set('resourceFields', $resource_fields)->save();
+    }
+  }
+}
