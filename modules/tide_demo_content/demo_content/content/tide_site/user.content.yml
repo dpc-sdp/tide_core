@@ -67,6 +67,29 @@
         args:
           - 'user_role'
           - id: 'approver'
+# Approver+
+- entity: user
+  status: 1
+  name: 'approver_plus1.test@example.com'
+  mail: 'approver_plus1.test@example.com'
+  pass: DpcFakePass
+  roles:
+    - '#process':
+        callback: 'reference'
+        args:
+          - 'user_role'
+          - id: 'approver_plus'
+- entity: user
+  status: 1
+  name: 'approver_plus2.test@example.com'
+  mail: 'approver_plus2.test@example.com'
+  pass: DpcFakePass
+  roles:
+    - '#process':
+        callback: 'reference'
+        args:
+          - 'user_role'
+          - id: 'approver_plus'
 # Editors.
 - entity: user
   status: 1

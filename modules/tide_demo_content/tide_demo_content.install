@@ -73,6 +73,8 @@ function tide_demo_content_install() {
       'editor2.test@example.com',
       'approver1.test@example.com',
       'approver2.test@example.com',
+      'approver_plus1.test@example.com',
+      'approver_plus2.test@example.com',
       'previewer1.test@example.com',
       'contributor1.test@example.com',
     ];
