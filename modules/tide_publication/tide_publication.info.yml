@@ -34,7 +34,6 @@ config_devel:
     - field.field.node.publication.field_publication_date
     - field.field.node.publication.field_related_links
     - field.field.node.publication.field_show_content_rating
-    - field.field.node.publication.field_show_publication_nav
     - field.field.node.publication.field_show_related_content
     - field.field.node.publication.field_show_social_sharing
     - field.field.node.publication.field_show_table_of_content
@@ -47,7 +46,6 @@ config_devel:
     - field.field.node.publication_page.field_publication
     - field.field.node.publication_page.field_related_links
     - field.field.node.publication_page.field_show_content_rating
-    - field.field.node.publication_page.field_show_publication_nav
     - field.field.node.publication_page.field_show_related_content
     - field.field.node.publication_page.field_show_social_sharing
     - field.field.node.publication_page.field_show_table_of_content
@@ -55,7 +53,6 @@ config_devel:
     - field.storage.node.field_publication
     - field.storage.node.field_publication_authors
     - field.storage.node.field_publication_date
-    - field.storage.node.field_show_publication_nav
     - node.type.publication
     - node.type.publication_page
   optional:
