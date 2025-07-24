@@ -17,7 +17,6 @@ dependencies:
     - field.field.node.publication_page.field_publication
     - field.field.node.publication_page.field_related_links
     - field.field.node.publication_page.field_show_content_rating
-    - field.field.node.publication_page.field_show_publication_nav
     - field.field.node.publication_page.field_show_related_content
     - field.field.node.publication_page.field_show_social_sharing
     - field.field.node.publication_page.field_show_table_of_content
@@ -154,16 +153,6 @@ content:
     region: content
   field_show_content_rating:
     weight: 144
-    label: above
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-    type: boolean
-    region: content
-  field_show_publication_nav:
-    weight: 111
     label: above
     settings:
       format: default

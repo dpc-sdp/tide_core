@@ -23,7 +23,6 @@ dependencies:
     - field.field.node.publication.field_publication_date
     - field.field.node.publication.field_related_links
     - field.field.node.publication.field_show_content_rating
-    - field.field.node.publication.field_show_publication_nav
     - field.field.node.publication.field_show_related_content
     - field.field.node.publication.field_show_social_sharing
     - field.field.node.publication.field_show_table_of_content
@@ -58,21 +57,6 @@ third_party_settings:
         description: ''
         required_fields: true
       label: 'Page content'
-      region: content
-    group_publication_navigation:
-      children:
-        - field_show_publication_nav
-      parent_name: group_sidebar
-      weight: 2
-      format_type: details
-      format_settings:
-        id: ''
-        classes: ''
-        formatter: closed
-        description: 'Add publication navigation to your page. This will sits on the right hand side of the page.'
-        required_fields: true
-        open: false
-      label: 'Publication Navigation'
       region: content
     group_related_links:
       children:
@@ -455,13 +439,6 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
-  field_show_publication_nav:
-    weight: 19
-    settings:
-      display_label: true
-    third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_show_related_content:
     weight: 4
     settings:
