@@ -222,12 +222,6 @@ resourceFields:
     enhancer:
       id: ''
     disabled: false
-  field_show_publication_nav:
-    fieldName: field_show_publication_nav
-    publicName: field_show_publication_nav
-    enhancer:
-      id: ''
-    disabled: false
   field_show_related_content:
     fieldName: field_show_related_content
     publicName: field_show_related_content
