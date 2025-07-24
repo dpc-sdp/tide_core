@@ -75,11 +75,6 @@ Feature: Fields for Publication content type
     Then I should see an "#edit-field-node-documents" element
     And I should see an "input#edit-field-node-documents-entity-browser-entity-browser-open-modal" element
 
-    Then I click on the detail "Publication Navigation"
-    And I see field "Show Publication Navigation?"
-    And I should see an "input#edit-field-show-publication-nav-value" element
-    And I should not see an "input#edit-field-show-publication-nav-value.required" element
-
     And I click on the detail "Related links"
     And I see field "Show related content?"
     And I should see an "input#edit-field-show-related-content-value" element
@@ -180,11 +175,6 @@ Feature: Fields for Publication content type
 
     And I scroll selector "#edit-group-sidebar" into view
     And I click on the horizontal tab "Sidebar"
-
-    Then I click on the detail "Publication Navigation"
-    And I see field "Show Publication Navigation?"
-    And I should see an "input#edit-field-show-publication-nav-value" element
-    And I should not see an "input#edit-field-show-publication-nav-value.required" element
 
     And I click on the detail "Related links"
     And I see field "Show related content?"
