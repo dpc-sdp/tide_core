@@ -82,7 +82,7 @@
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/admin_audit_trail": "^1.0",
         "drupal/block_inactive_users": "^2.1",
-        "drupal/user_expire": "^1.1",
+        "drupal/user_expire": "^2.1",
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
@@ -447,6 +447,9 @@
             },
             "drupal/tfa_email_otp": {
                 "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
+            },
+            "drupal/user_expire": {
+                "$entity->getOriginal() is only available in D11 - https://www.drupal.org/project/user_expire/issues/3537207#comment-16204007": "https://www.drupal.org/files/issues/2025-07-24/getOriginal-undefined-3537207-8.patch"
             }
         },
         "installer-paths": {
