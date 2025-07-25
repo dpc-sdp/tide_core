@@ -86,3 +86,20 @@ function tide_ckeditor_update_10003() {
     $editor_config->set('settings', $settings)->save();
   }
 }
+
+/**
+ * Update `rich text format` to allow figure and figcaption.
+ */
+function tide_ckeditor_update_10004() {
+    $config_factory = \Drupal::configFactory();
+    $filter = $config_factory->getEditable('filter.format.rich_text');
+
+    // Add <figure> <figcaption> to the filters list of allowed HTML tags.
+    if ($filter) {
+        $allowed_html = $filter->get('filters.filter_html.settings.allowed_html');
+        $additional_allowed_tags = '<figure class> <figcaption>';
+        $updated_allowed_tags = trim($allowed_html . ' ' . $additional_allowed_tags, ',');
+        $filter->set('filters.filter_html.settings.allowed_html', $updated_allowed_tags);
+        $filter->save();
+    }
+}
