@@ -11,6 +11,7 @@ use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsButtonsWidget;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site_restriction\Helper;
 use Drupal\user\Entity\User;
@@ -93,6 +94,11 @@ class TideSiteRestrictionFieldWidget extends OptionsButtonsWidget implements Con
    */
   protected function getOptions(FieldableEntityInterface $entity) {
     $options = parent::getOptions($entity);
+    foreach ($options as $site_id => $label) {
+      if (!Term::load($site_id)->isPublished()) {
+        unset($options[$site_id]);
+      }
+    }
     $selected = [];
     if ($this->helper->canBypassRestriction($this->currentUser)) {
       return $options;
