@@ -1,0 +1,12 @@
+- entity: "paragraphs_library_item"
+  label: "demo paragraph"
+  paragraphs:
+    - entity: paragraph
+      type: accordion
+      field_paragraph_title: Accordion header (basic)
+      field_paragraph_accordion_style: numbered
+      field_paragraph_accordion:
+        - entity: paragraph
+          type: accordion_content
+          field_paragraph_accordion_name: Accordion #1
+          field_paragraph_accordion_body: test
