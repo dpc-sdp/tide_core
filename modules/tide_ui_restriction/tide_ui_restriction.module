@@ -117,10 +117,9 @@ function tide_ui_restriction_form_user_form_alter(&$form, FormStateInterface $fo
 
 /**
  * Implements hook_entity_access().
- * 
+ *
  * Approver plus should not be able to edit higher roles.
  * Approver plus should not be able to cancel any account.
- * 
  */
 function tide_ui_restriction_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
   if ($entity->getEntityTypeId() === 'user') {
@@ -133,7 +132,7 @@ function tide_ui_restriction_entity_access(EntityInterface $entity, $operation, 
     if ($operation === 'update' && in_array('approver_plus', $account->getRoles())) {
       $target_user_roles = $entity->get('roles')->getValue();
       $target_roles = array_column($target_user_roles, 'target_id');
-      
+
       // Define the roles considered higher.
       $restricted_roles = ['administrator', 'site_admin'];
 
