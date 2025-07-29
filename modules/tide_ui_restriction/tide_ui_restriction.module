@@ -5,7 +5,10 @@
  * Contains tide_ui_restriction.module.
  */
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Implements hook_menu_links_discovered_alter().
@@ -110,4 +113,36 @@ function tide_ui_restriction_form_user_form_alter(&$form, FormStateInterface $fo
       unset($form['field_user_site']);
     }
   }
+}
+
+/**
+ * Implements hook_entity_access().
+ * 
+ * Approver plus should not be able to edit higher roles.
+ * Approver plus should not be able to cancel any account.
+ * 
+ */
+function tide_ui_restriction_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  if ($entity->getEntityTypeId() === 'user') {
+    // Block deletion by approver_plus.
+    if ($operation === 'delete' && in_array('approver_plus', $account->getRoles())) {
+      return AccessResult::forbidden();
+    }
+
+    // Block editing higher-role users by approver_plus.
+    if ($operation === 'update' && in_array('approver_plus', $account->getRoles())) {
+      $target_user_roles = $entity->get('roles')->getValue();
+      $target_roles = array_column($target_user_roles, 'target_id');
+      
+      // Define the roles considered higher.
+      $restricted_roles = ['administrator', 'site_admin'];
+
+      foreach ($restricted_roles as $restricted_role) {
+        if (in_array($restricted_role, $target_roles)) {
+          return AccessResult::forbidden();
+        }
+      }
+    }
+  }
+  return AccessResult::neutral();
 }
