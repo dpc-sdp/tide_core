@@ -26,4 +26,6 @@ ahoy cli "drush en tide_landing_page -y"
 ahoy cli "./vendor/bin/behat --strict --colors --tags="~@skipped" modules/tide_landing_page"
 ahoy cli "drush en tide_site -y"
 ahoy cli "./vendor/bin/behat --strict --colors modules/tide_site"
+ahoy cli "drush en tide_ui_restriction -y"
+ahoy cli "./vendor/bin/behat --strict --colors modules/tide_ui_restriction"
 
