@@ -152,3 +152,19 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
 
   return $form;
 }
+
+/**
+ * Implements hook_config_schema_info_alter().
+ */
+function tide_search_config_schema_info_alter(&$schema) {
+  if (isset($schema['plugin.plugin_configuration.search_api_backend.elasticsearch']['mapping'])) {
+    $schema['plugin.plugin_configuration.search_api_backend.elasticsearch']['mapping']['num_of_shards'] = [
+      'type' => 'integer',
+      'label' => 'The number of shards',
+    ];
+    $schema['plugin.plugin_configuration.search_api_backend.elasticsearch']['mapping']['num_of_replicas'] = [
+      'type' => 'integer',
+      'label' => 'The number of replicas',
+    ];
+  }
+}
