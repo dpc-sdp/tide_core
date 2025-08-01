@@ -15,7 +15,7 @@ Tide is a Drupal 10 distribution focused on delivering an API first, headless Dr
 - Theme components discovery mechanism (if required)
 - Text formats
 - WYSIWYG configurations
-- Common fields shared accross content types
+- Common fields shared across content types
 - `Topic` Taxonomy Vocabulary
 - `Tags` Taxonomy Vocabulary
 - `Locations` Taxonomy Vocabulary
@@ -81,4 +81,3 @@ Single Digital Presence offers government agencies an open and flexible toolkit 
 
 The Department of Premier and Cabinet partnered with Salsa Digital to deliver Single Digital Presence. As long-term supporters of open government approaches, they were integral to the establishment of SDP as an open source platform.
 <p align="center"><a href="https://salsadigital.com.au/" target="_blank"><img src="docs/Salsa.png" alt="Salsa logo" height="150"></a></p>
-
