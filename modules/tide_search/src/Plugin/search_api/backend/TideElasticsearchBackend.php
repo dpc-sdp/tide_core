@@ -2,10 +2,12 @@
 
 namespace Drupal\tide_search\Plugin\search_api\backend;
 
-use Drupal\elasticsearch_connector\Plugin\search_api\backend\SearchApiElasticsearchBackend;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\elasticsearch_connector\Plugin\search_api\backend\SearchApiElasticsearchBackend;
 
 /**
+ * Custom Elasticsearch Search API Backend definition.
+ *
  * @SearchApiBackend(
  *   id = "elasticsearch",
  *   label = @Translation("Custom Elasticsearch"),

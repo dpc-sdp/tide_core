@@ -225,3 +225,14 @@ function tide_search_update_10007() {
   $config->set('processor_settings.search_api_exclude_entity_processor', $exclude_entities);
   $config->save();
 }
+
+/**
+ * Add number_of_shards setting to Elasticsearch Bay config.
+ */
+function tide_search_update_10008() {
+  $config = \Drupal::service('config.factory')->getEditable('search_api.server.elasticsearch_bay');
+  // Only update if the setting is not already set.
+  if ($config->get('number_of_shards') === NULL) {
+    $config->set('number_of_shards', 1)->save();
+  }
+}
