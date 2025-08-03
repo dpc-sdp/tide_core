@@ -231,8 +231,10 @@ function tide_search_update_10007() {
  */
 function tide_search_update_10008() {
   $config = \Drupal::service('config.factory')->getEditable('search_api.server.elasticsearch_bay');
-  // Only update if the setting is not already set.
-  if ($config->get('number_of_shards') === NULL) {
-    $config->set('number_of_shards', 1)->save();
+  $backend_config = $config->get('backend_config') ?? [];
+
+  if (!isset($backend_config['number_of_shards'])) {
+    $backend_config['number_of_shards'] = 1;
+    $config->set('backend_config', $backend_config)->save();
   }
 }
