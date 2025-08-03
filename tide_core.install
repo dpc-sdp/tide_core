@@ -639,3 +639,46 @@ function tide_core_update_10020() {
     $admin_role->save();
   }
 }
+
+/**
+ * Updates iframe settings for editorial formats and editors.
+ */
+function tide_core_update_10021() {
+  $config_factory = \Drupal::configFactory();
+  $replacement = '<iframe frameborder height scrolling src width title allowfullscreen>';
+  $pattern = '/<iframe\b[^>]*>/i';
+  $filter_ids = [
+    'filter.format.admin_text',
+    'filter.format.rich_text',
+    'filter.format.summary_text',
+  ];
+  foreach ($filter_ids as $filter_id) {
+    $filter = $config_factory->getEditable($filter_id);
+    $value = $filter->get('filters.filter_html.settings.allowed_html');
+    if ($value) {
+      $replaced = preg_replace($pattern, $replacement, $value);
+      $filter->set('filters.filter_html.settings.allowed_html', $replaced);
+      $filter->save();
+    }
+  }
+
+  $configs = [
+    'editor.editor.admin_text',
+    'editor.editor.rich_text',
+    'editor.editor.summary_text',
+  ];
+  foreach ($configs as $config) {
+    $editable_config = $config_factory->getEditable($config);
+    $rows = $editable_config->get('settings.plugins.ckeditor5_sourceEditing.allowed_tags');
+    $new_rows = [];
+    if ($rows) {
+      if (is_array($rows)) {
+        foreach ($rows as $item) {
+          $new_rows[] = preg_replace($pattern, $replacement, $item);
+        }
+      }
+      $editable_config->set('settings.plugins.ckeditor5_sourceEditing.allowed_tags', $new_rows);
+      $editable_config->save();
+    }
+  }
+}
