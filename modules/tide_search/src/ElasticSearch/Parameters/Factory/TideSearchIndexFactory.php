@@ -29,6 +29,10 @@ class TideSearchIndexFactory extends IndexFactory {
     $filteredIndexName = str_replace('--', '-', $indexName);
     $aliasPrefix = 'search-' . (\Drupal::request()->server->get('SEARCH_HASH') ?: '') . '-';
     $aliasName = $aliasPrefix . str_replace('_', '-', $filteredIndexName) . '-alias';
+    $backend = $index->getServerInstance()->getBackend();
+    $number_of_shards = method_exists($backend, 'getNumberOfShards')
+      ? $backend->getNumberOfShards()
+      : 1;
 
     $indexConfig = [
       'index' => $indexName,
@@ -39,7 +43,7 @@ class TideSearchIndexFactory extends IndexFactory {
           ],
         ],
         'settings' => [
-          'number_of_shards' => $index->getOption('number_of_shards', 5),
+          'number_of_shards' => $number_of_shards,
           'number_of_replicas' => $index->getOption('number_of_replicas', 1),
           'analysis' => [
             "filter" => [

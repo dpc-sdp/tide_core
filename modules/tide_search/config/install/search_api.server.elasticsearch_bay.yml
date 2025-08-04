@@ -22,3 +22,4 @@ backend_config:
   http_method: AUTO
   autocorrect_spell: true
   autocorrect_suggest_words: true
+  number_of_shards: 1
