@@ -437,6 +437,12 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     $form['#attached']['library'][] = 'webform/webform.states';
   }
   $node = $form_state->getFormObject()->getEntity();
+
+  if (isset($form['_header_style'])) {
+    $header_style = Drupal::state()->get($node->id() . '-' . 'header_style');
+    $form['_header_style']['_header_style_options']['#value'] = $header_style;
+  }
+
   // Modify field_content_category help text.
   if ($node->hasField('field_content_category')) {
     $newLabelDescription = [
@@ -458,6 +464,7 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     }
     $form['field_content_category']['widget']['#title_display'] = 'invisible';
   }
+  $form['#validate'][] = '_tide_core_header_style_validate';
   // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
   if ($node->isNew()) {
     return;
@@ -473,6 +480,24 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     $form['#attached']['library'][] = 'tide_core/node_revision_log';
   }
 
+}
+
+/**
+ * Validation handler for the header style configuration.
+ */
+function _tide_core_header_style_validate(array &$form, FormStateInterface $form_state) {
+  /** @var \Drupal\node\Entity\Node $node */
+  $node = $form_state->getFormObject()->getEntity();
+  if (!$form_state->getErrors()) {
+    \Drupal::state()->set($node->uuid() . '-' . 'header_style', $form_state->getValue('_header_style_options'));
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function tide_core_node_delete(NodeInterface $node) {
+  \Drupal::state()->delete($node->uuid() . '-header_style');
 }
 
 /**
