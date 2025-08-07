@@ -65,7 +65,6 @@ permissions:
   - 'assign contributor role'
   - 'assign editor role'
   - 'assign previewer role'
-  - 'assign site_auditor role'
   - 'bypass node access'
   - 'create field_business_contact_number'
   - 'create field_business_name'

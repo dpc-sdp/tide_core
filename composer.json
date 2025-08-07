@@ -82,7 +82,7 @@
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/admin_audit_trail": "^1.0",
         "drupal/block_inactive_users": "^2.1",
-        "drupal/user_expire": "^1.1",
+        "drupal/user_expire": "^2.1",
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
@@ -392,8 +392,7 @@
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
             "drupal/webform": {
-                "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-15686345": "https://www.drupal.org/files/issues/2024-07-24/exporting-webform-submission-static-batch-process-3348336-8.patch",
-                "Fix incompatibility with devel ^5.2 - https://www.drupal.org/project/webform/issues/3524877#comment-16111172": "https://www.drupal.org/files/issues/2025-05-16/webform-6.3.0-beta2-3524877.patch"
+                "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-16202432": "https://www.drupal.org/files/issues/2025-07-23/exporting-webform-submission-static-batch-process-3348336-9.patch"
             },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"

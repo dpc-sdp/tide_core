@@ -24,9 +24,10 @@ function tide_ui_restriction_install($is_syncing) {
 function _tide_ui_restriction_tighten_permissions() {
   $admin_only = ['administrator'];
   $site_admin_only = ['administrator', 'site_admin'];
-  $approver_only = ['administrator', 'site_admin', 'approver'];
+  $semi_admin_only = ['administrator', 'site_admin', 'approver_plus'];
+  $approver_only = ['administrator', 'site_admin', 'approver', 'approver_plus'];
   $auditor_only = ['administrator', 'site_admin'];
-  $editor_only = ['administrator', 'site_admin', 'approver', 'editor'];
+  $editor_only = ['administrator', 'site_admin', 'approver', 'editor', 'approver_plus'];
 
   $custom_perms = [
     'Administer custom block types' => $admin_only,
@@ -43,7 +44,7 @@ function _tide_ui_restriction_tighten_permissions() {
 
     'access taxonomy overview' => $site_admin_only,
     'administer taxonomy' => $site_admin_only,
-    'administer users' => $site_admin_only,
+    'administer users' => $semi_admin_only,
     'access admin audit trail' => $auditor_only,
     'administer pathauto' => $site_admin_only,
     'administer redirect settings' => $site_admin_only,

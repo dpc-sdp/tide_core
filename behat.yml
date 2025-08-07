@@ -14,6 +14,7 @@ default:
         - '%paths.base%/modules/tide_grant/tests/behat/features'
         - '%paths.base%/modules/tide_site/tests/behat/features'
         - '%paths.base%/modules/tide_landing_page/tests/behat/features'
+        - '%paths.base%/modules/tide_ui_restriction/tests/behat/features'
         - '%paths.base%/modules/tide_api/tests/behat/features'
         - '%paths.base%/modules/tide_media/tests/behat/features'
         - '%paths.base%/modules/tide_webform/tests/behat/features'
