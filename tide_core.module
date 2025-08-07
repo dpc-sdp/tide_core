@@ -904,3 +904,15 @@ function tide_core_field_widget_complete_form_alter(&$field_widget_complete_form
     $field_widget_complete_form['widget'][0]['state']['#default_value'] = 'draft';
   }
 }
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function tide_core_element_info_alter(array &$info) {
+  if (isset($info['date'])) {
+    $info['date']['#date_year_range'] = '1099:2999';
+  }
+  if (isset($info['datetime'])) {
+    $info['datetime']['#date_year_range'] = '1099:2999';
+  }
+}
