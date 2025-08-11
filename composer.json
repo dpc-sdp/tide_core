@@ -412,9 +412,6 @@
                 "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
             },
             "drupal/data_pipelines": {
-                "CSV data header row whitespace needs to be cleaned up - https://drupal.org/project/data_pipelines/issues/3391214": "https://www.drupal.org/files/issues/2023-10-03/trim-whitespace-from-csv-header-names-3391214-2.patch",
-                "set a default value based on certain criteria - https://www.drupal.org/project/data_pipelines/issues/3426248#comment-15507258": "https://www.drupal.org/files/issues/2024-03-21/data_pipelines-3426248-6.patch.patch",
-                "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines/issues/3467021#comment-15720597": "https://www.drupal.org/files/issues/2024-08-09/Change-bulk-deleting-on-Elasticsearch-endpoint-3467021.patch",
                 "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch"
             },
             "drupal/paragraphs": {
