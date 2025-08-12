@@ -414,6 +414,9 @@
             "drupal/data_pipelines": {
                 "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch"
             },
+            "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
+                "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch"
+            },
             "drupal/paragraphs": {
                 "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
                 "Nested paragraphs title gets cut off - https://www.drupal.org/project/paragraphs/issues/3246140#comment-14698713": "https://www.drupal.org/files/issues/2022-09-20/3246140-11-fix_paragraph_title_cutoff.patch",
