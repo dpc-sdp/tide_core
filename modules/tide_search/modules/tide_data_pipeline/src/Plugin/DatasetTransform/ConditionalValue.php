@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\tide_data_pipeline\Plugin\DatasetTransform;
 
@@ -43,7 +43,8 @@ class ConditionalValue extends TransformPluginBase {
       $conditional_value = $this->configuration['value'];
       if (preg_match($regex, $field_value)) {
         $record[$field_name] = $conditional_value;
-      } else {
+      }
+      else {
         $record[$field_name] = $field_value;
       }
     }
