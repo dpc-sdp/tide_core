@@ -103,3 +103,61 @@ function tide_ckeditor_update_10004() {
     $filter->save();
   }
 }
+
+/**
+ * Update `allowed_tags` for `rich_text` editor.
+ */
+function tide_ckeditor_update_10005()
+{
+  $editor_config = \Drupal::configFactory()->getEditable(
+    "editor.editor.rich_text",
+  );
+
+  // Unset list styles
+  $key = "settings.plugins.ckeditor5_list.properties";
+  $list_props = $editor_config->get($key);
+  if ($list_props) {
+    $editor_config->unset("$key.styles")->save();
+  }
+
+  // Update allowed_tags
+  $key = "settings.plugins.ckeditor5_sourceEditing.allowed_tags";
+  $allowed_tags = $editor_config->get($key);
+
+  if ($allowed_tags) {
+    // Replace <span class> with <span>
+    $allowed_tags = str_replace("<span class>", "<span>", $allowed_tags);
+    // Replace <ul class> with <ul>
+    $allowed_tags = str_replace("<ul class>", "<ul>", $allowed_tags);
+    // Replace <ol class> with <ol type>
+    $allowed_tags = str_replace("<ol class>", "<ol type>", $allowed_tags);
+    // Replace <blockquote cite class> with <blockquote cite>
+    $allowed_tags = str_replace(
+      "<blockquote cite class>",
+      "<blockquote cite>",
+      $allowed_tags,
+    );
+
+    // Replace <div class> with whitelist of classes
+    $allowed_tags = str_replace(
+      "<div class>",
+      '<div class="quotation button button--secondary">',
+      $allowed_tags,
+    );
+
+    // Remove <drupal-entity> unnecessary attributes (not needed in editor)
+    $allowed_tags = str_replace(
+      "<drupal-entity data-caption data-align data-entity-type data-entity-uuid data-embed-button data-entity-embed-display data-entity-embed-display-settings data-show-last-updated title alt>",
+      "<drupal-entity data-entity-type data-embed-button data-show-last-updated>",
+      $allowed_tags,
+    );
+    // Remove <a> unnecessary attributes (not needed in editor)
+    $allowed_tags = str_replace(
+      "<a hreflang target data-entity-substitution data-entity-type data-entity-uuid>",
+      "<a hreflang target>",
+      $allowed_tags,
+    );
+
+    $editor_config->set($key, $allowed_tags)->save();
+  }
+}
