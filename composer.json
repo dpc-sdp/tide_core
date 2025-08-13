@@ -109,7 +109,7 @@
         "drupal/migrate_plus": "6.0.2",
         "drupal/migrate_tools": "^6.0",
         "drupal/range": "^1.5",
-        "drupal/jsonapi_extras": "^3.23",
+        "drupal/jsonapi_extras": "^3.x",
         "drupal/jsonapi_menu_items": "^1.2",
         "drupal/jsonapi_resources": "^1.0.0-beta5@beta",
         "drupal/schemata": "^1.0@beta",
@@ -388,6 +388,9 @@
                 "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550#comment-15712652": "https://www.drupal.org/files/issues/2024-08-05/3098550-19.patch",
                 "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-15712685": "https://www.drupal.org/files/issues/2024-08-05/2894351-32.patch"
             },
+            "drupal/field_permissions": {
+                "Fix the issues reported by phpcs - https://www.drupal.org/project/field_permissions/issues/3322809": "https://git.drupalcode.org/project/field_permissions/-/merge_requests/40/diffs.patch"
+            },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
@@ -396,6 +399,9 @@
             },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch"
+            },
+            "drupal/pathauto": {
+                "Fix PHP 8.4 implicit nullable deprecation - https://www.drupal.org/project/pathauto/issues/3489108": "https://www.drupal.org/files/issues/2025-03-06/pathauto-3489108.diff"
             },
             "drupal/simple_oauth": {
                 "access:false even though permission is checked for the role - https://www.drupal.org/project/simple_oauth/issues/2958159#comment-13847450": "https://www.drupal.org/files/issues/2020-10-05/simple_oauth-refresh_token_authenticated_missing_scope-2958159-4.patch",

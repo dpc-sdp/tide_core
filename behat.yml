@@ -76,7 +76,7 @@ default:
     # Allows to capture HTML and JPG screenshots (based on the driver used).
     DrevOps\BehatScreenshotExtension:
       dir: '%paths.base%/screenshots'
-      fail: true
+      on_failed: true
       purge: false
     Ubirak\RestApiBehatExtension\Extension:
       rest:
