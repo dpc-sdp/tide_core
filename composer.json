@@ -412,7 +412,8 @@
                 "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
             },
             "drupal/data_pipelines": {
-                "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch"
+                "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch",
+                "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch"
             },
             "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
                 "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch"
