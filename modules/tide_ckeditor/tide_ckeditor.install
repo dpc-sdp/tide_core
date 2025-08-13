@@ -115,8 +115,9 @@ function tide_ckeditor_update_10005() {
   // Unset list styles.
   $key = "settings.plugins.ckeditor5_list.properties";
   $list_props = $editor_config->get($key);
-  if ($list_props) {
-    $editor_config->unset("$key.styles")->save();
+  if ($list_props && isset($list_props["styles"])) {
+    unset($list_props["styles"]);
+    $editor_config->set($key, $list_props)->save();
   }
 
   // Update allowed_tags.
