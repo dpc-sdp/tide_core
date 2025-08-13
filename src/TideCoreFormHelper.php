@@ -44,12 +44,8 @@ class TideCoreFormHelper {
         'corner' => t('Corner graphics'),
       ],
     ];
-    if (!$node->isNew()) {
-      $header_style = \Drupal::state()->get($node->uuid() . '-' . 'header_style');
-      if ($header_style) {
-        $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
-      }
-    }
+    $header_style = \Drupal::state()->get($node->uuid() . '-' . 'header_style');
+    $form['_header_style']['_header_style_options']['#default_value'] = $node->isNew() ? 'default' : $header_style;
     // Add visibility states to the specified fields.
     foreach ($fields as $field) {
       if (isset($form[$field])) {
