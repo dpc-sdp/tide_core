@@ -416,7 +416,8 @@
                 "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch"
             },
             "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
-                "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch"
+                "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch",
+                "False positive mappings defined at top level error triggered unconditionally in ElasticSearchDatasetPipeline constructor - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3541059#comment-16226097": "https://www.drupal.org/files/issues/2025-08-13/3541059-fix-elasticsearch-mapping-warning-in-constructor.patch"
             },
             "drupal/paragraphs": {
                 "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
