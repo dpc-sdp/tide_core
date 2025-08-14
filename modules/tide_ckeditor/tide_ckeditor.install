@@ -15,7 +15,7 @@ function tide_ckeditor_install() {
   foreach ($role_ids as $role_id) {
     $role = Role::load($role_id);
     if ($role) {
-      $role->grantPermission('use ckeditor5 embedded content')->save();
+      $role->grantPermission('administer embedded content')->save();
     }
   }
 }
@@ -28,7 +28,7 @@ function tide_ckeditor_update_10001() {
   foreach ($role_ids as $role_id) {
     $role = Role::load($role_id);
     if ($role) {
-      $role->grantPermission('use ckeditor5 embedded content')->save();
+      $role->grantPermission('administer embedded content')->save();
     }
   }
 }
