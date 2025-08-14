@@ -12,14 +12,14 @@
         "drupal/allowed_formats": "^2.0",
         "drupal/better_exposed_filters": "^6.0",
         "drupal/clamav": "2.0.2-rc1",
-        "drupal/config_ignore": "^2.4",
+        "drupal/config_ignore": "^3.3",
         "drupal/config_perms": "2.x-dev@dev",
         "drupal/config_split": "^2.0",
         "drupal/config_update": "^2.0@alpha",
         "drupal/core": "10.4.*",
         "drupal/core-recommended": "10.4.*",
         "drupal/monitoring": "^1.13",
-        "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
+        "drupal/ckeditor_templates": "^2.0@beta",
         "drupal/ctools": "^3.14",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "^2.2.3",
@@ -88,6 +88,7 @@
         "drupal/jira_rest": "^4.0@beta",
         "drupal/yaml_content": "^1.0@alpha",
         "drupal/ckeditor5_embedded_content": "1.0.1",
+        "drupal/embedded_content": "^2.0",
         "respect/validation": "2.3.1",
         "giggsey/libphonenumber-for-php": "^8.13",
         "drupal/site_alert": "^1.3",
@@ -129,7 +130,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions", "drupal/create_menus_permission"]
         },
         "choices": {
             "_webform": true,
@@ -345,11 +346,6 @@
                 "dev-1.x",
                 "1.x-dev"
             ]
-        },
-        "drupal/ckeditor_templates": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         }
     },
     "extra": {
@@ -452,7 +448,10 @@
                 "Allow dashes in index name": "https://gist.githubusercontent.com/nicksantamaria/95677ffa87a9e1433bfc27c3ebdefd35/raw/68d6eb055150d1e99ad6f0da49d68a6a4c2d6348/elasticsearch_connector-dashed-index.patch"
             },
             "drupal/schemata": {
-                "PHP 8.4: Implicitly nullable parameter declarations deprecated - https://www.drupal.org/project/schemata/issues/3523349" : "https://www.drupal.org/files/issues/2025-05-08/3523349-2.patch"
+                "PHP 8.4: Implicitly nullable parameter declarations deprecated - https://www.drupal.org/project/schemata/issues/3523349": "https://www.drupal.org/files/issues/2025-05-08/3523349-2.patch"
+            },
+            "drupal/config_ignore": {
+                "PHP 8.4 compatibility issue - https://www.drupal.org/project/config_ignore/issues/3534880": "https://git.drupalcode.org/project/config_ignore/-/merge_requests/46/diffs.patch"
             }
         },
         "installer-paths": {
