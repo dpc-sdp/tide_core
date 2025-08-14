@@ -97,7 +97,7 @@
         "oomphinc/composer-installers-extender": "^2.0",
         "select2/select2": "^4.0",
         "npm-asset/select2": "^4.0",
-        "lcobucci/clock": "3.3.1",
+        "lcobucci/clock": "3.2.0",
         "drupal/form_options_attributes": "^2.0",
         "drupal/term_reference_tree": "^2.0",
         "drupal/embed": "^1.6",
@@ -447,6 +447,9 @@
             },
             "drupal/tfa_email_otp": {
                 "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
+            },
+            "drupal/elasticsearch_connector": {
+                "Allow dashes in index name": "https://gist.githubusercontent.com/nicksantamaria/95677ffa87a9e1433bfc27c3ebdefd35/raw/68d6eb055150d1e99ad6f0da49d68a6a4c2d6348/elasticsearch_connector-dashed-index.patch"
             }
         },
         "installer-paths": {
