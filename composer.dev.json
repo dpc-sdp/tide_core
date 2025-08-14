@@ -71,7 +71,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/console", "drupal/console-core", "drupal/console-extend-plugin", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions", "drupal/console", "drupal/console-core", "drupal/console-extend-plugin", "drupal/create_menus_permission"]
         },
         "asset-packagist": {
             "type": "composer",
@@ -417,11 +417,6 @@
             "type": "vcs",
             "no-api": true,
             "url": "https://github.com/dpc-sdp/token_conditions.git"
-        },
-        "drupal/ckeditor_templates": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         },
         "drupal/console": {
             "type": "vcs",
