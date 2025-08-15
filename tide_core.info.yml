@@ -7,7 +7,7 @@ dependencies:
   - address:address
   - allowed_formats:allowed_formats
   - better_exposed_filters:better_exposed_filters
-  - ckeditor5_embedded_content:ckeditor5_embedded_content
+  - embedded_content:embedded_content
   - clamav:clamav
   - config_split:config_split
   - config_update:config_update

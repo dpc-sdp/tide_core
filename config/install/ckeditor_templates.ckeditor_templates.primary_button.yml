@@ -5,7 +5,9 @@ id: primary_button
 label: 'Primary Button'
 description: ''
 thumb: {  }
-code: '<p><a class="button" href="Primary-button-link">Primary button text</a></p>'
+code:
+  value: '<p><a class="button" href="Primary-button-link">Primary button text</a></p>'
+  format: 'rich_text'
 formats:
   rich_text: rich_text
   summary_text: summary_text
