@@ -83,7 +83,7 @@ class EntityArchiveForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, string $bundle = NULL, string $entity_type_id = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?string $bundle = NULL, ?string $entity_type_id = NULL) {
     $this->entity = \Drupal::entityTypeManager()->getStorage($bundle)->load($entity_type_id);
     return parent::buildForm($form, $form_state);
   }

@@ -264,7 +264,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Draft to Needs Review.
-    When I edit test "[TEST] Editor Test title"
+    When I visit the "test" content edit page with the title "[TEST] Editor Test title"
     Then the response status code should be 200
     And I select "Needs Review" from "Change to"
     And I press "Save"
@@ -279,7 +279,7 @@ Feature: Workflow states and transitions
     And I should see the text "Unpublished" in the "[TEST] Editor Test title" row
 
     # Approver sends back to Draft.
-    When I edit test "[TEST] Editor Test title"
+    When I visit the "test" content edit page with the title "[TEST] Editor Test title"
     Then the response status code should be 200
     And I select "Draft" from "Change to"
     And I press "Save"
@@ -288,7 +288,7 @@ Feature: Workflow states and transitions
 
     # Approver reviews and publishes.
     Given I am logged in as a user with the Approver role
-    When I edit test "[TEST] Editor Test title"
+    When I visit the "test" content edit page with the title "[TEST] Editor Test title"
     Then the response status code should be 200
     And I select "Published" from "Change to"
     And I press "Save"
@@ -297,7 +297,7 @@ Feature: Workflow states and transitions
 
     # Approver reviews and archive.
     Given I am logged in as a user with the Approver role
-    When I edit test "[TEST] Editor Test title"
+    When I visit the "test" content edit page with the title "[TEST] Editor Test title"
     Then the response status code should be 200
     And I select "Archived" from "Change to"
     And I press "Save"
@@ -319,7 +319,7 @@ Feature: Workflow states and transitions
     And I press "Archive"
     Then I should see the success message containing "Content test: Archived [TEST] Published article"
     # Verify the status of the
-    When I edit test "[TEST] Published article"
+    When I visit the "test" content edit page with the title "[TEST] Published article"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-current" element should contain "Archived"
 
@@ -337,11 +337,11 @@ Feature: Workflow states and transitions
     And I go to "node/add/test"
     And the response status code should not be 200
 
-    When I visit test "[TEST] Draft article"
+    When I visit the "test" content page with the title "[TEST] Draft article"
     And the response status code should be 200
-    When I visit test "[TEST] Needs review article"
+    When I visit the "test" content page with the title "[TEST] Needs review article"
     And the response status code should be 200
-    When I visit test "[TEST] Published article"
+    When I visit the "test" content page with the title "[TEST] Published article"
     And the response status code should be 200
-    When I visit test "[TEST] Archived article"
+    When I visit the "test" content page with the title "[TEST] Archived article"
     And the response status code should be 200
