@@ -5,4 +5,4 @@ Feature: Check the Topic taxonomy
 
   @api
   Scenario: Topic taxonomy exists
-    Given vocabulary "topic" with name "Topic" exists
+    Given the vocabulary "topic" with the name "Topic" should exist

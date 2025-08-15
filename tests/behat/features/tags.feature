@@ -5,4 +5,4 @@ Feature: Check the Tags taxonomy
 
   @api
   Scenario: Tags taxonomy exists
-    Given vocabulary "tags" with name "Tags" exists
+    Given the vocabulary "tags" with the name "Tags" should exist

@@ -61,7 +61,7 @@ class EntityArchiveForm extends ConfirmFormBase {
    * @return \Drupal\Core\Access\AccessResultInterface
    *   The access result.
    */
-  public function access(AccountInterface $account, string $bundle = NULL, string $entity_type_id = NULL) {
+  public function access(AccountInterface $account, ?string $bundle = NULL, ?string $entity_type_id = NULL) {
     // If entity does not exist then return right away.
     if (!$this->entity = \Drupal::entityTypeManager()->getStorage($bundle)->load($entity_type_id)) {
       return AccessResult::forbidden();

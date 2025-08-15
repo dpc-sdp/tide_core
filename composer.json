@@ -455,7 +455,7 @@
                 "PHP 8.4 compatibility issue - https://www.drupal.org/project/config_ignore/issues/3534880": "https://git.drupalcode.org/project/config_ignore/-/merge_requests/46/diffs.patch"
             },
             "drupal/ckeditor_templates": {
-                "PHP 8.4 deprecation - https://www.drupal.org/project/ckeditor_templates/issues/3541306#comment-16227933": "https://www.drupal.org/files/issues/2025-08-14/3541306-1-php-8.4-deprecation.patch"
+                "PHP 8.4 deprecation - https://www.drupal.org/project/ckeditor_templates/issues/3541306#comment-16229054": "https://www.drupal.org/files/issues/2025-08-15/3541306-4-php-8.4-deprecation.patch"
             }
         },
         "installer-paths": {

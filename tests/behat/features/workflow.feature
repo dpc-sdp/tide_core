@@ -43,7 +43,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Draft to Needs Review.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
@@ -55,7 +55,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Needs Review to Published.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should not contain "Needs Review"
@@ -67,7 +67,7 @@ Feature: Workflow states and transitions
     And I should not see a "article.node--unpublished" element
 
     # Change state from Published to Archived.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should not contain "Needs Review"
@@ -79,7 +79,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Restore from Archived to Draft.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should not contain "Needs Review"
@@ -91,7 +91,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Draft to Published.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
@@ -103,7 +103,7 @@ Feature: Workflow states and transitions
     And I should not see a "article.node--unpublished" element
 
     # Change state from Published to Archived.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should not contain "Needs Review"
@@ -115,7 +115,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Restore from Archived to Published.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should not contain "Needs Review"
@@ -149,7 +149,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Draft to Draft.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
@@ -163,7 +163,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Draft to Needs Review.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
@@ -176,7 +176,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Needs Review to Archive Pending.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Archive pending"
@@ -188,7 +188,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Archive Pending to Needs Review.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
@@ -223,7 +223,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Draft to Archive pending.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
@@ -236,7 +236,7 @@ Feature: Workflow states and transitions
     And I should see a "article.node--unpublished" element
 
     # Change state from Archive pending to Draft.
-    When I edit test "[TEST] Test title"
+    When I visit the "test" content edit page with the title "[TEST] Test title"
     Then the response status code should be 200
     And the "#edit-moderation-state-0-state" element should contain "Draft"
     And the "#edit-moderation-state-0-state" element should contain "Needs Review"
