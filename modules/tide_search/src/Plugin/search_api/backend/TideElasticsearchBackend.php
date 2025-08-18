@@ -43,6 +43,17 @@ class TideElasticsearchBackend extends SearchApiElasticsearchBackend {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    // Let the parent handle everything first.
+    parent::submitConfigurationForm($form, $form_state);
+
+    // Saving your custom field.
+    $this->configuration['number_of_shards'] = (int) $form_state->getValue('number_of_shards');
+  }
+
+  /**
    * Get the configured number of shards.
    *
    * @return int
