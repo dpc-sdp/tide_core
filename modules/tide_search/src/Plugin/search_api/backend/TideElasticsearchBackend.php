@@ -46,28 +46,10 @@ class TideElasticsearchBackend extends SearchApiElasticsearchBackend {
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
+    // Let the parent handle everything first.
+    parent::submitConfigurationForm($form, $form_state);
 
-    // Handle synonyms as before.
-    $values['advanced']['synonyms'] = explode(\PHP_EOL, $form_state->getValue([
-      'advanced',
-      'synonyms',
-    ], ''));
-
-    // Save full configuration.
-    $this->setConfiguration($values);
-
-    // Save connector config.
-    $this->configuration['connector'] = $form_state->getValue('connector');
-    $connector = $this->getConnector();
-    if ($connector instanceof PluginFormInterface) {
-      $connector_form_state = SubformState::createForSubform($form['connector_config'], $form, $form_state);
-      $connector->submitConfigurationForm($form['connector_config'], $connector_form_state);
-      // Overwrite the form values with type casted values.
-      $form_state->setValue('connector_config', $connector->getConfiguration());
-    }
-
-    // 👇 Save your custom field explicitly.
+    // Then save your custom field.
     $this->configuration['number_of_shards'] = (int) $form_state->getValue('number_of_shards');
   }
 
