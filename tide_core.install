@@ -682,3 +682,34 @@ function tide_core_update_10021() {
     }
   }
 }
+
+/**
+ * Grants field_notes permissions to approver_plus role if not already synced.
+ */
+function tide_core_update_10022() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  if ($approver_plus_role = Role::load('approver_plus')) {
+    // Get permissions from config sync.
+    $approver_plus_permissions = _tide_retrieve_config_sync('user.role.approver_plus', 'permissions');
+
+    $changed = FALSE;
+
+    // Permissions to grant if not already present.
+    $permissions_to_grant = [
+      'create field_notes',
+      'edit field_notes',
+      'view field_notes',
+    ];
+
+    foreach ($permissions_to_grant as $permission) {
+      if (!in_array($permission, $approver_plus_permissions)) {
+        $approver_plus_role->grantPermission($permission);
+        $changed = TRUE;
+      }
+    }
+
+    if ($changed) {
+      $approver_plus_role->save();
+    }
+  }
+}
