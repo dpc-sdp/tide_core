@@ -151,6 +151,8 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
     ],
   ];
+  $header_style = \Drupal::state()->get($node->uuid() . '-header_style');
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style ?: 'default';
 
   $form['field_landing_page_hero_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => [
@@ -158,61 +160,6 @@ function _tide_publication_form_node_form_process(array $form, FormStateInterfac
       ['value' => 'cta'],
     ],
   ];
-
-  // Determine the initial value of Header style.
-  $node_hero_image_empty = $node->get('field_landing_page_hero_image')->isEmpty();
-  $header_style = 'default';
-  if (!$node_hero_image_empty) {
-    $header_style = 'fullwidth';
-  }
-
-  if (!$node->get('field_graphical_image')->isEmpty() || !$node->get('field_bottom_graphical_image')->isEmpty()) {
-    $header_style = 'corner';
-  }
-
-  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
-
-  $form['field_graphical_image']['#states']['visible'] = [
-    ':input[name="_header_style_options"]' => ['value' => 'corner'],
-  ];
-  $form['field_bottom_graphical_image']['#states']['visible'] = [
-    ':input[name="_header_style_options"]' => ['value' => 'corner'],
-  ];
-  $form['#after_build'][] = '_tide_publication_form_node_form_after_build';
-  return $form;
-}
-
-/**
- * Node form #after_build callback.
- *
- * @param array $form
- *   Form that is being processed.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The current state of the form.
- *
- * @return array
- *   The processed form.
- */
-function _tide_publication_form_node_form_after_build(array $form, FormStateInterface $form_state) {
-  // Determine the current value of Header style.
-  $form_hero_image_empty = empty($form_state->getValue([
-    'field_landing_page_hero_image',
-    'target_id',
-  ]));
-  $header_style = 'default';
-  if (!$form_hero_image_empty) {
-    $header_style = 'fullwidth';
-  }
-
-  $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
-  $form_hero_bottom_graphical_empty = empty($form_state->getValue(['field_bottom_graphical_image', 'target_id']));
-
-  // If the graphical image is not empty, set the header style to
-  // 'corner', otherwise retain 'fullwidth' or 'default'.
-  if (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
-    $header_style = 'corner';
-  }
-  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
   return $form;
 }

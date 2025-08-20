@@ -36,7 +36,6 @@ function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state
   ])) {
 
     $form['#process'][] = '_tide_search_form_node_form_process';
-    $form['#after_build'][] = '_tide_search_form_node_form_after_build';
   }
 }
 
@@ -125,30 +124,13 @@ function _tide_search_form_node_form_process(array $form, FormStateInterface $fo
       'corner' => t('Custom top corner graphic'),
     ],
   ];
-
-  // Set initial value for Header style based on field_graphical_image.
-  $header_style = 'default';
-  if (!$node->get('field_graphical_image')->isEmpty()) {
-    $header_style = 'corner';
-  }
-  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
+  $header_style = \Drupal::state()->get($node->uuid() . '-header_style');
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style ?: 'default';
 
   // Control of the graphical image field based on the selected header style.
   $form['field_graphical_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => ['value' => 'corner'],
   ];
-
-  return $form;
-}
-
-/**
- * Implements after build for tide search listings.
- */
-function _tide_search_form_node_form_after_build(array $form, FormStateInterface $form_state) {
-  // Ensure the header style is correctly set based on field state.
-  $form_hero_top_graphical_empty = empty($form_state->getValue(['field_graphical_image', 'target_id']));
-  $header_style = $form_hero_top_graphical_empty ? 'default' : 'corner';
-  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
   return $form;
 }
