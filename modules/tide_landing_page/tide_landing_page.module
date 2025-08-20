@@ -530,15 +530,15 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
     ],
   ];
-    $header_style = \Drupal::state()->get($node->uuid() . '-header_style');
-    $form['_header_style']['_header_style_options']['#default_value'] = $header_style ?: 'default';
+  $header_style = \Drupal::state()->get($node->uuid() . '-header_style');
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style ?: 'default';
 
-    if ($header_style === 'fullwidth') {
-      unset($form['field_landing_page_hero_theme']['widget']['#options']['light']);
-    }
-    if ($header_style === 'cta') {
-      unset($form['field_landing_page_hero_theme']['widget']['#options']['dark']);
-    }
+  if ($header_style === 'fullwidth') {
+    unset($form['field_landing_page_hero_theme']['widget']['#options']['light']);
+  }
+  if ($header_style === 'cta') {
+    unset($form['field_landing_page_hero_theme']['widget']['#options']['dark']);
+  }
   $form['field_landing_page_hero_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => [
       ['value' => 'fullwidth'],
