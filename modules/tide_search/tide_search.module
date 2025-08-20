@@ -124,8 +124,8 @@ function _tide_search_form_node_form_process(array $form, FormStateInterface $fo
       'corner' => t('Custom top corner graphic'),
     ],
   ];
-  $header_style = \Drupal::state()->get($node->uuid() . '-' . 'header_style');
-  $form['_header_style']['_header_style_options']['#default_value'] = $node->isNew() ? 'default' : $header_style;
+  $header_style = \Drupal::state()->get($node->uuid() . '-header_style');
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style ?: 'default';
 
   // Control of the graphical image field based on the selected header style.
   $form['field_graphical_image']['#states']['visible'] = [

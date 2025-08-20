@@ -919,6 +919,12 @@ function tide_core_cloned_node_alter(NodeInterface &$node, NodeInterface $origin
   if ($node->hasField('field_published_date')) {
     $node->set('field_published_date', NULL);
   }
+  // Look up the original node's stored header style.
+  $header_style = \Drupal::state()->get($original->uuid() . '-header_style');
+  if ($header_style) {
+    // Store the same header style under the new node's UUID.
+    \Drupal::state()->set($node->uuid() . '-header_style', $header_style);
+  }
 }
 
 /**
