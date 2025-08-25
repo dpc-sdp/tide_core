@@ -52,3 +52,22 @@ function tide_content_collection_update_10000() {
     $config->save();
   }
 }
+
+/**
+ * Add grants to content collection.
+ */
+function tide_content_collection_update_10001() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('core.entity_form_display.paragraph.content_collection_enhanced.default');
+  $allowed_content_types = [
+    'landing_page' => 'Landing Page',
+    'publication' => 'Publication',
+    'news' => 'News',
+    'event' => 'Events',
+    'grant' => 'Grants',
+  ];
+  if ($config) {
+    $config->set('content.field_content_collection_config.settings.content.internal.contentTypes.allowed_values', $allowed_content_types);
+    $config->save();
+  }
+}
