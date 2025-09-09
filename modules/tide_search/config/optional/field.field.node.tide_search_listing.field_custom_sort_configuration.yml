@@ -10,7 +10,7 @@ id: node.tide_search_listing.field_custom_sort_configuration
 field_name: field_custom_sort_configuration
 entity_type: node
 bundle: tide_search_listing
-label: 'Custom sort configuration'
+label: 'Sort by configuration'
 description: ''
 required: false
 translatable: false

@@ -7,11 +7,20 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\search_api\IndexInterface;
+use Drupal\Core\Field\WidgetBase;
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (!in_array($form_id, [
+    'node_tide_search_listing_form',
+    'node_tide_search_listing_edit_form',
+    'node_tide_search_listing_quick_node_clone_form',
+  ])) {
+    return;
+  }
+
   $field_config = 'node.tide_search_listing.field_custom_filters';
   $storage = \Drupal::entityTypeManager()->getStorage('field_config');
 
@@ -29,13 +38,47 @@ function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state
       $form['field_custom_filters']['#access'] = FALSE;
     }
   }
-  if (in_array($form_id, [
-    'node_tide_search_listing_form',
-    'node_tide_search_listing_edit_form',
-    'node_tide_search_listing_quick_node_clone_form',
-  ])) {
+  $form['#process'][] = '_tide_search_form_node_form_process';
+  $form['#after_build'][] = '_tide_search_form_node_form_after_build';
 
-    $form['#process'][] = '_tide_search_form_node_form_process';
+  // Self service search listing.
+  $preset = \Drupal::request()->query->get('preset');
+  $preset_map = [
+    'news'         => '[{ "field_news_date": "desc" }]',
+    'publications' => '[{ "field_publication_date": "desc" }]',
+    'grants'       => '[{ "field_node_dates_end_value": "desc" }]',
+    'events'       => '[{ "field_event_date_start_value": "asc" }]',
+    'landing_page' => '[{ "created": "desc" }]',
+  ];
+
+  if (isset($preset_map[$preset]) && isset($form['field_custom_sort_configuration'])) {
+    $form['field_custom_sort_configuration']['widget'][0]['value']['#default_value'] = $preset_map[$preset];
+  }
+}
+
+/**
+ * Implements hook_paragraphs_type_widget_alter().
+ */
+function tide_search_field_widget_single_element_paragraphs_form_alter(array &$element, FormStateInterface $form_state, array $context) {
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+  $non_admin = !array_intersect($admin_roles, $current_user->getRoles());
+  /** @var \Drupal\Core\Field\FieldItemListInterface $items */
+  $items = $context['items'];
+  $field_definition = $items->getFieldDefinition();
+  $paragraph_field_name = $field_definition->getName();
+  $widget_state = WidgetBase::getWidgetState($element['#field_parents'], $paragraph_field_name, $form_state);
+  $paragraph = $widget_state['paragraphs'][$element['#delta']]['entity'];
+  $paragraph_type = $paragraph ? $paragraph->bundle() : '';
+
+  switch ($paragraph_type) {
+    case 'searchable_fields':
+      if ($non_admin) {
+        if (!empty($element['subform']['field_placeholder'])) {
+          $element['subform']['field_placeholder']['#access'] = FALSE;
+        }
+      }
+    break;
   }
 }
 
@@ -145,4 +188,92 @@ function tide_search_config_schema_info_alter(&$schema) {
       'label' => 'The number of shards',
     ];
   }
+}
+
+/**
+ * Implements after build for tide search listings.
+ */
+function _tide_search_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+
+  // Self service search listing.
+  $non_admin = !array_intersect($admin_roles, $current_user->getRoles());
+  if ($non_admin) {
+    $groups = [
+      'group_listing_configuration',
+      'group_global_filters',
+      'group_user_filters',
+      'group_results',
+    ];
+    $restricted_items = [
+      'field_listing_query_config',
+      'field_search_submit_label',
+      'field_listing_results_config',
+      'field_search_configuration',
+      'field_landing_page_c_secondary',
+      'group_custom_header',
+    ];
+    foreach ($restricted_items as $field_name) {
+      $form[$field_name]['#access'] = FALSE;
+    }
+    foreach ($groups as $group) {
+      if (isset($form[$group])) {
+        $form[$group]['#open'] = TRUE;
+      }
+    }
+    // Hide global & user filter's custom filter paragraph.
+    $targets = [
+      'field_listing_global_filters' => 'add_more_button_listing_custom_filter',
+      'field_listing_user_filters'   => 'add_more_button_listing_user_custom_filter',
+    ];
+    foreach ($targets as $field => $button) {
+      if (isset($form[$field]['widget']['add_more'][$button])) {
+        unset($form[$field]['widget']['add_more'][$button]);
+      }
+    }
+    // Collapsed by default.
+    $wrappable_fields = [
+      'field_above_results_content' => 'Above results content',
+      'field_below_results_content' => 'Below results content',
+      'field_featured_image'        => 'Featured image',
+    ];
+
+    foreach ($wrappable_fields as $field_name => $title) {
+      if (isset($form[$field_name])) {
+        $form["{$field_name}_wrapper"] = [
+          '#type' => 'details',
+          '#title' => t($title),
+          '#open' => FALSE,
+          '#weight' => $form[$field_name]['#weight'] ?? 0,
+        ];
+
+        // Move field inside wrapper.
+        $form["{$field_name}_wrapper"][$field_name] = $form[$field_name];
+
+        // Remove the original.
+        unset($form[$field_name]);
+      }
+    }
+  }
+  // Remove default paragraph types.
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node->isNew() && !$non_admin) {
+    $fields_to_clean = [
+      'field_listing_global_filters' => [0, 1],
+      'field_listing_user_filters'   => [0],
+    ];
+
+    foreach ($fields_to_clean as $field_name => $deltas) {
+      if (!empty($form[$field_name]['widget'])) {
+        foreach ($deltas as $delta) {
+          unset($form[$field_name]['widget'][$delta]);
+        }
+      }
+    }
+  }
+  // Non admin field only.
+  $form['field_listing_result_type']['#access'] = !$non_admin ? FALSE : TRUE;
+
+  return $form;
 }
