@@ -6,8 +6,8 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\search_api\IndexInterface;
 use Drupal\Core\Field\WidgetBase;
+use Drupal\search_api\IndexInterface;
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
@@ -78,7 +78,7 @@ function tide_search_field_widget_single_element_paragraphs_form_alter(array &$e
           $element['subform']['field_placeholder']['#access'] = FALSE;
         }
       }
-    break;
+      break;
   }
 }
 
@@ -243,7 +243,7 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
       if (isset($form[$field_name])) {
         $form["{$field_name}_wrapper"] = [
           '#type' => 'details',
-          '#title' => t($title),
+          '#title' => $title,
           '#open' => FALSE,
           '#weight' => $form[$field_name]['#weight'] ?? 0,
         ];

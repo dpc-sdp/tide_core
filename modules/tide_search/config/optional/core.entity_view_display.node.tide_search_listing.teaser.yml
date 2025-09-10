@@ -5,6 +5,7 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.tide_search_listing.field_above_results_content
     - field.field.node.tide_search_listing.field_below_results_content
+    - field.field.node.tide_search_listing.field_content_category
     - field.field.node.tide_search_listing.field_custom_filters
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
@@ -16,6 +17,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_layout_component
     - field.field.node.tide_search_listing.field_listing_global_filters
     - field.field.node.tide_search_listing.field_listing_query_config
+    - field.field.node.tide_search_listing.field_listing_result_type
     - field.field.node.tide_search_listing.field_listing_results_config
     - field.field.node.tide_search_listing.field_listing_results_per_page
     - field.field.node.tide_search_listing.field_listing_user_filters
@@ -50,6 +52,7 @@ content:
 hidden:
   field_above_results_content: true
   field_below_results_content: true
+  field_content_category: true
   field_custom_filters: true
   field_custom_sort_configuration: true
   field_featured_image: true
@@ -61,6 +64,7 @@ hidden:
   field_layout_component: true
   field_listing_global_filters: true
   field_listing_query_config: true
+  field_listing_result_type: true
   field_listing_results_config: true
   field_listing_results_per_page: true
   field_listing_user_filters: true
