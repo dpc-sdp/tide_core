@@ -290,7 +290,7 @@ function tide_search_entity_presave(EntityInterface $entity) {
       $mapping = [
         'standard' => [
           'layout' => 'TideSearchResultsGrid',
-          'results' => 'TideSearchResult'
+          'results' => 'TideSearchResult',
         ],
         'grants' => [
           'layout' => 'TideSearchResultsList',
@@ -431,4 +431,31 @@ function _tide_search_apply_preset_values(array &$form, FormStateInterface $form
     $per_page = in_array($preset, ['grants', 'landing_page'], TRUE) ? 10 : 12;
     $form['field_listing_results_per_page']['widget'][0]['value']['#default_value'] = $per_page;
   }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function tide_search_theme($existing, $type, $theme, $path) {
+  return [
+    'node_add_list__non_admin' => [
+      'template' => 'node-add-list--non-admin',
+      'base hook' => 'node_add_list',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function tide_search_theme_suggestions_node_add_list(array $variables) {
+  $suggestions = [];
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+  $admin = array_intersect($admin_roles, $current_user->getRoles());
+  if (!$admin) {
+    $suggestions[] = 'node_add_list__non_admin';
+  }
+
+  return $suggestions;
 }
