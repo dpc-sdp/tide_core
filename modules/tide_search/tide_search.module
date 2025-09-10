@@ -42,19 +42,8 @@ function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state
   $form['#process'][] = '_tide_search_form_node_form_process';
   $form['#after_build'][] = '_tide_search_form_node_form_after_build';
 
-  // Self service search listing.
-  $preset = \Drupal::request()->query->get('preset');
-  $preset_map = [
-    'news'         => '[{ "field_news_date": "desc" }]',
-    'publications' => '[{ "field_publication_date": "desc" }]',
-    'grants'       => '[{ "field_node_dates_end_value": "desc" }]',
-    'events'       => '[{ "field_event_date_start_value": "asc" }]',
-    'landing_page' => '[{ "created": "desc" }]',
-  ];
-
-  if (isset($preset_map[$preset]) && isset($form['field_custom_sort_configuration'])) {
-    $form['field_custom_sort_configuration']['widget'][0]['value']['#default_value'] = $preset_map[$preset];
-  }
+  // Prefill preset values.
+  _tide_search_apply_preset_values($form, $form_state);
 }
 
 /**
@@ -301,18 +290,15 @@ function tide_search_entity_presave(EntityInterface $entity) {
       $mapping = [
         'standard' => [
           'layout' => 'TideSearchResultsGrid',
-          'results' => 'TideSearchResult',
-          'per_page' => 10,
+          'results' => 'TideSearchResult'
         ],
         'grants' => [
           'layout' => 'TideSearchResultsList',
           'results' => 'TideGrantSearchResult',
-          'per_page' => 10,
         ],
         'card' => [
           'layout' => 'TideSearchResultsGrid',
           'results' => 'TideSearchResultCard',
-          'per_page' => 12,
         ],
       ];
 
@@ -340,10 +326,109 @@ function tide_search_entity_presave(EntityInterface $entity) {
         if ($results_tid) {
           $entity->set('field_results_component', ['target_id' => $results_tid]);
         }
-
-        // Set results per page.
-        $entity->set('field_listing_results_per_page', $map['per_page']);
       }
     }
+  }
+}
+
+/**
+ * Helper function to prefill form field values based on query preset.
+ *
+ * @param array $form
+ *   The node form array (passed by reference).
+ */
+function _tide_search_apply_preset_values(array &$form, FormStateInterface $form_state) {
+  $preset = \Drupal::request()->query->get('preset');
+  if (!$preset) {
+    return;
+  }
+
+  // Sort configuration mapping.
+  $sort_map = [
+    'news'         => '[{ "field_news_date": "desc" }]',
+    'publications' => '[{ "field_publication_date": "desc" }]',
+    'grants'       => '[{ "field_node_dates_end_value": "desc" }]',
+    'events'       => '[{ "field_event_date_start_value": "asc" }]',
+    'landing_page' => '[{ "created": "desc" }]',
+  ];
+
+  // Apply sort configuration.
+  if (isset($sort_map[$preset]) && isset($form['field_custom_sort_configuration'])) {
+    $form['field_custom_sort_configuration']['widget'][0]['value']['#default_value'] = $sort_map[$preset];
+  }
+
+  // Query configuration mapping.
+  $query_fields = [
+    'field_landing_page_nav_title',
+    'field_landing_page_summary',
+    'field_landing_page_intro_text',
+    'field_news_intro_text',
+    'field_paragraph_body',
+    'field_overview_title',
+    'summary_processed',
+    'title',
+    'body',
+  ];
+
+  // Apply query configuration.
+  if ($preset && isset($form['field_listing_query_config'])) {
+    $query_config_value = [
+      'multi_match' => [
+        'query' => '{{query}}',
+        'fields' => $query_fields,
+      ],
+    ];
+    // Encode as JSON and set as default value.
+    $form['field_listing_query_config']['widget'][0]['value']['#default_value'] = json_encode($query_config_value);
+  }
+
+  // Page title mapping.
+  $title_map = [
+    'news'         => 'Create news search listing',
+    'publications' => 'Create publications search listing',
+    'grants'       => 'Create grants search listing',
+    'events'       => 'Create events search listing',
+    'landing_page' => 'Create landing page search listing',
+  ];
+
+  // Apply page title.
+  if (isset($title_map[$preset])) {
+    $form['#title'] = $title_map[$preset];
+  }
+
+  // Mapping preset → content type machine name.
+  $content_type_map = [
+    'news'         => 'news',
+    'publications' => 'publication',
+    'grants'       => 'grant',
+    'events'       => 'event',
+    'landing_page' => 'landing_page',
+  ];
+
+  if (!empty($preset) && isset($content_type_map[$preset])) {
+    // Make sure the paragraph widget exists before trying to set defaults.
+    if (isset($form['field_listing_global_filters']['widget'][0]['subform']['field_listing_global_contenttype']['widget'])) {
+      $form['field_listing_global_filters']['widget'][0]['subform']['field_listing_global_contenttype']['widget']['#default_value'] = [$content_type_map[$preset]];
+    }
+  }
+
+  // Map presets to field_listing_result_type values.
+  $result_type_map = [
+    'events'       => 'card',
+    'grants'       => 'grants',
+    'landing_page' => 'standard',
+    'news'         => 'card',
+    'publications' => 'card',
+  ];
+
+  // Set the value for result type.
+  if (isset($result_type_map[$preset]) && isset($form['field_listing_result_type'])) {
+    $form['field_listing_result_type']['widget']['#default_value'][0] = $result_type_map[$preset];
+  }
+
+  // Set results per page: based on preset.
+  if (isset($form['field_listing_results_per_page'])) {
+    $per_page = in_array($preset, ['grants', 'landing_page'], TRUE) ? 10 : 12;
+    $form['field_listing_results_per_page']['widget'][0]['value']['#default_value'] = $per_page;
   }
 }
