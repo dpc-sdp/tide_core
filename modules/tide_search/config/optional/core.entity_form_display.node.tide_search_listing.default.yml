@@ -86,7 +86,6 @@ third_party_settings:
         - field_custom_sort_configuration
         - field_search_input_placeholder
         - field_search_submit_label
-        - field_listing_results_per_page
       label: 'Listing Configuration'
       region: content
       parent_name: ''
@@ -133,6 +132,7 @@ third_party_settings:
       children:
         - field_listing_results_config
         - field_listing_result_type
+        - field_listing_results_per_page
         - field_layout_component
         - field_results_component
       label: Results
@@ -319,7 +319,7 @@ content:
     third_party_settings: {  }
   field_layout_component:
     type: select2_entity_reference
-    weight: 12
+    weight: 13
     region: content
     settings:
       width: 100%
@@ -385,14 +385,14 @@ content:
     third_party_settings: {  }
   field_listing_results_per_page:
     type: number
-    weight: 9
+    weight: 12
     region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
   field_listing_user_filters:
     type: paragraphs
-    weight: 12
+    weight: 10
     region: content
     settings:
       title: Paragraph
@@ -435,7 +435,7 @@ content:
     field_name: field_node_site
   field_results_component:
     type: select2_entity_reference
-    weight: 13
+    weight: 14
     region: content
     settings:
       width: 100%

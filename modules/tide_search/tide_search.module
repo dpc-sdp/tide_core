@@ -5,8 +5,9 @@
  * Tide Search module functionality.
  */
 
-use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\search_api\IndexInterface;
 
 /**
@@ -212,6 +213,8 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
       'field_listing_results_config',
       'field_search_configuration',
       'field_landing_page_c_secondary',
+      'field_layout_component',
+      'field_results_component',
       'group_custom_header',
     ];
     foreach ($restricted_items as $field_name) {
@@ -276,4 +279,71 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
   $form['field_listing_result_type']['#access'] = !$non_admin ? FALSE : TRUE;
 
   return $form;
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function tide_search_entity_presave(EntityInterface $entity) {
+  // Self service search listing.
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+  $admin = array_intersect($admin_roles, $current_user->getRoles());
+  // Only set field values for non admins.
+  if ($admin) {
+    return;
+  }
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'tide_search_listing') {
+    $result_type = $entity->get('field_listing_result_type')->value;
+
+    if ($result_type) {
+      // Mapping of result type to dependent fields.
+      $mapping = [
+        'standard' => [
+          'layout' => 'TideSearchResultsGrid',
+          'results' => 'TideSearchResult',
+          'per_page' => 10,
+        ],
+        'grants' => [
+          'layout' => 'TideSearchResultsList',
+          'results' => 'TideGrantSearchResult',
+          'per_page' => 10,
+        ],
+        'card' => [
+          'layout' => 'TideSearchResultsGrid',
+          'results' => 'TideSearchResultCard',
+          'per_page' => 12,
+        ],
+      ];
+
+      if (isset($mapping[$result_type])) {
+        $map = $mapping[$result_type];
+
+        // Lookup taxonomy terms by name.
+        $layout_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+          'name' => $map['layout'],
+          'vid' => 'listing_layout_comp_taxonomy',
+        ]);
+        $results_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+          'name' => $map['results'],
+          'vid' => 'listing_results_comp_taxonomy',
+        ]);
+
+        // Get the first term ID found.
+        $layout_tid = $layout_term ? reset($layout_term)->id() : NULL;
+        $results_tid = $results_term ? reset($results_term)->id() : NULL;
+
+        // Set entity reference fields.
+        if ($layout_tid) {
+          $entity->set('field_layout_component', ['target_id' => $layout_tid]);
+        }
+        if ($results_tid) {
+          $entity->set('field_results_component', ['target_id' => $results_tid]);
+        }
+
+        // Set results per page.
+        $entity->set('field_listing_results_per_page', $map['per_page']);
+      }
+    }
+  }
 }
