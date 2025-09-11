@@ -335,7 +335,7 @@ function _tide_search_update_view_display() {
     $active_default->save();
   }
 
-  // Teaser view display
+  // Teaser view display.
   $active_teaser = \Drupal::service('config.factory')->getEditable('core.entity_view_display.node.tide_search_listing.teaser');
   if ($active_teaser) {
 
