@@ -371,7 +371,7 @@ function tide_search_update_10009() {
   ];
 
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
 
   foreach ($configs as $config => $type) {
     $config_read = _tide_read_config($config, $config_location, TRUE);
