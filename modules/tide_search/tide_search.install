@@ -243,7 +243,6 @@ function tide_search_update_10008() {
  * Function to update form display config for tide_search_listing.
  */
 function _tide_search_update_form_display() {
-
   // Read Confgis.
   $active_config = \Drupal::service('config.factory')->getEditable('core.entity_form_display.node.tide_search_listing.default');
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
@@ -271,7 +270,6 @@ function _tide_search_update_form_display() {
     $active_groups = $active_config->get('third_party_settings.field_group') ?: [];
     foreach ($field_groups as $group_key => $group_config) {
       if (isset($active_groups[$group_key])) {
-        // Update existing group with values from source.
         $active_groups[$group_key] = array_merge($active_groups[$group_key], $group_config);
       }
     }
@@ -280,16 +278,37 @@ function _tide_search_update_form_display() {
 
   // Merge field components.
   $source_fields = $source_config['content'] ?? [];
+  $active_fields = $active_config->get('content') ?: [];
+
   if (!empty($source_fields)) {
-    $active_fields = $active_config->get('content') ?: [];
     foreach ($source_fields as $field_key => $field_config) {
       if (isset($active_fields[$field_key])) {
-        // Update existing field with values from source.
         $active_fields[$field_key] = array_merge($active_fields[$field_key], $field_config);
       }
     }
-    $active_config->set('content', $active_fields);
   }
+
+  // Ensure field_listing_result_type is present with defined settings.
+  if (!isset($active_fields['field_listing_result_type'])) {
+    $active_fields['field_listing_result_type'] = [
+      'type' => 'select2',
+      'weight' => 11,
+      'region' => 'content',
+      'settings' => [
+        'width' => '100%',
+      ],
+      'third_party_settings' => [],
+    ];
+  }
+
+  // Make sure it is not disabled.
+  $hidden = $active_config->get('hidden') ?: [];
+  if (isset($hidden['field_listing_result_type'])) {
+    unset($hidden['field_listing_result_type']);
+    $active_config->set('hidden', $hidden);
+  }
+
+  $active_config->set('content', $active_fields);
   $active_config->save();
 }
 
