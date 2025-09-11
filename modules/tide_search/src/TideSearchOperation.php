@@ -3,7 +3,6 @@
 namespace Drupal\tide_search;
 
 use Drupal\taxonomy\Entity\Term;
-use Drupal\user\Entity\Role;
 
 /**
  * Tide search modules operations.
