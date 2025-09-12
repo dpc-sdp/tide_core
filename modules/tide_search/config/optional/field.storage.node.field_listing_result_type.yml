@@ -12,8 +12,8 @@ type: list_string
 settings:
   allowed_values:
     -
-      value: standard
-      label: Standard
+      value: list
+      label: List
     -
       value: grants
       label: Grants

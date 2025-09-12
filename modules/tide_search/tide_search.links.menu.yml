@@ -7,29 +7,17 @@ tide_search.search_listing_parent:
   expanded: true
   weight: 100
 
-tide_search.search_listing_news:
-  title: 'Search listing: News'
+tide_search.search_listing_events:
+  title: 'Search listing: Events'
   route_name: node.add
   route_parameters:
     node_type: tide_search_listing
   options:
     query:
-      preset: news
+      preset: events
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 0
-
-tide_search.search_listing_publications:
-  title: 'Search listing: Publications'
-  route_name: node.add
-  route_parameters:
-    node_type: tide_search_listing
-  options:
-    query:
-      preset: publications
-  menu_name: admin
-  parent: tide_search.search_listing_parent
-  weight: 1
 
 tide_search.search_listing_grants:
   title: 'Search listing: Grants'
@@ -41,19 +29,7 @@ tide_search.search_listing_grants:
       preset: grants
   menu_name: admin
   parent: tide_search.search_listing_parent
-  weight: 2
-
-tide_search.search_listing_events:
-  title: 'Search listing: Events'
-  route_name: node.add
-  route_parameters:
-    node_type: tide_search_listing
-  options:
-    query:
-      preset: events
-  menu_name: admin
-  parent: tide_search.search_listing_parent
-  weight: 3
+  weight: 1
 
 tide_search.search_listing_landing_page:
   title: 'Search listing: Landing page'
@@ -63,6 +39,30 @@ tide_search.search_listing_landing_page:
   options:
     query:
       preset: landing_page
+  menu_name: admin
+  parent: tide_search.search_listing_parent
+  weight: 2
+
+tide_search.search_listing_news:
+  title: 'Search listing: News'
+  route_name: node.add
+  route_parameters:
+    node_type: tide_search_listing
+  options:
+    query:
+      preset: news
+  menu_name: admin
+  parent: tide_search.search_listing_parent
+  weight: 3
+
+tide_search.search_listing_publications:
+  title: 'Search listing: Publications'
+  route_name: node.add
+  route_parameters:
+    node_type: tide_search_listing
+  options:
+    query:
+      preset: publications
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 4

@@ -29,6 +29,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_search_input_placeholder
     - field.field.node.tide_search_listing.field_search_submit_label
     - field.field.node.tide_search_listing.field_show_content_rating
+    - field.field.node.tide_search_listing.field_sort_by_config_non_admin
     - field.field.node.tide_search_listing.field_tags
     - field.field.node.tide_search_listing.field_topic
     - node.type.tide_search_listing
@@ -83,6 +84,7 @@ third_party_settings:
     group_listing_configuration:
       children:
         - field_listing_query_config
+        - field_sort_by_config_non_admin
         - field_custom_sort_configuration
         - field_search_input_placeholder
         - field_search_submit_label
@@ -192,7 +194,7 @@ content:
     third_party_settings: {  }
   field_above_results_content:
     type: text_textarea
-    weight: 7
+    weight: 8
     region: content
     settings:
       rows: 5
@@ -239,7 +241,7 @@ content:
     third_party_settings: {  }
   field_custom_sort_configuration:
     type: content_collection_configuration_raw
-    weight: 5
+    weight: 13
     region: content
     settings:
       schema_validation: false
@@ -273,7 +275,7 @@ content:
     third_party_settings: {  }
   field_header_components:
     type: paragraphs
-    weight: 9
+    weight: 11
     region: content
     settings:
       title: Paragraph
@@ -319,7 +321,7 @@ content:
     third_party_settings: {  }
   field_layout_component:
     type: select2_entity_reference
-    weight: 13
+    weight: 11
     region: content
     settings:
       width: 100%
@@ -329,11 +331,11 @@ content:
     third_party_settings: {  }
   field_listing_global_filters:
     type: default_paragraphs
-    weight: 11
+    weight: 8
     region: content
     settings:
-      title: Paragraph
-      title_plural: Paragraphs
+      title: filter
+      title_plural: filters
       closed_mode: summary
       autocollapse: none
       add_mode: modal
@@ -360,7 +362,7 @@ content:
     third_party_settings: {  }
   field_listing_query_config:
     type: content_collection_configuration_raw
-    weight: 4
+    weight: 11
     region: content
     settings:
       schema_validation: false
@@ -369,14 +371,14 @@ content:
     third_party_settings: {  }
   field_listing_result_type:
     type: select2
-    weight: 11
+    weight: 9
     region: content
     settings:
       width: 100%
     third_party_settings: {  }
   field_listing_results_config:
     type: content_collection_configuration_raw
-    weight: 10
+    weight: 8
     region: content
     settings:
       schema_validation: false
@@ -385,7 +387,7 @@ content:
     third_party_settings: {  }
   field_listing_results_per_page:
     type: number
-    weight: 12
+    weight: 10
     region: content
     settings:
       placeholder: ''
@@ -395,8 +397,8 @@ content:
     weight: 10
     region: content
     settings:
-      title: Paragraph
-      title_plural: Paragraphs
+      title: filter
+      title_plural: filters
       edit_mode: closed
       closed_mode: summary
       autocollapse: none
@@ -413,7 +415,7 @@ content:
     third_party_settings: {  }
   field_metatags:
     type: metatag_firehose
-    weight: 26
+    weight: 25
     region: content
     settings:
       sidebar: true
@@ -421,21 +423,21 @@ content:
     third_party_settings: {  }
   field_node_primary_site:
     type: options_buttons
-    weight: 28
+    weight: 27
     region: content
     settings: {  }
     third_party_settings: {  }
     field_name: field_node_primary_site
   field_node_site:
     type: options_buttons
-    weight: 27
+    weight: 26
     region: content
     settings: {  }
     third_party_settings: {  }
     field_name: field_node_site
   field_results_component:
     type: select2_entity_reference
-    weight: 14
+    weight: 12
     region: content
     settings:
       width: 100%
@@ -445,7 +447,7 @@ content:
     third_party_settings: {  }
   field_search_configuration:
     type: content_collection_configuration_raw
-    weight: 8
+    weight: 9
     region: content
     settings:
       schema_validation: false
@@ -454,7 +456,7 @@ content:
     third_party_settings: {  }
   field_search_input_placeholder:
     type: string_textfield
-    weight: 6
+    weight: 14
     region: content
     settings:
       size: 60
@@ -462,7 +464,7 @@ content:
     third_party_settings: {  }
   field_search_submit_label:
     type: string_textfield
-    weight: 7
+    weight: 15
     region: content
     settings:
       size: 60
@@ -475,9 +477,16 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
+  field_sort_by_config_non_admin:
+    type: select2
+    weight: 12
+    region: content
+    settings:
+      width: 100%
+    third_party_settings: {  }
   field_tags:
     type: entity_reference_autocomplete
-    weight: 25
+    weight: 24
     region: content
     settings:
       match_operator: CONTAINS
@@ -497,7 +506,7 @@ content:
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 24
+    weight: 23
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -515,7 +524,7 @@ content:
       display_label: true
     third_party_settings: {  }
   simple_sitemap:
-    weight: 23
+    weight: 22
     region: content
     settings: {  }
     third_party_settings: {  }

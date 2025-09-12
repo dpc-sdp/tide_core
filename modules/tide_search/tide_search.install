@@ -250,12 +250,19 @@ function _tide_search_update_form_display() {
 
   $source_config = _tide_read_config('core.entity_form_display.node.tide_search_listing.default', $config_location, FALSE);
 
-  // Add field dependency.
+  // Add field dependencies.
   $dependencies_config = $active_config->get('dependencies.config') ?: [];
-  if (!in_array('field.field.node.tide_search_listing.field_listing_result_type', $dependencies_config, TRUE)) {
-    $dependencies_config[] = 'field.field.node.tide_search_listing.field_listing_result_type';
-    $active_config->set('dependencies.config', $dependencies_config);
+  $fields_to_add = [
+    'field.field.node.tide_search_listing.field_listing_result_type',
+    'field.field.node.tide_search_listing.field_sort_by_config_non_admin',
+  ];
+  foreach ($fields_to_add as $field) {
+    if (!in_array($field, $dependencies_config, TRUE)) {
+      $dependencies_config[] = $field;
+    }
   }
+
+$active_config->set('dependencies.config', $dependencies_config);
 
   // Add module dependency.
   $dependencies_module = $active_config->get('dependencies.module') ?: [];
@@ -288,7 +295,7 @@ function _tide_search_update_form_display() {
     }
   }
 
-  // Ensure field_listing_result_type is present with defined settings.
+  // Ensure field_listing_result_type is present.
   if (!isset($active_fields['field_listing_result_type'])) {
     $active_fields['field_listing_result_type'] = [
       'type' => 'select2',
@@ -305,6 +312,25 @@ function _tide_search_update_form_display() {
   $hidden = $active_config->get('hidden') ?: [];
   if (isset($hidden['field_listing_result_type'])) {
     unset($hidden['field_listing_result_type']);
+    $active_config->set('hidden', $hidden);
+  }
+
+  // Ensure field_sort_by_config_non_admin is present.
+  if (!isset($active_fields['field_sort_by_config_non_admin'])) {
+    $active_fields['field_sort_by_config_non_admin'] = [
+      'type' => 'select2',
+      'weight' => 12,
+      'region' => 'content',
+      'settings' => [
+        'width' => '100%',
+      ],
+      'third_party_settings' => [],
+    ];
+  }
+
+  // Make sure it is not disabled.
+  if (isset($hidden['field_sort_by_config_non_admin'])) {
+    unset($hidden['field_sort_by_config_non_admin']);
     $active_config->set('hidden', $hidden);
   }
 
@@ -331,6 +357,7 @@ function _tide_search_update_view_display() {
     foreach ([
       'field.field.node.tide_search_listing.field_content_category',
       'field.field.node.tide_search_listing.field_listing_result_type',
+      'field.field.node.tide_search_listing.field_sort_by_config_non_admin',
     ] as $dep) {
       if (!in_array($dep, $dependencies_config, TRUE)) {
         $dependencies_config[] = $dep;
@@ -350,6 +377,19 @@ function _tide_search_update_view_display() {
     if (!isset($content['field_listing_result_type']) && isset($source_default['content']['field_listing_result_type'])) {
       $content['field_listing_result_type'] = $source_default['content']['field_listing_result_type'];
     }
+
+    // Add field_sort_by_config_non_admin.
+    if (!isset($content['field_sort_by_config_non_admin'])) {
+      $content['field_sort_by_config_non_admin'] = [
+        'type' => 'list_default',
+        'label' => 'above',
+        'settings' => [],
+        'third_party_settings' => [],
+        'weight' => 123,
+        'region' => 'content',
+      ];
+    }
+
     $active_default->set('content', $content);
     $active_default->save();
   }
@@ -363,6 +403,7 @@ function _tide_search_update_view_display() {
     foreach ([
       'field.field.node.tide_search_listing.field_content_category',
       'field.field.node.tide_search_listing.field_listing_result_type',
+      'field.field.node.tide_search_listing.field_sort_by_config_non_admin',
     ] as $dep) {
       if (!in_array($dep, $dependencies_config, TRUE)) {
         $dependencies_config[] = $dep;
@@ -386,7 +427,9 @@ function tide_search_update_10009() {
   // Add the new non-admin field.
   $configs = [
     'field.storage.node.field_listing_result_type' => 'field_storage_config',
+    'field.storage.node.field_sort_by_config_non_admin' => 'field_storage_config',
     'field.field.node.tide_search_listing.field_listing_result_type' => 'field_config',
+    'field.field.node.tide_search_listing.field_sort_by_config_non_admin' => 'field_config',
   ];
 
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
@@ -434,6 +477,7 @@ function tide_search_update_10009() {
     'create tide_search_listing content',
     'delete own tide_search_listing content',
     'edit own tide_search_listing content',
+    'edit any tide_search_listing content',
   ];
 
   $roles = ['approver_plus', 'approver', 'editor'];

@@ -157,6 +157,7 @@ class TideSearchOperation {
       'create tide_search_listing content',
       'delete own tide_search_listing content',
       'edit own tide_search_listing content',
+      'edit any tide_search_listing content',
     ];
 
     // Extra permissions for site_admin.

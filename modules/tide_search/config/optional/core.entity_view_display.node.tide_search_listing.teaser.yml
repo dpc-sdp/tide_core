@@ -29,6 +29,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_search_input_placeholder
     - field.field.node.tide_search_listing.field_search_submit_label
     - field.field.node.tide_search_listing.field_show_content_rating
+    - field.field.node.tide_search_listing.field_sort_by_config_non_admin
     - field.field.node.tide_search_listing.field_tags
     - field.field.node.tide_search_listing.field_topic
     - node.type.tide_search_listing
@@ -76,6 +77,7 @@ hidden:
   field_search_input_placeholder: true
   field_search_submit_label: true
   field_show_content_rating: true
+  field_sort_by_config_non_admin: true
   field_tags: true
   field_topic: true
   search_api_excerpt: true

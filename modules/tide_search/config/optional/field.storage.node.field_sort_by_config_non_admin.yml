@@ -1,0 +1,36 @@
+uuid: 21351373-2003-488e-b087-d06949221c93
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_sort_by_config_non_admin
+field_name: field_sort_by_config_non_admin
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: events
+      label: 'Event - Happening soonest to latest'
+    -
+      value: grants
+      label: 'Grants - Closing soonest'
+    -
+      value: landing_page
+      label: 'Landing pages - Latest created date to oldest'
+    -
+      value: news
+      label: 'News - Date newest to oldest'
+    -
+      value: publications
+      label: 'Publication - Published newest to oldest'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

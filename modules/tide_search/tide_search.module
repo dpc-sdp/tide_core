@@ -197,6 +197,7 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
       'group_results',
     ];
     $restricted_items = [
+      'field_custom_sort_configuration',
       'field_listing_query_config',
       'field_search_submit_label',
       'field_listing_results_config',
@@ -266,6 +267,7 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
   }
   // Non admin field only.
   $form['field_listing_result_type']['#access'] = !$non_admin ? FALSE : TRUE;
+  $form['field_sort_by_config_non_admin']['#access'] = !$non_admin ? FALSE : TRUE;
 
   return $form;
 }
@@ -288,7 +290,7 @@ function tide_search_entity_presave(EntityInterface $entity) {
     if ($result_type) {
       // Mapping of result type to dependent fields.
       $mapping = [
-        'standard' => [
+        'list' => [
           'layout' => 'TideSearchResultsGrid',
           'results' => 'TideSearchResult',
         ],
@@ -328,6 +330,38 @@ function tide_search_entity_presave(EntityInterface $entity) {
         }
       }
     }
+    // Set sort config JSON.
+    $sort_by = $entity->get('field_sort_by_config_non_admin')->value;
+    if ($sort_by) {
+      // Mapping of sort_by values to JSON configuration.
+      $sort_map = [
+        'news'          => '[{ "field_news_date": "desc" }]',
+        'publications'   => '[{ "field_publication_date": "desc" }]',
+        'grants'        => '[{ "field_node_dates_end_value": "desc" }]',
+        'event'         => '[{ "field_event_date_start_value": "asc" }]',
+        'landing_page'  => '[{ "created": "desc" }]',
+      ];
+
+      if (isset($sort_map[$sort_by])) {
+        $entity->set('field_custom_sort_configuration', $sort_map[$sort_by]);
+      }
+    }
+    // Unset empty default paragraph.
+    if ($entity->hasField('field_listing_user_filters')) {
+      $items = $entity->get('field_listing_user_filters');
+
+      foreach ($items as $delta => $item) {
+        /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
+        $paragraph = $item->entity;
+
+        if ($paragraph && $paragraph->bundle() === 'searchable_fields') {
+          $is_field_empty = $paragraph->get('field_field')->isEmpty();
+          if ($is_field_empty) {
+            unset($items[$delta]);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -343,18 +377,10 @@ function _tide_search_apply_preset_values(array &$form, FormStateInterface $form
     return;
   }
 
-  // Sort configuration mapping.
-  $sort_map = [
-    'news'         => '[{ "field_news_date": "desc" }]',
-    'publications' => '[{ "field_publication_date": "desc" }]',
-    'grants'       => '[{ "field_node_dates_end_value": "desc" }]',
-    'events'       => '[{ "field_event_date_start_value": "asc" }]',
-    'landing_page' => '[{ "created": "desc" }]',
-  ];
-
-  // Apply sort configuration.
-  if (isset($sort_map[$preset]) && isset($form['field_custom_sort_configuration'])) {
-    $form['field_custom_sort_configuration']['widget'][0]['value']['#default_value'] = $sort_map[$preset];
+  // Prefill sort config.
+  $valid_presets = ['news', 'publications', 'grants', 'events', 'landing_page'];
+  if ($preset && in_array($preset, $valid_presets, TRUE)) {
+    $form['field_sort_by_config_non_admin']['widget']['#default_value'][0] = $preset;
   }
 
   // Query configuration mapping.
@@ -416,7 +442,7 @@ function _tide_search_apply_preset_values(array &$form, FormStateInterface $form
   $result_type_map = [
     'events'       => 'card',
     'grants'       => 'grants',
-    'landing_page' => 'standard',
+    'landing_page' => 'list',
     'news'         => 'card',
     'publications' => 'card',
   ];
