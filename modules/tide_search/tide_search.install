@@ -262,7 +262,7 @@ function _tide_search_update_form_display() {
     }
   }
 
-$active_config->set('dependencies.config', $dependencies_config);
+  $active_config->set('dependencies.config', $dependencies_config);
 
   // Add module dependency.
   $dependencies_module = $active_config->get('dependencies.module') ?: [];

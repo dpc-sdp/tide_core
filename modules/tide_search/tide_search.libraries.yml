@@ -1,0 +1,4 @@
+search_listing_form:
+  css:
+    theme:
+      css/tide_search_listing.css: {}

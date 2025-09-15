@@ -225,6 +225,21 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
         unset($form[$field]['widget']['add_more'][$button]);
       }
     }
+    // Mandatory site field.
+    if (!empty($form['field_listing_global_filters']['widget'])) {
+      foreach ($form['field_listing_global_filters']['widget'] as $delta => &$widget) {
+        if (!is_numeric($delta)) {
+          continue;
+        }
+
+        // Target the listing_site paragraph.
+        if (isset($widget['#paragraph_type']) && $widget['#paragraph_type'] === 'listing_site') {
+          if (isset($widget['subform']['field_listing_site_site'])) {
+            $widget['subform']['field_listing_site_site']['widget']['#required'] = TRUE;
+          }
+        }
+      }
+    }
     // Collapsed by default.
     $wrappable_fields = [
       'field_above_results_content' => 'Above results content',
@@ -248,22 +263,7 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
         unset($form[$field_name]);
       }
     }
-  }
-  // Remove default paragraph types.
-  $node = $form_state->getFormObject()->getEntity();
-  if ($node->isNew() && !$non_admin) {
-    $fields_to_clean = [
-      'field_listing_global_filters' => [0, 1],
-      'field_listing_user_filters'   => [0],
-    ];
-
-    foreach ($fields_to_clean as $field_name => $deltas) {
-      if (!empty($form[$field_name]['widget'])) {
-        foreach ($deltas as $delta) {
-          unset($form[$field_name]['widget'][$delta]);
-        }
-      }
-    }
+     $form['#attached']['library'][] = 'tide_search/search_listing_form';
   }
   // Non admin field only.
   $form['field_listing_result_type']['#access'] = !$non_admin ? FALSE : TRUE;
@@ -276,90 +276,110 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
  * Implements hook_entity_presave().
  */
 function tide_search_entity_presave(EntityInterface $entity) {
-  // Self service search listing.
-  $current_user = \Drupal::currentUser();
-  $admin_roles = ['administrator', 'site_admin'];
-  $admin = array_intersect($admin_roles, $current_user->getRoles());
-  // Only set field values for non admins.
-  if ($admin) {
-    return;
-  }
   if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'tide_search_listing') {
-    $result_type = $entity->get('field_listing_result_type')->value;
+    // Self service search listing.
+    $current_user = \Drupal::currentUser();
+    $admin_roles = ['administrator', 'site_admin'];
+    $admin = array_intersect($admin_roles, $current_user->getRoles());
+    // Only set field values for non admins.
+    if (!$admin) {
+      $result_type = $entity->get('field_listing_result_type')->value;
 
-    if ($result_type) {
-      // Mapping of result type to dependent fields.
-      $mapping = [
-        'list' => [
-          'layout' => 'TideSearchResultsGrid',
-          'results' => 'TideSearchResult',
-        ],
-        'grants' => [
-          'layout' => 'TideSearchResultsList',
-          'results' => 'TideGrantSearchResult',
-        ],
-        'card' => [
-          'layout' => 'TideSearchResultsGrid',
-          'results' => 'TideSearchResultCard',
-        ],
-      ];
+      if ($result_type) {
+        // Mapping of result type to dependent fields.
+        $mapping = [
+          'list' => [
+            'layout' => 'TideSearchResultsGrid',
+            'results' => 'TideSearchResult',
+          ],
+          'grants' => [
+            'layout' => 'TideSearchResultsList',
+            'results' => 'TideGrantSearchResult',
+          ],
+          'card' => [
+            'layout' => 'TideSearchResultsGrid',
+            'results' => 'TideSearchResultCard',
+          ],
+        ];
 
-      if (isset($mapping[$result_type])) {
-        $map = $mapping[$result_type];
+        if (isset($mapping[$result_type])) {
+          $map = $mapping[$result_type];
 
-        // Lookup taxonomy terms by name.
-        $layout_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-          'name' => $map['layout'],
-          'vid' => 'listing_layout_comp_taxonomy',
-        ]);
-        $results_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
-          'name' => $map['results'],
-          'vid' => 'listing_results_comp_taxonomy',
-        ]);
+          // Lookup taxonomy terms by name.
+          $layout_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+            'name' => $map['layout'],
+            'vid' => 'listing_layout_comp_taxonomy',
+          ]);
+          $results_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+            'name' => $map['results'],
+            'vid' => 'listing_results_comp_taxonomy',
+          ]);
 
-        // Get the first term ID found.
-        $layout_tid = $layout_term ? reset($layout_term)->id() : NULL;
-        $results_tid = $results_term ? reset($results_term)->id() : NULL;
+          // Get the first term ID found.
+          $layout_tid = $layout_term ? reset($layout_term)->id() : NULL;
+          $results_tid = $results_term ? reset($results_term)->id() : NULL;
 
-        // Set entity reference fields.
-        if ($layout_tid) {
-          $entity->set('field_layout_component', ['target_id' => $layout_tid]);
-        }
-        if ($results_tid) {
-          $entity->set('field_results_component', ['target_id' => $results_tid]);
-        }
-      }
-    }
-    // Set sort config JSON.
-    $sort_by = $entity->get('field_sort_by_config_non_admin')->value;
-    if ($sort_by) {
-      // Mapping of sort_by values to JSON configuration.
-      $sort_map = [
-        'news'          => '[{ "field_news_date": "desc" }]',
-        'publications'   => '[{ "field_publication_date": "desc" }]',
-        'grants'        => '[{ "field_node_dates_end_value": "desc" }]',
-        'event'         => '[{ "field_event_date_start_value": "asc" }]',
-        'landing_page'  => '[{ "created": "desc" }]',
-      ];
-
-      if (isset($sort_map[$sort_by])) {
-        $entity->set('field_custom_sort_configuration', $sort_map[$sort_by]);
-      }
-    }
-    // Unset empty default paragraph.
-    if ($entity->hasField('field_listing_user_filters')) {
-      $items = $entity->get('field_listing_user_filters');
-
-      foreach ($items as $delta => $item) {
-        /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
-        $paragraph = $item->entity;
-
-        if ($paragraph && $paragraph->bundle() === 'searchable_fields') {
-          $is_field_empty = $paragraph->get('field_field')->isEmpty();
-          if ($is_field_empty) {
-            unset($items[$delta]);
+          // Set entity reference fields.
+          if ($layout_tid) {
+            $entity->set('field_layout_component', ['target_id' => $layout_tid]);
+          }
+          if ($results_tid) {
+            $entity->set('field_results_component', ['target_id' => $results_tid]);
           }
         }
+      }
+      // Set sort config JSON.
+      $sort_by = $entity->get('field_sort_by_config_non_admin')->value;
+      if ($sort_by) {
+        // Mapping of sort_by values to JSON configuration.
+        $sort_map = [
+          'news'          => '[{ "field_news_date": "desc" }]',
+          'publications'   => '[{ "field_publication_date": "desc" }]',
+          'grants'        => '[{ "field_node_dates_end_value": "desc" }]',
+          'event'         => '[{ "field_event_date_start_value": "asc" }]',
+          'landing_page'  => '[{ "created": "desc" }]',
+        ];
+
+        if (isset($sort_map[$sort_by])) {
+          $entity->set('field_custom_sort_configuration', $sort_map[$sort_by]);
+        }
+      }
+    }
+    // Clean user filters.
+    _tide_search_clean_empty_paragraphs($entity, 'field_listing_user_filters', 'searchable_fields', 'field_field');
+
+    // Clean global filters: listing_content_type.
+    _tide_search_clean_empty_paragraphs($entity, 'field_listing_global_filters', 'listing_content_type', 'field_listing_global_contenttype');
+
+    // Clean global filters: listing_site.
+    _tide_search_clean_empty_paragraphs($entity, 'field_listing_global_filters', 'listing_site', 'field_listing_site_site');
+  }
+}
+
+/**
+ * Removes empty paragraph items from an entity reference field.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The entity being cleaned.
+ * @param string $field_name
+ *   The entity reference field machine name.
+ * @param string $bundle
+ *   The paragraph bundle to check.
+ * @param string $field_to_check
+ *   The field inside the paragraph to test for emptiness.
+ */
+function _tide_search_clean_empty_paragraphs(EntityInterface $entity, string $field_name, string $bundle, string $field_to_check): void {
+  if (!$entity->hasField($field_name)) {
+    return;
+  }
+
+  $items = $entity->get($field_name);
+
+  foreach ($items as $delta => $item) {
+    $paragraph = $item->entity;
+    if ($paragraph && $paragraph->bundle() === $bundle) {
+      if ($paragraph->get($field_to_check)->isEmpty()) {
+        $items->removeItem($delta);
       }
     }
   }
