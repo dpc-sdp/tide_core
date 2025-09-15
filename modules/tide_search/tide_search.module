@@ -263,7 +263,7 @@ function _tide_search_form_node_form_after_build(array $form, FormStateInterface
         unset($form[$field_name]);
       }
     }
-     $form['#attached']['library'][] = 'tide_search/search_listing_form';
+    $form['#attached']['library'][] = 'tide_search/search_listing_form';
   }
   // Non admin field only.
   $form['field_listing_result_type']['#access'] = !$non_admin ? FALSE : TRUE;
