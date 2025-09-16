@@ -101,3 +101,18 @@ function tide_webform_update_10003() {
     }
   }
 }
+
+/**
+ * Update webform elements enhancer to use webform_elements_enhancer.
+ */
+function tide_webform_update_10004() {
+  $config_name = 'jsonapi_extras.jsonapi_resource_config.webform--webform';
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable($config_name);
+
+  $resource_fields = $config->get('resourceFields');
+  if (isset($resource_fields['elements']['enhancer']['id'])) {
+    $resource_fields['elements']['enhancer']['id'] = 'webform_elements_enhancer';
+    $config->set('resourceFields', $resource_fields)->save();
+  }
+}
