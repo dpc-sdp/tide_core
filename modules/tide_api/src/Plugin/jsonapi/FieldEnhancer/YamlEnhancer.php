@@ -35,9 +35,15 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
     }
     // Process any other fields that may contain token replacements.
     foreach ($data as $key => &$value) {
-      if (!empty($value['#default_value'])) {
-        $value['#default_value'] = $token_service->replace($value['#default_value']);
+      if ($value['#type'] === 'webform_wizard_page') {
+        foreach ($value as $page_key => &$page) {
+          if (is_array($page)) {
+            $this->replaceTokensInDefaultValue($page, $token_service);
+          }
+        }
       }
+
+      $this->replaceTokensInDefaultValue($value, $token_service);
     }
 
     return $data;
@@ -99,6 +105,20 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
       $result = Html::serialize($dom);
     }
     return $result;
+  }
+
+  /**
+   * Replaces tokens in the #default_value field of an element.
+   *
+   * @param array &$element
+   *   The element array to process.
+   * @param \Drupal\Core\Utility\Token $token_service
+   *   The token service.
+   */
+  private function replaceTokensInDefaultValue(array &$element, $token_service) {
+    if (!empty($element['#default_value'])) {
+      $element['#default_value'] = $token_service->replace($element['#default_value']);
+    }
   }
 
 }
