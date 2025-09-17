@@ -6,6 +6,8 @@ tide_search.search_listing_parent:
   parent: admin_toolbar_tools.extra_links:node.add
   expanded: true
   weight: 100
+  requirements:
+    _permission: 'create tide_search_listing content'
 
 tide_search.search_listing_events:
   title: 'Search listing: Events'
@@ -18,6 +20,8 @@ tide_search.search_listing_events:
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 0
+  requirements:
+    _permission: 'create tide_search_listing content'
 
 tide_search.search_listing_grants:
   title: 'Search listing: Grants'
@@ -30,6 +34,8 @@ tide_search.search_listing_grants:
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 1
+  requirements:
+    _permission: 'create tide_search_listing content'
 
 tide_search.search_listing_landing_page:
   title: 'Search listing: Landing page'
@@ -42,6 +48,8 @@ tide_search.search_listing_landing_page:
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 2
+  requirements:
+    _permission: 'create tide_search_listing content'
 
 tide_search.search_listing_news:
   title: 'Search listing: News'
@@ -54,6 +62,8 @@ tide_search.search_listing_news:
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 3
+  requirements:
+    _permission: 'create tide_search_listing content'
 
 tide_search.search_listing_publications:
   title: 'Search listing: Publications'
@@ -66,3 +76,5 @@ tide_search.search_listing_publications:
   menu_name: admin
   parent: tide_search.search_listing_parent
   weight: 4
+  requirements:
+    _permission: 'create tide_search_listing content'

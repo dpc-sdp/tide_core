@@ -289,7 +289,7 @@ function tide_search_entity_presave(EntityInterface $entity) {
         // Mapping of result type to dependent fields.
         $mapping = [
           'list' => [
-            'layout' => 'TideSearchResultsGrid',
+            'layout' => 'TideSearchResultsList',
             'results' => 'TideSearchResult',
           ],
           'grants' => [
@@ -499,9 +499,21 @@ function tide_search_theme_suggestions_node_add_list(array $variables) {
   $current_user = \Drupal::currentUser();
   $admin_roles = ['administrator', 'site_admin'];
   $admin = array_intersect($admin_roles, $current_user->getRoles());
-  if (!$admin) {
+  if (!$admin && $current_user->hasPermission('create tide_search_listing content')) {
     $suggestions[] = 'node_add_list__non_admin';
   }
 
   return $suggestions;
+}
+
+/**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function tide_search_menu_links_discovered_alter(&$links) {
+  $current_user = \Drupal::currentUser();
+
+  // Hide parent if user does not have permission.
+  if (!$current_user->hasPermission('create tide_search_listing content')) {
+    unset($links['tide_search.search_listing_parent']);
+  }
 }
