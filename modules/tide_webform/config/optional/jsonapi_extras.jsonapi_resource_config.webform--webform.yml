@@ -125,7 +125,7 @@ resourceFields:
     fieldName: elements
     publicName: elements
     enhancer:
-      id: default_maxlength_enhancer
+      id: webform_elements_enhancer
     disabled: false
     advancedOptionsIcon: ''
     enhancer_label: ''

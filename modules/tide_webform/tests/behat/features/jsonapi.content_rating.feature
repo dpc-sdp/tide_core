@@ -15,7 +15,6 @@ Feature: JSON API Webform
     And the JSON node "data[0].attributes.elements.url" should exist
     And the JSON node "data[0].attributes.elements.was_this_page_helpful" should exist
     And the JSON node "data[0].attributes.elements.comments" should exist
-    And the JSON node "data[0].attributes.elements.comments.#maxlength" should be equal to "255"
 
   Scenario: Send POST request to the Content Rating form
     When I add "Content-Type" header equal to "application/vnd.api+json"
