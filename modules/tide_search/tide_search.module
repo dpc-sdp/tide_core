@@ -505,15 +505,3 @@ function tide_search_theme_suggestions_node_add_list(array $variables) {
 
   return $suggestions;
 }
-
-/**
- * Implements hook_menu_links_discovered_alter().
- */
-function tide_search_menu_links_discovered_alter(&$links) {
-  $current_user = \Drupal::currentUser();
-
-  // Hide parent if user does not have permission.
-  if (!$current_user->hasPermission('create tide_search_listing content')) {
-    unset($links['tide_search.search_listing_parent']);
-  }
-}

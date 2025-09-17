@@ -798,7 +798,8 @@ function tide_core_menu_navigation_links(array $tree) {
     // Search listing self service.
     // Hide it for admins.
     if ($element->link->getPluginId() === 'tide_search.search_listing_parent') {
-      if (array_intersect($admin_roles, $current_user->getRoles())) {
+      $allowed_users = $current_user->hasPermission('create tide_search_listing content');
+      if (array_intersect($admin_roles, $current_user->getRoles()) || !$allowed_users) {
         $element->access = AccessResult::forbidden();
       }
     }
