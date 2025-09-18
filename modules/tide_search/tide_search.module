@@ -335,8 +335,8 @@ function tide_search_entity_presave(EntityInterface $entity) {
         $sort_map = [
           'news'          => '[{ "field_news_date": "desc" }]',
           'publications'   => '[{ "field_publication_date": "desc" }]',
-          'grants'        => '[{ "field_node_dates_end_value": "desc" }]',
-          'event'         => '[{ "field_event_date_start_value": "asc" }]',
+          'grants'        => '[{"_score": "desc"},{"field_node_dates_end_value": "asc"},{"title.keyword": "asc"}]',
+          'events'         => '[{ "field_event_date_start_value": "asc" }]',
           'landing_page'  => '[{ "created": "desc" }]',
         ];
 
@@ -476,6 +476,11 @@ function _tide_search_apply_preset_values(array &$form, FormStateInterface $form
   if (isset($form['field_listing_results_per_page'])) {
     $per_page = in_array($preset, ['grants', 'landing_page'], TRUE) ? 10 : 12;
     $form['field_listing_results_per_page']['widget'][0]['value']['#default_value'] = $per_page;
+  }
+
+  // Prefill Search Configuration.
+  if (isset($preset) && $preset == 'grants') {
+    $form['field_search_configuration']['widget'][0]['value']['#default_value'] = '{"customQueryConfig": {"function": "grantsQueryFn"}}';
   }
 }
 
