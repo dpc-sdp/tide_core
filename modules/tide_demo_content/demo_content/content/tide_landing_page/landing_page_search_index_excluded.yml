@@ -1,6 +1,6 @@
 - entity: node
   type: landing_page
-  title: Image Test Doc - demo
+  title: ExcludedFromSearchIndexLP - demo
   status: 1
   moderation_state:
     - '#process':
@@ -26,6 +26,7 @@
               name: 'Demo: Hero Banner Many Talents Once VCE'
   field_paragraph_theme: light
   field_show_hero_image_caption: 0
+  field_search_index_exclude: 1
   field_graphical_image: 
       - '#process':
         callback: reference
