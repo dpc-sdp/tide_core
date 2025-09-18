@@ -238,3 +238,262 @@ function tide_search_update_10008() {
     $config->set('backend_config', $backend_config)->save();
   }
 }
+
+/**
+ * Function to update form display config for tide_search_listing.
+ */
+function _tide_search_update_form_display() {
+  // Read Confgis.
+  $active_config = \Drupal::service('config.factory')->getEditable('core.entity_form_display.node.tide_search_listing.default');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+
+  $source_config = _tide_read_config('core.entity_form_display.node.tide_search_listing.default', $config_location, FALSE);
+
+  // Add field dependencies.
+  $dependencies_config = $active_config->get('dependencies.config') ?: [];
+  $fields_to_add = [
+    'field.field.node.tide_search_listing.field_listing_result_type',
+    'field.field.node.tide_search_listing.field_sort_by_config_non_admin',
+  ];
+  foreach ($fields_to_add as $field) {
+    if (!in_array($field, $dependencies_config, TRUE)) {
+      $dependencies_config[] = $field;
+    }
+  }
+
+  $active_config->set('dependencies.config', $dependencies_config);
+
+  // Add module dependency.
+  $dependencies_module = $active_config->get('dependencies.module') ?: [];
+  if (!in_array('default_paragraphs', $dependencies_module, TRUE)) {
+    $dependencies_module[] = 'default_paragraphs';
+    $active_config->set('dependencies.module', $dependencies_module);
+  }
+
+  // Merge third_party_settings:field_group.
+  $field_groups = $source_config['third_party_settings']['field_group'] ?? [];
+  if (!empty($field_groups)) {
+    $active_groups = $active_config->get('third_party_settings.field_group') ?: [];
+    foreach ($field_groups as $group_key => $group_config) {
+      if (isset($active_groups[$group_key])) {
+        $active_groups[$group_key] = array_merge($active_groups[$group_key], $group_config);
+      }
+    }
+    $active_config->set('third_party_settings.field_group', $active_groups);
+  }
+
+  // Merge field components.
+  $source_fields = $source_config['content'] ?? [];
+  $active_fields = $active_config->get('content') ?: [];
+
+  if (!empty($source_fields)) {
+    foreach ($source_fields as $field_key => $field_config) {
+      if (isset($active_fields[$field_key])) {
+        $active_fields[$field_key] = array_merge($active_fields[$field_key], $field_config);
+      }
+    }
+  }
+
+  // Ensure field_listing_result_type is present.
+  if (!isset($active_fields['field_listing_result_type'])) {
+    $active_fields['field_listing_result_type'] = [
+      'type' => 'select2',
+      'weight' => 11,
+      'region' => 'content',
+      'settings' => [
+        'width' => '100%',
+      ],
+      'third_party_settings' => [],
+    ];
+  }
+
+  // Make sure it is not disabled.
+  $hidden = $active_config->get('hidden') ?: [];
+  if (isset($hidden['field_listing_result_type'])) {
+    unset($hidden['field_listing_result_type']);
+    $active_config->set('hidden', $hidden);
+  }
+
+  // Ensure field_sort_by_config_non_admin is present.
+  if (!isset($active_fields['field_sort_by_config_non_admin'])) {
+    $active_fields['field_sort_by_config_non_admin'] = [
+      'type' => 'select2',
+      'weight' => 12,
+      'region' => 'content',
+      'settings' => [
+        'width' => '100%',
+      ],
+      'third_party_settings' => [],
+    ];
+  }
+
+  // Make sure it is not disabled.
+  if (isset($hidden['field_sort_by_config_non_admin'])) {
+    unset($hidden['field_sort_by_config_non_admin']);
+    $active_config->set('hidden', $hidden);
+  }
+
+  $active_config->set('content', $active_fields);
+  $active_config->save();
+}
+
+/**
+ * Function to update view display configs for tide_search_listing.
+ */
+function _tide_search_update_view_display() {
+  // Read Confgis.
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+
+  // Default view display.
+  $active_default = \Drupal::service('config.factory')->getEditable('core.entity_view_display.node.tide_search_listing.default');
+  $source_default = _tide_read_config('core.entity_view_display.node.tide_search_listing.default', $config_location, FALSE);
+
+  if ($active_default && $source_default) {
+
+    // Add dependencies:config.
+    $dependencies_config = $active_default->get('dependencies.config') ?: [];
+    foreach ([
+      'field.field.node.tide_search_listing.field_content_category',
+      'field.field.node.tide_search_listing.field_listing_result_type',
+      'field.field.node.tide_search_listing.field_sort_by_config_non_admin',
+    ] as $dep) {
+      if (!in_array($dep, $dependencies_config, TRUE)) {
+        $dependencies_config[] = $dep;
+      }
+    }
+    $active_default->set('dependencies.config', $dependencies_config);
+
+    // Add dependencies:module.
+    $dependencies_module = $active_default->get('dependencies.module') ?: [];
+    if (!in_array('options', $dependencies_module, TRUE)) {
+      $dependencies_module[] = 'options';
+    }
+    $active_default->set('dependencies.module', $dependencies_module);
+
+    // Add field_listing_result_type under content.
+    $content = $active_default->get('content') ?: [];
+    if (!isset($content['field_listing_result_type']) && isset($source_default['content']['field_listing_result_type'])) {
+      $content['field_listing_result_type'] = $source_default['content']['field_listing_result_type'];
+    }
+
+    // Add field_sort_by_config_non_admin.
+    if (!isset($content['field_sort_by_config_non_admin'])) {
+      $content['field_sort_by_config_non_admin'] = [
+        'type' => 'list_default',
+        'label' => 'above',
+        'settings' => [],
+        'third_party_settings' => [],
+        'weight' => 123,
+        'region' => 'content',
+      ];
+    }
+
+    $active_default->set('content', $content);
+    $active_default->save();
+  }
+
+  // Teaser view display.
+  $active_teaser = \Drupal::service('config.factory')->getEditable('core.entity_view_display.node.tide_search_listing.teaser');
+  if ($active_teaser) {
+
+    // Add dependencies:config.
+    $dependencies_config = $active_teaser->get('dependencies.config') ?: [];
+    foreach ([
+      'field.field.node.tide_search_listing.field_content_category',
+      'field.field.node.tide_search_listing.field_listing_result_type',
+      'field.field.node.tide_search_listing.field_sort_by_config_non_admin',
+    ] as $dep) {
+      if (!in_array($dep, $dependencies_config, TRUE)) {
+        $dependencies_config[] = $dep;
+      }
+    }
+    $active_teaser->set('dependencies.config', $dependencies_config);
+    $active_teaser->save();
+  }
+}
+
+/**
+ * Add changes for self service search listing.
+ */
+function tide_search_update_10009() {
+  // Install the dependency module.
+  // Helps to set mutiple default paragraph for one field.
+  if (!\Drupal::moduleHandler()->moduleExists('default_paragraphs')) {
+    $module_installer = \Drupal::service('module_installer');
+    $module_installer->install(['default_paragraphs']);
+  }
+  // Add the new non-admin field.
+  $configs = [
+    'field.storage.node.field_listing_result_type' => 'field_storage_config',
+    'field.storage.node.field_sort_by_config_non_admin' => 'field_storage_config',
+    'field.field.node.tide_search_listing.field_listing_result_type' => 'field_config',
+    'field.field.node.tide_search_listing.field_sort_by_config_non_admin' => 'field_config',
+  ];
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+
+  foreach ($configs as $config => $type) {
+    $config_read = _tide_read_config($config, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($type);
+    $id = $storage->getIDFromConfigName($config, $storage->getEntityType()->getConfigPrefix());
+
+    if ($storage->load($id) === NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+
+  // Update labels.
+  $config_factory = \Drupal::configFactory();
+  $updates = [
+    'field.field.node.tide_search_listing.field_custom_sort_configuration' => 'Sort by configuration',
+    'field.field.node.tide_search_listing.field_search_input_placeholder' => 'Search bar placeholder text',
+    'field.field.paragraph.searchable_fields.field_input_label' => 'Filter label',
+  ];
+
+  foreach ($updates as $config_name => $new_label) {
+    $config = $config_factory->getEditable($config_name);
+    if ($config->isNew()) {
+      continue;
+    }
+
+    $current_label = $config->get('label');
+    if ($current_label !== $new_label) {
+      $config->set('label', $new_label)->save();
+    }
+  }
+
+  // Update displays.
+  _tide_search_update_form_display();
+  _tide_search_update_view_display();
+
+  // Add permissions to access search listing.
+  $role_storage = \Drupal::entityTypeManager()->getStorage('user_role');
+
+  $permissions = [
+    'create tide_search_listing content',
+    'delete own tide_search_listing content',
+    'edit own tide_search_listing content',
+    'edit any tide_search_listing content',
+  ];
+
+  $roles = ['approver_plus', 'approver', 'editor'];
+
+  foreach ($roles as $role_id) {
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = $role_storage->load($role_id);
+    if (!$role) {
+      continue;
+    }
+
+    foreach ($permissions as $permission) {
+      if (!$role->hasPermission($permission)) {
+        $role->grantPermission($permission);
+      }
+    }
+    $role->save();
+  }
+}

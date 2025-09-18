@@ -3,7 +3,6 @@
 namespace Drupal\tide_search;
 
 use Drupal\taxonomy\Entity\Term;
-use Drupal\user\Entity\Role;
 
 /**
  * Tide search modules operations.
@@ -151,18 +150,46 @@ class TideSearchOperation {
    * Add permissions for the search listing content type.
    */
   public function addSearchListingPermissions() {
-    $role = Role::load('site_admin');
-    if ($role) {
-      error_log(" tide_search - adding permissions to site admin");
-      $role->grantPermission('create tide_search_listing content');
-      $role->grantPermission('delete own tide_search_listing content');
-      $role->grantPermission('edit own tide_search_listing content');
-      $role->grantPermission('add scheduled transitions node tide_search_listing');
-      $role->grantPermission('view scheduled transitions node tide_search_listing');
+    $role_storage = \Drupal::entityTypeManager()->getStorage('user_role');
+
+    // Tide search listing permissions.
+    $tide_permissions = [
+      'create tide_search_listing content',
+      'delete own tide_search_listing content',
+      'edit own tide_search_listing content',
+      'edit any tide_search_listing content',
+    ];
+
+    // Extra permissions for site_admin.
+    $site_admin_extra = [
+      'add scheduled transitions node tide_search_listing',
+      'view scheduled transitions node tide_search_listing',
+    ];
+
+    // Map roles to the permissions.
+    $role_permissions_map = [
+      'approver_plus' => $tide_permissions,
+      'approver'      => $tide_permissions,
+      'editor'        => $tide_permissions,
+      'site_admin'    => array_merge($tide_permissions, $site_admin_extra),
+      'anonymous'     => ['access taxonomy overview'],
+      'authenticated' => ['access taxonomy overview'],
+    ];
+
+    foreach ($role_permissions_map as $role_id => $permissions) {
+      /** @var \Drupal\user\RoleInterface|null $role */
+      $role = $role_storage->load($role_id);
+      if (!$role) {
+        continue;
+      }
+
+      foreach ($permissions as $permission) {
+        if (!$role->hasPermission($permission)) {
+          $role->grantPermission($permission);
+        }
+      }
       $role->save();
     }
-    Role::load('anonymous')->grantPermission('access taxonomy overview')->save();
-    Role::load('authenticated')->grantPermission('access taxonomy overview')->save();
   }
 
   /**
