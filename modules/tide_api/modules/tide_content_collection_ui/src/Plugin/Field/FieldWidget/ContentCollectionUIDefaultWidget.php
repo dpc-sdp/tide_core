@@ -15,7 +15,7 @@ use Drupal\node\NodeInterface;
  */
 #[FieldWidget(
   id: 'tide_content_collection_ui_default',
-  label: new TranslatableMarkup('Tide Content Collection UI'),
+  label: new TranslatableMarkup('Content Collection UI'),
   field_types: ['tide_content_collection_ui'],
 )]
 class ContentCollectionUIDefaultWidget extends WidgetBase {

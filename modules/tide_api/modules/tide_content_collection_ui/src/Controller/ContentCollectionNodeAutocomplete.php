@@ -13,11 +13,12 @@ use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\tide_site_restriction\Helper;
 
 /**
  * Controller for Tide Content Collection UI node autocomplete endpoints.
  */
-class ContentCollectionUIAutocomplete extends ControllerBase {
+class ContentCollectionNodeAutocomplete extends ControllerBase {
 
   /**
    * The entity type manager.
@@ -39,7 +40,7 @@ class ContentCollectionUIAutocomplete extends ControllerBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container): ContentCollectionUIAutocomplete|AutowireTrait|static {
+  public static function create(ContainerInterface $container): ContentCollectionNodeAutocomplete|AutowireTrait|static {
     return new static(
       $container->get('entity_type.manager')
     );
@@ -63,7 +64,6 @@ class ContentCollectionUIAutocomplete extends ControllerBase {
   public function index(Request $request): JsonResponse {
     $results = [];
     $query = $request->query->get('q', '');
-    $site = $request->query->get('site', '');
 
     if (!empty($query)) {
       try {
@@ -77,10 +77,6 @@ class ContentCollectionUIAutocomplete extends ControllerBase {
         ->condition('title', $query, 'CONTAINS')
         ->range(0, 10)
         ->accessCheck();
-
-      if ($site && is_numeric($site)) {
-        $query_builder->condition('field_node_site.target_id', $site);
-      }
 
       $ids = $query_builder->execute();
 
