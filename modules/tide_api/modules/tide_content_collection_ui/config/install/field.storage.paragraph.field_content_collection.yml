@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - paragraphs
+    - tide_content_collection_ui
+id: paragraph.field_content_collection
+field_name: field_content_collection
+entity_type: paragraph
+type: tide_content_collection_ui
+settings: {  }
+module: tide_content_collection_ui
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
