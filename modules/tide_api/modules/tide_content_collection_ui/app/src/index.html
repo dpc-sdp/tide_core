@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Drupal</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-size: 100%;
+      line-height: 1.5;
+      font-style: normal;
+      font-weight: normal;
+      font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;;
+    }
+  </style>
+  <!-- Drupal deps and mocking -->
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+  <script>
+    window.Drupal = window.Drupal || { behaviors: {} };
+
+    window.once = function once(id, selector, context) {
+      return Array.from((context || document).querySelectorAll(selector));
+    };
+  </script>
+</head>
+<body>
+<main>
+
+  <h1>Drupal style mock test page</h1>
+
+  <div class="field--type-content-collection">
+    <div class="content-collection-app" id="content-collection-app-1" data-index="1"></div>
+    <input type="hidden" id="content-collection-value-1" data-testid="content-collection-value-1" value=""/>
+  </div>
+</main>
+
+<script type="module" src="index.js"></script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    window.Drupal.behaviors.contentCollection.attach(document.querySelector('main'));
+  });
+</script>
+</body>
+</html>

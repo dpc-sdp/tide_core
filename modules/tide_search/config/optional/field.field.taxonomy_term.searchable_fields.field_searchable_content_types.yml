@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_searchable_content_types
+    - taxonomy.vocabulary.searchable_content_types
+    - taxonomy.vocabulary.searchable_fields
+id: taxonomy_term.searchable_fields.field_searchable_content_types
+field_name: field_searchable_content_types
+entity_type: taxonomy_term
+bundle: searchable_fields
+label: 'Searchable content types'
+description: 'Select the content types this searchable taxonomy applies to.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      searchable_content_types: searchable_content_types
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

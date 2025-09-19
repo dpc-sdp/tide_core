@@ -1,0 +1,8 @@
+tide_content_collection_ui:
+  version: 1.x
+  js:
+    js/dist/main.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/jquery

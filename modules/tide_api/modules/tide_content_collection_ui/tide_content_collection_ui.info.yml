@@ -1,0 +1,10 @@
+name: Tide Content Collection UI
+type: module
+description: Provides a custom field type to handle content collection UI configuration.
+core_version_requirement: ^9 || ^10
+package: Fields
+dependencies:
+  - paragraphs:paragraphs
+  - dpc-sdp:tide_core
+  - dpc-sdp:tide_api
+  - dpc-sdp:tide_search

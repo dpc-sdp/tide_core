@@ -3,6 +3,8 @@ status: true
 dependencies:
   config:
     - field.field.taxonomy_term.searchable_fields.field_elasticsearch_field
+    - field.field.taxonomy_term.searchable_fields.field_elasticsearch_id
+    - field.field.taxonomy_term.searchable_fields.field_searchable_content_types
     - field.field.taxonomy_term.searchable_fields.field_taxonomy_machine_name
     - taxonomy.vocabulary.searchable_fields
   module:
@@ -23,15 +25,33 @@ content:
     third_party_settings: {  }
   field_elasticsearch_field:
     type: string_textfield
-    weight: 101
+    weight: 5
     region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_elasticsearch_id:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_searchable_content_types:
+    type: entity_reference_autocomplete
+    weight: 7
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_taxonomy_machine_name:
     type: string_textfield
-    weight: 102
+    weight: 6
     region: content
     settings:
       size: 60

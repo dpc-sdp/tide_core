@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_elasticsearch_id
+    - taxonomy.vocabulary.searchable_fields
+id: taxonomy_term.searchable_fields.field_elasticsearch_id
+field_name: field_elasticsearch_id
+entity_type: taxonomy_term
+bundle: searchable_fields
+label: 'Elasticsearch ID'
+description: 'This is the elastic key of the raw field value, for example this may be the node ID.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

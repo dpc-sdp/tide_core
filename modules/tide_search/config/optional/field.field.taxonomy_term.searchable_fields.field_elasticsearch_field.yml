@@ -9,8 +9,8 @@ field_name: field_elasticsearch_field
 entity_type: taxonomy_term
 bundle: searchable_fields
 label: 'Elasticsearch field'
-description: ''
-required: false
+description: 'This is the elastic key of the displayed field value, for example this could be a term called "Community".'
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
