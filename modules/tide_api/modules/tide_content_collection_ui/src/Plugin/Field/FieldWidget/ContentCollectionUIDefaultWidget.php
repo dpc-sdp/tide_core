@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use Drupal\Core\Entity\ContentEntityFormInterface;
 
 /**
  * Plugin implementation of the 'tide_content_collection_ui_default' widget.
@@ -52,6 +53,8 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state): array {
+    $is_required = $form_state->getFormObject() instanceof ContentEntityFormInterface;
+
     // Get the index of the parent field.
     $index = $element['#field_parents'][1] ?? 0;
 
@@ -79,14 +82,14 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
         'id' => 'content-collection-value-' . $index,
         'class' => ['content-collection-value'],
       ],
-      '#element_validate' => [
+      '#element_validate' => $is_required ? [
         [static::class, 'validateJSON'],
-      ],
-      '#required' => TRUE
+      ] : [],
+      '#required' => $is_required
     ];
 
     // Attach the application.
-    //$element['#attached']['library'][] = 'tide_content_collection_ui/tide_content_collection_ui';
+    $element['#attached']['library'][] = 'tide_content_collection_ui/tide_content_collection_ui';
 
     return $element;
   }

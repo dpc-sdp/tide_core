@@ -20,6 +20,5 @@ export default defineConfig({
       },
       external: ['jquery', 'drupal', 'once'],
     },
-    sourcemap: true,
   },
 });

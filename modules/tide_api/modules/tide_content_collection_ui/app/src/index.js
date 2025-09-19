@@ -5,7 +5,7 @@ import '@dpc-sdp/tide-content-collection-ui/styles'
   Drupal.behaviors.contentCollection = {
     attach: function (context) {
       once('content-collection-init', '.content-collection-app', context).forEach(function (container) {
-        const wrap = container.closest('.field--type-content-collection')
+        const wrap = container.closest('.field--type-tide-content-collection-ui')
         const index = container.getAttribute('data-index') || '0'
         const config = container.getAttribute('data-config') || '{}'
         const field = wrap?.querySelector(`#content-collection-value-${index}`)
