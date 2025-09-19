@@ -12,7 +12,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  */
 #[FieldFormatter(
   id: 'tide_content_collection_ui_formatter',
-  label: new TranslatableMarkup('Tide Content Collection UI'),
+  label: new TranslatableMarkup('Content Collection UI'),
   field_types: ['tide_content_collection_ui'],
 )]
 class ContentCollectionUIFormatter extends FormatterBase {

@@ -13,8 +13,8 @@ use Drupal\Core\TypedData\DataDefinition;
  */
 #[FieldType(
   id: "tide_content_collection_ui",
-  label: new TranslatableMarkup("Tide Content Collection UI"),
-  description: new TranslatableMarkup("Field to store Tide Content Collection UI config as JSON."),
+  label: new TranslatableMarkup("Content Collection JSON"),
+  description: new TranslatableMarkup("Field to store Content Collection UI config as JSON."),
   default_widget: "tide_content_collection_ui_default",
   default_formatter: "tide_content_collection_ui_formatter"
 )]
