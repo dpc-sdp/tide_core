@@ -9,7 +9,7 @@ field_name: field_elasticsearch_id
 entity_type: taxonomy_term
 bundle: searchable_fields
 label: 'Elasticsearch ID'
-description: 'This is the elastic key of the raw field value, for example this may be the node ID.'
+description: 'This is the elasticsearch key of the raw field value, i.e. the field that stores the underlying id.'
 required: true
 translatable: false
 default_value: {  }

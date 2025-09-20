@@ -9,7 +9,7 @@ field_name: field_paragraph_title
 entity_type: paragraph
 bundle: content_collection_ui
 label: Title
-description: 'Add a title to display above the content.'
+description: 'A title to display above the content.'
 required: false
 translatable: false
 default_value: {  }

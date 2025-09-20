@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_content_collection_ui\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Field\Attribute\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -9,14 +10,13 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-use Drupal\Core\Entity\ContentEntityFormInterface;
 
 /**
  * Plugin implementation of the 'tide_content_collection_ui_default' widget.
  */
 #[FieldWidget(
   id: 'tide_content_collection_ui_default',
-  label: new TranslatableMarkup('Content Collection UI'),
+  label: new TranslatableMarkup('Content Collection'),
   field_types: ['tide_content_collection_ui'],
 )]
 class ContentCollectionUIDefaultWidget extends WidgetBase {
@@ -24,10 +24,10 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
   /**
    * Processes the provided JSON-encoded value and constructs a config array.
    *
-   * This is used to 'seed' the application with any necessary data that isn't available in the saved JSON blob.
-   * For example, page IDs are saved in the blob but not the page titles as these may change.
+   * Seed the application with data that isn't available in the saved JSON blob.
+   * e.g., page IDs are saved in the blob but not the page titles.
    */
-  private function getConfig($value = null): array {
+  private function getConfig($value = NULL): array {
     $config = [];
     $value = json_decode($value ?? '{}', TRUE);
 
@@ -83,9 +83,9 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
         'class' => ['content-collection-value'],
       ],
       '#element_validate' => $is_required ? [
-        [static::class, 'validateJSON'],
+        [static::class, 'validateJson'],
       ] : [],
-      '#required' => $is_required
+      '#required' => $is_required,
     ];
 
     // Attach the application.
@@ -104,7 +104,7 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
    * @param array $form
    *   The complete form render array.
    */
-  public static function validateJSON(array &$element, FormStateInterface $form_state, array &$form): void {
+  public static function validateJson(array &$element, FormStateInterface $form_state, array &$form): void {
     $value = $form_state->getValue($element['#parents']);
     $data = json_decode($value, TRUE);
 
@@ -129,7 +129,7 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
         (count($data['manualItems']) === 1 && !$data['manualItems'][0])
       )
     ) {
-        $form_state->setError($element, new TranslatableMarkup('Please add at least one content item.'));
+      $form_state->setError($element, new TranslatableMarkup('Please add at least one content item.'));
     }
   }
 

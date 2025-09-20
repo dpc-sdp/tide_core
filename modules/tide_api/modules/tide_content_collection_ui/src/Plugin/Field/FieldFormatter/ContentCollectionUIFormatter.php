@@ -12,7 +12,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  */
 #[FieldFormatter(
   id: 'tide_content_collection_ui_formatter',
-  label: new TranslatableMarkup('Content Collection UI'),
+  label: new TranslatableMarkup('Content Collection'),
   field_types: ['tide_content_collection_ui'],
 )]
 class ContentCollectionUIFormatter extends FormatterBase {
@@ -20,7 +20,7 @@ class ContentCollectionUIFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items, $langcode): array {
+  public function viewElements(FieldItemListInterface $items): array {
     $elements = [];
 
     foreach ($items as $delta => $item) {

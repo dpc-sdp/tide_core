@@ -13,7 +13,6 @@ use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\tide_site_restriction\Helper;
 
 /**
  * Controller for Tide Content Collection UI node autocomplete endpoints.
@@ -48,7 +47,6 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
 
   /**
    * Only allow authenticated users to access this endpoint.
-   * Note: we leave this open during local development.
    */
   public static function access(AccountInterface $account): AccessResult {
     if (Settings::get('environment') === 'local') {
@@ -68,7 +66,8 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
     if (!empty($query)) {
       try {
         $node_storage = $this->entityTypeManager->getStorage('node');
-      } catch (InvalidPluginDefinitionException|PluginNotFoundException) {
+      }
+      catch (InvalidPluginDefinitionException | PluginNotFoundException) {
         return new JsonResponse([]);
       }
 

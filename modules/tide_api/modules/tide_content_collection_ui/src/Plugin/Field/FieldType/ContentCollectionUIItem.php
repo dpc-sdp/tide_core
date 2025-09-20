@@ -14,7 +14,7 @@ use Drupal\Core\TypedData\DataDefinition;
 #[FieldType(
   id: "tide_content_collection_ui",
   label: new TranslatableMarkup("Content Collection JSON"),
-  description: new TranslatableMarkup("Field to store Content Collection UI config as JSON."),
+  description: new TranslatableMarkup("Field to store Content Collection config as JSON."),
   default_widget: "tide_content_collection_ui_default",
   default_formatter: "tide_content_collection_ui_formatter"
 )]
@@ -24,6 +24,8 @@ class ContentCollectionUIItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition): array {
+    $properties = [];
+
     $properties['value'] = DataDefinition::create('string')
       ->setLabel(new TranslatableMarkup('JSON'))
       ->setRequired(TRUE);

@@ -10,7 +10,7 @@ field_name: field_searchable_content_types
 entity_type: taxonomy_term
 bundle: searchable_fields
 label: 'Searchable content types'
-description: 'Select the content types this searchable taxonomy applies to.'
+description: 'Add the content types this searchable taxonomy applies to, if nothing is added then this searchable field is available to all content types.'
 required: false
 translatable: false
 default_value: {  }
