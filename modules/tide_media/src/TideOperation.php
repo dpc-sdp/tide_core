@@ -241,4 +241,11 @@ class TideOperation {
     }
   }
 
+  /**
+   * Disable the media library grid view.
+   */
+  public static function disableMediaLibraryGridView() {
+    _tide_media_disable_grid_view();
+  }
+
 }
