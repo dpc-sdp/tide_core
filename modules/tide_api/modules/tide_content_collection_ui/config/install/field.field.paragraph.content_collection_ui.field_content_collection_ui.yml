@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_content_collection
+    - field.storage.paragraph.field_content_collection_ui
     - paragraphs.paragraphs_type.content_collection_ui
   module:
     - tide_content_collection_ui
-id: paragraph.content_collection_ui.field_content_collection
-field_name: field_content_collection
+id: paragraph.content_collection_ui.field_content_collection_ui
+field_name: field_content_collection_ui
 entity_type: paragraph
 bundle: content_collection_ui
 label: 'Content collection'

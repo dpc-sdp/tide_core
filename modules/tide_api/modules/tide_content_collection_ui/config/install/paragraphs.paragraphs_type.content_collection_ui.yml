@@ -3,8 +3,6 @@ status: true
 dependencies:
   content:
     - 'file:file:bd168646-7145-4b4b-b6c8-8552d2d7b0b8'
-_core:
-  default_config_hash: epwlG1_yWnseA1q5W7Ajymn3b3NQEyTjdnCPjXzNFyA
 id: content_collection_ui
 label: 'Content Collection'
 icon_uuid: bd168646-7145-4b4b-b6c8-8552d2d7b0b8

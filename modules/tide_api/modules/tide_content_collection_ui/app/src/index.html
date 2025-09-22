@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>Drupal</title>
+  <title>Playground</title>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
@@ -16,7 +16,10 @@
     }
   </style>
   <!-- Drupal deps and mocking -->
-  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+    integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+    crossorigin="anonymous"></script>
   <script>
     window.Drupal = window.Drupal || { behaviors: {} };
 
@@ -27,16 +30,16 @@
 </head>
 <body>
 <main>
+  <h1>Playground</h1>
+  <p>This HTML file mimics Drupal's loading behaviour</p>
 
-  <h1>Drupal style mock test page</h1>
-
-  <div class="field--type-content-collection">
-    <div class="content-collection-app" id="content-collection-app-1" data-index="1"></div>
+  <div class="field--type-tide-content-collection-ui">
+    <div class="content-collection-app" id="content-collection-app-1" data-index="1" data-config="{}"></div>
     <input type="hidden" id="content-collection-value-1" data-testid="content-collection-value-1" value=""/>
   </div>
 </main>
 
-<script type="module" src="index.js"></script>
+<script type="module" src="/index.js"></script>
 
 <script>
   window.addEventListener('DOMContentLoaded', function () {

@@ -1,7 +1,7 @@
 import { getJson, initApp, setJson } from '@dpc-sdp/tide-content-collection-ui'
 import '@dpc-sdp/tide-content-collection-ui/styles'
 
-  ;(($) => {
+;(($) => {
   Drupal.behaviors.contentCollection = {
     attach: function (context) {
       once('content-collection-init', '.content-collection-app', context).forEach(function (container) {
@@ -9,8 +9,9 @@ import '@dpc-sdp/tide-content-collection-ui/styles'
         const index = container.getAttribute('data-index') || '0'
         const config = container.getAttribute('data-config') || '{}'
         const field = wrap?.querySelector(`#content-collection-value-${index}`)
+        const exists = container?.querySelector(`.tide-form`)
 
-        if (field) {
+        if (!exists && field) {
           initApp(container, {
             index,
             form: getJson(field.value),

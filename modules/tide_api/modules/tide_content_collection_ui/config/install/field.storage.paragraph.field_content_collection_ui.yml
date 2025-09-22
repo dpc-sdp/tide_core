@@ -4,8 +4,8 @@ dependencies:
   module:
     - paragraphs
     - tide_content_collection_ui
-id: paragraph.field_content_collection
-field_name: field_content_collection
+id: paragraph.field_content_collection_ui
+field_name: field_content_collection_ui
 entity_type: paragraph
 type: tide_content_collection_ui
 settings: {  }

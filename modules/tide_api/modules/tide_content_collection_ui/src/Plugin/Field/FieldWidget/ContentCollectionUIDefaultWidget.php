@@ -28,7 +28,8 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
    * e.g., page IDs are saved in the blob but not the page titles.
    */
   private function getConfig($value = NULL): array {
-    $config = [];
+    $config = ['contentMap' => []];
+
     $value = json_decode($value ?? '{}', TRUE);
 
     if ($value && is_array($value['manualItems']) && count($value['manualItems']) > 0) {
@@ -53,7 +54,7 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state): array {
-    $is_required = $form_state->getFormObject() instanceof ContentEntityFormInterface;
+    $is_content_form = $form_state->getFormObject() instanceof ContentEntityFormInterface;
 
     // Get the index of the parent field.
     $index = $element['#field_parents'][1] ?? 0;
@@ -67,7 +68,7 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
       '#tag' => 'div',
       '#attributes' => [
         'id' => 'content-collection-app-' . $index,
-        'class' => ['content-collection-app'],
+        'class' => $is_content_form ? ['content-collection-app'] : [],
         'data-type' => $form["#entity_type"] ?? 'default',
         'data-config' => json_encode($config),
         'data-index' => "{$index}",
@@ -82,10 +83,10 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
         'id' => 'content-collection-value-' . $index,
         'class' => ['content-collection-value'],
       ],
-      '#element_validate' => $is_required ? [
+      '#element_validate' => $is_content_form ? [
         [static::class, 'validateJson'],
       ] : [],
-      '#required' => $is_required,
+      '#required' => $is_content_form,
     ];
 
     // Attach the application.

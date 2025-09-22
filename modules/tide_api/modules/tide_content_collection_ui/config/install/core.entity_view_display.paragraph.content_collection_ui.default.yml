@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.content_collection_ui.field_content_collection_ui
     - field.field.paragraph.content_collection_ui.field_paragraph_body
     - field.field.paragraph.content_collection_ui.field_paragraph_link
     - field.field.paragraph.content_collection_ui.field_paragraph_title
@@ -9,11 +10,19 @@ dependencies:
   module:
     - link
     - text
+    - tide_content_collection_ui
 id: paragraph.content_collection_ui.default
 targetEntityType: paragraph
 bundle: content_collection_ui
 mode: default
 content:
+  field_content_collection_ui:
+    type: tide_content_collection_ui_formatter
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 6
+    region: content
   field_paragraph_body:
     type: text_default
     label: above
