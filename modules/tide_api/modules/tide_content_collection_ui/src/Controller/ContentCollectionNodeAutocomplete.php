@@ -10,6 +10,7 @@ use Drupal\Core\DependencyInjection\AutowireTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Site\Settings;
+use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,6 +77,15 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
         ->condition('title', $query, 'CONTAINS')
         ->range(0, 10)
         ->accessCheck();
+
+      // Scope the query to only nodes on the current users site.
+      $user = User::load(\Drupal::currentUser()->id());
+      $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+      $allowed_site_ids = $site_restriction_helper->getUserSites($user);
+
+      if ($allowed_site_ids) {
+        $query_builder->condition('field_node_site.target_id', $allowed_site_ids, 'IN');
+      }
 
       $ids = $query_builder->execute();
 

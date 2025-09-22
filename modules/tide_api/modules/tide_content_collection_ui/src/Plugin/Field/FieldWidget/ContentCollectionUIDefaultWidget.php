@@ -10,6 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use Drupal\taxonomy\TermInterface;
 
 /**
  * Plugin implementation of the 'tide_content_collection_ui_default' widget.
@@ -28,26 +29,54 @@ class ContentCollectionUIDefaultWidget extends WidgetBase {
    * e.g., page IDs are saved in the blob but not the page titles.
    */
   private function getConfig($value = NULL): array {
-    $config = ['contentMap' => []];
-
     $value = json_decode($value ?? '{}', TRUE);
 
+    return [
+      'contentMap' => $this->getContentMap($value),
+      'termMap' => $this->getTermMap($value),
+    ];
+  }
+
+  /**
+   * Get the necessary content titles for the contentMap.
+   */
+  private function getContentMap($value): array {
+    $content = [];
+
     if ($value && is_array($value['manualItems']) && count($value['manualItems']) > 0) {
-      $id_map = [];
       $node_ids = array_map('intval', $value['manualItems']);
 
       $nodes = Node::loadMultiple($node_ids);
 
       foreach ($nodes as $node) {
         if ($node instanceof NodeInterface) {
-          $id_map[$node->id()] = $node->getTitle();
+          $content[$node->id()] = $node->getTitle();
         }
       }
-
-      $config['contentMap'] = $id_map;
     }
 
-    return $config;
+    return $content;
+  }
+
+  /**
+   * Get the necessary term titles for the termMap.
+   */
+  private function getTermMap($value = NULL): array {
+    $terms = [];
+    $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+
+    if ($term_storage && $value && is_array($value['filters']) && count($value['filters']) > 0) {
+      $values = array_column($value['filters'], 'terms');
+      $terms = $term_storage->loadMultiple(array_merge(...$values));
+
+      foreach ($terms as $term) {
+        if ($term instanceof TermInterface) {
+          $terms[$term->id()] = $term->getName();
+        }
+      }
+    }
+
+    return $terms;
   }
 
   /**
