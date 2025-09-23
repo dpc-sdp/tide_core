@@ -776,6 +776,8 @@ function tide_core_admin_audit_trail_handlers() {
  *   The manipulated menu link tree.
  */
 function tide_core_menu_navigation_links(array $tree) {
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
   foreach ($tree as $element) {
     // Remove menu and taxonomy subtree.
     if (($element->link->getPluginId() === 'entity.menu.collection' || $element->link->getPluginId() === 'entity.taxonomy_vocabulary.collection') && isset($element->subtree)) {
@@ -785,6 +787,21 @@ function tide_core_menu_navigation_links(array $tree) {
       && ($element->link->getPluginId() != 'entity.taxonomy_vocabulary.collection')
       && $element->subtree) {
       tide_core_menu_navigation_links($element->subtree);
+    }
+    // Search listing self service.
+    // Hide it for non admins.
+    if ($element->link->getPluginId() === 'admin_toolbar_tools.extra_links:node.add.tide_search_listing') {
+      if (!array_intersect($admin_roles, $current_user->getRoles())) {
+        $element->access = AccessResult::forbidden();
+      }
+    }
+    // Search listing self service.
+    // Hide it for admins.
+    if ($element->link->getPluginId() === 'tide_search.search_listing_parent') {
+      $allowed_users = $current_user->hasPermission('create tide_search_listing content');
+      if (array_intersect($admin_roles, $current_user->getRoles()) || !$allowed_users) {
+        $element->access = AccessResult::forbidden();
+      }
     }
     $link = $element->link;
     // Get the non-localized title to make the icon class.

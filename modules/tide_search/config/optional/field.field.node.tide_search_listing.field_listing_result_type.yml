@@ -1,0 +1,21 @@
+uuid: 38b92ac1-ae03-4d6a-be82-22e0ba2bf354
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_listing_result_type
+    - node.type.tide_search_listing
+  module:
+    - options
+id: node.tide_search_listing.field_listing_result_type
+field_name: field_listing_result_type
+entity_type: node
+bundle: tide_search_listing
+label: 'Result type'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

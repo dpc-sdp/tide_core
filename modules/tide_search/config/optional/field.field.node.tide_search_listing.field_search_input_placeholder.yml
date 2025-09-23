@@ -8,7 +8,7 @@ id: node.tide_search_listing.field_search_input_placeholder
 field_name: field_search_input_placeholder
 entity_type: node
 bundle: tide_search_listing
-label: 'Search input placeholder'
+label: 'Search bar placeholder text'
 description: ''
 required: false
 translatable: false

@@ -1,13 +1,14 @@
+uuid: 6e542549-454a-431f-9f54-779f07e703a9
 langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_custom_sort_configuration
+    - field.storage.node.field_sort_by_config_non_admin
     - node.type.tide_search_listing
   module:
-    - tide_content_collection
-id: node.tide_search_listing.field_custom_sort_configuration
-field_name: field_custom_sort_configuration
+    - options
+id: node.tide_search_listing.field_sort_by_config_non_admin
+field_name: field_sort_by_config_non_admin
 entity_type: node
 bundle: tide_search_listing
 label: 'Sort by configuration'
@@ -17,4 +18,4 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: content_collection_configuration
+field_type: list_string
