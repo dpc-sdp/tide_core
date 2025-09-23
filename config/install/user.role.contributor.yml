@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.paragraphs_library_items
     - filter.format.rich_text
     - filter.format.summary_text
     - media.type.audio
@@ -30,7 +29,6 @@ is_admin: null
 permissions:
   - 'access administration pages'
   - 'access content overview'
-  - 'access paragraphs_library_items entity browser pages'
   - 'access media overview'
   - 'access toolbar'
   - 'addrow tablefield'
