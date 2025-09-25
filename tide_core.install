@@ -713,3 +713,27 @@ function tide_core_update_10022() {
     }
   }
 }
+
+/**
+ * Revoke all 'delete own' and 'delete any' permissions from all roles except administrator.
+ */
+function tide_core_update_10023()
+{
+  $roles = \Drupal\user\Entity\Role::loadMultiple();
+  foreach ($roles as $role_id => $role) {
+    if ($role_id === "administrator") {
+      continue;
+    }
+    $changed = false;
+    $permissions = $role->getPermissions();
+    foreach ($permissions as $permission) {
+      if (preg_match("/^delete (own|any) /", $permission)) {
+        $role->revokePermission($permission);
+        $changed = true;
+      }
+    }
+    if ($changed) {
+      $role->save();
+    }
+  }
+}

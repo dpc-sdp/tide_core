@@ -13,9 +13,6 @@ is_admin: null
 permissions:
   - 'create field_secure_file'
   - 'create secure_file media'
-  - 'delete any secure_file media'
-  - 'delete any secure_file media revisions'
-  - 'delete own secure_file media'
   - 'edit any secure_file media'
   - 'edit field_secure_file'
   - 'edit own field_secure_file'
