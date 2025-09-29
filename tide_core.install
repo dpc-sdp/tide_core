@@ -715,8 +715,7 @@ function tide_core_update_10022() {
 }
 
 /**
- * Revoke all 'delete own' and 'delete any' permissions from all roles except
- * administrator.
+ * Revoke 'delete own', 'delete any' from all roles except administrator.
  */
 function tide_core_update_10023() {
   $roles = Role::loadMultiple();
