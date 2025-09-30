@@ -8,7 +8,7 @@
     "require": {
         "jquery/timepicker": "1.14.0",
         "jquery/textcounter": "0.9.1",
-        "drupal/address": "^1.4",
+        "drupal/address": "^2.0",
         "drupal/allowed_formats": "^2.0",
         "drupal/better_exposed_filters": "^6.0",
         "drupal/clamav": "2.0.2-rc1",
