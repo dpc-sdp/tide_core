@@ -510,13 +510,12 @@ function tide_site_form_node_form_alter(&$form, FormStateInterface $form_state) 
     '#open' => $node->isNew(),
     '#optional' => TRUE,
     '#access' => TRUE,
-    '#group' => 'advanced',
+    '#group' => 'group_page_metadata',
     '#attributes' => [
       'class' => ['tide-site-metadata'],
     ],
     '#weight' => 100,
   ];
-
   $site_fields = [
     0 => TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_PRIMARY_SITE, 'node'),
     10 => TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_SITE, 'node'),
@@ -524,8 +523,10 @@ function tide_site_form_node_form_alter(&$form, FormStateInterface $form_state) 
   foreach ($site_fields as $weight => $site_field) {
     if ($node->hasField($site_field)) {
       if (isset($form[$site_field])) {
-        $form[$site_field]['#group'] = 'tide_site_metadata';
-        $form[$site_field]['#weight'] = $weight;
+        $form['tide_site_metadata'][$site_field] = $form[$site_field];
+        unset($form[$site_field]);
+        $form['tide_site_metadata'][$site_field]['#group'] = 'tide_site_metadata';
+        $form['tide_site_metadata'][$site_field]['#weight'] = $weight;
       }
     }
   }

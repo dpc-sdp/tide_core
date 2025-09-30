@@ -564,7 +564,6 @@ function _tide_core_form_node_form_process(array $element, FormStateInterface $f
 
   $core_fields = [
     10 => 'field_node_department',
-    20 => 'field_tags',
   ];
   foreach ($core_fields as $weight => $core_field) {
     if ($node->hasField($core_field)) {
