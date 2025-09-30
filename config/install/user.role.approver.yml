@@ -42,6 +42,7 @@ permissions:
   - 'create paragraph library item'
   - 'edit paragraph library item'
   - 'delete all revisions'
+  - 'delete any media'
   - 'delete media'
   - 'edit any audio media'
   - 'edit any document media'
