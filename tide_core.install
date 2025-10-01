@@ -819,6 +819,11 @@ function tide_core_update_10023() {
         $count++;
       }
       else {
+        if ($tag_field === 'field_tags'){
+          $tag_field_definition = $entity_form_display->getComponent($tag_field);
+          $tag_field_definition['type'] = 'entity_reference_autocomplete_tags';
+          $entity_form_display->setComponent($tag_field, $tag_field_definition);
+        }
         $field_form_definition = $entity_form_display->getComponent($tag_field);
         $field_form_definition['weight'] = $index;
         $entity_form_display->setComponent($tag_field, $field_form_definition);
