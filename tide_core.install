@@ -719,6 +719,7 @@ function tide_core_update_10022() {
  * Adds the 'Tags and Metadata' group to all content types.
  */
 function tide_core_update_10023() {
+  // Fields settings.
   $tag_fields = [
     10 => 'field_topic',
     20 => 'field_tags',
@@ -730,16 +731,21 @@ function tide_core_update_10023() {
     30 => 'field_node_primary_site',
     40 => 'field_node_site',
   ];
+  $sites_fields = [
+    30 => 'field_node_primary_site',
+    40 => 'field_node_site',
+  ];
   $position_anchor = [
     'group_right_column',
     'group_section_sidebar',
   ];
-  // Load all content types.
+  // Load some services.
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
   $field_manager = \Drupal::service('entity_field.manager');
   /** @var \Drupal\node\Entity\NodeType $content_type */
   foreach ($content_types as $id => $content_type) {
+    // Basic group settings as a template.
     $groups = [
       'group_tags_and_metadata' => [
         'children' => [
@@ -785,8 +791,7 @@ function tide_core_update_10023() {
         'children' => [
           'field_department_agency',
           'field_content_category',
-          'field_node_primary_site',
-          'field_node_site',
+          'group_sites',
         ],
         'label' => 'Page Metadata',
         'region' => 'content',
@@ -803,7 +808,28 @@ function tide_core_update_10023() {
           'required_fields' => TRUE,
         ],
       ],
+      'group_sites' => [
+        'children' => [
+          'field_node_primary_site',
+          'field_node_site',
+        ],
+        'label' => 'Sites',
+        'region' => 'content',
+        'parent_name' => 'group_page_metadata',
+        'weight' => 30,
+        'format_type' => 'details',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'open' => TRUE,
+          'description' => '',
+          'required_fields' => TRUE,
+        ],
+      ],
     ];
+    // Get the field and widget definitions.
     $fields = $field_manager->getFieldDefinitions('node', $id);
     $count = 0;
     /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
@@ -811,6 +837,7 @@ function tide_core_update_10023() {
     $field_group = $entity_form_display->getThirdPartySettings('field_group');
     foreach ($tag_fields as $index => $tag_field) {
       if (!isset($fields[$tag_field])) {
+        // Remove non-existing fields from the template.
         $key = array_search($tag_field, $groups['group_page_tags']['children']);
         if ($key !== FALSE) {
           unset($groups['group_page_tags']['children'][$key]);
@@ -819,17 +846,20 @@ function tide_core_update_10023() {
         $count++;
       }
       else {
-        if ($tag_field === 'field_tags'){
+        if ($tag_field === 'field_tags') {
+          // Update field_tags widget to `entity_reference_autocomplete_tags`.
           $tag_field_definition = $entity_form_display->getComponent($tag_field);
           $tag_field_definition['type'] = 'entity_reference_autocomplete_tags';
           $entity_form_display->setComponent($tag_field, $tag_field_definition);
         }
+        // Update weight for tag group fields.
         $field_form_definition = $entity_form_display->getComponent($tag_field);
         $field_form_definition['weight'] = $index;
         $entity_form_display->setComponent($tag_field, $field_form_definition);
       }
     }
     if ($count === 3) {
+      // If all fields are removed, remove group_page_tags from its parent.
       unset($groups['group_page_tags']);
       $key = array_search('group_page_tags', $groups['group_tags_and_metadata']['children']);
       if ($key !== FALSE) {
@@ -837,6 +867,7 @@ function tide_core_update_10023() {
         $groups['group_tags_and_metadata']['children'] = array_values($groups['group_tags_and_metadata']['children']);
       }
     }
+    // Handle metadata_fields.
     foreach ($metadata_fields as $index => $metadata_field) {
       if (!isset($fields[$metadata_field])) {
         $key = array_search($metadata_field, $groups['group_page_metadata']['children']);
@@ -851,7 +882,14 @@ function tide_core_update_10023() {
         $entity_form_display->setComponent($metadata_field, $field_form_definition);
       }
     }
+    // Handle sites_fields.
+    foreach ($sites_fields as $index => $sites_field) {
+      $field_form_definition = $entity_form_display->getComponent($sites_field);
+      $field_form_definition['weight'] = $index;
+      $entity_form_display->setComponent($metadata_field, $field_form_definition);
+    }
 
+    // Now, it is the time to update entity_form_display.
     if (!isset($field_group['group_tags_and_metadata'])) {
       $field_group['group_tags_and_metadata'] = $groups['group_tags_and_metadata'];
       foreach ($position_anchor as $anchor) {
@@ -867,6 +905,9 @@ function tide_core_update_10023() {
       }
       $field_group['group_page_metadata'] = $groups['group_page_metadata'];
       $entity_form_display->setThirdPartySetting('field_group', 'group_page_metadata', $field_group['group_page_metadata']);
+      $field_group['group_sites'] = $groups['group_sites'];
+      $entity_form_display->setThirdPartySetting('field_group', 'group_sites', $field_group['group_sites']);
+      // Update field_show_content_rating to lower position.
       if ($field_show_content_rating_settings = $entity_form_display->getComponent('field_show_content_rating')) {
         $field_show_content_rating_settings['weight'] += 1;
         $entity_form_display->setComponent('field_show_content_rating', $field_show_content_rating_settings);
