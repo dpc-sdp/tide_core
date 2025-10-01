@@ -889,12 +889,21 @@ function tide_core_update_10023() {
       $entity_form_display->setComponent($metadata_field, $field_form_definition);
     }
 
+    $position_anchor_count = 0;
     // Now, it is the time to update entity_form_display.
     if (!isset($field_group['group_tags_and_metadata'])) {
       $field_group['group_tags_and_metadata'] = $groups['group_tags_and_metadata'];
       foreach ($position_anchor as $anchor) {
         if (!empty($field_group[$anchor])) {
           $field_group['group_tags_and_metadata']['weight'] = $field_group[$anchor]['weight'] + 1;
+        }
+        else {
+          $position_anchor_count++;
+        }
+      }
+      if ($position_anchor_count === 2) {
+        if ($field_show_content_rating_settings = $entity_form_display->getComponent('field_show_content_rating')) {
+          $field_group['group_tags_and_metadata']['weight'] = $field_show_content_rating_settings['weight'];
         }
       }
 

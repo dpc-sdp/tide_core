@@ -58,6 +58,7 @@ function tide_publication_update_dependencies() {
   $dependencies['tide_publication'][10003] = ['tide_core' => 10005];
   $dependencies['tide_publication'][10008] = ['tide_core' => 10014];
   $dependencies['tide_publication'][10010] = ['tide_core' => 10018];
+  $dependencies['tide_publication'][10012] = ['tide_core' => 10023];
   return $dependencies;
 }
 
