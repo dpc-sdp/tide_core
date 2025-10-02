@@ -77,15 +77,15 @@ settings:
         - '<dt>'
         - '<dd>'
         - '<footer>'
-        - '<span class>'
+        - '<span>'
         - '<img src alt data-entity-type data-entity-uuid data-align data-caption>'
-        - '<div class>'
+        - '<div class="quotation button button--secondary">'
         - '<iframe frameborder height scrolling src width title allowfullscreen>'
-        - '<drupal-entity data-caption data-align data-entity-type data-entity-uuid data-embed-button data-entity-embed-display data-entity-embed-display-settings data-show-last-updated title alt>'
-        - '<a hreflang target data-entity-substitution data-entity-type data-entity-uuid>'
-        - '<blockquote cite class>'
-        - '<ul type class>'
-        - '<ol type class>'
+        - '<drupal-entity data-entity-type data-embed-button data-show-last-updated>'
+        - '<a hreflang target>'
+        - '<blockquote cite>'
+        - '<ul>'
+        - '<ol type>'
         - '<h2 id>'
         - '<h3 id>'
         - '<h4 id>'
@@ -96,7 +96,6 @@ settings:
     ckeditor5_list:
       reversed: true
       startIndex: true
-      styles: true
     ckeditor5_alignment:
       enabled_alignments:
         - left

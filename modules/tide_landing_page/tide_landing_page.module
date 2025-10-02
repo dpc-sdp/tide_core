@@ -6,7 +6,9 @@
  */
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Ajax\RemoveCommand;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -450,13 +452,44 @@ function tide_landing_page_set_value_hero_image_theme(array $form, FormStateInte
       '#edit-field-landing-page-hero-theme',
       'val',
       ['dark']
+    ))->addCommand(new HtmlCommand(
+      '#edit-field-landing-page-hero-theme',
+      '<option value="dark">Reverse blocked text</option>'
+    ))->addCommand(new RemoveCommand(
+      '#edit-field-landing-page-hero-theme option[value="light"]'
     ));
   }
-  return $response->addCommand(new InvokeCommand(
-    '#edit-field-landing-page-hero-theme',
-    'val',
-    ['light']
-  ));
+  elseif ($value === 'cta') {
+    return $response
+      ->addCommand(new RemoveCommand(
+        '#edit-field-landing-page-hero-theme option[value="dark"]'
+      ))
+      ->addCommand(new RemoveCommand(
+        '#edit-field-landing-page-hero-theme option[value="light"]'
+      ))
+      ->addCommand(new HtmlCommand(
+        '#edit-field-landing-page-hero-theme',
+        '<option value="light">Default</option>'
+      ))
+      ->addCommand(new InvokeCommand(
+        '#edit-field-landing-page-hero-theme',
+        'val',
+        ['light']
+      ));
+  }
+  return $response->addCommand(new RemoveCommand(
+    '#edit-field-landing-page-hero-theme option[value="dark"]'
+  ))->addCommand(new RemoveCommand(
+    '#edit-field-landing-page-hero-theme option[value="light"]'
+  ))
+    ->addCommand(new HtmlCommand(
+      '#edit-field-landing-page-hero-theme',
+      '<option value="light">Default</option><option value="dark">Reverse blocked text</option>'
+    ))->addCommand(new InvokeCommand(
+      '#edit-field-landing-page-hero-theme',
+      'val',
+      ['light']
+    ));
 }
 
 /**
@@ -497,7 +530,15 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
       'callback' => 'tide_landing_page_set_value_hero_image_theme',
     ],
   ];
+  $header_style = \Drupal::state()->get($node->uuid() . '-header_style');
+  $form['_header_style']['_header_style_options']['#default_value'] = $header_style ?: 'default';
 
+  if ($header_style === 'fullwidth') {
+    unset($form['field_landing_page_hero_theme']['widget']['#options']['light']);
+  }
+  if ($header_style === 'cta') {
+    unset($form['field_landing_page_hero_theme']['widget']['#options']['dark']);
+  }
   $form['field_landing_page_hero_image']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => [
       ['value' => 'fullwidth'],
@@ -514,68 +555,6 @@ function _tide_landing_page_form_node_form_process(array $form, FormStateInterfa
   $form['field_landing_page_hero_banner']['#states']['visible'] = [
     ':input[name="_header_style_options"]' => ['value' => 'cta'],
   ];
-
-  // Determine the initial value of Header style.
-  $node_hero_image_empty = $node->get('field_landing_page_hero_image')->isEmpty();
-  $node_hero_banner_empty = $node->get('field_landing_page_hero_banner')->isEmpty();
-  $node_hero_top_graphical_empty = $node->get('field_graphical_image')->isEmpty();
-  $node_hero_bottom_graphical_empty = $node->get('field_bottom_graphical_image')->isEmpty();
-  $header_style = 'default';
-  if (!$node_hero_banner_empty) {
-    $header_style = 'cta';
-  }
-  elseif (!$node_hero_image_empty) {
-    $header_style = 'fullwidth';
-  }
-  elseif (!$node_hero_top_graphical_empty || !$node_hero_bottom_graphical_empty) {
-    $header_style = 'corner';
-  }
-  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
-
-  $form['#after_build'][] = '_tide_landing_page_form_node_form_after_build';
-  return $form;
-}
-
-/**
- * Node form #after_build callback.
- *
- * @param array $form
- *   Form that is being processed.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The current state of the form.
- *
- * @return array
- *   The processed form.
- */
-function _tide_landing_page_form_node_form_after_build(array $form, FormStateInterface $form_state) {
-  // Determine the current value of Header style.
-  $form_hero_image_empty = empty($form_state->getValue([
-    'field_landing_page_hero_image',
-    'target_id',
-  ]));
-  $form_hero_banner_empty = empty($form_state->getValue([
-    'field_landing_page_hero_banner',
-    0,
-  ]));
-  $form_hero_top_graphical_empty = empty($form_state->getValue([
-    'field_graphical_image',
-    'target_id',
-  ]));
-  $form_hero_bottom_graphical_empty = empty($form_state->getValue([
-    'field_bottom_graphical_image',
-    'target_id',
-  ]));
-  $header_style = 'default';
-  if (!$form_hero_image_empty) {
-    $header_style = 'cta';
-  }
-  elseif (!$form_hero_banner_empty) {
-    $header_style = 'fullwidth';
-  }
-  elseif (!$form_hero_top_graphical_empty || !$form_hero_bottom_graphical_empty) {
-    $header_style = 'corner';
-  }
-  $form['_header_style']['_header_style_options']['#default_value'] = $header_style;
 
   return $form;
 }

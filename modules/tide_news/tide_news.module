@@ -122,8 +122,5 @@ function _tide_news_form_node_form_process(array $form, FormStateInterface $form
  */
 function _tide_news_form_node_form_after_build(array $form, FormStateInterface $form_state) {
   $form['field_node_department']['#group'] = 'group_author_detail';
-  return TideCoreFormHelper::updateHeaderStyleFromState($form, $form_state, [
-    'field_graphical_image',
-    'field_bottom_graphical_image',
-  ]);
+  return $form;
 }

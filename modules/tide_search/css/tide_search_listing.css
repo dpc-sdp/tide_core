@@ -1,0 +1,8 @@
+/**
+ * @file
+ * Styling changes to the search listing node form.
+ */
+
+.paragraphs-add-dialog-enhanced .paragraphs-add-dialog-list .paragraphs-add-dialog-row {
+    width: auto;
+}

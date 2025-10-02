@@ -10,4 +10,5 @@ dependencies:
   - tide_content_collection:tide_content_collection
   - tide_core:tide_landing_page
   - paragraphs:paragraphs
+  - default_paragraphs:default_paragraphs
   - tide_search:tide_data_pipeline
