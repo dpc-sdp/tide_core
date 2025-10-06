@@ -6,6 +6,7 @@
 /composer.build.lock
 /docroot
 /dpc-sdp
+.idea
 .env.local
 docker-compose.override.yml
 screenshots
