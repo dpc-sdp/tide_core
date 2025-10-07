@@ -121,6 +121,42 @@ class TideSiteHelper {
   }
 
   /**
+   * Return all sites from the "sites" vocabulary (published only).
+   *
+   * Only terms with status = 1 are included. If a term has no "status" field,
+   * it is assumed published.
+   *
+   * @return \Drupal\taxonomy\TermInterface[]
+   *   Array keyed by term ID.
+   */
+  public function getAllPublishedSites() {
+    $sites = [];
+
+    try {
+      // Load tree: vocabulary "sites", depth 1, load full entities.
+      $tree = $this->entityTypeManager->getStorage('taxonomy_term')
+        ->loadTree('sites', 0, 1, TRUE);
+
+      /** @var \Drupal\taxonomy\TermInterface $site */
+      foreach ($tree as $site) {
+        // Only include published terms.
+        if ($site->hasField('status') && $site->get('status')->value != 1) {
+          continue;
+        }
+
+        $sites[$site->id()] = $site;
+      }
+    }
+    catch (\Exception $exception) {
+      // Log errors.
+      \Drupal::logger('tide_site')->error($exception->getMessage());
+    }
+
+    return $sites;
+  }
+
+
+  /**
    * Loads a Site term by ID.
    *
    * @param int $tid
