@@ -155,7 +155,6 @@ class TideSiteHelper {
     return $sites;
   }
 
-
   /**
    * Loads a Site term by ID.
    *
