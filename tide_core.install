@@ -737,8 +737,8 @@ function tide_core_update_10023() {
         }
       }
     }
-  }
-  if ($changed) {
-    $role->save();
+    if ($changed) {
+      $role->save();
+    }
   }
 }
