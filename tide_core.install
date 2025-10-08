@@ -835,6 +835,53 @@ function tide_core_update_10023() {
     /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
     $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
     $field_group = $entity_form_display->getThirdPartySettings('field_group');
+
+    // Change feautured image  to Feature image.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_featured_image = $storage->load('node.' . $id . '.field_featured_image');
+    if ($field_featured_image) {
+      $field_featured_image->set('label', 'Feature image');
+      $field_featured_image->save();
+    }
+
+    // Update Social Sharing options.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_show_social_sharing = $storage->load('node.' . $id . '.field_show_social_sharing');
+    if ($field_show_social_sharing) {
+      $field_show_social_sharing->setLabel('Social sharing');
+      $field_show_social_sharing->setSettings(['on_label'=>'Yes', 'off_label'=>'No']);
+      $field_show_social_sharing->setRequired(TRUE);
+      $field_show_social_sharing->save();
+      $social_sharing_form_settings = $entity_form_display->getComponent('field_show_social_sharing');
+      $social_sharing_form_settings['type'] = 'options_buttons';
+      $social_sharing_form_settings['weight'] = 50;
+      $social_sharing_form_settings['settings'] = [];
+      $entity_form_display->setComponent('field_show_social_sharing', $social_sharing_form_settings);
+    }
+
+    // Update field_featured_image.
+    if ($field_featured_image_settings = $entity_form_display->getComponent('field_featured_image')) {
+      $default_featured_image_widget_settings = [
+        'type' => 'entity_browser_entity_reference',
+        'weight' => $field_featured_image_settings['weight'],
+        'region' => 'content',
+        'settings' => [
+          'entity_browser' => 'tide_image_browser',
+          'field_widget_display' => 'rendered_entity',
+          'field_widget_edit' => TRUE,
+          'field_widget_remove' => TRUE,
+          'field_widget_replace' => FALSE,
+          'open' => FALSE,
+          'field_widget_display_settings' => [
+            'view_mode' => 'media_browser_preview',
+          ],
+          'selection_mode' => 'selection_append',
+        ],
+        'third_party_settings' => [],
+      ];
+      $entity_form_display->setComponent('field_featured_image', $default_featured_image_widget_settings);
+    }
+
     foreach ($tag_fields as $index => $tag_field) {
       if (!isset($fields[$tag_field])) {
         // Remove non-existing fields from the template.
