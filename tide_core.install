@@ -731,7 +731,7 @@ function tide_core_update_10023() {
     $permissions = $role->getPermissions();
     foreach ($permissions as $permission) {
       foreach ($content_types as $type) {
-        if ($permission === "delete own $type" || $permission === "delete any $type") {
+        if ($permission === "delete own {$type} content" || $permission === "delete any {$type} content") {
           $role->revokePermission($permission);
           $changed = TRUE;
         }
