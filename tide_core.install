@@ -726,8 +726,8 @@ function tide_core_update_10023() {
     30 => 'field_show_topic_term_and_tags',
   ];
   $metadata_fields = [
-    10 => 'field_department_agency',
-    20 => 'field_content_category',
+    10 => 'field_content_category',
+    20 => 'field_department_agency',
     30 => 'field_node_primary_site',
     40 => 'field_node_site',
   ];
@@ -856,6 +856,23 @@ function tide_core_update_10023() {
       $field_featured_image->save();
     }
 
+    $field_tags_settings = $entity_form_display->getComponent('field_tags');
+    if ($field_tags_settings && $field_tags_settings['type'] !== 'entity_reference_autocomplete_tags') {
+      $field_tags_settings = [
+        'type' => 'entity_reference_autocomplete_tags',
+        'weight' => 24,
+        'region' => 'content',
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'match_limit' => 10,
+          'size' => 60,
+          'placeholder' => '',
+        ],
+        'third_party_settings' => [],
+      ];
+      $entity_form_display->setComponent('field_tags', $field_tags_settings);
+    }
+
     // Update Social Sharing options.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     $field_show_social_sharing = $storage->load('node.' . $id . '.field_show_social_sharing');
@@ -869,6 +886,14 @@ function tide_core_update_10023() {
       $social_sharing_form_settings['weight'] = 50;
       $social_sharing_form_settings['settings'] = [];
       $entity_form_display->setComponent('field_show_social_sharing', $social_sharing_form_settings);
+    }
+
+    // Change the label to 'Show pages on page'.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_show_topic_term_and_tags = $storage->load('node.' . $id . '.field_show_topic_term_and_tags');
+    if ($field_show_topic_term_and_tags) {
+      $field_show_topic_term_and_tags->setLabel('Show tags on page');
+      $field_show_topic_term_and_tags->save();
     }
 
     // Update field_featured_image.

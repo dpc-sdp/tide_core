@@ -429,7 +429,6 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
   $form['#attached']['library'][] = 'tide_core/claro_layout';
   $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
-  $form['#process'][] = '_tide_core_form_node_form_process';
   $form['#attached']['library'][] = 'tide_core/pseudo_required_field';
   // Adding custom states from webform js.
   // Support patterns in states.
@@ -532,49 +531,6 @@ function _tide_core_node_edit_form_log_message_validate(array &$form, FormStateI
     $form_state->setErrorByName('comment_log_message', t('The publisher comments field must not be blank'));
   }
 
-}
-
-/**
- * Node form #process callback.
- *
- * @param array $element
- *   Form that is being processed.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The current state of the form.
- * @param array $form
- *   The complete form structure.
- *
- * @return array
- *   The processed form.
- */
-function _tide_core_form_node_form_process(array $element, FormStateInterface $form_state, array $form = []) {
-  /** @var \Drupal\node\NodeInterface $node */
-  $node = $form_state->getFormObject()->getEntity();
-  $element['tide_core_metadata'] = [
-    '#type' => 'container',
-    '#open' => TRUE,
-    '#optional' => TRUE,
-    '#access' => TRUE,
-    '#group' => 'meta',
-    '#attributes' => [
-      'class' => ['tide-core-metadata'],
-    ],
-    '#weight' => 100,
-  ];
-
-  $core_fields = [
-    10 => 'field_node_department',
-  ];
-  foreach ($core_fields as $weight => $core_field) {
-    if ($node->hasField($core_field)) {
-      if (isset($element[$core_field])) {
-        $element[$core_field]['#group'] = 'tide_core_metadata';
-        $element[$core_field]['#weight'] = $weight;
-      }
-    }
-  }
-
-  return $element;
 }
 
 /**
