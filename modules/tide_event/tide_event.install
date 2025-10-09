@@ -33,6 +33,7 @@ function tide_event_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_event'][10001] = ['tide_core' => 10005];
   $dependencies['tide_event'][10002] = ['tide_core' => 10014];
+  $dependencies['tide_event'][10005] = ['tide_core' => 10023];
   return $dependencies;
 }
 
@@ -252,7 +253,7 @@ function tide_event_update_10005() {
   /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
   $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.event.default');
   $field_group = $entity_form_display->getThirdPartySettings('field_group');
-  if (!empty($field_group)){
+  if (!empty($field_group)) {
     $key = array_search('group_body_content', $field_group['group_section_1']['children']);
     if ($key !== FALSE) {
       unset($field_group['group_section_1']['children'][$key]);
@@ -273,7 +274,7 @@ function tide_event_update_10005() {
     $field_group['group_page_header']['children'] = array_values($field_group['group_page_header']['children']);
     $entity_form_display->setThirdPartySetting('field_group', 'group_page_header', $field_group['group_page_header']);
     $entity_form_display->setThirdPartySetting('field_group', 'group_section_1', $field_group['group_section_1']);
-    if (isset($field_group['group_right_column'])){
+    if (isset($field_group['group_right_column'])) {
       unset($field_group['group_right_column']);
       $field_group['group_sidebar'] = [
         'children' => [
