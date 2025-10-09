@@ -194,6 +194,8 @@ function tide_news_update_10004() {
     $field_group['group_site_section_navigation']['parent_name'] = 'group_sidebar';
     $field_group['group_site_section_navigation']['group_sidebar'] = 'group_sidebar';
     array_unshift($field_group['group_sidebar']['children'], 'group_site_section_navigation');
+    $field_group['group_author_detail']['label'] = 'News author';
+    $entity_form_display->setThirdPartySetting('field_group', 'group_author_detail', $field_group['group_author_detail']);
     $entity_form_display->setThirdPartySetting('field_group', 'group_sidebar', $field_group['group_sidebar']);
     $entity_form_display->setThirdPartySetting('field_group', 'group_site_section_navigation', $field_group['group_site_section_navigation']);
     $entity_form_display->save();
