@@ -836,6 +836,18 @@ function tide_core_update_10023() {
     $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
     $field_group = $entity_form_display->getThirdPartySettings('field_group');
 
+    // Move field_landing_page_intro_text before field_landing_page_summary.
+    $field_landing_page_intro_text_settings = $entity_form_display->getComponent('field_landing_page_intro_text');
+    $field_landing_page_summary_settings = $entity_form_display->getComponent('field_landing_page_summary');
+    if ($field_landing_page_summary_settings && $field_landing_page_intro_text_settings && ($field_landing_page_intro_text_settings['weight'] > $field_landing_page_summary_settings['weight'])) {
+      // Swap the weight values
+      $temp_weight = $field_landing_page_intro_text_settings['weight'];
+      $field_landing_page_intro_text_settings['weight'] = $field_landing_page_summary_settings['weight'];
+      $field_landing_page_summary_settings['weight'] = $temp_weight;
+      $entity_form_display->setComponent('field_landing_page_intro_text', $field_landing_page_intro_text_settings);
+      $entity_form_display->setComponent('field_landing_page_summary', $field_landing_page_summary_settings);
+    }
+
     // Change feautured image  to Feature image.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     $field_featured_image = $storage->load('node.' . $id . '.field_featured_image');

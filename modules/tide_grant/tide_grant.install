@@ -44,6 +44,7 @@ function tide_grant_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_grant'][10001] = ['tide_core' => 10005];
   $dependencies['tide_grant'][10002] = ['tide_core' => 10014];
+  $dependencies['tide_grant'][10004] = ['tide_core' => 10023];
   return $dependencies;
 }
 
@@ -198,4 +199,42 @@ function tide_grant_update_10003() {
   ]);
 
   $form_display->save();
+}
+
+/**
+ * Tag relocation - grant.
+ */
+function tide_grant_update_10004() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('node.grant.default');
+  $field_group         = $entity_form_display->getThirdPartySettings('field_group');
+  if (!empty($field_group)) {
+    if (!in_array('group_customised_header', $field_group['group_section_header']['children'])) {
+      $field_group['group_section_header']['children'][] = 'group_customised_header';
+      $field_group['group_section_header']['children']   = array_values($field_group['group_section_header']['children']);
+      $entity_form_display->setThirdPartySetting('field_group', 'group_section_header', $field_group['group_section_header']);
+    }
+
+    if (!in_array('group_grant_timeline', $field_group['group_section_content']['children'])) {
+      $field_group['group_section_content']['children'][] = 'group_grant_timeline';
+      $field_group['group_section_content']['children']   = array_values($field_group['group_section_content']['children']);
+      $entity_form_display->setThirdPartySetting('field_group', 'group_section_content', $field_group['group_section_content']);
+    }
+    if (!in_array('group_guidelines', $field_group['group_section_content']['children'])) {
+      $field_group['group_section_content']['children'][] = 'group_guidelines';
+      $field_group['group_section_content']['children']   = array_values($field_group['group_section_content']['children']);
+      $entity_form_display->setThirdPartySetting('field_group', 'group_section_content', $field_group['group_section_content']);
+    }
+    $field_group['group_guidelines']['parent_name'] = 'group_section_content';
+    $field_group['group_guidelines']['weight']      = 30;
+    $entity_form_display->setThirdPartySetting('field_group', 'group_guidelines', $field_group['group_guidelines']);
+    $field_group['group_grant_timeline']['parent_name'] = 'group_section_content';
+    $field_group['group_grant_timeline']['weight']      = 40;
+    $entity_form_display->setThirdPartySetting('field_group', 'group_grant_timeline', $field_group['group_grant_timeline']);
+    $entity_form_display->unsetThirdPartySetting('field_group', 'group_section_timeline');
+    $entity_form_display->unsetThirdPartySetting('field_group', 'group_section_guideline');
+    $entity_form_display->save();
+  }
 }
