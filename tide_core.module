@@ -454,27 +454,6 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     $form['_header_style']['_header_style_options']['#value'] = $header_style;
   }
 
-  // Modify field_content_category help text.
-  if ($node->hasField('field_content_category')) {
-    $newLabelDescription = [
-      '#type' => 'inline_template',
-      '#template' => '<span style="font-weight: bold;">{{ title }}</span>
-                      <span class="pseudo-required-field">{{ asterisk }}</span>
-                      <div style="font-size: 0.85em; color: #595959;">{{ description }}</div>',
-      '#context' => [
-        'title' => (isset($form['field_content_category']['widget']['#required'])) ? $form['field_content_category']['widget']['#title'] : '',
-        'description' => (isset($form['field_content_category']['widget']['#description'])) ? $form['field_content_category']['widget']['#description'] : '',
-        'asterisk' => (isset($form['field_content_category']['widget']['#required']) && $form['field_content_category']['widget']['#required'] == TRUE) ? '*' : '',
-      ],
-    ];
-
-    $form['field_content_category']['#prefix'] = \Drupal::service('renderer')->renderPlain($newLabelDescription);
-
-    if (isset($form['field_content_category']['widget']['#description'])) {
-      $form['field_content_category']['widget']['#description'] = '';
-    }
-    $form['field_content_category']['widget']['#title_display'] = 'invisible';
-  }
   $form['#validate'][] = '_tide_core_header_style_validate';
   // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
   if ($node->isNew()) {

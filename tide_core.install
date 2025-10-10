@@ -911,6 +911,7 @@ function tide_core_update_10023() {
     $field_content_category = $storage->load('node.' . $id . '.field_content_category');
     if ($field_content_category) {
       $field_content_category->setRequired(FALSE);
+      $field_content_category->setDescription('');
       $field_content_category->save();
     }
 

@@ -454,6 +454,9 @@
             },
             "drupal/elasticsearch_connector": {
                 "Allow dashes in index name": "https://gist.githubusercontent.com/nicksantamaria/95677ffa87a9e1433bfc27c3ebdefd35/raw/68d6eb055150d1e99ad6f0da49d68a6a4c2d6348/elasticsearch_connector-dashed-index.patch"
+            },
+           "drupal/select2": {
+                "remove Drag to re-order entity_type description": "https://www.drupal.org/files/issues/2023-09-08/select2-remove-drag-to-reorder-description-3178287-11.patch"
             }
         },
         "installer-paths": {
