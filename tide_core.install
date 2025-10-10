@@ -905,6 +905,15 @@ function tide_core_update_10023() {
       $field_show_topic_term_and_tags->save();
     }
 
+    // Change field_content_category to optional.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    /** @var FieldConfig $field_content_category */
+    $field_content_category = $storage->load('node.' . $id . '.field_content_category');
+    if ($field_content_category) {
+      $field_content_category->setRequired(FALSE);
+      $field_content_category->save();
+    }
+
     // Update field_featured_image.
     if ($field_featured_image_settings = $entity_form_display->getComponent('field_featured_image')) {
       $default_featured_image_widget_settings = [
