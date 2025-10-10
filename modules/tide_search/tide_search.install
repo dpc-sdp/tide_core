@@ -516,12 +516,12 @@ function tide_search_update_10010() {
     'format_type' => 'tab',
     'format_settings' => [
       'classes' => '',
-      'show_empty_fields' => false,
+      'show_empty_fields' => FALSE,
       'id' => '',
-      'label_as_html' => false,
+      'label_as_html' => FALSE,
       'formatter' => 'closed',
       'description' => '',
-      'required_fields' => true,
+      'required_fields' => TRUE,
     ],
   ];
   $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.tide_search_listing.default');

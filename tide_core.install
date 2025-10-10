@@ -842,7 +842,7 @@ function tide_core_update_10023() {
     $field_landing_page_intro_text_settings = $entity_form_display->getComponent('field_landing_page_intro_text');
     $field_landing_page_summary_settings = $entity_form_display->getComponent('field_landing_page_summary');
     if ($field_landing_page_summary_settings && $field_landing_page_intro_text_settings && ($field_landing_page_intro_text_settings['weight'] > $field_landing_page_summary_settings['weight'])) {
-      // Swap the weight values
+      // Swap the weight values.
       $temp_weight = $field_landing_page_intro_text_settings['weight'];
       $field_landing_page_intro_text_settings['weight'] = $field_landing_page_summary_settings['weight'];
       $field_landing_page_summary_settings['weight'] = $temp_weight;
@@ -887,7 +887,10 @@ function tide_core_update_10023() {
     $field_show_social_sharing = $storage->load('node.' . $id . '.field_show_social_sharing');
     if ($field_show_social_sharing) {
       $field_show_social_sharing->setLabel('Social sharing');
-      $field_show_social_sharing->setSettings(['on_label'=>'Yes', 'off_label'=>'No']);
+      $field_show_social_sharing->setSettings([
+        'on_label'  => 'Yes',
+        'off_label' => 'No',
+      ]);
       $field_show_social_sharing->setRequired(TRUE);
       $field_show_social_sharing->save();
       $social_sharing_form_settings = $entity_form_display->getComponent('field_show_social_sharing');
@@ -907,7 +910,7 @@ function tide_core_update_10023() {
 
     // Change field_content_category to optional.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
-    /** @var FieldConfig $field_content_category */
+    /** @var \Drupal\field\Entity\FieldConfig $field_content_category */
     $field_content_category = $storage->load('node.' . $id . '.field_content_category');
     if ($field_content_category) {
       $field_content_category->setRequired(FALSE);
@@ -1031,8 +1034,7 @@ function tide_core_update_10023() {
 }
 
 /**
- * Change field_content_category to select2_entity_reference widget,
- * and also remove parent.
+ * Change field_content_category to select2 widget,and also remove parent.
  */
 function tide_core_update_10024() {
   $field_content_category_widget_settings = [
@@ -1050,19 +1052,19 @@ function tide_core_update_10024() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   foreach ($content_types as $id => $content_type) {
     /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
-    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.'.$id.'.default');
+    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
     $entity_form_display->setComponent('field_content_category', $field_content_category_widget_settings);
     $entity_form_display->save();
   }
 
-  // Get top level content category terms except 1416
-  $query    = \Drupal::entityQuery('taxonomy_term')
+  // Get top level content category terms except 1416.
+  $query           = \Drupal::entityQuery('taxonomy_term')
     ->condition('vid', 'content_category')
     ->condition('parent', 0)
     ->accessCheck(FALSE)
     ->condition('tid', 1416, '<>');
   $parent_term_ids = $query->execute();
-  // Get node IDs referencing those terms
+  // Get node IDs referencing those terms.
   $node_query = \Drupal::entityQuery('node')->accessCheck(FALSE)
     ->condition('field_content_category', $parent_term_ids, 'IN');
   $node_ids   = $node_query->execute();
@@ -1080,7 +1082,8 @@ function tide_core_update_10024() {
       }
     }
     if (count($values) === 1) {
-      $node->set('field_content_category', ['target_id' => 1416]);;
+      $node->set('field_content_category', ['target_id' => 1416]);
+      ;
       $node->setNewRevision(FALSE);
       $node->save();
     }
