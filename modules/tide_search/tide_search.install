@@ -509,7 +509,7 @@ function tide_search_update_10010() {
       'field_node_department',
       'group_sites',
     ],
-    'label' => 'Page Metadata',
+    'label' => 'Page metadata',
     'region' => 'content',
     'parent_name' => 'group_tags_and_metadata',
     'weight' => 21,
