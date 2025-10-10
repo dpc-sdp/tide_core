@@ -11,6 +11,8 @@ use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 use Drush\Drush;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_install().
@@ -772,7 +774,7 @@ function tide_core_update_10023() {
           'field_tags',
           'field_show_topic_term_and_tags',
         ],
-        'label' => 'Page Tags',
+        'label' => 'Page tags',
         'region' => 'content',
         'parent_name' => 'group_tags_and_metadata',
         'weight' => 20,
@@ -793,7 +795,7 @@ function tide_core_update_10023() {
           'field_content_category',
           'group_sites',
         ],
-        'label' => 'Page Metadata',
+        'label' => 'Page metadata',
         'region' => 'content',
         'parent_name' => 'group_tags_and_metadata',
         'weight' => 21,
@@ -848,7 +850,14 @@ function tide_core_update_10023() {
       $entity_form_display->setComponent('field_landing_page_summary', $field_landing_page_summary_settings);
     }
 
-    // Change feautured image  to Feature image.
+    // Change the label for field_node_primary_site.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_node_primary_site = $storage->load('node.' . $id . '.field_node_primary_site');
+    if ($field_node_primary_site) {
+      $field_node_primary_site->set('label', 'Primary site');
+      $field_node_primary_site->save();
+    }
+
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     $field_featured_image = $storage->load('node.' . $id . '.field_featured_image');
     if ($field_featured_image) {
@@ -1012,9 +1021,84 @@ function tide_core_update_10023() {
 }
 
 /**
- * Revoke `delete` from all content types on the 3 roles.
+ * Change field_content_category to select2_entity_reference widget,
+ * and also remove parent.
  */
 function tide_core_update_10024() {
+  $field_content_category_widget_settings = [
+    'type' => 'select2_entity_reference',
+    'weight' => 10,
+    'region' => 'content',
+    'settings' => [
+      'width' => '100%',
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ],
+    'third_party_settings' => [],
+  ];
+  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($content_types as $id => $content_type) {
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.'.$id.'.default');
+    $entity_form_display->setComponent('field_content_category', $field_content_category_widget_settings);
+    $entity_form_display->save();
+  }
+
+  // Get top level content category terms except 1416
+  $query    = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'content_category')
+    ->condition('parent', 0)
+    ->accessCheck(FALSE)
+    ->condition('tid', 1416, '<>');
+  $parent_term_ids = $query->execute();
+  // Get node IDs referencing those terms
+  $node_query = \Drupal::entityQuery('node')->accessCheck(FALSE)
+    ->condition('field_content_category', $parent_term_ids, 'IN');
+  $node_ids   = $node_query->execute();
+  // Update the nodes.
+  foreach ($node_ids as $node_id) {
+    $node = Node::load($node_id);
+    $values = $node->get('field_content_category')->getValue();
+    if (count($values) > 1) {
+      foreach ($values as $key => $value) {
+        if (in_array($value['target_id'], $parent_term_ids)) {
+          $node->get('field_content_category')->removeItem($key);
+          $node->setNewRevision(FALSE);
+          $node->save();
+        }
+      }
+    }
+    if (count($values) === 1) {
+      $node->set('field_content_category', ['target_id' => 1416]);;
+      $node->setNewRevision(FALSE);
+      $node->save();
+    }
+  }
+
+  // Move all of terms from child level to parent level.
+  $query = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'content_category')
+    ->accessCheck(FALSE);
+  $all_term_ids = $query->execute();
+  foreach ($all_term_ids as $term_id) {
+    $term = Term::load($term_id);
+    $term->set('parent', 0);
+    $term->save();
+  }
+
+  // Remove previous parent level terms.
+  foreach ($parent_term_ids as $parent_term_id) {
+    $term = Term::load($parent_term_id);
+    $term->delete();
+  }
+
+}
+
+/**
+ * Revoke `delete` from all content types on the 3 roles.
+ */
+function tide_core_update_10025() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   $roles = [
     'editor',
@@ -1033,7 +1117,7 @@ function tide_core_update_10024() {
 /**
  * Fixes mismatched entity and/or field definitions" error.
  */
-function tide_core_update_10024() {
+function tide_core_update_10026() {
   $entity_type_manager = \Drupal::entityTypeManager();
   $entity_type_manager->clearCachedDefinitions();
   $entity_type_ids = [];
