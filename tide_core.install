@@ -6,6 +6,8 @@
  */
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -1037,6 +1039,7 @@ function tide_core_update_10023() {
  * Change field_content_category to select2 widget,and also remove parent.
  */
 function tide_core_update_10024() {
+  $default_category_id = 1416;
   $field_content_category_widget_settings = [
     'type' => 'select2_entity_reference',
     'weight' => 10,
@@ -1062,7 +1065,7 @@ function tide_core_update_10024() {
     ->condition('vid', 'content_category')
     ->condition('parent', 0)
     ->accessCheck(FALSE)
-    ->condition('tid', 1416, '<>');
+    ->condition('tid', $default_category_id, '<>');
   $parent_term_ids = $query->execute();
   // Get node IDs referencing those terms.
   $node_query = \Drupal::entityQuery('node')->accessCheck(FALSE)
@@ -1072,21 +1075,17 @@ function tide_core_update_10024() {
   foreach ($node_ids as $node_id) {
     $node = Node::load($node_id);
     $values = $node->get('field_content_category')->getValue();
+
     if (count($values) > 1) {
-      foreach ($values as $key => $value) {
-        if (in_array($value['target_id'], $parent_term_ids)) {
-          $node->get('field_content_category')->removeItem($key);
-          $node->setNewRevision(FALSE);
-          $node->save();
-        }
-      }
+      $filtered_values = array_filter($values, function ($value) use ($parent_term_ids) {
+        return !in_array($value['target_id'], $parent_term_ids);
+      });
+      $node->set('field_content_category', $filtered_values ?: [['target_id' => $default_category_id]]);
     }
-    if (count($values) === 1) {
-      $node->set('field_content_category', ['target_id' => 1416]);
-      ;
-      $node->setNewRevision(FALSE);
-      $node->save();
+    elseif (count($values) <= 1) {
+      $node->set('field_content_category', [['target_id' => $default_category_id]]);
     }
+    $node->save();
   }
 
   // Move all of terms from child level to parent level.
