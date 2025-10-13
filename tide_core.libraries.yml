@@ -54,3 +54,8 @@ form_extras:
   css:
     theme:
       css/form-extras.css: {}
+
+select2-placeholder-fix:
+  css:
+    theme:
+      css/select2-placeholder-fix.css: {}
