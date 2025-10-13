@@ -237,4 +237,12 @@ function tide_grant_update_10004() {
     $entity_form_display->unsetThirdPartySetting('field_group', 'group_section_guideline');
     $entity_form_display->save();
   }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  /** @var FieldConfig $field_show_social_sharing */
+  $field_audience = $storage->load('node.grant.field_audience');
+  if ($field_audience) {
+    $field_audience->setLabel('Grant audience');
+    $field_audience->save();
+  }
 }
