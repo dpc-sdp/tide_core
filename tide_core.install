@@ -886,7 +886,7 @@ function tide_core_update_10023() {
 
     // Update Social Sharing options.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
-    /** @var FieldConfig $field_show_social_sharing */
+    /** @var \Drupal\field\Entity\FieldConfig $field_show_social_sharing */
     $field_show_social_sharing = $storage->load('node.' . $id . '.field_show_social_sharing');
     if ($field_show_social_sharing) {
       $field_show_social_sharing->setLabel('Social sharing');
@@ -913,13 +913,19 @@ function tide_core_update_10023() {
     }
 
     // Change field_content_category to optional.
+    // Change field_tags's label to 'Audience'.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     /** @var \Drupal\field\Entity\FieldConfig $field_content_category */
     $field_content_category = $storage->load('node.' . $id . '.field_content_category');
+    $field_tags = $storage->load('node.' . $id . '.field_tags');
     if ($field_content_category) {
       $field_content_category->setRequired(FALSE);
       $field_content_category->setDescription('');
       $field_content_category->save();
+    }
+    if ($field_tags) {
+      $field_tags->set('label', 'Audience');
+      $field_tags->save();
     }
 
     // Update field_featured_image.
@@ -1115,7 +1121,7 @@ function tide_core_update_10024() {
 function tide_core_update_10025() {
   $fields_to_change = [
     'field_topic',
-    'field_tags'
+    'field_tags',
   ];
   $select2_widget_settings = [
     'type' => 'select2_entity_reference',
