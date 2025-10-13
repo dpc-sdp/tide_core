@@ -430,6 +430,7 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
   $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
   $form['#attached']['library'][] = 'tide_core/pseudo_required_field';
+  $form['#attached']['library'][] = 'tide_core/select2-placeholder-fix';
   if (isset($form['field_show_content_rating'])) {
     $form['#attached']['library'][] = 'tide_core/form_extras';
     $form['field_show_content_rating_extra_label'] = [
