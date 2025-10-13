@@ -886,6 +886,7 @@ function tide_core_update_10023() {
 
     // Update Social Sharing options.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    /** @var FieldConfig $field_show_social_sharing */
     $field_show_social_sharing = $storage->load('node.' . $id . '.field_show_social_sharing');
     if ($field_show_social_sharing) {
       $field_show_social_sharing->setLabel('Social sharing');
@@ -893,6 +894,7 @@ function tide_core_update_10023() {
         'on_label'  => 'Yes',
         'off_label' => 'No',
       ]);
+      $field_show_social_sharing->setDescription('The social sharing box can be hidden in special circumstances.');
       $field_show_social_sharing->setRequired(TRUE);
       $field_show_social_sharing->save();
       $social_sharing_form_settings = $entity_form_display->getComponent('field_show_social_sharing');
@@ -1108,9 +1110,43 @@ function tide_core_update_10024() {
 }
 
 /**
- * Revoke `delete` from all content types on the 3 roles.
+ * Change widget for field_topic and field_tags.
  */
 function tide_core_update_10025() {
+  $fields_to_change = [
+    'field_topic',
+    'field_tags'
+  ];
+  $select2_widget_settings = [
+    'type' => 'select2_entity_reference',
+    'weight' => 10,
+    'region' => 'content',
+    'settings' => [
+      'width' => '100%',
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ],
+    'third_party_settings' => [],
+  ];
+  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($content_types as $id => $content_type) {
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
+    foreach ($fields_to_change as $field) {
+      if ($settings = $entity_form_display->getComponent($field)) {
+        $select2_widget_settings['weight'] = $settings['weight'];
+        $entity_form_display->setComponent($field, $select2_widget_settings);
+        $entity_form_display->save();
+      }
+    }
+  }
+}
+
+/**
+ * Revoke `delete` from all content types on the 3 roles.
+ */
+function tide_core_update_10026() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   $roles = [
     'editor',
@@ -1129,7 +1165,7 @@ function tide_core_update_10025() {
 /**
  * Fixes mismatched entity and/or field definitions" error.
  */
-function tide_core_update_10026() {
+function tide_core_update_10027() {
   $entity_type_manager = \Drupal::entityTypeManager();
   $entity_type_manager->clearCachedDefinitions();
   $entity_type_ids = [];
