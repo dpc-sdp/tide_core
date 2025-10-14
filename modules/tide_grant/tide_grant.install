@@ -227,12 +227,12 @@ function tide_grant_update_10004() {
       $field_group['group_section_content']['children']   = array_values($field_group['group_section_content']['children']);
       $entity_form_display->setThirdPartySetting('field_group', 'group_section_content', $field_group['group_section_content']);
     }
-    $field_group['group_guidelines']['parent_name'] = 'group_section_content';
-    $field_group['group_guidelines']['weight']      = 30;
-    $entity_form_display->setThirdPartySetting('field_group', 'group_guidelines', $field_group['group_guidelines']);
     $field_group['group_grant_timeline']['parent_name'] = 'group_section_content';
-    $field_group['group_grant_timeline']['weight']      = 40;
+    $field_group['group_grant_timeline']['weight']      = 30;
     $entity_form_display->setThirdPartySetting('field_group', 'group_grant_timeline', $field_group['group_grant_timeline']);
+    $field_group['group_guidelines']['parent_name'] = 'group_section_content';
+    $field_group['group_guidelines']['weight']      = 40;
+    $entity_form_display->setThirdPartySetting('field_group', 'group_guidelines', $field_group['group_guidelines']);
     $entity_form_display->unsetThirdPartySetting('field_group', 'group_section_timeline');
     $entity_form_display->unsetThirdPartySetting('field_group', 'group_section_guideline');
     $entity_form_display->save();
