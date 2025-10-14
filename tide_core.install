@@ -713,3 +713,22 @@ function tide_core_update_10022() {
     }
   }
 }
+
+/**
+ * Revoke `delete` from all content types on the 3 roles.
+ */
+function tide_core_update_10023() {
+  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  $roles = [
+    'editor',
+    'approver',
+    'approver_plus',
+  ];
+  foreach ($roles as $role_id) {
+    $role = Role::load($role_id);
+    foreach ($content_types as $type => $content_type_entity) {
+      $role->revokePermission("delete own {$type} content")->revokePermission("delete any {$type} content");
+      $role->save();
+    }
+  }
+}
