@@ -16,8 +16,8 @@
         "drupal/config_perms": "2.x-dev@dev",
         "drupal/config_split": "^2.0",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/core": "10.4.*",
-        "drupal/core-recommended": "10.4.*",
+        "drupal/core": "10.5.*",
+        "drupal/core-recommended": "10.5.*",
         "drupal/monitoring": "^1.13",
         "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
         "drupal/ctools": "^3.14",
@@ -31,15 +31,15 @@
         "drupal/field_group": "^3.6",
         "drupal/google_analytics": "^4.0",
         "drupal/hotjar": "^3.1",
-        "drupal/linkit": "^6.0.0",
+        "drupal/linkit": "^7.0",
         "drupal/login_redirect_per_role": "^1.9",
         "drupal/m4032404": "^1.0-alpha4",
         "drupal/maxlength": "^2.1",
         "drupal/entity_hierarchy": "4.x",
         "drupal/elasticsearch_connector": "^7.0",
         "drupal/search_api": "^1.36",
-        "drupal/data_pipelines": "1.0.0-alpha22",
-        "drupal/data_pipelines_elasticsearch": "^1.0@alpha",
+        "drupal/data_pipelines": "^2.2",
+        "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": "^1.0",
         "drupal/key": "^1.17",
         "drupal/media_entity_audio": "^3.1",
         "drupal/metatag": "^2.0",
@@ -359,7 +359,7 @@
                 "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
             },
             "drupal/core": {
-                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16076908": "https://www.drupal.org/files/issues/2025-01-08/xss-refactor-filter-attributes-10.4.x-3109650-75.patch",
+                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16166063": "https://www.drupal.org/files/issues/2025-06-26/xss-refactor-filter-attributes-10.5.x-3109650-85.patch",
                 "PathBasedBreadcrumbBuilder needs to be able to exclude pointless paths - https://www.drupal.org/project/drupal/issues/3344200": "https://www.drupal.org/files/issues/2024-06-26/3344200-17.patch",
                 "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749#comment-15361693": "https://www.drupal.org/files/issues/2024-06-21/machine-name-widget-2685749-140.patch",
                 "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
@@ -413,9 +413,12 @@
                 "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
             },
             "drupal/data_pipelines": {
-                "CSV data header row whitespace needs to be cleaned up - https://drupal.org/project/data_pipelines/issues/3391214": "https://www.drupal.org/files/issues/2023-10-03/trim-whitespace-from-csv-header-names-3391214-2.patch",
-                "set a default value based on certain criteria - https://www.drupal.org/project/data_pipelines/issues/3426248#comment-15507258": "https://www.drupal.org/files/issues/2024-03-21/data_pipelines-3426248-6.patch.patch",
-                "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines/issues/3467021#comment-15720597": "https://www.drupal.org/files/issues/2024-08-09/Change-bulk-deleting-on-Elasticsearch-endpoint-3467021.patch"
+                "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch",
+                "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch"
+            },
+            "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
+                "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch",
+                "False positive mappings defined at top level error triggered unconditionally in ElasticSearchDatasetPipeline constructor - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3541059#comment-16226097": "https://www.drupal.org/files/issues/2025-08-13/3541059-fix-elasticsearch-mapping-warning-in-constructor.patch"
             },
             "drupal/paragraphs": {
                 "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
