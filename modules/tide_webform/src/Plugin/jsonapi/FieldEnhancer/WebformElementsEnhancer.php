@@ -2,8 +2,8 @@
 
 namespace Drupal\tide_webform\Plugin\jsonapi\FieldEnhancer;
 
-use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Drupal\jsonapi_extras\Plugin\ResourceFieldEnhancerBase;
+use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Shaper\Util\Context;
 use Symfony\Component\Yaml\Yaml;
 

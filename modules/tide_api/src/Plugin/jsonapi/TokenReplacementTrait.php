@@ -2,11 +2,11 @@
 
 namespace Drupal\tide_api\Plugin\jsonapi;
 
+/**
+ * Recursively processes token replacements in nested array structures.
+ */
 trait TokenReplacementTrait {
 
-  /**
-   * Recursively processes token replacements in nested array structures.
-   */
   private function replaceTokensInDefaultValue(array &$element, $token_service) {
     if (!is_array($element)) {
       return;
@@ -24,4 +24,5 @@ trait TokenReplacementTrait {
       }
     }
   }
+
 }

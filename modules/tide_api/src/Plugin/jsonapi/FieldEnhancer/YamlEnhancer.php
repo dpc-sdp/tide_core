@@ -4,8 +4,8 @@ namespace Drupal\tide_api\Plugin\jsonapi\FieldEnhancer;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Drupal\jsonapi_extras\Plugin\ResourceFieldEnhancerBase;
+use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Shaper\Util\Context;
 
 /**
