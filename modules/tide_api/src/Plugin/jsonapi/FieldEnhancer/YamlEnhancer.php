@@ -5,6 +5,7 @@ namespace Drupal\tide_api\Plugin\jsonapi\FieldEnhancer;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\jsonapi_extras\Plugin\ResourceFieldEnhancerBase;
+use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Shaper\Util\Context;
 
 /**
@@ -17,6 +18,8 @@ use Shaper\Util\Context;
  * )
  */
 class YamlEnhancer extends ResourceFieldEnhancerBase {
+
+  use TokenReplacementTrait;
 
   /**
    * {@inheritdoc}
@@ -97,27 +100,6 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
       $result = Html::serialize($dom);
     }
     return $result;
-  }
-
-  /**
-   * Recursively processes token replacements in nested array structures.
-   */
-  private function replaceTokensInDefaultValue(array &$element, $token_service) {
-    if (!is_array($element)) {
-      return;
-    }
-
-    // Replace tokens in current element's #default_value if it exists.
-    if (!empty($element['#default_value'])) {
-      $element['#default_value'] = $token_service->replace($element['#default_value']);
-    }
-
-    // Recursively process all child elements.
-    foreach ($element as $key => &$child) {
-      if (is_array($child)) {
-        $this->replaceTokensInDefaultValue($child, $token_service);
-      }
-    }
   }
 
 }

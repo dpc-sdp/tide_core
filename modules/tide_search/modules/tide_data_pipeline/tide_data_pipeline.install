@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\Entity\Role;
 
 /**
  * Imports columns for private datasets.
@@ -37,4 +38,26 @@ function tide_data_pipeline_update_10001() {
     ]);
   // Install the new field.
   $entity_definition_update_manager->installFieldStorageDefinition('json_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_json);
+}
+
+/**
+ * Grants data_importer role permissions to data_pipelines.
+ */
+function tide_data_pipeline_update_10002() {
+  $role = Role::load('data_importer');
+  if ($role) {
+    $role->grantPermission('data_pipelines create')->grantPermission('data_pipelines edit')->grantPermission('data_pipelines list');
+    $role->save();
+  }
+  else {
+    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_pipeline') . '/config/optional'];
+    $config_read = _tide_read_config('user.role.data_importer', $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage('user_role');
+    $id = $storage->getIDFromConfigName('user.role.data_importer', $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) == NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
 }
