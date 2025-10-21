@@ -6,6 +6,8 @@
  */
 
 use Drupal\Component\Utility\NestedArray;
+use Drupal\search_api\Entity\Index;
+use Drupal\search_api\Item\Field;
 use Drupal\tide_search\TideSearchOperation;
 
 /**
@@ -24,6 +26,7 @@ function tide_search_update_dependencies() {
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
   $dependencies['tide_search'][10006] = ['tide_core' => 10014];
   $dependencies['tide_search'][10007] = ['tide_core' => 10018];
+  $dependencies['tide_search'][10010] = ['tide_core' => 10024];
   return $dependencies;
 }
 
@@ -496,4 +499,18 @@ function tide_search_update_10009() {
     }
     $role->save();
   }
+}
+
+/**
+ * Add field for organisation name to search field.
+ */
+function tide_search_update_10010() {
+  $index = Index::load('node');
+  $field = new Field($index, 'field_organisation_name');
+  $field->setType('string');
+  $field->setDatasourceId('entity:node');
+  $field->setPropertyPath('field_organisation:entity:name');
+  $field->setLabel('Organisation » Taxonomy term » Name');
+  $index->addField($field);
+  $index->save();
 }

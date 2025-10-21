@@ -7,7 +7,6 @@
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\field\Entity\FieldConfig;
-use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\tide_core\TideEntityUpdateHelper;
 use Drupal\tide_publication\TidePublicationOperation;
 
@@ -24,12 +23,6 @@ function tide_publication_install() {
   TidePublicationOperation::addToScheduledTransitions();
   TidePublicationOperation::assignNecessaryPermissions(FALSE);
   TidePublicationOperation::addFieldsToSearchApi();
-
-  // Creates vocabulary if doesn't exist.
-  $vocabularies = Vocabulary::loadMultiple();
-  if (!isset($vocabularies['organisation'])) {
-    TidePublicationOperation::createVocabulary('organisation');
-  }
 
 }
 
@@ -58,6 +51,7 @@ function tide_publication_update_dependencies() {
   $dependencies['tide_publication'][10003] = ['tide_core' => 10005];
   $dependencies['tide_publication'][10008] = ['tide_core' => 10014];
   $dependencies['tide_publication'][10010] = ['tide_core' => 10018];
+  $dependencies['tide_publication'][10012] = ['tide_core' => 10024];
   return $dependencies;
 }
 
@@ -65,18 +59,11 @@ function tide_publication_update_dependencies() {
  * Update field_publication_authors cardinality and vocabulary to organisation.
  */
 function tide_publication_update_10002() {
-  $tidePublicationOperation = new TidePublicationOperation();
   $vocabulary = 'organisation';
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('field.storage.node.field_publication_authors');
   $config->set('cardinality', 1);
   $config->save();
-
-  // Creates vocabulary if doesn't exist.
-  $vocabularies = Vocabulary::loadMultiple();
-  if (!isset($vocabularies[$vocabulary])) {
-    $tidePublicationOperation->createVocabulary($vocabulary);
-  }
 
   $field = FieldConfig::loadByName('node', 'publication', 'field_publication_authors');
   if ($field->get('field_type') === 'entity_reference') {
@@ -458,4 +445,36 @@ function tide_publication_update_10011() {
       $jsonapi_config->set('resourceFields', $resource_fields)->save();
     }
   }
+}
+
+/**
+ * Add organisation field to publication content types.
+ */
+function tide_publication_update_10012() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_publication') . '/config/install'];
+  $config_read = _tide_read_config('field.field.node.publication.field_organisation', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $id = $storage->getIDFromConfigName('field.field.node.publication.field_organisation', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+
+  $field_organisation_widget_settings = [
+    'type' => 'select2_entity_reference',
+    'weight' => 25,
+    'region' => 'content',
+    'settings' => [
+      'width' => '100%',
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ],
+    'third_party_settings' => [],
+  ];
+
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.publication.default');
+  $entity_form_display->setComponent('field_organisation', $field_organisation_widget_settings)->save();
 }

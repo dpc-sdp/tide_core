@@ -3,6 +3,7 @@
 namespace Drupal\tide_core;
 
 use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
 use Drupal\workflows\Entity\Workflow;
@@ -283,6 +284,21 @@ class TideCoreOperation {
         $update_service->import($type, $name);
       }
     }
+  }
+
+  /**
+   * Creates a new vocabulary.
+   *
+   * @param string $vocabulary
+   *   The new vocabulary.
+   */
+  public function createVocabulary(string $vocabulary) {
+    $vocabulary = Vocabulary::create([
+      'vid' => $vocabulary,
+      'description' => '',
+      'name' => ucfirst($vocabulary),
+    ]);
+    $vocabulary->save();
   }
 
 }

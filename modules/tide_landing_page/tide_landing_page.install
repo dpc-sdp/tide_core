@@ -38,6 +38,7 @@ function tide_landing_page_update_dependencies() {
   $dependencies['tide_landing_page'][10106] = ['tide_core' => 10009];
   $dependencies['tide_landing_page'][10111] = ['tide_core' => 10014];
   $dependencies['tide_landing_page'][10113] = ['tide_core' => 10018];
+  $dependencies['tide_landing_page'][10115] = ['tide_core' => 10024];
   return $dependencies;
 }
 
@@ -472,4 +473,36 @@ function tide_landing_page_update_10114() {
       ->set('dependencies.config', $dependencies)
       ->save();
   }
+}
+
+/**
+ * Add organisation field to landing_page node type.
+ */
+function tide_landing_page_update_10115() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
+  $config_read = _tide_read_config('field.field.node.landing_page.field_organisation', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+  $id = $storage->getIDFromConfigName('field.field.node.landing_page.field_organisation', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+
+  $field_organisation_widget_settings = [
+    'type' => 'select2_entity_reference',
+    'weight' => 25,
+    'region' => 'content',
+    'settings' => [
+      'width' => '100%',
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ],
+    'third_party_settings' => [],
+  ];
+
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.landing_page.default');
+  $entity_form_display->setComponent('field_organisation', $field_organisation_widget_settings)->save();
 }

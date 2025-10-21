@@ -6,6 +6,7 @@
  */
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -61,6 +62,11 @@ function tide_core_install() {
 
   // Enables paragraphs_library.
   $tideCoreOperation->alterParagraphsLibrary();
+
+  // Creates vocabulary if doesn't exist.
+  if (!Vocabulary::load('organisation')) {
+    $tideCoreOperation->createVocabulary('organisation');
+  }
 }
 
 /**
@@ -730,5 +736,26 @@ function tide_core_update_10023() {
       $role->revokePermission("delete own {$type} content")->revokePermission("delete any {$type} content");
       $role->save();
     }
+  }
+}
+
+/**
+ * Creates the organisation vocabulary and field_organisation storage.
+ */
+function tide_core_update_10024() {
+  $tideCoreOperation = new TideCoreOperation();
+  // Creates vocabulary if doesn't exist.
+  if (!Vocabulary::load('organisation')) {
+    $tideCoreOperation->createVocabulary('organisation');
+  }
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('field.storage.node.field_organisation', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $id = $storage->getIDFromConfigName('field.storage.node.field_organisation', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
   }
 }

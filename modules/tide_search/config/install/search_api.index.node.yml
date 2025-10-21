@@ -10,6 +10,7 @@ dependencies:
     - field.storage.paragraph.field_paragraph_summary
     - field.storage.node.field_event_details
     - field.storage.paragraph.field_paragraph_location
+    - field.storage.node.field_organisation
     - search_api.server.elasticsearch_bay
   module:
     - taxonomy
@@ -156,6 +157,16 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.field_tags
+  field_organisation_name:
+    label: 'Organisation » Taxonomy term » Name'
+    datasource_id: 'entity:node'
+    property_path: 'field_organisation:entity:name'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_organisation
+      module:
+        - taxonomy
   field_tags_uuid:
     label: 'Tags » Taxonomy term » UUID'
     datasource_id: 'entity:node'
@@ -223,6 +234,7 @@ processor_settings:
       - field_tags_path
       - field_paragraph_body
       - field_paragraph_summary
+      - field_organisation_name
       - field_event_details_event_locality
       - uuid
       - field_tags_uuid
