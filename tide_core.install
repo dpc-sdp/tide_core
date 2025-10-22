@@ -10,6 +10,7 @@ use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
+use Drush\Drush;
 
 /**
  * Implements hook_install().
@@ -746,5 +747,5 @@ function tide_core_update_10024() {
     \Drupal::entityDefinitionUpdateManager()->installEntityType($entity_type);
     $entity_type_ids[] = $entity_type_id;
   }
-  \Drush\Drush::output()->writeln('Installed/Updated the entity type(s): ' . implode(', ', $entity_type_ids));
+  Drush::output()->writeln('Installed/Updated the entity type(s): ' . implode(', ', $entity_type_ids));
 }
