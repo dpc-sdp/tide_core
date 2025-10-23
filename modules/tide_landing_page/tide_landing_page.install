@@ -473,3 +473,17 @@ function tide_landing_page_update_10114() {
       ->save();
   }
 }
+
+/**
+ * Remove unused landing_page view displays.
+ */
+function tide_landing_page_update_10115() {
+  $view_displays = ['node.landing_page.featured_card', 'node.landing_page.card'];
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+  foreach ($view_displays as $display_id) {
+    $entity_view_display = $storage->load($display_id);
+    if ($entity_view_display) {
+      $entity_view_display->delete();
+    }
+  }
+}
