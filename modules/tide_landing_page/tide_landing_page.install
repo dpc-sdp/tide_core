@@ -476,9 +476,23 @@ function tide_landing_page_update_10114() {
 }
 
 /**
- * Add organisation field to landing_page node type.
+ * Remove landing_page.featured_card view display.
  */
 function tide_landing_page_update_10115() {
+  $view_displays = ['node.landing_page.featured_card', 'node.landing_page.card'];
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+  foreach ($view_displays as $display_id) {
+    $entity_view_display = $storage->load($display_id);
+    if ($entity_view_display) {
+      $entity_view_display->delete();
+    }
+  }
+}
+
+/**
+ * Add organisation field to landing_page node type.
+ */
+function tide_landing_page_update_10116() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
   $config_read = _tide_read_config('field.field.node.landing_page.field_organisation', $config_location, TRUE);

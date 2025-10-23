@@ -52,9 +52,7 @@ config_devel:
     - core.entity_form_display.paragraph.hero_banner_with_cta.default
     - core.entity_form_display.paragraph.introduction_banner.default
     - core.entity_view_display.block_content.media_gallery.default
-    - core.entity_view_display.node.landing_page.card
     - core.entity_view_display.node.landing_page.default
-    - core.entity_view_display.node.landing_page.featured_card
     - core.entity_view_display.paragraph.banner.default
     - core.entity_view_display.paragraph.basic_text.default
     - core.entity_view_display.paragraph.call_to_action.default
