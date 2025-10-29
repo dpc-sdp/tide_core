@@ -1,0 +1,15 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - data_pipelines
+id: data_importer
+label: 'Data importer'
+weight: 1
+is_admin: null
+permissions:
+  - 'access toolbar'
+  - 'access workbench'
+  - 'data_pipelines create'
+  - 'data_pipelines edit'
+  - 'data_pipelines list'
