@@ -6,6 +6,8 @@
  */
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -716,9 +718,439 @@ function tide_core_update_10022() {
 }
 
 /**
- * Revoke `delete` from all content types on the 3 roles.
+ * Adds the 'Tags and Metadata' group to all content types.
  */
 function tide_core_update_10023() {
+  // Fields settings.
+  $tag_fields = [
+    10 => 'field_topic',
+    20 => 'field_tags',
+    30 => 'field_show_topic_term_and_tags',
+  ];
+  $metadata_fields = [
+    10 => 'field_content_category',
+    20 => 'field_department_agency',
+    30 => 'field_node_primary_site',
+    40 => 'field_node_site',
+  ];
+  $sites_fields = [
+    30 => 'field_node_primary_site',
+    40 => 'field_node_site',
+  ];
+  $position_anchor = [
+    'group_right_column',
+    'group_section_sidebar',
+  ];
+  // Load some services.
+  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+  $field_manager = \Drupal::service('entity_field.manager');
+  /** @var \Drupal\node\Entity\NodeType $content_type */
+  foreach ($content_types as $id => $content_type) {
+    // Basic group settings as a template.
+    $groups = [
+      'group_tags_and_metadata' => [
+        'children' => [
+          'group_page_tags',
+          'group_page_metadata',
+        ],
+        'label' => 'Tags and Metadata',
+        'region' => 'content',
+        'parent_name' => '',
+        'weight' => 5,
+        'format_type' => 'tabs',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'direction' => 'horizontal',
+          'width_breakpoint' => 640,
+        ],
+      ],
+      'group_page_tags' => [
+        'children' => [
+          'field_topic',
+          'field_tags',
+          'field_show_topic_term_and_tags',
+        ],
+        'label' => 'Page tags',
+        'region' => 'content',
+        'parent_name' => 'group_tags_and_metadata',
+        'weight' => 20,
+        'format_type' => 'tab',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'formatter' => 'closed',
+          'description' => '',
+          'required_fields' => TRUE,
+        ],
+      ],
+      'group_page_metadata' => [
+        'children' => [
+          'field_department_agency',
+          'field_content_category',
+          'group_sites',
+        ],
+        'label' => 'Page metadata',
+        'region' => 'content',
+        'parent_name' => 'group_tags_and_metadata',
+        'weight' => 21,
+        'format_type' => 'tab',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'formatter' => 'closed',
+          'description' => '',
+          'required_fields' => TRUE,
+        ],
+      ],
+      'group_sites' => [
+        'children' => [
+          'field_node_primary_site',
+          'field_node_site',
+        ],
+        'label' => 'Sites',
+        'region' => 'content',
+        'parent_name' => 'group_page_metadata',
+        'weight' => 30,
+        'format_type' => 'details',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'open' => TRUE,
+          'description' => '',
+          'required_fields' => TRUE,
+        ],
+      ],
+    ];
+    // Get the field and widget definitions.
+    $fields = $field_manager->getFieldDefinitions('node', $id);
+    $count = 0;
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
+    $field_group = $entity_form_display->getThirdPartySettings('field_group');
+
+    // Move field_landing_page_intro_text before field_landing_page_summary.
+    $field_landing_page_intro_text_settings = $entity_form_display->getComponent('field_landing_page_intro_text');
+    $field_landing_page_summary_settings = $entity_form_display->getComponent('field_landing_page_summary');
+    if ($field_landing_page_summary_settings && $field_landing_page_intro_text_settings && ($field_landing_page_intro_text_settings['weight'] > $field_landing_page_summary_settings['weight'])) {
+      // Swap the weight values.
+      $temp_weight = $field_landing_page_intro_text_settings['weight'];
+      $field_landing_page_intro_text_settings['weight'] = $field_landing_page_summary_settings['weight'];
+      $field_landing_page_summary_settings['weight'] = $temp_weight;
+      $entity_form_display->setComponent('field_landing_page_intro_text', $field_landing_page_intro_text_settings);
+      $entity_form_display->setComponent('field_landing_page_summary', $field_landing_page_summary_settings);
+    }
+
+    // Change the label for field_node_primary_site.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_node_primary_site = $storage->load('node.' . $id . '.field_node_primary_site');
+    if ($field_node_primary_site) {
+      $field_node_primary_site->set('label', 'Primary site');
+      $field_node_primary_site->save();
+    }
+
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_featured_image = $storage->load('node.' . $id . '.field_featured_image');
+    if ($field_featured_image) {
+      $field_featured_image->set('label', 'Feature image');
+      $field_featured_image->save();
+    }
+
+    $field_tags_settings = $entity_form_display->getComponent('field_tags');
+    if ($field_tags_settings && $field_tags_settings['type'] !== 'entity_reference_autocomplete_tags') {
+      $field_tags_settings = [
+        'type' => 'entity_reference_autocomplete_tags',
+        'weight' => 24,
+        'region' => 'content',
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'match_limit' => 10,
+          'size' => 60,
+          'placeholder' => '',
+        ],
+        'third_party_settings' => [],
+      ];
+      $entity_form_display->setComponent('field_tags', $field_tags_settings);
+    }
+
+    // Update Social Sharing options.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    /** @var \Drupal\field\Entity\FieldConfig $field_show_social_sharing */
+    $field_show_social_sharing = $storage->load('node.' . $id . '.field_show_social_sharing');
+    if ($field_show_social_sharing) {
+      $field_show_social_sharing->setLabel('Social sharing');
+      $field_show_social_sharing->setSettings([
+        'on_label'  => 'Yes',
+        'off_label' => 'No',
+      ]);
+      $field_show_social_sharing->setDescription('The social sharing box can be hidden in special circumstances.');
+      $field_show_social_sharing->setRequired(TRUE);
+      $field_show_social_sharing->save();
+      $social_sharing_form_settings = $entity_form_display->getComponent('field_show_social_sharing');
+      $social_sharing_form_settings['type'] = 'options_buttons';
+      $social_sharing_form_settings['weight'] = 50;
+      $social_sharing_form_settings['settings'] = [];
+      $entity_form_display->setComponent('field_show_social_sharing', $social_sharing_form_settings);
+    }
+
+    // Change the label to 'Show pages on page'.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    $field_show_topic_term_and_tags = $storage->load('node.' . $id . '.field_show_topic_term_and_tags');
+    if ($field_show_topic_term_and_tags) {
+      $field_show_topic_term_and_tags->setLabel('Show tags on page');
+      $field_show_topic_term_and_tags->save();
+    }
+
+    // Change field_content_category to optional.
+    // Change field_tags's label to 'Audience'.
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    /** @var \Drupal\field\Entity\FieldConfig $field_content_category */
+    $field_content_category = $storage->load('node.' . $id . '.field_content_category');
+    $field_tags = $storage->load('node.' . $id . '.field_tags');
+    if ($field_content_category) {
+      $field_content_category->setRequired(FALSE);
+      $field_content_category->setDescription('');
+      $field_content_category->save();
+    }
+    if ($field_tags) {
+      $field_tags->set('label', 'Audience');
+      $field_tags->save();
+    }
+
+    // Update field_featured_image.
+    if ($field_featured_image_settings = $entity_form_display->getComponent('field_featured_image')) {
+      $default_featured_image_widget_settings = [
+        'type' => 'entity_browser_entity_reference',
+        'weight' => $field_featured_image_settings['weight'],
+        'region' => 'content',
+        'settings' => [
+          'entity_browser' => 'tide_image_browser',
+          'field_widget_display' => 'rendered_entity',
+          'field_widget_edit' => TRUE,
+          'field_widget_remove' => TRUE,
+          'field_widget_replace' => FALSE,
+          'open' => FALSE,
+          'field_widget_display_settings' => [
+            'view_mode' => 'media_browser_preview',
+          ],
+          'selection_mode' => 'selection_append',
+        ],
+        'third_party_settings' => [],
+      ];
+      $entity_form_display->setComponent('field_featured_image', $default_featured_image_widget_settings);
+    }
+
+    foreach ($tag_fields as $index => $tag_field) {
+      if (!isset($fields[$tag_field])) {
+        // Remove non-existing fields from the template.
+        $key = array_search($tag_field, $groups['group_page_tags']['children']);
+        if ($key !== FALSE) {
+          unset($groups['group_page_tags']['children'][$key]);
+          $groups['group_page_tags']['children'] = array_values($groups['group_page_tags']['children']);
+        }
+        $count++;
+      }
+      else {
+        if ($tag_field === 'field_tags') {
+          // Update field_tags widget to `entity_reference_autocomplete_tags`.
+          $tag_field_definition = $entity_form_display->getComponent($tag_field);
+          $tag_field_definition['type'] = 'entity_reference_autocomplete_tags';
+          $entity_form_display->setComponent($tag_field, $tag_field_definition);
+        }
+        // Update weight for tag group fields.
+        $field_form_definition = $entity_form_display->getComponent($tag_field);
+        $field_form_definition['weight'] = $index;
+        $entity_form_display->setComponent($tag_field, $field_form_definition);
+      }
+    }
+    if ($count === 3) {
+      // If all fields are removed, remove group_page_tags from its parent.
+      unset($groups['group_page_tags']);
+      $key = array_search('group_page_tags', $groups['group_tags_and_metadata']['children']);
+      if ($key !== FALSE) {
+        unset($groups['group_tags_and_metadata']['children'][$key]);
+        $groups['group_tags_and_metadata']['children'] = array_values($groups['group_tags_and_metadata']['children']);
+      }
+    }
+    // Handle metadata_fields.
+    foreach ($metadata_fields as $index => $metadata_field) {
+      if (!isset($fields[$metadata_field])) {
+        $key = array_search($metadata_field, $groups['group_page_metadata']['children']);
+        if ($key !== FALSE) {
+          unset($groups['group_page_metadata']['children'][$key]);
+          $groups['group_page_metadata']['children'] = array_values($groups['group_page_metadata']['children']);
+        }
+      }
+      else {
+        $field_form_definition = $entity_form_display->getComponent($metadata_field);
+        $field_form_definition['weight'] = $index;
+        $entity_form_display->setComponent($metadata_field, $field_form_definition);
+      }
+    }
+    // Handle sites_fields.
+    foreach ($sites_fields as $index => $sites_field) {
+      $field_form_definition = $entity_form_display->getComponent($sites_field);
+      $field_form_definition['weight'] = $index;
+      $entity_form_display->setComponent($metadata_field, $field_form_definition);
+    }
+
+    $position_anchor_count = 0;
+    // Now, it is the time to update entity_form_display.
+    if (!isset($field_group['group_tags_and_metadata'])) {
+      $field_group['group_tags_and_metadata'] = $groups['group_tags_and_metadata'];
+      foreach ($position_anchor as $anchor) {
+        if (!empty($field_group[$anchor])) {
+          $field_group['group_tags_and_metadata']['weight'] = $field_group[$anchor]['weight'] + 1;
+        }
+        else {
+          $position_anchor_count++;
+        }
+      }
+      if ($position_anchor_count === 2) {
+        if ($field_show_content_rating_settings = $entity_form_display->getComponent('field_show_content_rating')) {
+          $field_group['group_tags_and_metadata']['weight'] = $field_show_content_rating_settings['weight'];
+        }
+      }
+
+      $entity_form_display->setThirdPartySetting('field_group', 'group_tags_and_metadata', $field_group['group_tags_and_metadata']);
+      if (isset($groups['group_page_tags'])) {
+        $field_group['group_page_tags'] = $groups['group_page_tags'];
+        $entity_form_display->setThirdPartySetting('field_group', 'group_page_tags', $field_group['group_page_tags']);
+      }
+      $field_group['group_page_metadata'] = $groups['group_page_metadata'];
+      $entity_form_display->setThirdPartySetting('field_group', 'group_page_metadata', $field_group['group_page_metadata']);
+      $field_group['group_sites'] = $groups['group_sites'];
+      $entity_form_display->setThirdPartySetting('field_group', 'group_sites', $field_group['group_sites']);
+      // Update field_show_content_rating to lower position.
+      if ($field_show_content_rating_settings = $entity_form_display->getComponent('field_show_content_rating')) {
+        $field_show_content_rating_settings['weight'] += 1;
+        $entity_form_display->setComponent('field_show_content_rating', $field_show_content_rating_settings);
+      }
+      $entity_form_display->save();
+    }
+  }
+
+}
+
+/**
+ * Change field_content_category to select2 widget,and also remove parent.
+ */
+function tide_core_update_10024() {
+  $default_category_id = 1416;
+  $field_content_category_widget_settings = [
+    'type' => 'select2_entity_reference',
+    'weight' => 10,
+    'region' => 'content',
+    'settings' => [
+      'width' => '100%',
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ],
+    'third_party_settings' => [],
+  ];
+  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($content_types as $id => $content_type) {
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
+    $entity_form_display->setComponent('field_content_category', $field_content_category_widget_settings);
+    $entity_form_display->save();
+  }
+
+  // Get top level content category terms except 1416.
+  $query           = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'content_category')
+    ->condition('parent', 0)
+    ->accessCheck(FALSE)
+    ->condition('tid', $default_category_id, '<>');
+  $parent_term_ids = $query->execute();
+  // Get node IDs referencing those terms.
+  $node_query = \Drupal::entityQuery('node')->accessCheck(FALSE)
+    ->condition('field_content_category', $parent_term_ids, 'IN');
+  $node_ids   = $node_query->execute();
+  // Update the nodes.
+  foreach ($node_ids as $node_id) {
+    $node = Node::load($node_id);
+    $values = $node->get('field_content_category')->getValue();
+
+    if (count($values) > 1) {
+      $filtered_values = array_filter($values, function ($value) use ($parent_term_ids) {
+        return !in_array($value['target_id'], $parent_term_ids);
+      });
+      $node->set('field_content_category', $filtered_values ?: [['target_id' => $default_category_id]]);
+    }
+    elseif (count($values) <= 1) {
+      $node->set('field_content_category', [['target_id' => $default_category_id]]);
+    }
+    $node->save();
+  }
+
+  // Move all of terms from child level to parent level.
+  $query = \Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'content_category')
+    ->accessCheck(FALSE);
+  $all_term_ids = $query->execute();
+  foreach ($all_term_ids as $term_id) {
+    $term = Term::load($term_id);
+    $term->set('parent', 0);
+    $term->save();
+  }
+
+  // Remove previous parent level terms.
+  foreach ($parent_term_ids as $parent_term_id) {
+    $term = Term::load($parent_term_id);
+    $term->delete();
+  }
+
+}
+
+/**
+ * Change widget for field_topic and field_tags.
+ */
+function tide_core_update_10025() {
+  $fields_to_change = [
+    'field_topic',
+    'field_tags',
+  ];
+  $select2_widget_settings = [
+    'type' => 'select2_entity_reference',
+    'weight' => 10,
+    'region' => 'content',
+    'settings' => [
+      'width' => '100%',
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ],
+    'third_party_settings' => [],
+  ];
+  $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+  foreach ($content_types as $id => $content_type) {
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+    $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.' . $id . '.default');
+    foreach ($fields_to_change as $field) {
+      if ($settings = $entity_form_display->getComponent($field)) {
+        $select2_widget_settings['weight'] = $settings['weight'];
+        $entity_form_display->setComponent($field, $select2_widget_settings);
+        $entity_form_display->save();
+      }
+    }
+  }
+}
+
+/**
+ * Revoke `delete` from all content types on the 3 roles.
+ */
+function tide_core_update_10026() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   $roles = [
     'editor',
@@ -737,7 +1169,7 @@ function tide_core_update_10023() {
 /**
  * Fixes mismatched entity and/or field definitions" error.
  */
-function tide_core_update_10024() {
+function tide_core_update_10027() {
   $entity_type_manager = \Drupal::entityTypeManager();
   $entity_type_manager->clearCachedDefinitions();
   $entity_type_ids = [];

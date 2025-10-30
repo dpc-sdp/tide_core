@@ -58,6 +58,7 @@ function tide_publication_update_dependencies() {
   $dependencies['tide_publication'][10003] = ['tide_core' => 10005];
   $dependencies['tide_publication'][10008] = ['tide_core' => 10014];
   $dependencies['tide_publication'][10010] = ['tide_core' => 10018];
+  $dependencies['tide_publication'][10012] = ['tide_core' => 10023];
   return $dependencies;
 }
 
@@ -458,4 +459,40 @@ function tide_publication_update_10011() {
       $jsonapi_config->set('resourceFields', $resource_fields)->save();
     }
   }
+}
+
+/**
+ * Tags relocation for the publication content type.
+ */
+function tide_publication_update_10012() {
+  $group_publication_metadata = [
+    'children' => [
+      'field_license_type',
+      'field_publication_date',
+      'field_publication_authors',
+    ],
+    'label' => 'Publication infomation',
+    'region' => 'content',
+    'parent_name' => '',
+    'weight' => 3,
+    'format_type' => 'details',
+    'format_settings' => [
+      'classes' => '',
+      'show_empty_fields' => TRUE,
+      'id' => '',
+      'label_as_html' => FALSE,
+      'open' => TRUE,
+      'description' => '',
+      'required_fields' => TRUE,
+    ],
+  ];
+
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.publication.default');
+  $field_group = $entity_form_display->getThirdPartySettings('field_group');
+
+  if (isset($field_group['group_publication_metadata'])) {
+    $entity_form_display->setThirdPartySetting('field_group', 'group_publication_metadata', $group_publication_metadata);
+  }
+  $entity_form_display->save();
 }
