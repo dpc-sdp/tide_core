@@ -13,8 +13,6 @@ use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 use Drush\Drush;
-use Drupal\taxonomy\Entity\Term;
-use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_install().
