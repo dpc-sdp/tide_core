@@ -1,9 +1,11 @@
-button.ck.ck-button[data-cke-tooltip-text="Media"] span {
-  display: block;
+button.ck.ck-button[data-cke-tooltip-text="Media"] .ck-button__label,
+#drupal-off-canvas [data-drupal-ck-style-fence] button.ck.ck-button[data-cke-tooltip-text="Media"] .ck-button__label {
+  display: block !important;
 }
 
-button.ck.ck-button[data-cke-tooltip-text="Media"] svg {
-  display: none;
+button.ck.ck-button[data-cke-tooltip-text="Media"] svg,
+#drupal-off-canvas [data-drupal-ck-style-fence] button.ck.ck-button[data-cke-tooltip-text="Media"] svg {
+  display: none !important;
 }
 
 .callout-wrapper {

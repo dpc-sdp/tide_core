@@ -5,6 +5,8 @@
  * Tide Search module functionality.
  */
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\search_api\IndexInterface;
 
@@ -12,6 +14,14 @@ use Drupal\search_api\IndexInterface;
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (!in_array($form_id, [
+    'node_tide_search_listing_form',
+    'node_tide_search_listing_edit_form',
+    'node_tide_search_listing_quick_node_clone_form',
+  ])) {
+    return;
+  }
+
   $field_config = 'node.tide_search_listing.field_custom_filters';
   $storage = \Drupal::entityTypeManager()->getStorage('field_config');
 
@@ -29,13 +39,36 @@ function tide_search_form_node_form_alter(&$form, FormStateInterface $form_state
       $form['field_custom_filters']['#access'] = FALSE;
     }
   }
-  if (in_array($form_id, [
-    'node_tide_search_listing_form',
-    'node_tide_search_listing_edit_form',
-    'node_tide_search_listing_quick_node_clone_form',
-  ])) {
+  $form['#process'][] = '_tide_search_form_node_form_process';
+  $form['#after_build'][] = '_tide_search_form_node_form_after_build';
 
-    $form['#process'][] = '_tide_search_form_node_form_process';
+  // Prefill preset values.
+  _tide_search_apply_preset_values($form, $form_state);
+}
+
+/**
+ * Implements hook_paragraphs_type_widget_alter().
+ */
+function tide_search_field_widget_single_element_paragraphs_form_alter(array &$element, FormStateInterface $form_state, array $context) {
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+  $non_admin = !array_intersect($admin_roles, $current_user->getRoles());
+  /** @var \Drupal\Core\Field\FieldItemListInterface $items */
+  $items = $context['items'];
+  $field_definition = $items->getFieldDefinition();
+  $paragraph_field_name = $field_definition->getName();
+  $widget_state = WidgetBase::getWidgetState($element['#field_parents'], $paragraph_field_name, $form_state);
+  $paragraph = $widget_state['paragraphs'][$element['#delta']]['entity'];
+  $paragraph_type = $paragraph ? $paragraph->bundle() : '';
+
+  switch ($paragraph_type) {
+    case 'searchable_fields':
+      if ($non_admin) {
+        if (!empty($element['subform']['field_placeholder'])) {
+          $element['subform']['field_placeholder']['#access'] = FALSE;
+        }
+      }
+      break;
   }
 }
 
@@ -145,4 +178,334 @@ function tide_search_config_schema_info_alter(&$schema) {
       'label' => 'The number of shards',
     ];
   }
+}
+
+/**
+ * Implements after build for tide search listings.
+ */
+function _tide_search_form_node_form_after_build(array $form, FormStateInterface $form_state) {
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+
+  // Self service search listing.
+  $non_admin = !array_intersect($admin_roles, $current_user->getRoles());
+  if ($non_admin) {
+    $groups = [
+      'group_listing_configuration',
+      'group_global_filters',
+      'group_user_filters',
+      'group_results',
+    ];
+    $restricted_items = [
+      'field_custom_sort_configuration',
+      'field_listing_query_config',
+      'field_search_submit_label',
+      'field_listing_results_config',
+      'field_search_configuration',
+      'field_landing_page_c_secondary',
+      'field_layout_component',
+      'field_results_component',
+      'group_custom_header',
+    ];
+    foreach ($restricted_items as $field_name) {
+      $form[$field_name]['#access'] = FALSE;
+    }
+    foreach ($groups as $group) {
+      if (isset($form[$group])) {
+        $form[$group]['#open'] = TRUE;
+      }
+    }
+    // Hide global & user filter's custom filter paragraph.
+    $targets = [
+      'field_listing_global_filters' => 'add_more_button_listing_custom_filter',
+      'field_listing_user_filters'   => 'add_more_button_listing_user_custom_filter',
+    ];
+    foreach ($targets as $field => $button) {
+      if (isset($form[$field]['widget']['add_more'][$button])) {
+        unset($form[$field]['widget']['add_more'][$button]);
+      }
+    }
+    // Mandatory site field.
+    if (!empty($form['field_listing_global_filters']['widget'])) {
+      foreach ($form['field_listing_global_filters']['widget'] as $delta => &$widget) {
+        if (!is_numeric($delta)) {
+          continue;
+        }
+
+        // Target the listing_site paragraph.
+        if (isset($widget['#paragraph_type']) && $widget['#paragraph_type'] === 'listing_site') {
+          if (isset($widget['subform']['field_listing_site_site'])) {
+            $widget['subform']['field_listing_site_site']['widget']['#required'] = TRUE;
+          }
+        }
+      }
+    }
+    // Collapsed by default.
+    $wrappable_fields = [
+      'field_above_results_content' => 'Above results content',
+      'field_below_results_content' => 'Below results content',
+    ];
+
+    foreach ($wrappable_fields as $field_name => $title) {
+      if (isset($form[$field_name])) {
+        $form["{$field_name}_wrapper"] = [
+          '#type' => 'details',
+          '#title' => $title,
+          '#open' => FALSE,
+          '#weight' => $form[$field_name]['#weight'] ?? 0,
+        ];
+
+        // Move field inside wrapper.
+        $form["{$field_name}_wrapper"][$field_name] = $form[$field_name];
+
+        // Remove the original.
+        unset($form[$field_name]);
+      }
+    }
+    $form['#attached']['library'][] = 'tide_search/search_listing_form';
+  }
+  // Non admin field only.
+  $form['field_listing_result_type']['#access'] = !$non_admin ? FALSE : TRUE;
+  $form['field_sort_by_config_non_admin']['#access'] = !$non_admin ? FALSE : TRUE;
+
+  return $form;
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function tide_search_entity_presave(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'tide_search_listing') {
+    // Self service search listing.
+    $current_user = \Drupal::currentUser();
+    $admin_roles = ['administrator', 'site_admin'];
+    $admin = array_intersect($admin_roles, $current_user->getRoles());
+    // Only set field values for non admins.
+    if (!$admin) {
+      $result_type = $entity->get('field_listing_result_type')->value;
+
+      if ($result_type) {
+        // Mapping of result type to dependent fields.
+        $mapping = [
+          'list' => [
+            'layout' => 'TideSearchResultsList',
+            'results' => 'TideSearchResult',
+          ],
+          'grants' => [
+            'layout' => 'TideSearchResultsList',
+            'results' => 'TideGrantSearchResult',
+          ],
+          'card' => [
+            'layout' => 'TideSearchResultsGrid',
+            'results' => 'TideSearchResultCard',
+          ],
+        ];
+
+        if (isset($mapping[$result_type])) {
+          $map = $mapping[$result_type];
+
+          // Lookup taxonomy terms by name.
+          $layout_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+            'name' => $map['layout'],
+            'vid' => 'listing_layout_comp_taxonomy',
+          ]);
+          $results_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+            'name' => $map['results'],
+            'vid' => 'listing_results_comp_taxonomy',
+          ]);
+
+          // Get the first term ID found.
+          $layout_tid = $layout_term ? reset($layout_term)->id() : NULL;
+          $results_tid = $results_term ? reset($results_term)->id() : NULL;
+
+          // Set entity reference fields.
+          if ($layout_tid) {
+            $entity->set('field_layout_component', ['target_id' => $layout_tid]);
+          }
+          if ($results_tid) {
+            $entity->set('field_results_component', ['target_id' => $results_tid]);
+          }
+        }
+      }
+      // Set sort config JSON.
+      $sort_by = $entity->get('field_sort_by_config_non_admin')->value;
+      if ($sort_by) {
+        // Mapping of sort_by values to JSON configuration.
+        $sort_map = [
+          'news'          => '[{ "field_news_date": "desc" }]',
+          'publications'   => '[{ "field_publication_date": "desc" }]',
+          'grants'        => '[{"_score": "desc"},{"field_node_dates_end_value": "asc"},{"title.keyword": "asc"}]',
+          'events'         => '[{ "field_event_date_start_value": "asc" }]',
+          'landing_page'  => '[{ "created": "desc" }]',
+        ];
+
+        if (isset($sort_map[$sort_by])) {
+          $entity->set('field_custom_sort_configuration', $sort_map[$sort_by]);
+        }
+      }
+    }
+    // Clean user filters.
+    _tide_search_clean_empty_paragraphs($entity, 'field_listing_user_filters', 'searchable_fields', 'field_field');
+
+    // Clean global filters: listing_content_type.
+    _tide_search_clean_empty_paragraphs($entity, 'field_listing_global_filters', 'listing_content_type', 'field_listing_global_contenttype');
+
+    // Clean global filters: listing_site.
+    _tide_search_clean_empty_paragraphs($entity, 'field_listing_global_filters', 'listing_site', 'field_listing_site_site');
+  }
+}
+
+/**
+ * Removes empty paragraph items from an entity reference field.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The entity being cleaned.
+ * @param string $field_name
+ *   The entity reference field machine name.
+ * @param string $bundle
+ *   The paragraph bundle to check.
+ * @param string $field_to_check
+ *   The field inside the paragraph to test for emptiness.
+ */
+function _tide_search_clean_empty_paragraphs(EntityInterface $entity, string $field_name, string $bundle, string $field_to_check): void {
+  if (!$entity->hasField($field_name)) {
+    return;
+  }
+
+  $items = $entity->get($field_name);
+
+  foreach ($items as $delta => $item) {
+    $paragraph = $item->entity;
+    if ($paragraph && $paragraph->bundle() === $bundle) {
+      if ($paragraph->get($field_to_check)->isEmpty()) {
+        $items->removeItem($delta);
+      }
+    }
+  }
+}
+
+/**
+ * Helper function to prefill form field values based on query preset.
+ *
+ * @param array $form
+ *   The node form array (passed by reference).
+ */
+function _tide_search_apply_preset_values(array &$form, FormStateInterface $form_state) {
+  $preset = \Drupal::request()->query->get('preset');
+  if (!$preset) {
+    return;
+  }
+
+  // Prefill sort config.
+  $valid_presets = ['news', 'publications', 'grants', 'events', 'landing_page'];
+  if ($preset && in_array($preset, $valid_presets, TRUE)) {
+    $form['field_sort_by_config_non_admin']['widget']['#default_value'][0] = $preset;
+  }
+
+  // Query configuration mapping.
+  $query_fields = [
+    'field_landing_page_nav_title',
+    'field_landing_page_summary',
+    'field_landing_page_intro_text',
+    'field_news_intro_text',
+    'field_paragraph_body',
+    'field_overview_title',
+    'summary_processed',
+    'title',
+    'body',
+  ];
+
+  // Apply query configuration.
+  if ($preset && isset($form['field_listing_query_config'])) {
+    $query_config_value = [
+      'multi_match' => [
+        'query' => '{{query}}',
+        'fields' => $query_fields,
+      ],
+    ];
+    // Encode as JSON and set as default value.
+    $form['field_listing_query_config']['widget'][0]['value']['#default_value'] = json_encode($query_config_value);
+  }
+
+  // Page title mapping.
+  $title_map = [
+    'news'         => 'Create news search listing',
+    'publications' => 'Create publications search listing',
+    'grants'       => 'Create grants search listing',
+    'events'       => 'Create events search listing',
+    'landing_page' => 'Create landing page search listing',
+  ];
+
+  // Apply page title.
+  if (isset($title_map[$preset])) {
+    $form['#title'] = $title_map[$preset];
+  }
+
+  // Mapping preset → content type machine name.
+  $content_type_map = [
+    'news'         => 'news',
+    'publications' => 'publication',
+    'grants'       => 'grant',
+    'events'       => 'event',
+    'landing_page' => 'landing_page',
+  ];
+
+  if (!empty($preset) && isset($content_type_map[$preset])) {
+    // Make sure the paragraph widget exists before trying to set defaults.
+    if (isset($form['field_listing_global_filters']['widget'][0]['subform']['field_listing_global_contenttype']['widget'])) {
+      $form['field_listing_global_filters']['widget'][0]['subform']['field_listing_global_contenttype']['widget']['#default_value'] = [$content_type_map[$preset]];
+    }
+  }
+
+  // Map presets to field_listing_result_type values.
+  $result_type_map = [
+    'events'       => 'card',
+    'grants'       => 'grants',
+    'landing_page' => 'list',
+    'news'         => 'card',
+    'publications' => 'card',
+  ];
+
+  // Set the value for result type.
+  if (isset($result_type_map[$preset]) && isset($form['field_listing_result_type'])) {
+    $form['field_listing_result_type']['widget']['#default_value'][0] = $result_type_map[$preset];
+  }
+
+  // Set results per page: based on preset.
+  if (isset($form['field_listing_results_per_page'])) {
+    $per_page = in_array($preset, ['grants', 'landing_page'], TRUE) ? 10 : 12;
+    $form['field_listing_results_per_page']['widget'][0]['value']['#default_value'] = $per_page;
+  }
+
+  // Prefill Search Configuration.
+  if (isset($preset) && $preset == 'grants') {
+    $form['field_search_configuration']['widget'][0]['value']['#default_value'] = '{"customQueryConfig": {"function": "grantsQueryFn"}}';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function tide_search_theme($existing, $type, $theme, $path) {
+  return [
+    'node_add_list__non_admin' => [
+      'template' => 'node-add-list--non-admin',
+      'base hook' => 'node_add_list',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function tide_search_theme_suggestions_node_add_list(array $variables) {
+  $suggestions = [];
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
+  $admin = array_intersect($admin_roles, $current_user->getRoles());
+  if (!$admin && $current_user->hasPermission('create tide_search_listing content')) {
+    $suggestions[] = 'node_add_list__non_admin';
+  }
+
+  return $suggestions;
 }

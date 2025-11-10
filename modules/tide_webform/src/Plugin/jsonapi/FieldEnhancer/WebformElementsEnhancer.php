@@ -3,6 +3,7 @@
 namespace Drupal\tide_webform\Plugin\jsonapi\FieldEnhancer;
 
 use Drupal\jsonapi_extras\Plugin\ResourceFieldEnhancerBase;
+use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Shaper\Util\Context;
 use Symfony\Component\Yaml\Yaml;
 
@@ -17,6 +18,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class WebformElementsEnhancer extends ResourceFieldEnhancerBase {
 
+  use TokenReplacementTrait;
+
   /**
    * {@inheritdoc}
    */
@@ -30,10 +33,14 @@ class WebformElementsEnhancer extends ResourceFieldEnhancerBase {
       return $data;
     }
 
+    // Include the token service to process any tokens in the YAML data.
+    $token_service = \Drupal::service('token');
     foreach ($parsed as $key => &$element) {
       if (isset($element['#type']) && $element['#type'] === 'processed_text') {
         $element = $this->transformProcessedText($element);
       }
+      // Apply token replacements recursively.
+      $this->replaceTokensInDefaultValue($element, $token_service);
     }
 
     return $parsed;

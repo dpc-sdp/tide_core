@@ -33,6 +33,7 @@ function tide_event_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_event'][10001] = ['tide_core' => 10005];
   $dependencies['tide_event'][10002] = ['tide_core' => 10014];
+  $dependencies['tide_event'][10005] = ['tide_core' => 10023];
   return $dependencies;
 }
 
@@ -243,4 +244,119 @@ function tide_event_update_10004() {
   ]);
 
   $form_display->save();
+}
+
+/**
+ * Tag relocation - Update event form display.
+ */
+function tide_event_update_10005() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.event.default');
+  $field_group = $entity_form_display->getThirdPartySettings('field_group');
+  if (!empty($field_group)) {
+    $key = array_search('group_body_content', $field_group['group_section_1']['children']);
+    if ($key !== FALSE) {
+      unset($field_group['group_section_1']['children'][$key]);
+    }
+    $key = array_search('group_event_author', $field_group['group_section_1']['children']);
+    if ($key !== FALSE) {
+      unset($field_group['group_section_1']['children'][$key]);
+    }
+    $key = in_array('group_customised_header', $field_group['group_section_1']['children']);
+    if ($key === FALSE) {
+      $field_group['group_section_1']['children'][] = 'group_customised_header';
+    }
+    $field_group['group_section_1']['children'] = array_values($field_group['group_section_1']['children']);
+    $key = array_search('field_featured_image', $field_group['group_page_header']['children']);
+    if ($key !== FALSE) {
+      unset($field_group['group_page_header']['children'][$key]);
+    }
+    $field_group['group_page_header']['children'] = array_values($field_group['group_page_header']['children']);
+    $entity_form_display->setThirdPartySetting('field_group', 'group_page_header', $field_group['group_page_header']);
+    $entity_form_display->setThirdPartySetting('field_group', 'group_section_1', $field_group['group_section_1']);
+    if (isset($field_group['group_right_column'])) {
+      unset($field_group['group_right_column']);
+      $field_group['group_sidebar'] = [
+        'children' => [
+          'group_related_links',
+          'group_contact',
+          'field_show_social_sharing',
+        ],
+        'label' => 'Sidebar',
+        'region' => 'content',
+        'parent_name' => 'group_sidebar_section',
+        'weight' => 20,
+        'format_type' => 'tab',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'formatter' => 'closed',
+          'description' => '',
+          'required_fields' => TRUE,
+        ],
+      ];
+      $entity_form_display->setThirdPartySetting('field_group', 'group_sidebar', $field_group['group_sidebar']);
+      $field_group['group_sidebar_section'] = [
+        'children' => [
+          'group_sidebar',
+        ],
+        'label' => 'Sidebar Section',
+        'region' => 'content',
+        'parent_name' => '',
+        'weight' => $entity_form_display->getComponent('field_featured_image')['weight'] + 2,
+        'format_type' => 'tabs',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'direction' => 'horizontal',
+          'width_breakpoint' => 640,
+        ],
+      ];
+      $entity_form_display->setThirdPartySetting('field_group', 'group_sidebar_section', $field_group['group_sidebar_section']);
+      $field_group['group_content_section'] = [
+        'children' => [
+          'group_body_content',
+          'group_event_author',
+        ],
+        'label' => 'Content section',
+        'region' => 'content',
+        'parent_name' => '',
+        'weight' => $entity_form_display->getComponent('field_featured_image')['weight'] + 1,
+        'format_type' => 'tabs',
+        'format_settings' => [
+          'classes' => '',
+          'show_empty_fields' => FALSE,
+          'id' => '',
+          'label_as_html' => FALSE,
+          'direction' => 'horizontal',
+          'width_breakpoint' => 640,
+        ],
+      ];
+      $entity_form_display->setThirdPartySetting('field_group', 'group_content_section', $field_group['group_content_section']);
+      $field_group['group_event_author']['parent_name'] = 'group_content_section';
+      $entity_form_display->setThirdPartySetting('field_group', 'group_event_author', $field_group['group_event_author']);
+      $field_group['group_body_content']['parent_name'] = 'group_content_section';
+      $field_group['group_body_content']['label'] = 'Page Content';
+      $entity_form_display->setThirdPartySetting('field_group', 'group_body_content', $field_group['group_body_content']);
+      $field_group['group_contact']['parent_name'] = 'group_sidebar';
+      $entity_form_display->setThirdPartySetting('field_group', 'group_contact', $field_group['group_contact']);
+      $field_group['group_related_links']['parent_name'] = 'group_sidebar';
+      $entity_form_display->setThirdPartySetting('field_group', 'group_related_links', $field_group['group_related_links']);
+      $field_group['group_tags_and_metadata']['weight'] = 21;
+      $entity_form_display->setThirdPartySetting('field_group', 'group_tags_and_metadata', $field_group['group_tags_and_metadata']);
+      if ($field_show_content_rating_settings = $entity_form_display->getComponent('field_show_content_rating')) {
+        $field_show_content_rating_settings['weight'] = 22;
+        $entity_form_display->setComponent('field_show_content_rating', $field_show_content_rating_settings);
+      }
+      if ($field_field_custom_filters_settings = $entity_form_display->getComponent('field_custom_filters')) {
+        $field_field_custom_filters_settings['weight'] = 23;
+        $entity_form_display->setComponent('field_custom_filters', $field_field_custom_filters_settings);
+      }
+      $entity_form_display->save();
+    }
+  }
 }

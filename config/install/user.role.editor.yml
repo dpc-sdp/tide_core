@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.paragraphs_library_items
     - filter.format.rich_text
     - filter.format.summary_text
     - media.type.audio
@@ -29,7 +28,6 @@ weight: 4
 is_admin: null
 permissions:
   - 'access administration pages'
-  - 'access paragraphs_library_items entity browser pages'
   - 'edit paragraph library item'
   - 'access content overview'
   - 'access media overview'

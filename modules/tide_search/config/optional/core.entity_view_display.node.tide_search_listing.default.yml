@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.node.tide_search_listing.field_above_results_content
     - field.field.node.tide_search_listing.field_below_results_content
+    - field.field.node.tide_search_listing.field_content_category
     - field.field.node.tide_search_listing.field_custom_filters
     - field.field.node.tide_search_listing.field_custom_sort_configuration
     - field.field.node.tide_search_listing.field_featured_image
@@ -15,6 +16,7 @@ dependencies:
     - field.field.node.tide_search_listing.field_layout_component
     - field.field.node.tide_search_listing.field_listing_global_filters
     - field.field.node.tide_search_listing.field_listing_query_config
+    - field.field.node.tide_search_listing.field_listing_result_type
     - field.field.node.tide_search_listing.field_listing_results_config
     - field.field.node.tide_search_listing.field_listing_results_per_page
     - field.field.node.tide_search_listing.field_listing_user_filters
@@ -26,12 +28,14 @@ dependencies:
     - field.field.node.tide_search_listing.field_search_input_placeholder
     - field.field.node.tide_search_listing.field_search_submit_label
     - field.field.node.tide_search_listing.field_show_content_rating
+    - field.field.node.tide_search_listing.field_sort_by_config_non_admin
     - field.field.node.tide_search_listing.field_tags
     - field.field.node.tide_search_listing.field_topic
     - node.type.tide_search_listing
   module:
     - entity_reference_revisions
     - metatag
+    - options
     - text
     - tide_content_collection
     - user
@@ -122,6 +126,13 @@ content:
     third_party_settings: {  }
     weight: 118
     region: content
+  field_listing_result_type:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 122
+    region: content
   field_listing_results_config:
     type: content_collection_configuration_raw
     label: above
@@ -163,6 +174,13 @@ content:
     third_party_settings: {  }
     weight: 105
     region: content
+  field_sort_by_config_non_admin:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 123
+    region: content
   field_tags:
     type: entity_reference_label
     label: above
@@ -185,7 +203,9 @@ content:
     weight: 100
     region: content
 hidden:
+  field_content_category: true
   field_custom_filters: true
+  field_graphical_image: true
   field_listing_global_filters: true
   field_listing_query_config: true
   field_listing_results_per_page: true

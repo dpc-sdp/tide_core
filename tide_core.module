@@ -429,8 +429,20 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
   $form['#attached']['library'][] = 'tide_core/claro_layout';
   $form['#attached']['library'][] = 'tide_core/node_iframe';
   $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
-  $form['#process'][] = '_tide_core_form_node_form_process';
   $form['#attached']['library'][] = 'tide_core/pseudo_required_field';
+  $form['#attached']['library'][] = 'tide_core/select2-placeholder-fix';
+  if (isset($form['field_show_content_rating'])) {
+    $form['#attached']['library'][] = 'tide_core/form_extras';
+    $form['field_show_content_rating_extra_label'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'label',
+      '#value' => t('Show was this page helpful?'),
+      '#attributes' => [
+        'class' => ['form-item__label'],
+      ],
+      '#weight' => $form['field_show_content_rating']['#weight'] - 0.1,
+    ];
+  }
   // Adding custom states from webform js.
   // Support patterns in states.
   if (\Drupal::moduleHandler()->moduleExists('webform')) {
@@ -443,27 +455,6 @@ function tide_core_form_node_form_alter(&$form, FormStateInterface $form_state, 
     $form['_header_style']['_header_style_options']['#value'] = $header_style;
   }
 
-  // Modify field_content_category help text.
-  if ($node->hasField('field_content_category')) {
-    $newLabelDescription = [
-      '#type' => 'inline_template',
-      '#template' => '<span style="font-weight: bold;">{{ title }}</span>
-                      <span class="pseudo-required-field">{{ asterisk }}</span>
-                      <div style="font-size: 0.85em; color: #595959;">{{ description }}</div>',
-      '#context' => [
-        'title' => (isset($form['field_content_category']['widget']['#required'])) ? $form['field_content_category']['widget']['#title'] : '',
-        'description' => (isset($form['field_content_category']['widget']['#description'])) ? $form['field_content_category']['widget']['#description'] : '',
-        'asterisk' => (isset($form['field_content_category']['widget']['#required']) && $form['field_content_category']['widget']['#required'] == TRUE) ? '*' : '',
-      ],
-    ];
-
-    $form['field_content_category']['#prefix'] = \Drupal::service('renderer')->renderPlain($newLabelDescription);
-
-    if (isset($form['field_content_category']['widget']['#description'])) {
-      $form['field_content_category']['widget']['#description'] = '';
-    }
-    $form['field_content_category']['widget']['#title_display'] = 'invisible';
-  }
   $form['#validate'][] = '_tide_core_header_style_validate';
   // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
   if ($node->isNew()) {
@@ -532,50 +523,6 @@ function _tide_core_node_edit_form_log_message_validate(array &$form, FormStateI
     $form_state->setErrorByName('comment_log_message', t('The publisher comments field must not be blank'));
   }
 
-}
-
-/**
- * Node form #process callback.
- *
- * @param array $element
- *   Form that is being processed.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The current state of the form.
- * @param array $form
- *   The complete form structure.
- *
- * @return array
- *   The processed form.
- */
-function _tide_core_form_node_form_process(array $element, FormStateInterface $form_state, array $form = []) {
-  /** @var \Drupal\node\NodeInterface $node */
-  $node = $form_state->getFormObject()->getEntity();
-  $element['tide_core_metadata'] = [
-    '#type' => 'container',
-    '#open' => TRUE,
-    '#optional' => TRUE,
-    '#access' => TRUE,
-    '#group' => 'meta',
-    '#attributes' => [
-      'class' => ['tide-core-metadata'],
-    ],
-    '#weight' => 100,
-  ];
-
-  $core_fields = [
-    10 => 'field_node_department',
-    20 => 'field_tags',
-  ];
-  foreach ($core_fields as $weight => $core_field) {
-    if ($node->hasField($core_field)) {
-      if (isset($element[$core_field])) {
-        $element[$core_field]['#group'] = 'tide_core_metadata';
-        $element[$core_field]['#weight'] = $weight;
-      }
-    }
-  }
-
-  return $element;
 }
 
 /**
@@ -776,6 +723,8 @@ function tide_core_admin_audit_trail_handlers() {
  *   The manipulated menu link tree.
  */
 function tide_core_menu_navigation_links(array $tree) {
+  $current_user = \Drupal::currentUser();
+  $admin_roles = ['administrator', 'site_admin'];
   foreach ($tree as $element) {
     // Remove menu and taxonomy subtree.
     if (($element->link->getPluginId() === 'entity.menu.collection' || $element->link->getPluginId() === 'entity.taxonomy_vocabulary.collection') && isset($element->subtree)) {
@@ -785,6 +734,21 @@ function tide_core_menu_navigation_links(array $tree) {
       && ($element->link->getPluginId() != 'entity.taxonomy_vocabulary.collection')
       && $element->subtree) {
       tide_core_menu_navigation_links($element->subtree);
+    }
+    // Search listing self service.
+    // Hide it for non admins.
+    if ($element->link->getPluginId() === 'admin_toolbar_tools.extra_links:node.add.tide_search_listing') {
+      if (!array_intersect($admin_roles, $current_user->getRoles())) {
+        $element->access = AccessResult::forbidden();
+      }
+    }
+    // Search listing self service.
+    // Hide it for admins.
+    if ($element->link->getPluginId() === 'tide_search.search_listing_parent') {
+      $allowed_users = $current_user->hasPermission('create tide_search_listing content');
+      if (array_intersect($admin_roles, $current_user->getRoles()) || !$allowed_users) {
+        $element->access = AccessResult::forbidden();
+      }
     }
     $link = $element->link;
     // Get the non-localized title to make the icon class.

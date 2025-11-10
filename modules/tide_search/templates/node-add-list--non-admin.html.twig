@@ -1,0 +1,54 @@
+{#
+/**
+ * Custom node add list override for non-admins.
+ */
+#}
+
+{% set create_content = path('node.type_add') %}
+{%
+  set add_bundle_message = 'You have not created any content types yet. Go to the <a href="@create-content">content type creation page</a> to add a new content type.'|t({'@create-content': create_content})
+%}
+
+{% set item_classes = ['admin-item'] %}
+
+{% if bundles is not empty %}
+  <dl class="node-type-list admin-list">
+
+    {# Loop through normal bundles except default Search listing #}
+    {% for key, bundle in bundles %}
+      {% if key != 'tide_search_listing' %}
+        {% set bundle_attributes = bundle.add_link.url.getOption('attributes') ?: {} %}
+        {% set link_attributes = create_attribute(bundle_attributes).addClass('admin-item__link') %}
+        <div{{ create_attribute({class: item_classes}) }}>
+          <dt class="admin-item__title">
+            <a href="{{ bundle.add_link.url }}"{{ link_attributes|without('href') }}>
+              {{ bundle.add_link.text }}
+            </a>
+          </dt>
+          {% if bundle.description %}
+            <dd class="admin-item__description">{{ bundle.description }}</dd>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {# Custom Search listing group #}
+    <div class="admin-item">
+      <dt class="admin-item__title">
+        <span class="admin-item__link is-disabled">Search listing</span>
+      </dt>
+      <dd class="admin-item__description">
+        <ul class="admin-sublist admin-item__title">
+        {# <li><a class="admin-item__link" href="/node/add/tide_search_listing?preset=events">Search listing: Events</a></li> #}
+        <li><a class="admin-item__link" href="/node/add/tide_search_listing?preset=grants">Search listing: Grants</a></li>
+        <li><a class="admin-item__link" href="/node/add/tide_search_listing?preset=landing_page">Search listing: Landing page</a></li>
+          <li><a class="admin-item__link" href="/node/add/tide_search_listing?preset=news">Search listing: News</a></li>
+          <li><a class="admin-item__link" href="/node/add/tide_search_listing?preset=publications">Search listing: Publications</a></li>
+        </ul>
+      </dd>
+    </div>
+
+  </dl>
+{% elseif add_bundle_message is not empty %}
+  <p>{{ add_bundle_message|raw }}</p>
+{% endif %}

@@ -5,6 +5,7 @@ namespace Drupal\tide_api\Plugin\jsonapi\FieldEnhancer;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\jsonapi_extras\Plugin\ResourceFieldEnhancerBase;
+use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Shaper\Util\Context;
 
 /**
@@ -17,6 +18,8 @@ use Shaper\Util\Context;
  * )
  */
 class YamlEnhancer extends ResourceFieldEnhancerBase {
+
+  use TokenReplacementTrait;
 
   /**
    * {@inheritdoc}
@@ -35,9 +38,7 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
     }
     // Process any other fields that may contain token replacements.
     foreach ($data as $key => &$value) {
-      if (!empty($value['#default_value'])) {
-        $value['#default_value'] = $token_service->replace($value['#default_value']);
-      }
+      $this->replaceTokensInDefaultValue($value, $token_service);
     }
 
     return $data;

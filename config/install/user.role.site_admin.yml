@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - entity_browser.browser.paragraphs_library_items
     - filter.format.admin_text
     - filter.format.rich_text
     - filter.format.summary_text
@@ -43,7 +42,6 @@ permissions:
   - 'access admin audit trail'
   - 'access administration pages'
   - 'access content overview'
-  - 'access paragraphs_library_items entity browser pages'
   - 'access files overview'
   - 'create paragraph library item'
   - 'access media overview'
