@@ -534,3 +534,118 @@ function tide_search_update_10010() {
     }
   }
 }
+
+/**
+ * Update taxonomy searchable fields config from optional to sync,
+ * update field requirements and descriptions, and create missing view config.
+ */
+function tide_search_update_10011() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
+  $displays = [
+    'core.entity_form_display.taxonomy_term.searchable_fields.default',
+    'core.entity_view_display.taxonomy_term.searchable_fields.default',
+  ];
+  // Ensure field components exist in appropriate displays.
+  $ensure_fields = [
+    'core.entity_form_display.taxonomy_term.searchable_fields.default' => [
+      'field_elasticsearch_id' => [
+        'type' => 'string_textfield',
+        'weight' => 3,
+        'region' => 'content',
+        'settings' => ['size' => 60, 'placeholder' => ''],
+        'third_party_settings' => [],
+      ],
+      'field_searchable_content_types' => [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 5,
+        'region' => 'content',
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'match_limit' => 10,
+          'size' => 60,
+          'placeholder' => '',
+        ],
+        'third_party_settings' => [],
+      ],
+    ],
+    'core.entity_view_display.taxonomy_term.searchable_fields.default' => [
+      'field_elasticsearch_id' => [
+        'type' => 'string',
+        'label' => 'above',
+        'settings' => ['link_to_entity' => FALSE],
+        'third_party_settings' => [],
+        'weight' => 3,
+        'region' => 'content',
+      ],
+      'field_searchable_content_types' => [
+        'type' => 'entity_reference_label',
+        'label' => 'above',
+        'settings' => ['link' => TRUE],
+        'third_party_settings' => [],
+        'weight' => 4,
+        'region' => 'content',
+      ],
+    ],
+  ];
+  $config_factory = \Drupal::service('config.factory');
+  foreach ($displays as $display) {
+    // Read Confgis.
+    $active_config = $config_factory->getEditable($display);
+    $source_config = _tide_read_config($display, $config_location, FALSE);
+
+    // Add field dependencies.
+    $dependencies_config = $active_config->get('dependencies.config') ?: [];
+    $fields_to_add = [
+      'field.field.taxonomy_term.searchable_fields.field_elasticsearch_id',
+      'field.field.taxonomy_term.searchable_fields.field_searchable_content_types',
+    ];
+    foreach ($fields_to_add as $field) {
+      if (!in_array($field, $dependencies_config, TRUE)) {
+        $dependencies_config[] = $field;
+      }
+    }
+
+    $active_config->set('dependencies.config', $dependencies_config);
+
+    // Merge field components.
+    $source_fields = $source_config['content'] ?? [];
+    $active_fields = $active_config->get('content') ?: [];
+
+    if (!empty($source_fields)) {
+      foreach ($source_fields as $field_key => $field_config) {
+        if (isset($active_fields[$field_key])) {
+          $active_fields[$field_key] = array_merge($active_fields[$field_key], $field_config);
+        }
+      }
+    }
+    // Ensure required fields exist.
+    foreach ($ensure_fields[$display] as $field_key => $defaults) {
+      if (!isset($active_fields[$field_key])) {
+        $active_fields[$field_key] = $defaults;
+      }
+    }
+
+    $active_config->set('content', $active_fields);
+    $active_config->save();
+  }
+  // Update field_elasticsearch_field settings.
+  $field_elastic = 'field.field.taxonomy_term.searchable_fields.field_elasticsearch_field';
+  $config = $config_factory->getEditable($field_elastic);
+  $config->set('description', 'This is the elasticsearch key of the display value, i.e. the field that stores the displayed title.');
+  $config->set('required', TRUE);
+  $config->save();
+  // Make field_taxonomy_machine_name required.
+  $field_machine = 'field.field.taxonomy_term.searchable_fields.field_taxonomy_machine_name';
+  $config = $config_factory->getEditable($field_machine);
+  $config->set('required', TRUE);
+  $config->save();
+
+  // Install entity view display.
+  $config_id = 'taxonomy_term.searchable_content_types.default';
+  $config_full = 'core.entity_view_display.' . $config_id;
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
+  if ($storage->load($config_id) === NULL) {
+    _tide_ensure_config($config_full, $config_location);
+  }
+}
