@@ -536,8 +536,7 @@ function tide_search_update_10010() {
 }
 
 /**
- * Update taxonomy searchable fields config from optional to sync,
- * update field requirements and descriptions, and create missing view config.
+ * Rollout new content collection ui component.
  */
 function tide_search_update_10011() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
