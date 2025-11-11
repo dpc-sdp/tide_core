@@ -639,12 +639,4 @@ function tide_search_update_10011() {
   $config = $config_factory->getEditable($field_machine);
   $config->set('required', TRUE);
   $config->save();
-
-  // Install entity view display.
-  $config_id = 'taxonomy_term.searchable_content_types.default';
-  $config_full = 'core.entity_view_display.' . $config_id;
-  $storage = \Drupal::entityTypeManager()->getStorage('entity_view_display');
-  if ($storage->load($config_id) === NULL) {
-    _tide_ensure_config($config_full, $config_location);
-  }
 }

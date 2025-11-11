@@ -23,7 +23,7 @@ function tide_api_install() {
  */
 function tide_api_update_dependencies() {
   $dependencies = [];
-  $dependencies['tide_api'][1000] = [
+  $dependencies['tide_api'][10001] = [
     'tide_search' => 10011,
   ];
 
@@ -33,7 +33,7 @@ function tide_api_update_dependencies() {
 /**
  * Install tide_content_collection_ui.
  */
-function tide_api_update_1000() {
+function tide_api_update_10001() {
   $moduleHandler = \Drupal::service('module_handler');
   $moduleInstaller = \Drupal::service('module_installer');
   if (!$moduleHandler->moduleExists('tide_content_collection_ui')) {
