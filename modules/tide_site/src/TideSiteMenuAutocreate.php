@@ -311,7 +311,7 @@ class TideSiteMenuAutocreate {
     $machine_name = self::toMachineName(self::SITE_MENU_PREFIX . $menu_title, '-');
     /** @var \Drupal\taxonomy\Entity\Term $parent */
     foreach ($parents as $parent) {
-      $machine_name .= '-' . self::toMachineName($parent->getName(), '-');
+      $machine_name .= '-' . $parent->id();
     }
 
     return substr($machine_name, 0, 32);
