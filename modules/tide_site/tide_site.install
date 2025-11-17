@@ -201,7 +201,7 @@ function tide_site_update_10005() {
  * Grants the 'bypass pfdp' permission to specified approver roles.
  */
 function _grant_approvers_pfdp_permission() {
-  $roles = ['approver_plus','approver'];
+  $roles = ['approver_plus', 'approver'];
   foreach ($roles as $role) {
     $role = Role::load($role);
     $role->grantPermission('bypass pfdp');
