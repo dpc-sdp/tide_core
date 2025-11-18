@@ -33,7 +33,7 @@ function tide_event_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_event'][10001] = ['tide_core' => 10005];
   $dependencies['tide_event'][10002] = ['tide_core' => 10014];
-  $dependencies['tide_event'][10005] = ['tide_core' => 10023];
+  $dependencies['tide_event'][10005] = ['tide_core' => 10024];
   return $dependencies;
 }
 

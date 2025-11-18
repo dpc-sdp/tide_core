@@ -24,7 +24,7 @@ function tide_news_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_news'][10001] = ['tide_core' => 10005];
   $dependencies['tide_news'][10002] = ['tide_core' => 10014];
-  $dependencies['tide_news'][10004] = ['tide_core' => 10023];
+  $dependencies['tide_news'][10004] = ['tide_core' => 10024];
   return $dependencies;
 }
 
