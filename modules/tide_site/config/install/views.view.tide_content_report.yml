@@ -7,7 +7,6 @@ dependencies:
     - system.menu.admin
     - taxonomy.vocabulary.sites
     - user.role.administrator
-    - user.role.approver
     - user.role.approver_plus
     - user.role.site_admin
   module:
@@ -509,7 +508,6 @@ display:
             administrator: administrator
             site_admin: site_admin
             approver_plus: approver_plus
-            approver: approver
       cache:
         type: tag
         options: {  }
