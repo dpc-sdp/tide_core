@@ -24,7 +24,7 @@ function tide_search_update_dependencies() {
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
   $dependencies['tide_search'][10006] = ['tide_core' => 10014];
   $dependencies['tide_search'][10007] = ['tide_core' => 10018];
-  $dependencies['tide_search'][10010] = ['tide_core' => 10023];
+  $dependencies['tide_search'][10010] = ['tide_core' => 10024];
   return $dependencies;
 }
 

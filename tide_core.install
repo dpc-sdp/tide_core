@@ -720,7 +720,7 @@ function tide_core_update_10022() {
 /**
  * Adds the 'Tags and Metadata' group to all content types.
  */
-function tide_core_update_10023() {
+function tide_core_update_10024() {
   // Fields settings.
   $tag_fields = [
     10 => 'field_topic',
@@ -1044,7 +1044,7 @@ function tide_core_update_10023() {
 /**
  * Change field_content_category to select2 widget,and also remove parent.
  */
-function tide_core_update_10024() {
+function tide_core_update_10025() {
   $default_category_id = 1416;
   $field_content_category_widget_settings = [
     'type' => 'select2_entity_reference',
@@ -1116,7 +1116,7 @@ function tide_core_update_10024() {
 /**
  * Change widget for field_topic and field_tags.
  */
-function tide_core_update_10025() {
+function tide_core_update_10026() {
   $fields_to_change = [
     'field_topic',
     'field_tags',
@@ -1150,7 +1150,7 @@ function tide_core_update_10025() {
 /**
  * Revoke `delete` from all content types on the 3 roles.
  */
-function tide_core_update_10026() {
+function tide_core_update_10027() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   $roles = [
     'editor',
@@ -1169,7 +1169,7 @@ function tide_core_update_10026() {
 /**
  * Fixes mismatched entity and/or field definitions" error.
  */
-function tide_core_update_10027() {
+function tide_core_update_10028() {
   $entity_type_manager = \Drupal::entityTypeManager();
   $entity_type_manager->clearCachedDefinitions();
   $entity_type_ids = [];

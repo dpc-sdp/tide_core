@@ -44,7 +44,7 @@ function tide_grant_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_grant'][10001] = ['tide_core' => 10005];
   $dependencies['tide_grant'][10002] = ['tide_core' => 10014];
-  $dependencies['tide_grant'][10004] = ['tide_core' => 10023];
+  $dependencies['tide_grant'][10004] = ['tide_core' => 10024];
   return $dependencies;
 }
 
