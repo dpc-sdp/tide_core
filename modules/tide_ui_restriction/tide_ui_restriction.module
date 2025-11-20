@@ -107,10 +107,10 @@ function tide_ui_restriction_form_user_form_alter(&$form, FormStateInterface $fo
   $user_being_edited = $form_state->getFormObject()->getEntity();
   if ($current_user->id() == $user_being_edited->id()) {
     if (isset($form['account']['roles'])) {
-      unset($form['account']['roles']);
+      $form['account']['roles']['#access'] = TRUE;
     }
     if (isset($form['field_user_site'])) {
-      unset($form['field_user_site']);
+      $form['field_user_site']['#access'] = TRUE;
     }
   }
 }
