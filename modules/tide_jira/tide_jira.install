@@ -51,3 +51,13 @@ function tide_jira_update_10002() {
     $spec
   );
 }
+
+/**
+ * Update the default jira endpoint to use API version 3.
+ */
+function tide_jira_update_10003() {
+  $config_factory = \Drupal::configFactory()->getEditable('jira_rest.jira_endpoint.jira_rest_default');
+  $raw_data = $config_factory->getRawData();
+  $raw_data['api_version'] = '3';
+  $config_factory->setData($raw_data)->save();
+}

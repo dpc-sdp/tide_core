@@ -331,7 +331,7 @@ class TideJiraAPI {
   }
 
   /**
-   * Templates the ticket body.
+   * Templates the ticket body, it supports ADF(Atlassian Document Format) only.
    *
    * @param string $name
    *   User's name.
@@ -356,38 +356,88 @@ class TideJiraAPI {
    * @param string $host
    *   Drupal's current hostname.
    *
-   * @return string
+   * @return array
    *   Templated ticket body as a Heredoc.
    */
   private function templateDescription($name, $email, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links, $host) {
-    return <<<EOT
-This page is ready for review.
+    return [
+      'type' => 'doc',
+      'version' => 1,
+      'content' => [
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "This page is ready for review."]],
+        ],
 
-*Editor information*
+        [
+          'type' => 'paragraph',
+          'content' => [
+            [
+              'type' => 'text',
+              'text' => "Editor information",
+              'marks' => [['type' => 'strong']],
+            ],
+          ],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Editor name:   $name"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Editor email:   $email"]],
+        ],
 
-Editor name:   $name
+        [
+          'type' => 'paragraph',
+          'content' => [
+            [
+              'type' => 'text',
+              'text' => "Page information",
+              'marks' => [['type' => 'strong']],
+            ],
+          ],
+        ],
 
-Editor email:   $email
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Page name:     $title"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "CMS URL:         $host/node/$id/revisions"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Status:             $moderation_state"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Preview URL:   $preview_links"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Template:        $bundle"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Revision:         $is_new"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Date & time:   $updated_date"]],
+        ],
 
-*Page information*
-
-Page name:     $title
-
-CMS URL:         $host/node/$id/revisions
-
-Status:             $moderation_state
-
-Preview URL:         $preview_links
-
-Template:        $bundle
-
-Revision:         $is_new
-
-Date & time:   $updated_date
-
-Notes: $notes
-
-EOT;
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => "Notes:"]],
+        ],
+        [
+          'type' => 'paragraph',
+          'content' => [['type' => 'text', 'text' => $notes]],
+        ],
+      ],
+    ];
   }
 
   /**
