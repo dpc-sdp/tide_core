@@ -360,83 +360,84 @@ class TideJiraAPI {
    *   Templated ticket body as a Heredoc.
    */
   private function templateDescription($name, $email, $title, $id, $moderation_state, $bundle, $is_new, $updated_date, $notes, $preview_links, $host) {
+    $content = [
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "This page is ready for review."]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [
+          [
+            'type' => 'text',
+            'text' => "Editor information",
+            'marks' => [['type' => 'strong']],
+          ],
+        ],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Editor name:   $name"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Editor email:   $email"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [
+          [
+            'type' => 'text',
+            'text' => "Page information",
+            'marks' => [['type' => 'strong']],
+          ],
+        ],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Page name:     $title"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "CMS URL:         $host/node/$id/revisions"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Status:             $moderation_state"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Preview URL:   $preview_links"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Template:        $bundle"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Revision:         $is_new"]],
+      ],
+      [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Date & time:   $updated_date"]],
+      ],
+    ];
+
+    if (!empty($notes) && trim($notes) !== '') {
+      $content[] = [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => "Notes:"]],
+      ];
+      $content[] = [
+        'type' => 'paragraph',
+        'content' => [['type' => 'text', 'text' => $notes]],
+      ];
+    }
+
     return [
       'type' => 'doc',
       'version' => 1,
-      'content' => [
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "This page is ready for review."]],
-        ],
-
-        [
-          'type' => 'paragraph',
-          'content' => [
-            [
-              'type' => 'text',
-              'text' => "Editor information",
-              'marks' => [['type' => 'strong']],
-            ],
-          ],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Editor name:   $name"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Editor email:   $email"]],
-        ],
-
-        [
-          'type' => 'paragraph',
-          'content' => [
-            [
-              'type' => 'text',
-              'text' => "Page information",
-              'marks' => [['type' => 'strong']],
-            ],
-          ],
-        ],
-
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Page name:     $title"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "CMS URL:         $host/node/$id/revisions"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Status:             $moderation_state"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Preview URL:   $preview_links"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Template:        $bundle"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Revision:         $is_new"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Date & time:   $updated_date"]],
-        ],
-
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => "Notes:"]],
-        ],
-        [
-          'type' => 'paragraph',
-          'content' => [['type' => 'text', 'text' => $notes]],
-        ],
-      ],
+      'content' => $content,
     ];
   }
 

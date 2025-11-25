@@ -56,8 +56,14 @@ function tide_jira_update_10002() {
  * Update the default jira endpoint to use API version 3.
  */
 function tide_jira_update_10003() {
+  // Update the default jira endpoint to use API version 3.
   $config_factory = \Drupal::configFactory()->getEditable('jira_rest.jira_endpoint.jira_rest_default');
   $raw_data = $config_factory->getRawData();
   $raw_data['api_version'] = '3';
   $config_factory->setData($raw_data)->save();
+
+  // Remove existing TIDE_JIRA queue items.
+  \Drupal::database()->delete('queue')
+    ->condition('name', 'TIDE_JIRA')
+    ->execute();
 }
