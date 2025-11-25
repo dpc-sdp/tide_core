@@ -6,13 +6,14 @@
  */
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Item\Field;
 
 /**
  * Install field_show_feature_image field.
  */
-function tide_news_post_update_field_show_feature_image(&$sandbox) {
+function tide_news_post_update_001_add_field_show_feature_image(&$sandbox) {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_news') . '/config/install'];
   $config_read = _tide_read_config('field.field.node.news.field_show_feature_image', $config_location, TRUE);
@@ -81,4 +82,44 @@ function tide_news_post_update_field_show_feature_image(&$sandbox) {
   $field->setLabel('Display the feature image in the body of your news page');
   $index->addField($field);
   $index->save();
+}
+
+/**
+ * Update field_show_feature_image field.
+ */
+function tide_news_post_update_002_update_field_show_feature_image(&$sandbox) {
+  if (!isset($sandbox['total'])) {
+    $count = \Drupal::entityTypeManager()
+      ->getStorage('node')
+      ->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'news')
+      ->count()
+      ->execute();
+    $sandbox['total'] = $count;
+    $sandbox['current'] = 0;
+    $sandbox['processed'] = 0;
+    $sandbox['#finished'] = $count ? 0 : 1;
+  }
+  $batch_size = 50;
+  $node_ids = \Drupal::entityTypeManager()
+    ->getStorage('node')
+    ->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('nid', $sandbox['current'], '>')
+    ->condition('type', 'news')
+    ->sort('nid', 'ASC')
+    ->range(0, $batch_size)
+    ->execute();
+  foreach ($node_ids as $node_id) {
+    $sandbox['current'] = $node_id;
+    $node = Node::load($node_id);
+    if ($node instanceof Node && $node->hasField('field_show_feature_image') && is_string($node->uuid())) {
+      $node->set('field_show_feature_image', TRUE);
+      $node->save();
+    }
+    $sandbox['processed']++;
+  }
+  $sandbox['#finished'] = $sandbox['total'] ? $sandbox['processed'] / $sandbox['total'] : 1;
+  $sandbox['#finished'] = $sandbox['#finished'] > 1 ? 1 : $sandbox['#finished'];
 }
