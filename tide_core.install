@@ -1198,3 +1198,15 @@ function tide_core_update_10029() {
     $config_entity->save();
   }
 }
+
+/**
+ * Revoke the "administer permissions" approver_plus.
+ */
+function tide_core_update_10030() {
+  $role = Role::load('approver_plus');
+
+  if ($role && $role->hasPermission('administer permissions')) {
+    $role->revokePermission('administer permissions');
+    $role->save();
+  }
+}
