@@ -1183,3 +1183,15 @@ function tide_core_update_10028() {
     Drush::output()->writeln('Installed/Updated the entity type(s): ' . implode(', ', $entity_type_ids));
   }
 }
+
+/**
+ * Revoke the "administer permissions" approver_plus.
+ */
+function tide_core_update_10029() {
+  $role = Role::load('approver_plus');
+
+  if ($role && $role->hasPermission('administer permissions')) {
+    $role->revokePermission('administer permissions');
+    $role->save();
+  }
+}
