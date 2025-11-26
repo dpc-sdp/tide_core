@@ -449,9 +449,6 @@
                 "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15468410": "https://www.drupal.org/files/issues/2024-02-29/DD-1756-force-tfa-user-setup-3223327-38.patch",
                 "TfaLoginController enforces opaque form expiration - https://www.drupal.org/project/tfa/issues/3390083#comment-15753259": "https://www.drupal.org/files/issues/2024-09-02/3390083-3.patch"
             },
-            "drupal/tfa_email_otp": {
-                "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
-            },
             "drupal/elasticsearch_connector": {
                 "Allow dashes in index name": "https://gist.githubusercontent.com/nicksantamaria/95677ffa87a9e1433bfc27c3ebdefd35/raw/68d6eb055150d1e99ad6f0da49d68a6a4c2d6348/elasticsearch_connector-dashed-index.patch"
             },
