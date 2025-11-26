@@ -78,7 +78,7 @@ class TideJiraTicketModel {
    *
    * @var string
    */
-  private string $description;
+  private array $description;
   /**
    * Jira project.
    *
@@ -382,20 +382,20 @@ class TideJiraTicketModel {
   /**
    * Get the description.
    *
-   * @return string
+   * @return array
    *   The description.
    */
-  public function getDescription(): string {
+  public function getDescription(): array {
     return $this->description;
   }
 
   /**
    * Set the description.
    *
-   * @param string $description
+   * @param array $description
    *   The description.
    */
-  public function setDescription(string $description): void {
+  public function setDescription(array $description): void {
     $this->description = $description;
   }
 
