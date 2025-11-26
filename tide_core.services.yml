@@ -35,3 +35,7 @@ services:
       - '@logger.factory'
       - '@file_system'
       - '@?monitoring.sensor_runner'
+  tide_core.prlp_expiration_reset_subscriber:
+    class: Drupal\tide_core\EventSubscriber\PrlpExpirationResetSubscriber
+    tags:
+      - { name: event_subscriber }
