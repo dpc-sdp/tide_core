@@ -48,3 +48,14 @@ fix-sticky-header:
   css:
     theme:
       css/fix-sticky-header.css: {}
+
+form_extras:
+  version: 1.x
+  css:
+    theme:
+      css/form-extras.css: {}
+
+select2-placeholder-fix:
+  css:
+    theme:
+      css/select2-placeholder-fix.css: {}

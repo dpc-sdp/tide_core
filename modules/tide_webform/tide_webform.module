@@ -30,6 +30,23 @@ function tide_webform_config_ignore_settings_alter(array &$settings) {
  * Implements hook_form_alter().
  */
 function tide_webform_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'webform_settings_confirmation_form' && isset($form['confirmation_type']['confirmation_type']['#options'])) {
+    $allowed_confirmation_types = [
+      'page' => t('Page (displays the confirmation message)'),
+      'inline' => t('Inline (replaces the webform with the confirmation message)'),
+      'url' => t('URL (redirects to a custom path or URL)'),
+    ];
+    $disallowed_confirmation_types = ['message', 'modal', 'url_message', 'none'];
+    $form['confirmation_type']['confirmation_type']['#options'] = array_merge(
+      $form['confirmation_type']['confirmation_type']['#options'],
+      $allowed_confirmation_types
+    );
+    foreach ($disallowed_confirmation_types as $type) {
+      if (isset($form['confirmation_type']['confirmation_type']['#options'][$type])) {
+        unset($form['confirmation_type']['confirmation_type']['#options'][$type]);
+      }
+    }
+  }
   if (!empty($form['#webform_id']) && $form['#webform_id'] == 'tide_webform_content_rating') {
     $form['#attached']['library'][] = 'tide_webform/content_rating';
 

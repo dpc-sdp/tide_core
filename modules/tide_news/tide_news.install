@@ -24,6 +24,7 @@ function tide_news_update_dependencies() {
   $dependencies = [];
   $dependencies['tide_news'][10001] = ['tide_core' => 10005];
   $dependencies['tide_news'][10002] = ['tide_core' => 10014];
+  $dependencies['tide_news'][10004] = ['tide_core' => 10024];
   return $dependencies;
 }
 
@@ -179,4 +180,36 @@ function tide_news_update_10003() {
   ]);
 
   $form_display->save();
+}
+
+/**
+ * Move the navigation field to the sidebar.
+ */
+function tide_news_update_10004() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.news.default');
+  $field_group = $entity_form_display->getThirdPartySettings('field_group');
+  if (is_array($field_group) && isset($field_group['group_site_section_navigation']) && isset($field_group['group_sidebar'])) {
+    $field_group['group_site_section_navigation']['label'] = 'Navigation';
+    $field_group['group_site_section_navigation']['parent_name'] = 'group_sidebar';
+    $field_group['group_site_section_navigation']['group_sidebar'] = 'group_sidebar';
+    array_unshift($field_group['group_sidebar']['children'], 'group_site_section_navigation');
+    $field_group['group_author_detail']['label'] = 'News author';
+    $entity_form_display->setThirdPartySetting('field_group', 'group_author_detail', $field_group['group_author_detail']);
+    $entity_form_display->setThirdPartySetting('field_group', 'group_sidebar', $field_group['group_sidebar']);
+    $entity_form_display->setThirdPartySetting('field_group', 'group_site_section_navigation', $field_group['group_site_section_navigation']);
+
+    // Move field_news_intro_text before field_landing_page_summary.
+    $field_news_intro_text_settings = $entity_form_display->getComponent('field_news_intro_text');
+    $field_landing_page_summary_settings = $entity_form_display->getComponent('field_landing_page_summary');
+    if ($field_landing_page_summary_settings && $field_news_intro_text_settings && ($field_news_intro_text_settings['weight'] > $field_landing_page_summary_settings['weight'])) {
+      // Swap the weight values.
+      $temp_weight = $field_news_intro_text_settings['weight'];
+      $field_news_intro_text_settings['weight'] = $field_landing_page_summary_settings['weight'];
+      $field_landing_page_summary_settings['weight'] = $temp_weight;
+      $entity_form_display->setComponent('field_news_intro_text', $field_news_intro_text_settings);
+      $entity_form_display->setComponent('field_landing_page_summary', $field_landing_page_summary_settings);
+    }
+    $entity_form_display->save();
+  }
 }

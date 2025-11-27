@@ -24,6 +24,7 @@ function tide_search_update_dependencies() {
   $dependencies['tide_search'][10004] = ['tide_core' => 10005];
   $dependencies['tide_search'][10006] = ['tide_core' => 10014];
   $dependencies['tide_search'][10007] = ['tide_core' => 10018];
+  $dependencies['tide_search'][10010] = ['tide_core' => 10024];
   return $dependencies;
 }
 
@@ -495,5 +496,41 @@ function tide_search_update_10009() {
       }
     }
     $role->save();
+  }
+}
+
+/**
+ * Tag relocation - tide_search_listing.
+ */
+function tide_search_update_10010() {
+  $group_page_metadata = [
+    'children' => [
+      'field_content_category',
+      'field_node_department',
+      'group_sites',
+    ],
+    'label' => 'Page metadata',
+    'region' => 'content',
+    'parent_name' => 'group_tags_and_metadata',
+    'weight' => 21,
+    'format_type' => 'tab',
+    'format_settings' => [
+      'classes' => '',
+      'show_empty_fields' => FALSE,
+      'id' => '',
+      'label_as_html' => FALSE,
+      'formatter' => 'closed',
+      'description' => '',
+      'required_fields' => TRUE,
+    ],
+  ];
+  $entity_form_display = Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.tide_search_listing.default');
+  $field_group = $entity_form_display->getThirdPartySettings('field_group');
+  if (!empty($field_group)) {
+    if (isset($field_group['group_page_metadata'])) {
+      $field_group['group_page_metadata'] = $group_page_metadata;
+      $entity_form_display->setThirdPartySetting('field_group', 'group_page_metadata', $field_group['group_page_metadata']);
+      $entity_form_display->save();
+    }
   }
 }
