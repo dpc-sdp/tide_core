@@ -414,7 +414,8 @@
             },
             "drupal/data_pipelines": {
                 "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch",
-                "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch"
+                "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch",
+                "data_pipelines_update_8017 fails with `SQLSTATE[01000]: Data truncated` when updating entity keys and adding field - https://www.drupal.org/project/data_pipelines/issues/3560388#comment-16363758": "https://www.drupal.org/files/issues/2025-11-28/data_pipelines-3560388-2.patch"
             },
             "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
                 "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch",
@@ -454,6 +455,9 @@
             },
            "drupal/select2": {
                 "remove Drag to re-order entity_type description": "https://www.drupal.org/files/issues/2023-09-08/select2-remove-drag-to-reorder-description-3178287-11.patch"
+            },
+           "drupal/redirect": {
+                "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
             }
         },
         "installer-paths": {
