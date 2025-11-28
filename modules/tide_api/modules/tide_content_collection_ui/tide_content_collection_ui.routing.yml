@@ -1,0 +1,7 @@
+tide_content_collection_ui.node_autocomplete:
+  path: '/api/v1/content-collection/node-autocomplete'
+  defaults:
+    _controller: '\Drupal\tide_content_collection_ui\Controller\ContentCollectionNodeAutocomplete::index'
+  methods: [GET]
+  requirements:
+    _custom_access: '\Drupal\tide_content_collection_ui\Controller\ContentCollectionNodeAutocomplete::access'
