@@ -911,19 +911,13 @@ function tide_core_update_10024() {
     }
 
     // Change field_content_category to optional.
-    // Change field_tags's label to 'Audience'.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     /** @var \Drupal\field\Entity\FieldConfig $field_content_category */
     $field_content_category = $storage->load('node.' . $id . '.field_content_category');
-    $field_tags = $storage->load('node.' . $id . '.field_tags');
     if ($field_content_category) {
       $field_content_category->setRequired(FALSE);
       $field_content_category->setDescription('');
       $field_content_category->save();
-    }
-    if ($field_tags) {
-      $field_tags->set('label', 'Audience');
-      $field_tags->save();
     }
 
     // Update field_featured_image.
