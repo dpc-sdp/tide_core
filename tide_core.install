@@ -720,7 +720,7 @@ function tide_core_update_10022() {
 /**
  * Adds the 'Tags and Metadata' group to all content types.
  */
-function tide_core_update_10023() {
+function tide_core_update_10024() {
   // Fields settings.
   $tag_fields = [
     10 => 'field_topic',
@@ -911,19 +911,13 @@ function tide_core_update_10023() {
     }
 
     // Change field_content_category to optional.
-    // Change field_tags's label to 'Audience'.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     /** @var \Drupal\field\Entity\FieldConfig $field_content_category */
     $field_content_category = $storage->load('node.' . $id . '.field_content_category');
-    $field_tags = $storage->load('node.' . $id . '.field_tags');
     if ($field_content_category) {
       $field_content_category->setRequired(FALSE);
       $field_content_category->setDescription('');
       $field_content_category->save();
-    }
-    if ($field_tags) {
-      $field_tags->set('label', 'Audience');
-      $field_tags->save();
     }
 
     // Update field_featured_image.
@@ -1044,7 +1038,7 @@ function tide_core_update_10023() {
 /**
  * Change field_content_category to select2 widget,and also remove parent.
  */
-function tide_core_update_10024() {
+function tide_core_update_10025() {
   $default_category_id = 1416;
   $field_content_category_widget_settings = [
     'type' => 'select2_entity_reference',
@@ -1116,7 +1110,7 @@ function tide_core_update_10024() {
 /**
  * Change widget for field_topic and field_tags.
  */
-function tide_core_update_10025() {
+function tide_core_update_10026() {
   $fields_to_change = [
     'field_topic',
     'field_tags',
@@ -1150,7 +1144,7 @@ function tide_core_update_10025() {
 /**
  * Revoke `delete` from all content types on the 3 roles.
  */
-function tide_core_update_10026() {
+function tide_core_update_10027() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   $roles = [
     'editor',
@@ -1169,7 +1163,7 @@ function tide_core_update_10026() {
 /**
  * Fixes mismatched entity and/or field definitions" error.
  */
-function tide_core_update_10027() {
+function tide_core_update_10028() {
   $entity_type_manager = \Drupal::entityTypeManager();
   $entity_type_manager->clearCachedDefinitions();
   $entity_type_ids = [];
@@ -1181,5 +1175,32 @@ function tide_core_update_10027() {
       $entity_type_ids[] = $entity_type_id;
     }
     Drush::output()->writeln('Installed/Updated the entity type(s): ' . implode(', ', $entity_type_ids));
+  }
+}
+
+/**
+ * Install field_show_feature_image storage.
+ */
+function tide_core_update_10029() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('field.storage.node.field_show_feature_image', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $id = $storage->getIDFromConfigName('field.storage.node.field_show_feature_image', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}
+
+/**
+ * Revoke the "administer permissions" approver_plus.
+ */
+function tide_core_update_10030() {
+  $role = Role::load('approver_plus');
+
+  if ($role && $role->hasPermission('administer permissions')) {
+    $role->revokePermission('administer permissions');
+    $role->save();
   }
 }

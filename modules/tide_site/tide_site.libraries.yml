@@ -7,3 +7,14 @@ tide_quick_exit:
     js/quick_exit.js: {}
   dependencies:
     - core/jquery
+
+content_report_csv_limit:
+  version: 1.x
+  js:
+    js/content-report-csv-limit.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+  css:
+    theme:
+      css/content-report-csv-limit.css: {}
