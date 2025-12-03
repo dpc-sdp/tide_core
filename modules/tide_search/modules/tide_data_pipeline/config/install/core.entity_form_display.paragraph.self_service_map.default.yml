@@ -1,0 +1,42 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.self_service_map.field_display_title
+    - field.field.paragraph.self_service_map.field_paragraph_title
+    - field.field.paragraph.self_service_map.field_select_dataset
+    - paragraphs.paragraphs_type.self_service_map
+id: paragraph.self_service_map.default
+targetEntityType: paragraph
+bundle: self_service_map
+mode: default
+content:
+  csv_template_download:
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_display_title:
+    type: boolean_checkbox
+    weight: 1
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_paragraph_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_select_dataset:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

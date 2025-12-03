@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Tide tide_data_pipeline module functionality.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function tide_data_pipeline_entity_extra_field_info() {
+  $extra = [];
+
+  $extra['paragraph']['self_service_map']['form']['csv_template_download'] = [
+    'label' => t('CSV template download (Pseudo Field)'),
+    'description' => t('Display a button for editors to download a CSV template, with the file configured by administrators in the backend.'),
+    'visible' => TRUE,
+  ];
+  return $extra;
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ */
+function tide_data_pipeline_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
+  if (($element['#paragraph_type'] ?? '') !== 'self_service_map') {
+    return;
+  }
+
+  $display = \Drupal::service('entity_display.repository')->getFormDisplay('paragraph', 'self_service_map', 'default');
+  $component = $display->getComponent('csv_template_download');
+  if (!$component) {
+    return;
+  }
+  $file_url = \Drupal::service('file_url_generator')->generateAbsoluteString('public://csv_templates/Generic_dataset_template.csv');
+  $link = Link::fromTextAndUrl(
+    t('📥 Download Dateset csv template'),
+    Url::fromUri($file_url, [
+      'attributes' => [
+        'class' => ['button', 'button--secondary', 'button--small'],
+        'target' => '_blank',
+        'download' => 'import_template.csv',
+        'style' => 'margin-bottom: 15px;',
+      ],
+    ])
+  );
+  $markup = '<div class="csv-template-wrapper">' . $link->toString() . '</div>';
+  $element_data = [
+    '#type' => 'item',
+    '#markup' => $markup,
+    '#weight' => $component['weight'] ?? 0,
+  ];
+
+  if (isset($element['subform'])) {
+    $element['subform']['csv_template_download'] = $element_data;
+  }
+  else {
+    $element['csv_template_download'] = $element_data;
+  }
+}

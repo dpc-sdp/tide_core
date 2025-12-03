@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_select_dataset
+    - paragraphs.paragraphs_type.self_service_map
+id: paragraph.self_service_map.field_select_dataset
+field_name: field_select_dataset
+entity_type: paragraph
+bundle: self_service_map
+label: 'Select dataset '
+description: 'Your dataset must be uploaded in the dataset component before you can see it in the dropdown list. (You need to have the CMS user role ‘Data importer’ to do this.)'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: views
+  handler_settings:
+    view:
+      view_name: filter_dataset
+      display_name: entity_reference_1
+      arguments: {  }
+field_type: entity_reference

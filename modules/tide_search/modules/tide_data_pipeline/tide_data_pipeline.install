@@ -7,6 +7,8 @@
 
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\user\Entity\Role;
+use Drupal\Core\File\FileExists;
+use Drupal\Core\File\FileSystemInterface;
 
 /**
  * Imports columns for private datasets.
@@ -60,4 +62,48 @@ function tide_data_pipeline_update_10002() {
       $config_entity->save();
     }
   }
+}
+
+
+/**
+ * Implements hook_install().
+ */
+function tide_data_pipeline_install($is_syncing) {
+  $file_directory = \Drupal::config('system.file')
+      ->get('default_scheme') . '://csv_templates';
+  \Drupal::service('file_system')
+    ->prepareDirectory($file_directory, FileSystemInterface::CREATE_DIRECTORY);
+  $module_path = \Drupal::service('extension.list.module')->getPath('tide_data_pipeline');
+  $csv_source = $module_path . '/data/Generic_dataset_template.csv';
+  \Drupal::service('file_system')
+    ->copy($csv_source, $file_directory . '/Generic_dataset_template.csv', FileExists::Replace);
+}
+
+/**
+ * Imports Self service map configs.
+ */
+function tide_data_pipeline_update_10003() {
+  $configs = [
+    'paragraphs.paragraphs_type.self_service_map' => 'paragraphs_type',
+    'field.storage.paragraph.field_display_title' => 'field_storage_config',
+    'field.storage.paragraph.field_select_dataset' => 'field_storage_config',
+    'field.field.paragraph.self_service_map.field_display_title' => 'field_config',
+    'field.field.paragraph.self_service_map.field_paragraph_title' => 'field_config',
+    'field.field.paragraph.self_service_map.field_select_dataset' => 'field_config',
+    'core.entity_form_display.paragraph.self_service_map.default' => 'entity_form_display',
+    'core.entity_view_display.paragraph.self_service_map.default' => 'entity_view_display',
+    'views.view.filter_dataset' => 'view',
+  ];
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  foreach ($configs as $config_name => $config_type) {
+    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_pipeline') . '/config/install'];
+    $config_read = _tide_read_config($config_name, $config_location, TRUE);
+    $storage = \Drupal::entityTypeManager()->getStorage($config_type);
+    $id = $storage->getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) === NULL) {
+      $config_entity = $storage->createFromStorageRecord($config_read);
+      $config_entity->save();
+    }
+  }
+
 }
