@@ -24,7 +24,7 @@ id: paragraph.content_collection_ui.field_paragraph_link
 field_name: field_paragraph_link
 entity_type: paragraph
 bundle: content_collection_ui
-label: Link
+label: Call To Action
 description: 'A link to displayed below the content to help navigate uses to more related content.'
 required: false
 translatable: false
