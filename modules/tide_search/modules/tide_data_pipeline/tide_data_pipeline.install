@@ -6,10 +6,10 @@
  */
 
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\user\Entity\Role;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\user\Entity\Role;
 
 /**
  * Imports columns for private datasets.
