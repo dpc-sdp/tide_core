@@ -139,3 +139,17 @@ function tide_data_pipeline_update_10005() {
     }
   }
 }
+
+/**
+ * Overwrite `self_service_map` json response through JSON:API extra.
+ */
+function tide_data_pipeline_update_10006() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_pipeline') . '/config/install'];
+  $config_read = _tide_read_config('jsonapi_extras.jsonapi_resource_config.paragraph--self_service_map', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('jsonapi_resource_config');
+  if ($storage->load('paragraph--self_service_map') === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}

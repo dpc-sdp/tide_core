@@ -30,10 +30,16 @@ function tide_data_pipeline_field_widget_single_element_form_alter(&$element, Fo
   if (($element['#paragraph_type'] ?? '') !== 'self_service_map') {
     return;
   }
-
   $display = \Drupal::service('entity_display.repository')->getFormDisplay('paragraph', 'self_service_map', 'default');
   $component = $display->getComponent('csv_template_download');
   if (!$component) {
+    return;
+  }
+  if (!file_exists('public://csv_templates/Generic_dataset_template.csv')) {
+    return;
+  }
+  $edit_mode_flag = $element['top']['actions']['actions']['edit_button']['#paragraphs_mode'] ?? NULL;
+  if ($edit_mode_flag === 'edit') {
     return;
   }
   $file_url = \Drupal::service('file_url_generator')->generateAbsoluteString('public://csv_templates/Generic_dataset_template.csv');
@@ -57,8 +63,5 @@ function tide_data_pipeline_field_widget_single_element_form_alter(&$element, Fo
 
   if (isset($element['subform'])) {
     $element['subform']['csv_template_download'] = $element_data;
-  }
-  else {
-    $element['csv_template_download'] = $element_data;
   }
 }
