@@ -9,10 +9,12 @@ field_name: field_display_title
 entity_type: paragraph
 bundle: self_service_map
 label: 'Display title in front end'
-description: ''
+description: 'Uncheck this box if you don’t want the map title to display on the website.'
 required: false
 translatable: false
-default_value: {  }
+default_value:
+  -
+    value: 1
 default_value_callback: ''
 settings:
   on_label: 'On'

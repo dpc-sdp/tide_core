@@ -7,6 +7,8 @@ dependencies:
   - data_pipelines:data_pipelines
   - data_pipelines_elasticsearch:data_pipelines_elasticsearch
   - key:key
+  - tide_core:tide_search
+  - tide_core:tide_landing_page
 config_devel:
 install:
   - key.key.search_auth_username

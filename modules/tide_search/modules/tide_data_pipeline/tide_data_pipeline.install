@@ -9,6 +9,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\user\Entity\Role;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\field\Entity\FieldConfig;
 
 /**
  * Imports columns for private datasets.
@@ -64,19 +65,11 @@ function tide_data_pipeline_update_10002() {
   }
 }
 
-
 /**
  * Implements hook_install().
  */
 function tide_data_pipeline_install($is_syncing) {
-  $file_directory = \Drupal::config('system.file')
-      ->get('default_scheme') . '://csv_templates';
-  \Drupal::service('file_system')
-    ->prepareDirectory($file_directory, FileSystemInterface::CREATE_DIRECTORY);
-  $module_path = \Drupal::service('extension.list.module')->getPath('tide_data_pipeline');
-  $csv_source = $module_path . '/data/Generic_dataset_template.csv';
-  \Drupal::service('file_system')
-    ->copy($csv_source, $file_directory . '/Generic_dataset_template.csv', FileExists::Replace);
+  _tide_data_pipeline_install_csv_template_file();
 }
 
 /**
@@ -106,4 +99,43 @@ function tide_data_pipeline_update_10003() {
     }
   }
 
+}
+
+/**
+ * Installs the CSV template file.
+ */
+function tide_data_pipeline_update_10004() {
+  _tide_data_pipeline_install_csv_template_file();
+}
+
+/**
+ * Installs the CSV template file.
+ */
+function _tide_data_pipeline_install_csv_template_file() {
+  $file_directory = \Drupal::config('system.file')
+    ->get('default_scheme') . '://csv_templates';
+  \Drupal::service('file_system')
+    ->prepareDirectory($file_directory, FileSystemInterface::CREATE_DIRECTORY);
+  $module_path = \Drupal::service('extension.list.module')->getPath('tide_data_pipeline');
+  $csv_source = $module_path . '/data/Generic_dataset_template.csv';
+  \Drupal::service('file_system')
+    ->copy($csv_source, $file_directory . '/Generic_dataset_template.csv', FileExists::Replace);
+}
+
+/**
+ * Adds self_service_map component to landing page.
+ */
+function tide_data_pipeline_update_10005() {
+  $new_component = 'self_service_map';
+  $field_config = FieldConfig::loadByName('node', 'landing_page', 'field_landing_page_component');
+  if ($field_config) {
+    $handler_settings = $field_config->getSetting('handler_settings');
+    if (isset($handler_settings['target_bundles'])) {
+      if (!array_key_exists($new_component, $handler_settings['target_bundles'])) {
+        $handler_settings['target_bundles'][$new_component] = $new_component;
+        $field_config->setSetting('handler_settings', $handler_settings);
+        $field_config->save();
+      }
+    }
+  }
 }
