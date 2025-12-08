@@ -1204,3 +1204,18 @@ function tide_core_update_10030() {
     $role->save();
   }
 }
+
+/**
+ * Assign editor's clone permissions to approvers.
+ */
+function tide_core_update_10031() {
+  $editor_role = Role::load('editor');
+  $editor_permissions = $editor_role->getPermissions();
+  $approver_role = Role::load('approver');
+  foreach ($editor_permissions as $permission) {
+    if (strpos($permission, 'clone') === 0) {
+      $approver_role->grantPermission($permission);
+    }
+  }
+  $approver_role->save();
+}
