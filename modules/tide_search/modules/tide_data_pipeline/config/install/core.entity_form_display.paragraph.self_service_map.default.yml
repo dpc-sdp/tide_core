@@ -29,7 +29,7 @@ content:
     region: content
     settings:
       size: 60
-      placeholder: ''
+      placeholder: 'Find my nearest….'
     third_party_settings: {  }
   field_select_dataset:
     type: options_select

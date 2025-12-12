@@ -9,7 +9,7 @@ field_name: field_paragraph_title
 entity_type: paragraph
 bundle: self_service_map
 label: Title
-description: 'Enter the map title that will display above the search field on the website.'
+description: 'Enter the map title that will display above the search field on the website. This map helps users to find the closest service to their chosen location.'
 required: true
 translatable: false
 default_value: {  }
