@@ -64,3 +64,46 @@ sdp_data_pipeline:
           - longitude
         as: location
         separator: ','
+
+self_service_map_pipeline:
+  label: 'Self-service map'
+  class: '\Drupal\data_pipelines_elasticsearch\ElasticSearchDatasetPipeline'
+  destinationSettings:
+    elasticsearch:
+      mappings:
+        properties:
+          name:
+            type: text
+            fields:
+              keyword:
+                type: keyword
+          steet:
+            type: text
+          suburb:
+            type: text
+          postcode:
+            type: text
+          phone:
+            type: text
+          email:
+            type: text
+          link:
+            type: text
+          latitude:
+            type: text
+            index: false
+          longitude:
+            type: text
+            index: false
+          get_directions_link:
+            type: text
+          location:
+            type: geo_point
+  transforms:
+    record:
+      - plugin: concat
+        fields:
+          - latitude
+          - longitude
+        as: location
+        separator: ','
