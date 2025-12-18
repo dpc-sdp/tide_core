@@ -409,8 +409,7 @@
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
-                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch",
-                "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
+                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch"
             },
             "drupal/data_pipelines": {
                 "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch",
