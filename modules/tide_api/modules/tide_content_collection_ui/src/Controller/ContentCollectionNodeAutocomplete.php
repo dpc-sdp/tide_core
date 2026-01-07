@@ -50,7 +50,7 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
    * Only allow authenticated users to access this endpoint.
    */
   public static function access(AccountInterface $account): AccessResult {
-    if (Settings::get('environment') === 'local') {
+    if (Settings::get('environment') === 'local' || Settings::get('environment') === 'development') {
       return AccessResult::allowed()->setCacheMaxAge(0);
     }
 
