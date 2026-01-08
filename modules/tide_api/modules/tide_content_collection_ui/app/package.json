@@ -4,9 +4,9 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@dpc-sdp/tide-content-collection-ui": "0.1.0-alpha.11"
+    "@dpc-sdp/tide-content-collection-ui": "0.1.0-alpha.13"
   },
   "devDependencies": {
-    "vite": "^7.1.6"
+    "vite": "^7.3.0"
   }
 }

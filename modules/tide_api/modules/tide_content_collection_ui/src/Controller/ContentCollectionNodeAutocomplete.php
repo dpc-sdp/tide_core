@@ -75,7 +75,7 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
       $query_builder = $node_storage->getQuery()
         ->condition('status', 1)
         ->condition('title', $query, 'CONTAINS')
-        ->range(0, 10)
+        ->range(0, 50)
         ->accessCheck();
 
       // Scope the query to only nodes on the current users site.
