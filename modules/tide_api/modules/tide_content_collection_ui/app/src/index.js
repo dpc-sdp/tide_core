@@ -17,7 +17,7 @@ import '@dpc-sdp/tide-content-collection-ui/styles'
             form: getJson(field.value),
             config: getJson(config),
             update: (form) => (field.value = setJson(form)),
-            baseUrl: import.meta.env.VITE_API_URL || window.location.origin
+            baseUrl: window.location.origin
           })
         }
       })
