@@ -74,7 +74,7 @@ function tide_search_update_10002() {
  * Adds field_above_results_content field to search listing.
  */
 function tide_search_update_10003() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_search') . '/config/optional'];
 
   $configs = [

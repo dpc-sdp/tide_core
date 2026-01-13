@@ -7,7 +7,7 @@ use Drupal\jsonapi\Controller\EntityResource;
 use Drupal\jsonapi\ResourceType\ResourceType;
 use Drupal\node\NodeInterface;
 use Drupal\tide_share_link\Entity\ShareLinkTokenInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -19,7 +19,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ShareLinkTokenResource extends EntityResource {
 
-  use ContainerAwareTrait;
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
 
   /**
    * Gets the individual Share Link Token.

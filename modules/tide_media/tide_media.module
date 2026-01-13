@@ -14,8 +14,10 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\Core\Url;
 use Drupal\file\FileInterface;
+use Drupal\file\IconMimeTypes;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -186,10 +188,10 @@ function tide_media_preprocess_file_link(&$variables) {
   }
 
   $description = $variables['description'];
-  $file_size = format_size($file->getSize());
+  $file_size = ByteSizeMarkup::create($file->getSize());
 
   $mime_type = $file->getMimeType();
-  $mime_category = file_icon_class($mime_type);
+  $mime_category = IconMimeTypes::getIconClass($mime_type);
   switch ($mime_category) {
     case 'application-pdf':
       $file_type = 'PDF';
