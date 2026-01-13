@@ -4,12 +4,6 @@ on:
   push:
   workflow_dispatch:
 
-# Add permissions block with required permissions used for shipshape audit
-permissions:
-  checks: write
-  contents: read
-  pull-requests: write
-  packages: read
 jobs:
   tide_build:
     name: tide_build
