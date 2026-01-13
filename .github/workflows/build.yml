@@ -15,6 +15,9 @@ jobs:
     name: tide_build
     secrets: inherit
     uses: dpc-sdp/github-actions/.github/workflows/tide_build.yml@v1.6.2
+    with:
+      module_build: true
+      runner: biggy-tide
   export_config:
     name: export_config
     secrets: inherit
