@@ -6,8 +6,8 @@
         "composer/installers": "^1.9",
         "cweagans/composer-patches": "^1.6.0",
         "drupal/core-composer-scaffold": "^11.0",
-        "drupal/core": "10.5.2",
-        "drupal/core-recommended": "10.5.2",
+        "drupal/core": "11.x",
+        "drupal/core-recommended": "11.x",
         "drush/drush": "^13",
         "vlucas/phpdotenv": "^4.1",
         "webflo/drupal-finder": "^1.0"
@@ -17,7 +17,8 @@
         "behat/mink": "^1.11",
         "behat/mink-browserkit-driver": "^2.2",
         "behat/mink-selenium2-driver": "^1.4",
-        "chi-teck/drupal-code-generator": "^3.0",
+        "imbo/behat-api-extension": "^6.0",
+        "chi-teck/drupal-code-generator": "*",
         "squizlabs/php_codesniffer": "3.7.1",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
         "doctrine/persistence": "^3.3",
@@ -26,16 +27,15 @@
         "drevops/behat-screenshot": "^1.0",
         "drevops/behat-steps": "^1.2.0",
         "phpcompatibility/php-compatibility": "^9.1",
-        "imbo/behat-api-extension": "^6.0",
-        "symfony/filesystem": "^6.2",
+        "symfony/filesystem": "^7.4",
         "php-http/curl-client": "*",
         "phpunit/phpunit": "^8.5.14 || ^9",
-        "drupal/core-dev":"10.5.x",
+        "drupal/core-dev":"11.x",
         "phpspec/prophecy-phpunit":"^2",
-        "weitzman/drupal-test-traits": "^1.5",
+        "weitzman/drupal-test-traits": "*",
         "php-http/message": "~1.13",
         "php-http/message-factory": "^1.1",
-        "guzzlehttp/psr7": "~2.7.0",
+        "guzzlehttp/psr7": "^2.8.0",
         "dpc-sdp/tide_test": "^4.0.0",
         "drupal/test_helpers": "^1.2"
     },
@@ -70,7 +70,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions"]
         },
         "asset-packagist": {
             "type": "composer",
@@ -80,11 +80,6 @@
             "type": "vcs",
             "no-api": true,
             "url": "https://github.com/dpc-sdp/tide.git"
-        },
-        "drupal/create_menus_permission": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/create_menus_permission.git"
         },
         "dpc-sdp/tide_alert": {
             "type": "vcs",
@@ -407,15 +402,15 @@
                 }
             }
         },
+        "ubirak/rest-api-behat-extension": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://github.com/dpc-sdp/rest-api-behat-extension.git"
+        },
         "drupal/token_conditions": {
             "type": "vcs",
             "no-api": true,
             "url": "https://github.com/dpc-sdp/token_conditions.git"
-        },
-        "drupal/ckeditor_templates": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         }
     },
     "scripts": {

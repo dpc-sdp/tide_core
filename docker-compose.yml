@@ -110,7 +110,7 @@ services:
       lagoon.name: nginx-php
 
   mariadb:
-    image: "ghcr.io/dpc-sdp/bay/mariadb:${BAY_IMAGE_VERSION:-6.x}"
+    image: "mariadb:10.6"
     environment:
       << : *default-environment
     ports:
@@ -119,7 +119,7 @@ services:
       lagoon.type: mariadb-shared
 
   redis:
-    image: amazeeio/redis
+    image: uselagoon/redis-5:latest
     labels:
       lagoon.type: redis
 
