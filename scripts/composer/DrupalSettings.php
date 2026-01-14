@@ -96,6 +96,7 @@ GENERATEDSETTINGS;
    * Return content for default Drupal settings file.
    */
   protected static function getDefaultDrupalSettingsContent($options) {
+    $db_port = $options['mysql_port'] ?: 3306;
     return <<<FILE
 <?php
 
@@ -116,7 +117,7 @@ GENERATEDSETTINGS;
           'username' => '${options['mysql_user']}',
           'password' => '${options['mysql_password']}',
           'host' => '${options['mysql_host']}',
-          'port' => '${options['mysql_port']}',
+          'port' => '$db_port',
           'driver' => 'mysql',
           'prefix' => '${options['mysql_prefix']}',
         ],
@@ -125,6 +126,9 @@ GENERATEDSETTINGS;
 
 // Allow installing extensions under tests directory.
 \$settings['extension_discovery_scan_tests'] = TRUE;
+
+// Hash Salt.
+\$settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
 
 FILE;
   }

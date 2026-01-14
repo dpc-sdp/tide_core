@@ -1,7 +1,7 @@
 name: Tide UI restriction
 type: module
 description: Admin UI restriction
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 package: tide
 dependencies:
   - config_perms:config_perms

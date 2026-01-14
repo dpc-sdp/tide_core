@@ -20,7 +20,7 @@
         "drupal/upgrade_status": "^4.3",
         "drupal/core-recommended": "11.x",
         "drupal/monitoring": "^1.13",
-        "drupal/ckeditor_templates": "^1.4",
+        "drupal/ckeditor_templates": "^2.0",
         "drupal/ctools": "^4.1.0",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "2.3.1",
@@ -62,7 +62,7 @@
         "drupal/tablefield": "^3.0",
         "drupal/tfa": "1.9",
         "drupal/tfa_email_otp": "^1.0@beta",
-        "drupal/token_conditions": "dev-compatible-with-d10",
+        "drupal/token_conditions": "^11.0",
         "drupal/token_filter": "^2.0",
         "drupal/twig_field_value": "^2.0",
         "drupal/views_data_export": "^1.8",
@@ -336,11 +336,7 @@
         "drupal/token_conditions": {
             "type": "vcs",
             "no-api": true,
-            "url": "https://github.com/dpc-sdp/token_conditions.git",
-            "exclude": [
-                "dev-1.x",
-                "1.x-dev"
-            ]
+            "url": "https://github.com/dpc-sdp/token_conditions.git"
         },
       "drupal/user_created_by_field": {
         "type": "vcs",

@@ -2,7 +2,7 @@ name: Tide CKEDITOR5 Module
 type: module
 description: "Tide CKEDITOR5 Module"
 package: CKEditor 5
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - drupal:ckeditor5
   - ckeditor5_embedded_content:ckeditor5_embedded_content
