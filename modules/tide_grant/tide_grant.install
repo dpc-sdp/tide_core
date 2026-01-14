@@ -27,8 +27,9 @@ function tide_grant_install() {
  */
 function tide_grant_uninstall() {
   // Remove the user we created.
-  if ($user = user_load_by_name('Grant Author')) {
-    user_delete($user->id());
+  $users = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['name' => 'Grant Author']);
+  if ($user = reset($users)) {
+    $user->delete();
   }
 
   // Now cleanup the config.
