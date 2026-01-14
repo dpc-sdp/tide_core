@@ -26,8 +26,7 @@ default:
       - Drupal\DrupalExtension\Context\MarkupContext
       - Drupal\DrupalExtension\Context\MessageContext
       - DrevOps\BehatScreenshotExtension\Context\ScreenshotContext
-      - Ubirak\RestApiBehatExtension\RestApiContext
-      - Ubirak\RestApiBehatExtension\Json\JsonContext
+      - Imbo\BehatApiExtension\Context\ApiContext
 
   extensions:
     Drupal\MinkExtension:
@@ -78,10 +77,11 @@ default:
       dir: '%paths.base%/screenshots'
       fail: true
       purge: false
-    Ubirak\RestApiBehatExtension\Extension:
-      rest:
-        base_url: http://nginx:8080
-        store_response: true
+    Imbo\BehatApiExtension:
+      apiClient:
+        base_uri: http://nginx:8080
+        timeout: 5.0
+        verify: false # Set to true if using production HTTPS locally
 
 suggest:
   gherkin:

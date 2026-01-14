@@ -7,12 +7,15 @@ Feature: JSONAPI Menu Items
     Given I am an anonymous user
 
     # Menu items without a menu supplied should be 404
-    When I send a GET request to "/api/v1/menu_items"
-    Then the response code should be 404
+    When I request "/api/v1/menu_items" using HTTP GET
+    Then the response code is 404
 
     # Menu items with a test menu setup
-    When I send a GET request to "/api/v1/menu_items/admin"
-    Then the response code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    
+    When I request "/api/v1/menu_items/admin" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": "@variableType(array)"
+      }
+      """

@@ -5,7 +5,7 @@
     "require": {
         "composer/installers": "^1.9",
         "cweagans/composer-patches": "^1.6.0",
-        "drupal/core-composer-scaffold": "^10.0",
+        "drupal/core-composer-scaffold": "^11.0",
         "drupal/core": "10.5.2",
         "drupal/core-recommended": "10.5.2",
         "drush/drush": "^13",
@@ -22,16 +22,15 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
         "doctrine/persistence": "^3.3",
         "drupal/coder": "^8.3.10",
-        "drupal/console": "dev-feature/Symfony-config-d10-compatibility",
         "drupal/drupal-extension": "^5.0.0rc1",
         "drevops/behat-screenshot": "^1.0",
         "drevops/behat-steps": "^1.2.0",
         "phpcompatibility/php-compatibility": "^9.1",
-        "ubirak/rest-api-behat-extension": "dev-rename_ambiguous_match as 8.2.0",
+        "imbo/behat-api-extension": "^6.0",
         "symfony/filesystem": "^6.2",
         "php-http/curl-client": "*",
         "phpunit/phpunit": "^8.5.14 || ^9",
-        "drupal/core-dev":"^10.1.0",
+        "drupal/core-dev":"10.5.x",
         "phpspec/prophecy-phpunit":"^2",
         "weitzman/drupal-test-traits": "^1.5",
         "php-http/message": "~1.13",
@@ -71,7 +70,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/console", "drupal/console-core", "drupal/console-extend-plugin", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
         },
         "asset-packagist": {
             "type": "composer",
@@ -408,11 +407,6 @@
                 }
             }
         },
-        "ubirak/rest-api-behat-extension": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/rest-api-behat-extension.git"
-        },
         "drupal/token_conditions": {
             "type": "vcs",
             "no-api": true,
@@ -422,21 +416,6 @@
             "type": "vcs",
             "no-api": true,
             "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
-        },
-        "drupal/console": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/drupal-console.git"
-        },
-        "drupal/console-core": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/drupal-console-core.git"
-        },
-        "drupal/console-extend-plugin": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/drupal-console-extend-plugin.git"
         }
     },
     "scripts": {
