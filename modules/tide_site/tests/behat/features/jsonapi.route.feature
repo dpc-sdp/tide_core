@@ -1,4 +1,4 @@
-@jsonapi
+@jsonapi @install:tide_site
 Feature: Route lookup
 
   @api @suggest
@@ -18,46 +18,102 @@ Feature: Route lookup
 
     And I am an anonymous user
 
-    When I send a GET request to "api/v1/route?path=/test-article-no-site"
-    Then the response code should be 200
-    And the JSON node "data" should exist
-    And the JSON node "errors" should not exist
-    And the response should be in JSON
+    When I request "api/v1/route?path=/test-article-no-site" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": "@variableType(object)"
+      }
+      """
+    And the response body matches:
+      """
+      /^(?!.*"errors":).*/s
+      """
 
-    When I send a GET request to "api/v1/route?path=/test-article-one-site"
-    Then the response code should be 404
-    And the response should be in JSON
-    And the JSON node "data" should not exist
-    And the JSON node "errors" should exist
+    When I request "api/v1/route?path=/test-article-one-site" using HTTP GET
+    Then the response code is 404
+    And the response body contains JSON:
+      """
+      {
+        "errors": "@variableType(array)"
+      }
+      """
+    And the response body matches:
+      """
+      /^(?!.*"data":).*/s
+      """
 
-    When I send a GET request to "api/v1/route?path=/test-article-one-site&site=10001"
-    Then the response code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.attributes.section" should not contain "10001"
-    And the JSON node "data.attributes.section" should contain "10011"
-    And the JSON node "errors" should not exist
+    When I request "api/v1/route?path=/test-article-one-site&site=10001" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": {
+          "attributes": {
+            "section": "@regExp(/10011/)"
+          }
+        }
+      }
+      """
+    # Negative match to ensure 10001 is NOT in the section string
+    And the response body matches:
+      """
+      /^(?!.*"section":"[^"]*10001").*/s
+      """
+    And the response body matches:
+      """
+      /^(?!.*"errors":).*/s
+      """
 
-    When I send a GET request to "api/v1/route?path=/test-article-one-site&site=10011"
-    Then the response code should be 404
-    And the response should be in JSON
-    And the JSON node "data" should not exist
-    And the JSON node "errors" should exist
-    And the JSON node "errors[0].title" should contain "Path not found."
+    When I request "api/v1/route?path=/test-article-one-site&site=10011" using HTTP GET
+    Then the response code is 404
+    And the response body contains JSON:
+      """
+      {
+        "errors": [
+          { "title": "@regExp(/Path not found./)" }
+        ]
+      }
+      """
+    And the response body matches:
+      """
+      /^(?!.*"data":).*/s
+      """
 
-    When I send a GET request to "api/v1/route?path=/test-article-two-sites&site=10001"
-    Then the response code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.attributes.section" should contain "10001"
-    And the JSON node "errors" should not exist
+    When I request "api/v1/route?path=/test-article-two-sites&site=10001" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": {
+          "attributes": {
+            "section": "@regExp(/10001/)"
+          }
+        }
+      }
+      """
+    And the response body matches:
+      """
+      /^(?!.*"errors":).*/s
+      """
 
-    When I send a GET request to "api/v1/route?path=/test-article-two-sites&site=10002"
-    Then the response code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.attributes.section" should contain "10002"
-    And the JSON node "errors" should not exist
+    When I request "api/v1/route?path=/test-article-two-sites&site=10002" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": {
+          "attributes": {
+            "section": "@regExp(/10002/)"
+          }
+        }
+      }
+      """
+    And the response body matches:
+      """
+      /^(?!.*"errors":).*/s
+      """
 
   @api @suggest
   Scenario: Request to route lookup API to find the homepage of a site
@@ -75,12 +131,22 @@ Feature: Route lookup
     And I press the Save button
 
     Given I am an anonymous user
-    When I send a GET request to "api/v1/route?path=/&site=10003"
-    Then the response code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.attributes.entity_type" should be equal to "node"
-    And the JSON node "data.attributes.bundle" should be equal to "test"
-    And the JSON node "data.attributes.uuid" should contain "00000000-1111-2222-3333-0123456789ab"
-    And the JSON node "data.attributes.section" should be equal to "10003"
-    And the JSON node "errors" should not exist
+    When I request "api/v1/route?path=/&site=10003" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": {
+          "attributes": {
+            "entity_type": "node",
+            "bundle": "test",
+            "uuid": "@regExp(/00000000-1111-2222-3333-0123456789ab/)",
+            "section": "10003"
+          }
+        }
+      }
+      """
+    And the response body matches:
+      """
+      /^(?!.*"errors":).*/s
+      """
