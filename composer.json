@@ -44,7 +44,7 @@
         "drupal/media_entity_audio": "^3.1",
         "drupal/metatag": "^2.0",
         "drupal/override_node_options": "^2.7",
-        "drupal/paragraphs": "^1.15",
+        "drupal/paragraphs": "1.19",
         "drupal/password_policy": "^4.0",
         "drupal/password_strength": "^2.0@beta",
         "drupal/pathauto": "^1.11",
@@ -72,7 +72,7 @@
         "drupal/scheduled_transitions": "2.5",
         "drupal/link_field_autocomplete_filter": "^2.0",
         "drupal/queue_mail": "^1.5",
-        "drupal/token": "^1.15",
+        "drupal/token": "1.16",
         "drupal/user_created_by_field": "^1.1",
         "drupal/username_enumeration_prevention": "^1.3",
         "drupal/quick_node_clone": "^1.16",
@@ -356,7 +356,7 @@
     "extra": {
         "patches": {
             "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16351387": "https://www.drupal.org/files/issues/2025-11-19/3263615-admin_audit_trail-option-for-cli-8.patch"
+                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16412890": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
             },
             "drupal/core": {
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16166063": "https://www.drupal.org/files/issues/2025-06-26/xss-refactor-filter-attributes-10.5.x-3109650-85.patch",
@@ -409,8 +409,7 @@
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
-                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch",
-                "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
+                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch"
             },
             "drupal/data_pipelines": {
                 "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch",
