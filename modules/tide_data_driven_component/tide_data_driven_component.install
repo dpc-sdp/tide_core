@@ -9,7 +9,7 @@
  * Adds json text area field to data driven component.
  */
 function tide_data_driven_component_update_10001() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_driven_component') . '/config/install'];
 
   $configs = [

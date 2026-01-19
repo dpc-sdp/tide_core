@@ -3,6 +3,7 @@
 namespace Drupal\tide_core\Plugin\views\field;
 
 use Drupal\user\Plugin\views\field\Roles;
+use Drupal\user\Entity\Role;
 
 /**
  * A handler to provide a list of roles sorted alphabetically.
@@ -28,7 +29,7 @@ class SortedRolesViewsField extends Roles {
     }
 
     if ($uids) {
-      $roles = user_roles();
+      $roles = Role::loadMultiple();
       asort($roles);
       $result = $this->database->query(
         'SELECT [u].[entity_id] AS [uid], [u].[roles_target_id] AS [rid]

@@ -203,7 +203,7 @@ class TideCoreOperation {
    * Updates files view.
    */
   public function useCustomFilesView() {
-    module_load_include('inc', 'tide_core', 'includes/helpers');
+    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
     $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
     $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
     $storage = \Drupal::entityTypeManager()->getStorage('view');

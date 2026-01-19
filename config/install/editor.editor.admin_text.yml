@@ -80,8 +80,9 @@ settings:
         - '<td align class>'
         - '<p class="quotation__quote">'
     ckeditor5_list:
-      reversed: false
-      startIndex: true
+      properties:
+        reversed: false
+        startIndex: true
     ckeditor5_alignment:
       enabled_alignments:
         - left
