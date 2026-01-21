@@ -439,7 +439,8 @@
     "config": {
         "allow-plugins": {
             "composer/installers": true,
-            "oomphinc/composer-installers-extender": true
+            "oomphinc/composer-installers-extender": true,
+            "drupal/core-composer-scaffold": true
         },
         "audit": {
           "block-insecure": false
