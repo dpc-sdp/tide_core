@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   module:
-    - ckeditor5_embedded_content
     - editor
     - entity_embed
     - linkit
@@ -90,9 +89,3 @@ filters:
     weight: -48
     settings:
       title: true
-  ckeditor5_embedded_content:
-    id: ckeditor5_embedded_content
-    provider: ckeditor5_embedded_content
-    status: true
-    weight: 100
-    settings: {  }

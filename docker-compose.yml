@@ -3,7 +3,6 @@
 # - Using a single file to work in local, CI and production environments.
 # - Local overrides are possible using docker-composer.override.yml file.
 # - Use inline comments starting with ### to have the line removed in CI.
-version: '2.3'
 
 x-bay-image-version:
   &bay-image-version ${BAY_IMAGE_VERSION:-6.x}
