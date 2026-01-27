@@ -458,8 +458,11 @@
             },
            "drupal/redirect": {
                 "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
+            },
+            "drupal/consumers": {
+                "Entity update still required after update to 1.23": "https://www.drupal.org/files/issues/2026-01-27/drupal-consumers-3569150_07.patch"
             }
-        },
+          },
         "installer-paths": {
             "docroot/libraries/{$name}": [
                 "type:drupal-library",
@@ -475,19 +478,7 @@
             "oomphinc/composer-installers-extender": true
         },
         "audit": {
-          "ignore": {
-            "SA-CORE-2025-007": "ignore",
-            "SA-CORE-2025-008": "ignore",
-            "SA-CORE-2025-005": "ignore",
-            "SA-CORE-2025-006": "ignore",
-            "PKSA-d8tb-wwz2-ctxk": "ignore",
-            "PKSA-dh1f-zjm5-qg8y": "ignore",
-            "PKSA-bn52-vyzy-rmnm": "ignore",
-            "PKSA-xj83-g6g8-41vf": "ignore",
-            "SA-CONTRIB-2025-023": "ignore",
-            "SA-CONTRIB-2025-085": "ignore",
-            "PKSA-zwxm-wbtt-zjr5": "ignore"
-          }
+          "block-insecure": false
       }
     }
 }
