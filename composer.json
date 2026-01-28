@@ -126,6 +126,10 @@
         "drupal/search_api_exclude_entity": "^3.0",
         "drupal/default_paragraphs": "^2.0"
     },
+    "require-dev": {
+        "doctrine/instantiator": "~2.0.0",
+        "symfony/type-info": "~7.4.0"
+    },
     "repositories": {
         "drupal": {
             "type": "composer",
