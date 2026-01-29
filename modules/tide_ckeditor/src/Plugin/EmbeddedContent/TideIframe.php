@@ -2,10 +2,10 @@
 
 namespace Drupal\tide_ckeditor\Plugin\EmbeddedContent;
 
-use Drupal\ckeditor5_embedded_content\EmbeddedContentInterface;
-use Drupal\ckeditor5_embedded_content\EmbeddedContentPluginBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\embedded_content\EmbeddedContentInterface;
+use Drupal\embedded_content\EmbeddedContentPluginBase;
 
 /**
  * Plugin iframes.
@@ -17,6 +17,13 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  * )
  */
 class TideIframe extends EmbeddedContentPluginBase implements EmbeddedContentInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isInline(): bool {
+    return FALSE;
+  }
 
   use StringTranslationTrait;
 

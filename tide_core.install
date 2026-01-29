@@ -119,7 +119,7 @@ function tide_core_update_10002() {
  * Add description field to accordion.
  */
 function tide_core_update_10003() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $configs = [
     'field.field.paragraph.accordion.field_paragraph_body' => 'field_config',
   ];

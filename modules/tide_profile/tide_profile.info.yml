@@ -2,7 +2,7 @@ name: Tide Profile
 type: module
 description: 'Provides Profile content type and related configuration. '
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - tide_core:tide_core
   - tide_landing_page:tide_landing_page

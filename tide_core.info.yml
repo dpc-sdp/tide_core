@@ -2,12 +2,11 @@ name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
-core_version_requirement: ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
   - better_exposed_filters:better_exposed_filters
-  - ckeditor5_embedded_content:ckeditor5_embedded_content
   - clamav:clamav
   - config_split:config_split
   - config_update:config_update
@@ -16,7 +15,6 @@ dependencies:
   - drupal:block
   - drupal:block_content
   - drupal:content_moderation
-  - drupal:ckeditor5
   - drupal:datetime_range
   - drupal:dynamic_page_cache
   - drupal:entity_embed
