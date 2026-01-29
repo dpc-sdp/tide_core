@@ -25,6 +25,11 @@ class TideTfaRouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('user.reset.login')) {
       $route->setDefault('_controller', '\Drupal\tide_tfa\Controller\TideTfaUserController::doResetPassLogin');
     }
+    // TFA overview page (User → Security → TFA).
+    if ($route = $collection->get('tfa.overview')) {
+      $route->setDefault('_title', 'Multi-factor authentication');
+      $route->setDefault('_form', '\Drupal\tide_tfa\Form\TideTfaOverviewForm');
+    }
   }
 
 }
