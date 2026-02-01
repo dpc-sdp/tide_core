@@ -145,5 +145,26 @@ class TideTfaOperation {
       user_role_grant_permissions($rid, $permissions);
     }
   }
+  
+  /**
+   * Setup view password.
+   */
+  public static function setupViewPassword() {
+    // Enable view_password module if not already enabled.
+    $module_installer = \Drupal::service('module_installer');
+    if (!$module_installer->isInstalled('view_password')) {
+      $module_installer->install(['view_password']);
+    }
+
+    // Set view_password configuration.
+    $config = \Drupal::configFactory()->getEditable('view_password.settings');
+
+    $form_ids = $config->get('form_ids') ?? [];
+
+    if (!in_array('tfa_setup', $form_ids, TRUE)) {
+      $form_ids[] = 'tfa_setup';
+      $config->set('form_ids', $form_ids)->save();
+    }
+  }
 
 }

@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Implements hook_form_alter().
  */
 function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $current_user = \Drupal::currentUser();
   // [SD-375] Bypass tfa during reset pass for all users.
   if ($form_id == 'tfa_settings_form') {
     if (isset($form['reset_pass_skip_enabled'])) {
@@ -21,6 +22,19 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
     // [SD-294] Change the label of the 'Send' button.
     if (isset($form['actions']['send'])) {
       $form['actions']['send']['#value'] = t('Email me a verification code');
+    }
+  }
+  if ($form_id == 'tfa_setup') {
+    $route_user = \Drupal::routeMatch()->getParameter('user');
+    // If this is NOT "admin altering another user's TFA",
+    // change only the default description.
+    if (
+      $current_user->id() === $route_user->id()
+      && !$current_user->hasPermission('administer tfa for other users')
+    ) {
+      $form['current_pass']['#description'] = t(
+        'The current password is mandatory.'
+      );
     }
   }
 }

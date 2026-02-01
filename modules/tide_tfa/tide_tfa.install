@@ -21,4 +21,15 @@ function tide_tfa_install() {
 
   // Setup TFA role permissions.
   $tideTfaOperation->setupTfaRolePermissions();
+
+  // Setup view password.
+  $tideTfaOperation->setupViewPassword();
+}
+
+/**
+ * Setup view password.
+ */
+function tide_tfa_update_10000() {
+  $tideTfaOperation = new TideTfaOperation();
+  $tideTfaOperation->setupViewPassword();
 }

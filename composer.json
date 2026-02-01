@@ -124,7 +124,8 @@
         "drupal/shield": "^1.8",
         "drupal/media_alias_display": "^2.1",
         "drupal/search_api_exclude_entity": "^3.0",
-        "drupal/default_paragraphs": "^2.0"
+        "drupal/default_paragraphs": "^2.0",
+        "drupal/view_password": "^6.0"
     },
     "repositories": {
         "drupal": {

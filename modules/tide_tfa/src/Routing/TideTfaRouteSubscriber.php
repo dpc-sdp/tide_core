@@ -30,6 +30,10 @@ class TideTfaRouteSubscriber extends RouteSubscriberBase {
       $route->setDefault('_title', 'Multi-factor authentication');
       $route->setDefault('_form', '\Drupal\tide_tfa\Form\TideTfaOverviewForm');
     }
+    // TFA setup page.
+    if ($route = $collection->get('tfa.validation.setup')) {
+      $route->setDefault('_title', 'Multi-factor authentication setup');
+    }
   }
 
 }
