@@ -28,10 +28,16 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
     $params = $form_state->getValues();
     $userData = $this->userData->get('tfa', $params['account']->id(), 'tfa_email_otp');
 
+    $form['email_otp_heading'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'h2',
+      '#value' => $this->t('Email authentication for login'),
+    ];
+
     // [SD-294] Changing the title and description.
     $form['enabled'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Yes, email me a verification code every time I log in'),
+      '#title' => $this->t('I agree to be sent a verification code via email each time I log in.'),
       '#description' => $this->t('Each single-use verification code expires after use, or after 10 minutes if not used.'),
       '#required' => TRUE,
       '#default_value' => $userData['enable'] ?? 0,
