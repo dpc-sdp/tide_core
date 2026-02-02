@@ -37,6 +37,12 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
       );
     }
   }
+  if ($form_id == 'tfa_entry_form') {
+    if (isset($form['code'])) {
+      $form['code']['#title'] = t('Verification code');
+      $form['code']['#description'] = t('The verification code field is mandatory.');
+    }
+  }
 }
 
 /**

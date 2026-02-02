@@ -16,7 +16,7 @@ class TideTfaOverviewForm extends TfaOverviewForm {
     $output['info'] = [
       '#type' => 'markup',
       '#markup' => '<p>' . $this->t('Multi-factor authentication provides 
-       additional security for your account. With multi-factor authentication enabled, 
+       additional security for your account.</br>With multi-factor authentication enabled, 
        you log in to the CMS with a verification code in addition to your username and 
        password.') . '</p>',
     ];
@@ -79,17 +79,15 @@ class TideTfaOverviewForm extends TfaOverviewForm {
       }
 
       if (!empty($user_tfa)) {
+        $status_text = '';
         if ($enabled && !empty($user_tfa['data']['plugins'])) {
           $disable_url = Url::fromRoute('tfa.disable', ['user' => $user->id()]);
           if ($disable_url->access()) {
-            $status_text = $this->t('Status: <strong>TFA enabled</strong>, set
-            @time. <a href=":url">Disable TFA</a>', [
+            $status_text = $this->t('Status: <strong>Multi-factor authentication enabled</strong>, set
+            @time. <a href=":url">Disable Multi-factor authentication</a>', [
               '@time' => $this->dateFormatter->format($user_tfa['saved']),
               ':url' => $disable_url->toString(),
             ]);
-          }
-          else {
-            $status_text = $this->t('Status: Multi-factor authentication enabled');
           }
         }
         else {
@@ -100,13 +98,19 @@ class TideTfaOverviewForm extends TfaOverviewForm {
           '#markup' => '<p>' . $status_text . '</p>',
         ];
       }
+      else {
+        $validation_skipped = $user_tfa['validation_skipped'] ?? 0;
 
-      $output['validation_skip_status'] = [
-        '#type'   => 'markup',
-        '#markup' => '<p>' . $this->t('Authentication setup: @remaining logins remain before multi-factor authentication is required', [
-          '@remaining' => $config->get('validation_skip') - $user_tfa['validation_skipped'],
-        ]) . '</p>',
-      ];
+        $output['validation_skip_status'] = [
+          '#type' => 'markup',
+          '#markup' => '<p>' . $this->t(
+            'Authentication setup: @remaining logins remain before multi-factor authentication is required',
+            [
+              '@remaining' => $config->get('validation_skip') - $validation_skipped,
+            ]
+          ) . '</p>',
+        ];
+      }
     }
     else {
       $output['disabled'] = [

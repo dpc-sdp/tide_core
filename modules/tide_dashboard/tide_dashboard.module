@@ -5,6 +5,11 @@
  * Tide Dashboard.
  */
 
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Routing\RouteMatchInterface;
+
 /**
  * Implements hook_toolbar_alter().
  *
@@ -37,5 +42,29 @@ function tide_dashboard_user_login() {
   $request = \Drupal::service('request_stack')->getCurrentRequest();
   if (($request->query->has('destination')) === FALSE) {
     $request->query->set('destination', '/admin/workbench');
+  }
+}
+
+/**
+ * Implements hook_system_breadcrumb_alter().
+ */
+function tide_dashboard_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+  $links = $breadcrumb->getLinks();
+
+  if (!empty($links)) {
+    // Check if the first link is the Home link.
+    if ($links[0]->getUrl()->isRouted() && $links[0]->getUrl()->getRouteName() === '<front>') {
+      
+      $new_url = Url::fromUserInput('/admin/workbench');
+      $new_link = Link::fromTextAndUrl($links[0]->getText(), $new_url);
+      
+      // Swap the first link to workbench.
+      $links[0] = $new_link;
+      
+      $reflection = new \ReflectionClass($breadcrumb);
+      $property = $reflection->getProperty('links');
+      $property->setAccessible(true);
+      $property->setValue($breadcrumb, $links);
+    }
   }
 }

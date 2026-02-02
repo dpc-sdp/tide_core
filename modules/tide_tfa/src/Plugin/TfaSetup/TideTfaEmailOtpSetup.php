@@ -64,7 +64,7 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
     // [SD-294] Modify the description.
     $description = '';
     if ($params['enabled']) {
-      $description .= $this->t('<p><b>Enabled</b></p>');
+      $description .= $this->t('<p><b>Multi-factor authentication enabled</b></p>');
     }
     $output = [
       'heading' => [
