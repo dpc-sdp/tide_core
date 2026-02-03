@@ -426,9 +426,6 @@
                 "Paragraph with long label name gets cut off -https://www.drupal.org/project/paragraphs/issues/3350521#comment-14984824": "https://www.drupal.org/files/issues/2023-03-27/paragraph-long-label-cut-off-3350521-2.patch",
                 "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
             },
-            "drupal/content_lock": {
-                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
-            },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
             },
