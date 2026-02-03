@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Searchable Content Types'
+vid: searchable_content_types
+description: 'A list of content types that can be assigned to searchable fields'
+weight: 0
+new_revision: false
