@@ -904,7 +904,7 @@ function tide_core_field_widget_complete_form_alter(&$field_widget_complete_form
  * Implements hook_menu_local_tasks_alter().
  */
 function tide_core_menu_local_tasks_alter(&$data, $route_name, &$ref_root) {
-  // Update "View" to "View profile"
+  // Update "View" to "View profile".
   if (isset($data['tabs'][0]['entity.user.canonical'])) {
     $data['tabs'][0]['entity.user.canonical']['#link']['title'] = t('View profile');
   }

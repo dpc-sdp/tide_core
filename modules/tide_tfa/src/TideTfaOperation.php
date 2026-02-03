@@ -145,15 +145,16 @@ class TideTfaOperation {
       user_role_grant_permissions($rid, $permissions);
     }
   }
-  
+
   /**
    * Setup view password.
    */
   public static function setupViewPassword() {
     // Enable view_password module if not already enabled.
-    $module_installer = \Drupal::service('module_installer');
-    if (!$module_installer->isInstalled('view_password')) {
-      $module_installer->install(['view_password']);
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+    if (!$moduleHandler->moduleExists('view_password')) {
+      $moduleInstaller->install(['view_password']);
     }
 
     // Set view_password configuration.

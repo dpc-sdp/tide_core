@@ -2,17 +2,24 @@
 
 namespace Drupal\tide_tfa\Form;
 
-use Drupal\tfa\Form\TfaOverviewForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\tfa\Form\TfaOverviewForm;
 use Drupal\user\UserInterface;
 
+/**
+ * Provides a customised TFA overview form for Tide.
+ *
+ * Extends the core TFA overview form to alter the presentation and behaviour
+ * of multi-factor authentication setup and status within the Tide CMS.
+ */
 class TideTfaOverviewForm extends TfaOverviewForm {
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, UserInterface $user = NULL) {
+    $output = [];
     $output['info'] = [
       '#type' => 'markup',
       '#markup' => '<p>' . $this->t('Multi-factor authentication provides 
@@ -134,4 +141,5 @@ class TideTfaOverviewForm extends TfaOverviewForm {
 
     return $output;
   }
+
 }

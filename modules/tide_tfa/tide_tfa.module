@@ -49,12 +49,12 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
  * Implements hook_menu_local_tasks_alter().
  */
 function tide_tfa_menu_local_tasks_alter(&$data, $route_name, &$ref_root) {
-  // Check if the tfa.overview tab exists in the current render array
+  // Check if the tfa.overview tab exists.
   if (isset($data['tabs'][0]['tfa.overview'])) {
     $data['tabs'][0]['tfa.overview']['#link']['title'] = t('Multi-factor authentication');
   }
 
-  // Check if the tfa.settings tab exists
+  // Check if the tfa.settings tab exists.
   if (isset($data['tabs'][0]['tfa.settings'])) {
     $data['tabs'][0]['tfa.settings']['#link']['title'] = t('Multi-factor authentication settings');
   }
