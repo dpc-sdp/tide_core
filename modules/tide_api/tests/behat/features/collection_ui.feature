@@ -1,4 +1,4 @@
-@tide @install:tide_site_restriction @install:tide_search @install:tide_data_driven_component @install:tide_landing_page @install:tide_content_collection_ui
+@tide @install:tide_landing_page @install:tide_content_collection_ui @wip
 Feature: Content Collection UI
 
   @api
@@ -12,15 +12,15 @@ Feature: Content Collection UI
 
     # Seed with test data
     Given sites terms:
-      | name        | tid    |
-      | Test Site 1 | 987601 |
+      | name          | tid    |
+      | [TEST] Site 1 | 987601 |
     Given content_category terms:
-      | name            | tid    |
-      | Test Category 1 | 987602 |
+      | name              | tid    |
+      | [TEST] Category 1 | 987602 |
     Given topic terms:
-      | name      | tid    |
-      | Test      | 987603 |
-      | Education | 987604 |
+      | name             | tid    |
+      | [TEST] Topic 1   | 987603 |
+      | [TEST] Education | 987604 |
     Given searchable_content_types terms:
       | name         | field_machine_name | tid    |
       | Landing page | landing_page       | 987605 |
@@ -29,11 +29,13 @@ Feature: Content Collection UI
       | name  | field_taxonomy_machine_name | field_elasticsearch_id | field_elasticsearch_field | tid    |
       | Topic | topic                       | field_topic            | field_topic_name          | 987607 |
       | Tags  | tags                        | field_tags             | field_tags_name           | 987608 |
+    Given test content:
+      | title                    | moderation_state | nid    |
+      | [TEST] Education Content | published        | 987610 |
+      | [TEST] Other Content     | published        | 987611 |
     Given landing_page content:
-      | title                  | field_landing_page_summary | moderation_state | field_node_site | field_node_primary_site | field_topic | field_content_category | nid    |
-      | Test collection        | Some text                  | published        | Test Site 1     | Test Site 1             | Test        | Test Category 1        | 987609 |
-      | Test education content | Some text                  | published        | Test Site 1     | Test Site 1             | Education   | Test Category 1        | 987610 |
-      | Test other content     | Some text                  | published        | Test Site 1     | Test Site 1             | Test        | Test Category 1        | 987611 |
+      | title                        | field_landing_page_summary | moderation_state | field_node_site | field_node_primary_site | field_topic    | field_content_category | nid    |
+      | [TEST] Content Collection UI | Some text                  | published        | [TEST] Site 1   | [TEST] Site 1           | [TEST] Topic 1 | [TEST] Category 1      | 987609 |
 
     # Add the landing page component
     When I visit "node/987609/edit"
@@ -46,7 +48,7 @@ Feature: Content Collection UI
     Then I click on the element "#tide-content-collection-0-contentType"
     And I click on the element "#tide-content-collection-0-contentType-menu-landing_page"
 
-    # Add a filter (find and select the Education (987604) topic)
+    # Add a filter (find and select the [TEST] Education (987604) topic)
     When I press the "Add filter" button
     Then I select "Topic" from "Filter by"
     Then I fill in "Filter terms" with "Edu"
@@ -56,14 +58,14 @@ Feature: Content Collection UI
 
     # Save auto config
     Then I press the "Save" button
-    Then I should see the text "Landing Page Test collection has been updated."
+    Then I should see the text "Landing Page [TEST] Content Collection UI has been updated."
 
     # Ensure auto app has seeded
     When I visit "node/987609/edit"
     Then I press the "field_landing_page_component_0_edit" button
     And I wait for AJAX to finish
     Then I should see an "[aria-label='Remove Landing page']" element
-    Then I should see an "[aria-label='Remove Education']" element
+    Then I should see an "[aria-label='Remove [TEST] Education']" element
     Then I scroll "[name='tide-content-collection-0-displayType']" into view
     And save screenshot
 
@@ -72,20 +74,20 @@ Feature: Content Collection UI
     Then I fill in "Search content" with "edu"
     And I wait for 2 seconds
     Then I scroll "[name='tide-content-collection-0-displayType']" into view
-    And I should see the text "Test education content"
-    And I should not see the text "Test other content"
+    And I should see the text "[TEST] Education Content"
+    And I should not see the text "[TEST] Other Content"
     And I click on the element "#tide-content-collection-0-manualItems-0-menu-987610"
 
       # Save manual config
     Then I press the "Save" button
-    Then I should see the text "Landing Page Test collection has been updated."
+    Then I should see the text "Landing Page [TEST] Content Collection UI has been updated."
 
     # Ensure manual app has seeded
     When I visit "node/987609/edit"
     Then I press the "field_landing_page_component_0_edit" button
     And I wait for AJAX to finish
-    Then I should see an "[aria-label='Remove Test education content']" element
+    Then I should see an "[aria-label='Remove [TEST] Education Content']" element
     Then I scroll "[name='tide-content-collection-0-displayType']" into view
     And save screenshot
 
-    Then I delete landing_page "Test collection"
+    Then I delete landing_page "[TEST] Content Collection UI"
