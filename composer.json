@@ -6,6 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "cweagans/composer-patches": "~2.0.0",
         "jquery/timepicker": "1.14.0",
         "jquery/textcounter": "0.9.1",
         "drupal/address": "^2.0",
@@ -45,7 +46,7 @@
         "drupal/media_entity_audio": "^3.1",
         "drupal/metatag": "^2.0",
         "drupal/override_node_options": "^2.7",
-        "drupal/paragraphs": "^1.15",
+        "drupal/paragraphs": "^1.19",
         "drupal/password_policy": "^4.0",
         "drupal/password_strength": "^2.0@beta",
         "drupal/pathauto": "^1.11",
@@ -359,6 +360,20 @@
     },
     "extra": {
         "patches": {
+          "drupal/core": {
+            "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16166063": "https://www.drupal.org/files/issues/2025-06-26/xss-refactor-filter-attributes-10.5.x-3109650-85.patch",
+            "Add a 'machine_name' widget for string field types with a UniqueField constraint - https://www.drupal.org/project/drupal/issues/2685749#comment-15361693": "https://www.drupal.org/files/issues/2025-10-02/machine-name-widget-2685749-149.patch",
+            "Paragraphs fields cause overflow of content forms in Claro-https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
+            "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
+            "Querying with NULL values results in warning mb_strtolower() - https://www.drupal.org/project/drupal/issues/3302838": "https://www.drupal.org/files/issues/2022-08-23/3302838-13.patch",
+            "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-16107432": "https://www.drupal.org/files/issues/2025-05-14/menu-filter.patch",
+            "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
+            "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch",
+            "Revisions on relations are not loaded correctly resulting in wrong data in includes - https://www.drupal.org/project/drupal/issues/3088239#comment-15519702": "https://git.drupalcode.org/project/drupal/-/merge_requests/6055/diffs.patch"
+          },
+          "drupal/token": {
+            "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2026-01-19/token_body_with_summary-2924873-22.patch"
+          },
             "drupal/admin_audit_trail": {
                 "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16351387": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
             },
@@ -398,8 +413,7 @@
                 "False positive mappings defined at top level error triggered unconditionally in ElasticSearchDatasetPipeline constructor - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3541059#comment-16226097": "https://www.drupal.org/files/issues/2025-08-13/3541059-fix-elasticsearch-mapping-warning-in-constructor.patch"
             },
             "drupal/paragraphs": {
-                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
-                "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
+                "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch"
             },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
@@ -416,12 +430,6 @@
             "drupal/tfa": {
                 "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15468410": "https://www.drupal.org/files/issues/2024-02-29/DD-1756-force-tfa-user-setup-3223327-38.patch",
                 "TfaLoginController enforces opaque form expiration - https://www.drupal.org/project/tfa/issues/3390083#comment-15753259": "https://www.drupal.org/files/issues/2024-09-02/3390083-3.patch"
-            },
-            "drupal/elasticsearch_connector": {
-                "Allow dashes in index name": "https://gist.githubusercontent.com/nicksantamaria/95677ffa87a9e1433bfc27c3ebdefd35/raw/68d6eb055150d1e99ad6f0da49d68a6a4c2d6348/elasticsearch_connector-dashed-index.patch"
-            },
-           "drupal/select2": {
-                "remove Drag to re-order entity_type description": "https://www.drupal.org/files/issues/2023-09-08/select2-remove-drag-to-reorder-description-3178287-11.patch"
             },
            "drupal/redirect": {
                 "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
@@ -440,7 +448,8 @@
         "allow-plugins": {
             "composer/installers": true,
             "oomphinc/composer-installers-extender": true,
-            "drupal/core-composer-scaffold": true
+            "drupal/core-composer-scaffold": true,
+            "tbachert/spi": true
         },
         "audit": {
           "block-insecure": false
