@@ -159,15 +159,15 @@ class TideTfaOperation {
 
     // Set view_password configuration.
     $config = \Drupal::configFactory()->getEditable('view_password.settings');
-
-    $form_ids = $config->get('form_ids');
-    $form_ids = is_array($form_ids) ? $form_ids : (array) $form_ids;
-
-    $form_ids = array_filter($form_ids);
+    $form_ids_string = $config->get('form_ids') ?? '';
+    $form_ids = array_filter(array_map('trim', explode(',', $form_ids_string)));
 
     if (!in_array('tfa_setup', $form_ids, TRUE)) {
       $form_ids[] = 'tfa_setup';
-      $config->set('form_ids', $form_ids)->save();
+      // Convert back to a comma-separated string.
+      // view_password only accept string for the schema.
+      $new_value = implode(',', $form_ids);
+      $config->set('form_ids', $new_value)->save();
     }
   }
 
