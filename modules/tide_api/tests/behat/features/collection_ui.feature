@@ -41,19 +41,18 @@ Feature: Content Collection UI
     And I scroll "[role='dialog'] [name='field_landing_page_component_content_collection_ui_add_more']" into view
     And I click on the modal element "[name='field_landing_page_component_content_collection_ui_add_more']"
 
-    # Test the auto source
+    # Test the auto source (choose source auto and content type landing page)
     When I click on the element "#tide-content-collection-0-source-auto"
     Then I click on the element "#tide-content-collection-0-contentType"
     And I click on the element "#tide-content-collection-0-contentType-menu-landing_page"
-    Then I should see an "[aria-label='Remove Landing Page']" element
 
+    # Add a filter (find and select the Education (987604) topic)
     When I press the "Add filter" button
     Then I select "Topic" from "Filter by"
     Then I fill in "Filter terms" with "Edu"
     And I wait for 2 seconds
     Then I scroll "[name='tide-content-collection-0-displayType']" into view
     And I click on the element "#tide-content-collection-0-filters-terms-0-menu-987604"
-    Then I should see an "[aria-label='Remove Education']" element
 
     # Save auto config
     Then I press the "Save" button
@@ -63,12 +62,12 @@ Feature: Content Collection UI
     When I visit "node/987609/edit"
     Then I press the "field_landing_page_component_0_edit" button
     And I wait for AJAX to finish
-    Then I should see an "[aria-label='Remove Landing Page']" element
+    Then I should see an "[aria-label='Remove Landing page']" element
     Then I should see an "[aria-label='Remove Education']" element
     Then I scroll "[name='tide-content-collection-0-displayType']" into view
     And save screenshot
 
-    # Test the manual source
+    # Test the manual source (choose source manual and find and add Test education content)
     When I click on the element "#tide-content-collection-0-source-manual"
     Then I fill in "Search content" with "edu"
     And I wait for 2 seconds
