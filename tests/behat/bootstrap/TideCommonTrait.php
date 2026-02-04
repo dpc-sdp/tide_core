@@ -133,7 +133,8 @@ JS;
   /**
    * @Then /^I click on the element "([^"]*)"$/
    *
-   * @param string $selector A CSS selector
+   * @param string $selector
+   *   A CSS selector.
    */
   public function clickOnElement(string $selector) {
     $page = $this->getSession()->getPage();
@@ -147,7 +148,8 @@ JS;
   /**
    * @Then /^I click on the modal element "([^"]*)"$/
    *
-   * @param string $selector A CSS selector
+   * @param string $selector
+   *   A CSS selector.
    */
   public function clickOnModalElement(string $selector) {
     $page = $this->getSession()->getPage();

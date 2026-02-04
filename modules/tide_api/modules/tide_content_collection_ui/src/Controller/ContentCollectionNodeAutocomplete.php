@@ -88,7 +88,8 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
         if ($allowed_site_ids) {
           $query_builder->condition('field_node_site.target_id', $allowed_site_ids, 'IN');
         }
-      } catch (\Exception $exception) {
+      }
+      catch (\Exception $exception) {
         watchdog_exception('tide_content_collection_ui', $exception);
       }
 
