@@ -131,6 +131,34 @@ JS;
   }
 
   /**
+   * @Then /^I click on the element "([^"]*)"$/
+   *
+   * @param string $selector A CSS selector
+   */
+  public function clickOnElement(string $selector) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('css', $selector);
+    if ($element === NULL) {
+      throw new \Exception('The element "' . $selector . '" was not found.');
+    }
+    $element->click();
+  }
+
+  /**
+   * @Then /^I click on the modal element "([^"]*)"$/
+   *
+   * @param string $selector A CSS selector
+   */
+  public function clickOnModalElement(string $selector) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('css', "[role='dialog'] {$selector}");
+    if ($element === NULL) {
+      throw new \Exception('The element "' . $selector . '" was not found in modal.');
+    }
+    $element->click();
+  }
+
+  /**
    * @Then /^I click on the detail "([^"]*)"$/
    * @Then /^I click on the detail with text "([^"]*)"$/
    *

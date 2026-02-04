@@ -80,11 +80,16 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
 
       // Scope the query to only nodes on the current users site.
       $user = User::load(\Drupal::currentUser()->id());
-      $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
-      $allowed_site_ids = $site_restriction_helper->getUserSites($user);
 
-      if ($allowed_site_ids) {
-        $query_builder->condition('field_node_site.target_id', $allowed_site_ids, 'IN');
+      try {
+        $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+        $allowed_site_ids = $site_restriction_helper->getUserSites($user);
+
+        if ($allowed_site_ids) {
+          $query_builder->condition('field_node_site.target_id', $allowed_site_ids, 'IN');
+        }
+      } catch (\Exception $exception) {
+        watchdog_exception('tide_content_collection_ui', $exception);
       }
 
       $ids = $query_builder->execute();
