@@ -36,6 +36,9 @@ function _tide_dashboard_workbench_content_title_callback() {
   return t('Dashboard');
 }
 
+/**
+ * Implements hook_user_login().
+ */
 function tide_dashboard_user_login(UserInterface $account) {
   $request = \Drupal::service('request_stack')->getCurrentRequest();
   $uid = $account->id();
@@ -45,7 +48,7 @@ function tide_dashboard_user_login(UserInterface $account) {
     // Check which roles are forced to use tfa.
     $tfa_config = \Drupal::config('tfa.settings');
     $required_roles = $tfa_config->get('required_roles') ?: [];
-    
+
     // Check if the current user has any of the required roles.
     $user_roles = $account->getRoles();
     $is_required = (bool) array_intersect($required_roles, $user_roles);
@@ -54,7 +57,7 @@ function tide_dashboard_user_login(UserInterface $account) {
     if ($is_required) {
       $user_data = \Drupal::service('user.data');
       $tfa_settings = $user_data->get('tfa', $uid, 'tfa_user_settings');
-      // check 'status' AND ensure the 'plugins' array is not empty.
+      // Check 'status' AND ensure the 'plugins' array is not empty.
       $has_active_plugins = !empty($tfa_settings['data']['plugins']);
       $is_enabled = !empty($tfa_settings['status']) && $tfa_settings['status'] == 1;
 
