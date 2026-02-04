@@ -28,4 +28,5 @@ ahoy cli "drush en tide_site -y"
 ahoy cli "./vendor/bin/behat --strict --colors modules/tide_site"
 ahoy cli "drush en tide_ui_restriction -y"
 ahoy cli "./vendor/bin/behat --strict --colors modules/tide_ui_restriction"
-
+ahoy cli "drush en tide_data_driven_component tide_search tide_content_collection_ui -y"
+ahoy cli "./vendor/bin/behat --strict --colors modules/tide_api/modules/tide_content_collection_ui"

@@ -7,7 +7,7 @@ default:
       tags: "~@suggest&&~@skipped"
   suites:
     default:
-      paths: 
+      paths:
         - '%paths.base%/tests/behat/features'
         - '%paths.base%/modules/tide_event/tests/behat/features'
         - '%paths.base%/modules/tide_news/tests/behat/features'
@@ -16,6 +16,7 @@ default:
         - '%paths.base%/modules/tide_landing_page/tests/behat/features'
         - '%paths.base%/modules/tide_ui_restriction/tests/behat/features'
         - '%paths.base%/modules/tide_api/tests/behat/features'
+        - '%paths.base%/modules/tide_api/modules/tide_content_collection_ui/tests/behat/features'
         - '%paths.base%/modules/tide_media/tests/behat/features'
         - '%paths.base%/modules/tide_webform/tests/behat/features'
         - '%paths.base%/modules/tide_publication/tests/behat/features'
