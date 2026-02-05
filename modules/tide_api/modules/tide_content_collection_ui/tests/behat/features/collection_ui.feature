@@ -1,4 +1,4 @@
-@tide @install:tide_site @install:tide_site_restriction @install:tide_search @install:tide_data_driven_component @install:tide_landing_page @install:tide_content_collection_ui
+@tide
 Feature: Content Collection UI
 
   @api
