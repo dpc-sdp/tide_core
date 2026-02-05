@@ -7,7 +7,7 @@ default:
       tags: "~@suggest&&~@skipped"
   suites:
     default:
-      paths: 
+      paths:
         - '%paths.base%/tests/behat/features'
         - '%paths.base%/modules/tide_event/tests/behat/features'
         - '%paths.base%/modules/tide_news/tests/behat/features'
