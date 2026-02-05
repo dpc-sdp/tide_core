@@ -59,3 +59,49 @@ function tide_tfa_menu_local_tasks_alter(&$data, $route_name, &$ref_root) {
     $data['tabs'][0]['tfa.settings']['#link']['title'] = t('Multi-factor authentication settings');
   }
 }
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function tide_tfa_preprocess_status_messages(&$variables) {
+  if (!$variables && !isset($variables['message_list'])) {
+    return;
+  }
+
+  // Custom messages to replace TFA messages.
+  if (isset($variables['message_list']['error'])) {
+    foreach ($variables['message_list']['error'] as $key => $message) {
+      $message_string = (string) $message;
+
+      // Convert the error message into warning message.
+      if (strpos($message_string, 'You are required to') !== false && 
+          strpos($message_string, 'setup two-factor authentication') !== false && 
+          strpos($message_string, 'unable to login') !== false) {
+        
+        if (!isset($variables['message_list']['warning'])) {
+          $variables['message_list']['warning'] = [];
+        }
+
+        $variables['message_list']['warning'][] = t('You are required to set up multi-factor authentication. Select the link below to enable multi-factor authentication via email.');
+
+        // Remove the original message from the error list.
+        unset($variables['message_list']['error'][$key]);
+      }
+    }
+
+    // Clean up: If the error list is now empty, remove the error key entirely.
+    if (empty($variables['message_list']['error'])) {
+      unset($variables['message_list']['error']);
+    }
+  }
+  if (isset($variables['message_list']['status'])) {
+    foreach ($variables['message_list']['status'] as $key => $message) {
+      if (strpos((string) $message, 'TFA setup complete.') !== FALSE) {
+        $variables['message_list']['status'][$key] = t("Multi-factor authentication setup is complete. <a href='/admin/workbench'>Go to the dashboard</a>.");
+      }
+      if (strpos((string) $message, 'TFA has been disabled.') !== FALSE) {
+        $variables['message_list']['status'][$key] = t("Multi-factor authentication has been disabled. <a href='/admin/workbench'>Go to the dashboard</a>.");
+      }
+    }
+  }
+}

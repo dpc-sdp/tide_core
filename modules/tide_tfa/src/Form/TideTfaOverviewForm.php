@@ -85,8 +85,8 @@ class TideTfaOverviewForm extends TfaOverviewForm {
         }
       }
 
+      // Moved it inside to show the status if only TFA is enabled.
       if (!empty($user_tfa)) {
-        $status_text = '';
         if ($enabled && !empty($user_tfa['data']['plugins'])) {
           $disable_url = Url::fromRoute('tfa.disable', ['user' => $user->id()]);
           if ($disable_url->access()) {
@@ -95,6 +95,9 @@ class TideTfaOverviewForm extends TfaOverviewForm {
               '@time' => $this->dateFormatter->format($user_tfa['saved']),
               ':url' => $disable_url->toString(),
             ]);
+          }
+          else {
+            $status_text = $this->t('Status: Multi-factor authentication enabled');
           }
         }
         else {
@@ -105,7 +108,8 @@ class TideTfaOverviewForm extends TfaOverviewForm {
           '#markup' => '<p>' . $status_text . '</p>',
         ];
       }
-      else {
+
+      if (!$config->get('forced')) {
         $validation_skipped = $user_tfa['validation_skipped'] ?? 0;
 
         $output['validation_skip_status'] = [
