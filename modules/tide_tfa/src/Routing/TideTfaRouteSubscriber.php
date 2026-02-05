@@ -4,6 +4,7 @@ namespace Drupal\tide_tfa\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
+use Drupal\Core\Routing\RoutingEvents;
 
 /**
  * Listens to the dynamic route events.
@@ -25,6 +26,29 @@ class TideTfaRouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('user.reset.login')) {
       $route->setDefault('_controller', '\Drupal\tide_tfa\Controller\TideTfaUserController::doResetPassLogin');
     }
+    // TFA overview page (User → Security → TFA).
+    if ($route = $collection->get('tfa.overview')) {
+      $route->setDefault('_title', 'Multi-factor authentication');
+      $route->setDefault('_form', '\Drupal\tide_tfa\Form\TideTfaOverviewForm');
+    }
+    // TFA setup page.
+    if ($route = $collection->get('tfa.validation.setup')) {
+      $route->setDefault('_title', 'Multi-factor authentication setup');
+    }
+    // TFA disable page.
+    if ($route = $collection->get('tfa.disable')) {
+      $route->setDefault('_title', 'Disable multi-factor authentication');
+    }
+  }
+
+  /**
+   * Attempt to be the last subscriber to allow our routes to take priority.
+   */
+  public static function getSubscribedEvents(): array {
+    $events = parent::getSubscribedEvents();
+    // Use lower priority than tfa module.
+    $events[RoutingEvents::ALTER] = ['onAlterRoutes', (PHP_INT_MIN - 1)];
+    return $events;
   }
 
 }

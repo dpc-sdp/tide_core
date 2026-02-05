@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Implements hook_form_alter().
  */
 function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $current_user = \Drupal::currentUser();
   // [SD-375] Bypass tfa during reset pass for all users.
   if ($form_id == 'tfa_settings_form') {
     if (isset($form['reset_pass_skip_enabled'])) {
@@ -21,6 +22,86 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
     // [SD-294] Change the label of the 'Send' button.
     if (isset($form['actions']['send'])) {
       $form['actions']['send']['#value'] = t('Email me a verification code');
+    }
+  }
+  if ($form_id == 'tfa_setup') {
+    $route_user = \Drupal::routeMatch()->getParameter('user');
+    // If this is NOT "admin altering another user's TFA",
+    // change only the default description.
+    if (
+      $current_user->id() === $route_user->id()
+      && !$current_user->hasPermission('administer tfa for other users')
+    ) {
+      $form['current_pass']['#description'] = t(
+        'The current password is mandatory.'
+      );
+    }
+  }
+  if ($form_id == 'tfa_entry_form') {
+    if (isset($form['code'])) {
+      $form['code']['#title'] = t('Verification code');
+      $form['code']['#description'] = t('The verification code field is mandatory.');
+    }
+  }
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function tide_tfa_menu_local_tasks_alter(&$data, $route_name, &$ref_root) {
+  // Check if the tfa.overview tab exists.
+  if (isset($data['tabs'][0]['tfa.overview'])) {
+    $data['tabs'][0]['tfa.overview']['#link']['title'] = t('Multi-factor authentication');
+  }
+
+  // Check if the tfa.settings tab exists.
+  if (isset($data['tabs'][0]['tfa.settings'])) {
+    $data['tabs'][0]['tfa.settings']['#link']['title'] = t('Multi-factor authentication settings');
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function tide_tfa_preprocess_status_messages(&$variables) {
+  if (!$variables && !isset($variables['message_list'])) {
+    return;
+  }
+
+  // Custom messages to replace TFA messages.
+  if (isset($variables['message_list']['error'])) {
+    foreach ($variables['message_list']['error'] as $key => $message) {
+      $message_string = (string) $message;
+
+      // Convert the error message into warning message.
+      if (strpos($message_string, 'You are required to') !== false && 
+          strpos($message_string, 'setup two-factor authentication') !== false && 
+          strpos($message_string, 'unable to login') !== false) {
+        
+        if (!isset($variables['message_list']['warning'])) {
+          $variables['message_list']['warning'] = [];
+        }
+
+        $variables['message_list']['warning'][] = t('You are required to set up multi-factor authentication. Select the link below to enable multi-factor authentication via email.');
+
+        // Remove the original message from the error list.
+        unset($variables['message_list']['error'][$key]);
+      }
+    }
+
+    // Clean up: If the error list is now empty, remove the error key entirely.
+    if (empty($variables['message_list']['error'])) {
+      unset($variables['message_list']['error']);
+    }
+  }
+  if (isset($variables['message_list']['status'])) {
+    foreach ($variables['message_list']['status'] as $key => $message) {
+      if (strpos((string) $message, 'TFA setup complete.') !== FALSE) {
+        $variables['message_list']['status'][$key] = t("Multi-factor authentication setup is complete. <a href='/admin/workbench'>Go to the dashboard</a>.");
+      }
+      if (strpos((string) $message, 'TFA has been disabled.') !== FALSE) {
+        $variables['message_list']['status'][$key] = t("Multi-factor authentication has been disabled. <a href='/admin/workbench'>Go to the dashboard</a>.");
+      }
     }
   }
 }
