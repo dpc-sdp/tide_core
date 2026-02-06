@@ -89,7 +89,7 @@
         "drupal/block_inactive_users": "^2.1",
         "drupal/user_expire": "^2.1",
         "drupal/field_permissions": "^1.2",
-        "lesstif/php-jira-rest-client": "2.6.0",
+        "lesstif/php-jira-rest-client": "^4.0.0",
         "drupal/jira_rest": "^4.0@beta",
         "drupal/yaml_content": "dev-3435777-automated-drupal-11 as 1.0.0-alpha9",
         "respect/validation": "2.3.1",
