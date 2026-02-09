@@ -74,10 +74,10 @@ function tide_tfa_preprocess_status_messages(&$variables) {
       $message_string = (string) $message;
 
       // Convert the error message into warning message.
-      if (strpos($message_string, 'You are required to') !== false && 
-          strpos($message_string, 'setup two-factor authentication') !== false && 
-          strpos($message_string, 'unable to login') !== false) {
-        
+      if (strpos($message_string, 'You are required to') !== FALSE &&
+          strpos($message_string, 'setup two-factor authentication') !== FALSE &&
+          strpos($message_string, 'unable to login') !== FALSE) {
+
         if (!isset($variables['message_list']['warning'])) {
           $variables['message_list']['warning'] = [];
         }

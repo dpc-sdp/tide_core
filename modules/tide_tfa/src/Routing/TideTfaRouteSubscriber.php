@@ -3,8 +3,8 @@
 namespace Drupal\tide_tfa\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
-use Symfony\Component\Routing\RouteCollection;
 use Drupal\Core\Routing\RoutingEvents;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Listens to the dynamic route events.
