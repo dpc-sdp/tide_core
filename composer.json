@@ -6,7 +6,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "cweagans/composer-patches": "~2.0.0",
         "jquery/timepicker": "1.14.0",
         "jquery/textcounter": "0.9.1",
         "drupal/address": "^2.0",
