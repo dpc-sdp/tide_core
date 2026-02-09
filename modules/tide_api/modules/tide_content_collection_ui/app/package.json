@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@dpc-sdp/tide-content-collection-ui": "0.2.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.0"
+  }
+}
