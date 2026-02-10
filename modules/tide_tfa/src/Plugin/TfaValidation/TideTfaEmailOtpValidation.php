@@ -71,16 +71,16 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
     $form['actions']['rsend_link'] = [
       '#type' => 'submit',
       '#value' => $this->t('Send me a new verification code.'),
-      '#prefix' => '<div id="tfa-email-send-button">' . $this->t('Didn’t receive an email or need a new code? '),
+      '#prefix' => '<div id="tfa-email-send-button">' . $this->t('Didn’t receive an email or need a new code?'),
       '#suffix' => '</div>',
       '#attributes' => [
         'style' => 'background:none; border:none; padding:0; color:#003CC5; text-decoration:underline; cursor:pointer; font-size: inherit; font-weight:400;',
       ],
       '#limit_validation_errors' => [['']],
       '#ajax' => [
-          'callback' => [$this, 'updateButtonValue'],
-          'event' => 'click',
-          'wrapper' => 'send-button-wrapper',
+        'callback' => [$this, 'updateButtonValue'],
+        'event' => 'click',
+        'wrapper' => 'send-button-wrapper',
       ],
     ];
 
@@ -139,7 +139,7 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
    *   The current state of the form.
    *
    * @return \Drupal\Core\Ajax\AjaxResponse
-   *   The AJAX response to send back to the browser, containing the updated 
+   *   The AJAX response to send back to the browser, containing the updated
    *   form elements and any status messages.
    */
   public function updateButtonValue(array &$form, FormStateInterface $form_state) {
@@ -150,7 +150,7 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
     \Drupal::messenger()->deleteAll();
 
     // Wipe the message area in the browser.
-    // By sending an empty string to the #tfa-email-message-area, 
+    // By sending an empty string to the #tfa-email-message-area,
     // Remove any existing HTML (the green or red boxes).
     $response->addCommand(new HtmlCommand('#tfa-email-message-area', ''));
 
