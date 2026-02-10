@@ -35,6 +35,10 @@ class TideTfaRouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('tfa.validation.setup')) {
       $route->setDefault('_title', 'Multi-factor authentication setup');
     }
+    // TFA Entry page.
+    if ($route = $collection->get('tfa.entry')) {
+      $route->setDefault('_title', 'Multi-factor authentication');
+    }
     // TFA disable page.
     if ($route = $collection->get('tfa.disable')) {
       $route->setDefault('_title', 'Disable multi-factor authentication');

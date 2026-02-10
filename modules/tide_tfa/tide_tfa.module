@@ -18,12 +18,6 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
       $form['reset_pass_skip_enabled']['#description'] = t('Allow TFA to be bypassed during password reset by the authenticated user.');
     }
   }
-  if ($form_id == 'tfa_entry_form') {
-    // [SD-294] Change the label of the 'Send' button.
-    if (isset($form['actions']['send'])) {
-      $form['actions']['send']['#value'] = t('Email me a verification code');
-    }
-  }
   if ($form_id == 'tfa_setup') {
     $route_user = \Drupal::routeMatch()->getParameter('user');
     // If this is NOT "admin altering another user's TFA",
@@ -35,12 +29,6 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
       $form['current_pass']['#description'] = t(
         'The current password is mandatory.'
       );
-    }
-  }
-  if ($form_id == 'tfa_entry_form') {
-    if (isset($form['code'])) {
-      $form['code']['#title'] = t('Verification code');
-      $form['code']['#description'] = t('The verification code field is mandatory.');
     }
   }
 }
@@ -87,6 +75,10 @@ function tide_tfa_preprocess_status_messages(&$variables) {
         // Remove the original message from the error list.
         unset($variables['message_list']['error'][$key]);
       }
+      // When wrong code entered, this error shows up.
+      if (strpos($message_string, 'Verification code') !== FALSE) {
+        $variables['message_list']['error'][$key] = t('We couldn’t verify your code. Enter a valid verification code or request a new one below.');
+      }
     }
 
     // Clean up: If the error list is now empty, remove the error key entirely.
@@ -96,12 +88,20 @@ function tide_tfa_preprocess_status_messages(&$variables) {
   }
   if (isset($variables['message_list']['status'])) {
     foreach ($variables['message_list']['status'] as $key => $message) {
-      if (strpos((string) $message, 'TFA setup complete.') !== FALSE) {
+      $message_string = (string) $message;
+      if (strpos($message_string, 'The authentication code has been sent') !== FALSE) {
+        unset($variables['message_list']['status'][$key]);
+        continue;
+      }
+      if (strpos($message_string, 'TFA setup complete.') !== FALSE) {
         $variables['message_list']['status'][$key] = t("Multi-factor authentication setup is complete. <a href='/admin/workbench'>Go to the dashboard</a>.");
       }
-      if (strpos((string) $message, 'TFA has been disabled.') !== FALSE) {
+      if (strpos($message_string, 'TFA has been disabled.') !== FALSE) {
         $variables['message_list']['status'][$key] = t("Multi-factor authentication has been disabled. <a href='/admin/workbench'>Go to the dashboard</a>.");
       }
+    }
+    if (empty($variables['message_list']['status'])) {
+      unset($variables['message_list']['status']);
     }
   }
 }
