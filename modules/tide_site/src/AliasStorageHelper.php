@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\path_alias\PathAliasInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class alias storage helper.
@@ -15,8 +15,18 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
  * @package Drupal\tide_site
  */
 class AliasStorageHelper {
-  use ContainerAwareTrait;
 
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
   const ALIAS_SCHEMA_MAX_LENGTH = 255;
 
   /**

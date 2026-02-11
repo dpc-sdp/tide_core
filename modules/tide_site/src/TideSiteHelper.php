@@ -9,7 +9,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Psr\Container\ContainerInterface;
 
 /**
  * Provides helper functions for tide_site.
@@ -17,7 +17,18 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
  * @package Drupal\tide_site
  */
 class TideSiteHelper {
-  use ContainerAwareTrait;
+
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
 
   /**
    * List of allowed entity types.

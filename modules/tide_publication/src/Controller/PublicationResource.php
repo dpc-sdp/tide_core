@@ -17,9 +17,9 @@ use Drupal\jsonapi\JsonApiResource\Link;
 use Drupal\jsonapi\JsonApiResource\LinkCollection;
 use Drupal\jsonapi\Routing\Routes;
 use Drupal\taxonomy\TermInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class PublicationResource Controller.
@@ -27,7 +27,20 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Drupal\tide_publication\Controller
  */
 class PublicationResource extends EntityResource {
-  use ContainerAwareTrait;
+
+
+
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
 
   /**
    * The NestedSetStorageFactory service.

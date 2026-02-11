@@ -12,7 +12,6 @@ use Drupal\jsonapi\Routing\Routes;
 use Drupal\jsonapi_extras\ResourceType\ConfigurableResourceType;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site\TideSiteHelper;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class TideApiRequestEventSubscriber.
@@ -27,8 +27,19 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * @package Drupal\tide_api\EventSubscriber
  */
 class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
-  use ContainerAwareTrait;
   use StringTranslationTrait;
+
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
 
   /**
    * The module handler.
