@@ -110,7 +110,7 @@ class TideTfaOperation {
     $mail_settings = [
       'tfa_enabled_configuration' => [
         'subject' => 'Your Single Digtial Presence CMS account now has multi-factor authentication',
-        'body' => "Hi [user:display-name],\r\n\r\nThanks for enabling multi-factor authentication on your Single Digital Presence CMS account.\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nRead more about multi-factor authentication https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507\r\n\r\nKind regards,\r\nSingle Digital Presence team"
+        'body' => "Hi [user:display-name],\r\n\r\nThanks for enabling multi-factor authentication on your Single Digital Presence CMS account.\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nRead more about multi-factor authentication https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507\r\n\r\nKind regards,\r\nSingle Digital Presence team",
       ],
       'tfa_disabled_configuration' => [
         'subject' => 'Your Single Digital Presence CMS account no longer has multi-factor authentication',
