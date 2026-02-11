@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_machine_name
+    - taxonomy.vocabulary.searchable_content_types
+id: taxonomy_term.searchable_content_types.field_machine_name
+field_name: field_machine_name
+entity_type: taxonomy_term
+bundle: searchable_content_types
+label: 'Machine Name'
+description: 'The machine name for the content type for example "Landing page" would be "landing_page"'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

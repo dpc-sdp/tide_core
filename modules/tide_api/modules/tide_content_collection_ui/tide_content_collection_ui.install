@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Install file for Tide Content Collection UI.
+ */
+
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_install().
+ */
+function tide_content_collection_ui_install() {
+  $moduleHandler = \Drupal::service('module_handler');
+  if ($moduleHandler->moduleExists('tide_landing_page')) {
+    $field_name = 'field_landing_page_component';
+    $new_component = 'content_collection_ui';
+    $field_config = FieldConfig::loadByName('node', 'landing_page', $field_name);
+    if ($field_config) {
+      // Get the current handler settings.
+      $handler_settings = $field_config->getSetting('handler_settings');
+
+      // Ensure 'target_bundles' exists in handler settings.
+      if (isset($handler_settings['target_bundles'])) {
+        // Add the new component if it does not already exist.
+        if (!array_key_exists($new_component, $handler_settings['target_bundles'])) {
+          $handler_settings['target_bundles'][$new_component] = $new_component;
+
+          // Update the field configuration with the new handler settings.
+          $field_config->setSetting('handler_settings', $handler_settings);
+          $field_config->save();
+        }
+      }
+    }
+  }
+}
