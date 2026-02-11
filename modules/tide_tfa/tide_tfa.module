@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\user\UserInterface;
 
 /**
  * Implements hook_form_alter().
@@ -102,6 +103,37 @@ function tide_tfa_preprocess_status_messages(&$variables) {
     }
     if (empty($variables['message_list']['status'])) {
       unset($variables['message_list']['status']);
+    }
+  }
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function tide_tfa_user_login(UserInterface $account) {
+  $request = \Drupal::service('request_stack')->getCurrentRequest();
+  $uid = $account->id();
+
+  // Check which roles are forced to use tfa.
+  $tfa_config = \Drupal::config('tfa.settings');
+  $required_roles = $tfa_config->get('required_roles') ?: [];
+
+  // Check if the current user has any of the required roles.
+  $user_roles = $account->getRoles();
+  $is_required = (bool) array_intersect($required_roles, $user_roles);
+
+  // If they ARE required to have it, check if they've actually set it up.
+  if ($tfa_config->get('enabled') && $is_required) {
+    $user_data = \Drupal::service('user.data');
+    $tfa_settings = $user_data->get('tfa', $uid, 'tfa_user_settings');
+    // Check 'status' AND ensure the 'plugins' array is not empty.
+    $has_active_plugins = !empty($tfa_settings['data']['plugins']);
+    $is_enabled = !empty($tfa_settings['status']) && $tfa_settings['status'] == 1;
+
+    // If user don't have active plugins, they haven't finished setup.
+    if (!$is_enabled || !$has_active_plugins) {
+      $request->query->set('destination', "/user/$uid/security/tfa");
+      return;
     }
   }
 }
