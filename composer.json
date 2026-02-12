@@ -432,7 +432,10 @@
             },
            "drupal/redirect": {
                 "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
-            }
+            },
+          "drupal/simple_oauth": {
+            "5.2.x -> 6.0.0 upgrade error. - https://www.drupal.org/project/simple_oauth/issues/3512143#comment-16467241": "https://www.drupal.org/files/issues/2026-02-12/simple_oauth-3512143-23.patch"
+          }
         },
         "installer-paths": {
             "docroot/libraries/{$name}": [
