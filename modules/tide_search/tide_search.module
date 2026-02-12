@@ -558,7 +558,7 @@ function _tide_search_search_api_sync(MediaInterface $entity, $action) {
     }
 
     $item_id = $entity->id();
-  
+
     // Determine if the item meets the indexing criteria.
     $is_published = $entity->isPublished();
     $field_exists = !empty($indexing_field) && $entity->hasField($indexing_field);

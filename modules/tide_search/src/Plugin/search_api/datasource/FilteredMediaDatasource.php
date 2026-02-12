@@ -53,7 +53,7 @@ class FilteredMediaDatasource extends DatasourcePluginBase implements PluginForm
     // Dynamically find all Boolean fields on Media.
     $field_manager = \Drupal::service('entity_field.manager');
     $storage_definitions = $field_manager->getFieldStorageDefinitions('media');
-    
+
     $field_options = [];
     foreach ($storage_definitions as $field_name => $storage_definition) {
       // Only boolean fields.
@@ -139,7 +139,11 @@ class FilteredMediaDatasource extends DatasourcePluginBase implements PluginForm
       $ids = $query->execute()->fetchCol();
 
       if (empty($ids) && $page === 0) {
-        \Drupal::logger('tide_search')->notice('Filtered Media datasource returned 0 items for bundles: %bundles using field: %field.',['%bundles' => implode(', ', $config['bundles']), '%field' => $config['indexing_field']]);
+        \Drupal::logger('tide_search')->notice('Filtered Media datasource returned 0 items for bundles: %bundles using field: %field.',
+          [
+                     '%bundles' => implode(', ', $config['bundles']), 
+                     '%field' => $config['indexing_field'],
+                   ]);
       }
 
       return $ids ? array_values(array_map('strval', $ids)) : NULL;
@@ -171,7 +175,7 @@ class FilteredMediaDatasource extends DatasourcePluginBase implements PluginForm
       if (count($ids) > 20) {
         \Drupal::entityTypeManager()->getStorage('media')->resetCache($ids);
       }
-      return $items;  
+      return $items;
     }
     catch (\Exception $e) {
       \Drupal::logger('tide_search')->error(
