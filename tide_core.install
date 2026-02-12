@@ -1219,3 +1219,35 @@ function tide_core_update_10031() {
   }
   $approver_role->save();
 }
+
+/**
+ * Updates ckeditor template configs.
+ */
+function tide_core_update_11001() {
+  $templates      = [
+    'ckeditor_templates.ckeditor_templates.blockquote',
+    'ckeditor_templates.ckeditor_templates.primary_button',
+    'ckeditor_templates.ckeditor_templates.secondary_button',
+  ];
+  $config_factory = \Drupal::configFactory();
+  foreach ($templates as $template) {
+    $config = $config_factory->getEditable($template);
+    // Update 'code' from a plain string to a structured array with 'value' and 'format'.
+    $old_code = $config->get('code');
+    //  dsm($old_code);
+    if (is_string($old_code)) {
+      $html = str_replace(["\r\n", "\r", "\n"], '', $old_code);
+      $html = preg_replace('/>\s+</', '><', $html);
+      $html = trim($html);
+      $config->set('code', [
+        'value'  => $html,
+        'format' => 'rich_text',
+      ]);
+    }
+    // Add thumb_alternative if not set.
+    if ($config->get('thumb_alternative') === NULL) {
+      $config->set('thumb_alternative', '');
+    }
+    $config->save(TRUE);
+  }
+}
