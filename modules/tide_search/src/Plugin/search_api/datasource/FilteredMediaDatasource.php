@@ -141,9 +141,9 @@ class FilteredMediaDatasource extends DatasourcePluginBase implements PluginForm
       if (empty($ids) && $page === 0) {
         \Drupal::logger('tide_search')->notice('Filtered Media datasource returned 0 items for bundles: %bundles using field: %field.',
           [
-                     '%bundles' => implode(', ', $config['bundles']), 
-                     '%field' => $config['indexing_field'],
-                   ]);
+            '%bundles' => implode(', ', $config['bundles']),
+            '%field' => $config['indexing_field'],
+          ]);
       }
 
       return $ids ? array_values(array_map('strval', $ids)) : NULL;
