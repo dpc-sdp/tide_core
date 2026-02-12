@@ -539,7 +539,7 @@ function tide_search_media_delete(MediaInterface $entity) {
 function _tide_search_search_api_sync(MediaInterface $entity, $action) {
   // Load all search indexes.
   $indexes = Index::loadMultiple();
-  
+
   foreach ($indexes as $index) {
     if (!$index->isValidDatasource('filtered_media')) {
       continue;
@@ -548,7 +548,7 @@ function _tide_search_search_api_sync(MediaInterface $entity, $action) {
     // Get the datasource instance and its specific config.
     $datasource = $index->getDatasource('filtered_media');
     $config = $datasource->getConfiguration();
-    
+
     $target_bundles = $config['bundles'] ?? [];
     $indexing_field = $config['indexing_field'] ?? '';
 
@@ -558,22 +558,23 @@ function _tide_search_search_api_sync(MediaInterface $entity, $action) {
     }
 
     $item_id = $entity->id();
-    
+  
     // Determine if the item meets the indexing criteria.
     $is_published = $entity->isPublished();
     $field_exists = !empty($indexing_field) && $entity->hasField($indexing_field);
     $is_field_checked = $field_exists && (bool) $entity->get($indexing_field)->value;
 
     // Logic for tracking changes.
-    // If deleted OR it no longer meets criteria, remove it from the index tracker.
+    // If deleted OR it no longer meets criteria.
+    // Remove from index tracker.
     if ($action === 'delete' || !$is_published || !$is_field_checked) {
       $index->trackItemsDeleted('filtered_media', [$item_id]);
-    } 
+    }
     // Otherwise, mark as inserted or updated.
     else {
       if ($action === 'insert') {
         $index->trackItemsInserted('filtered_media', [$item_id]);
-      } 
+      }
       elseif ($action === 'update') {
         $index->trackItemsUpdated('filtered_media', [$item_id]);
       }
