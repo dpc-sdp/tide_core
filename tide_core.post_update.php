@@ -36,3 +36,21 @@ function tide_core_post_update_fix_status_page() {
     }
   }
 }
+
+/**
+ * Fixes mismatched entity and/or field definitions" error.
+ */
+function tide_core_post_update_fixes_mismatched_entity_01() {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $entity_type_manager->clearCachedDefinitions();
+  $entity_type_ids = [];
+  $change_summary = \Drupal::service('entity.definition_update_manager')->getChangeSummary();
+  if (!empty($change_summary)) {
+    foreach ($change_summary as $entity_type_id => $change_list) {
+      $entity_type = $entity_type_manager->getDefinition($entity_type_id);
+      \Drupal::entityDefinitionUpdateManager()->installEntityType($entity_type);
+      $entity_type_ids[] = $entity_type_id;
+    }
+    Drush::output()->writeln('Installed/Updated the entity type(s): ' . implode(', ', $entity_type_ids));
+  }
+}
