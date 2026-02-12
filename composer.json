@@ -437,6 +437,9 @@
             },
           "drupal/simple_oauth": {
             "5.2.x -> 6.0.0 upgrade error. - https://www.drupal.org/project/simple_oauth/issues/3512143#comment-16467241": "https://www.drupal.org/files/issues/2026-02-12/simple_oauth-3512143-23.patch"
+          },
+          "drupal/content_lock": {
+            "Fatal error 'Truncated incorrect DOUBLE value' on MySQL 8 when deleting config entities": "https://www.drupal.org/files/issues/2026-02-12/content_lock-3571174-3.patch"
           }
         },
         "installer-paths": {
