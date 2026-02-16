@@ -109,7 +109,8 @@ class TideTfaOverviewForm extends TfaOverviewForm {
         ];
       }
 
-      if (!$config->get('forced')) {
+      // Only show the skipping status if TFA is NOT enabled.
+      if (!$config->get('forced') && !$enabled) {
         $validation_skipped = $user_tfa['validation_skipped'] ?? 0;
 
         $output['validation_skip_status'] = [

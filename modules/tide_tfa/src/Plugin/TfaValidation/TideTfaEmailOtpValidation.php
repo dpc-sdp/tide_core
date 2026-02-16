@@ -2,9 +2,11 @@
 
 namespace Drupal\tide_tfa\Plugin\TfaValidation;
 
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\tfa_email_otp\Plugin\TfaValidation\TfaEmailOtpValidation;
 
@@ -40,6 +42,11 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
       '#suffix' => '</div>',
     ];
 
+    $form['send_message_wrapper'] = [
+      '#type' => 'container',
+      '#attributes' => ['id' => 'send-button-wrapper'],
+    ];
+
     // Used in Ajax call back.
     // To hide the emepty error box.
     // This makes sure to not load the whole form.
@@ -71,16 +78,17 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
     $form['actions']['rsend_link'] = [
       '#type' => 'submit',
       '#value' => $this->t('Send me a new verification code.'),
-      '#prefix' => '<div id="tfa-email-send-button">' . $this->t('Didn’t receive an email or need a new code?'),
+      '#prefix' => '<div id="tfa-email-send-button">' . $this->t('Didn’t receive an email or need a new code?&nbsp;'),
       '#suffix' => '</div>',
       '#attributes' => [
-        'style' => 'background:none; border:none; padding:0; color:#003CC5; text-decoration:underline; cursor:pointer; font-size: inherit; font-weight:400;',
+        'style' => 'background:none; border:none; padding:0; color:#003CC5; text-decoration:underline; cursor:pointer; box-shadow:none; font-size: inherit; font-weight:400;',
       ],
       '#limit_validation_errors' => [['']],
       '#ajax' => [
         'callback' => [$this, 'updateButtonValue'],
         'event' => 'click',
         'wrapper' => 'send-button-wrapper',
+        'progress' => ['type' => 'throbber', 'message' => $this->t('Sending...')],
       ],
     ];
 
@@ -156,11 +164,51 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
 
     $response->addCommand(new InvokeCommand('#tfa-email-heading-wrapper', 'addClass', ['hidden']));
 
+    $message_output = $this->buildIdentityConfirmationMessage();
+    $response->addCommand(new ReplaceCommand('#send-button-wrapper', $message_output));
+
     // Update the buttons as before.
     $response->addCommand(new HtmlCommand('#tfa-email-verify-button', $form['actions']['login']));
     $response->addCommand(new HtmlCommand('#tfa-email-send-button', $form['actions']['rsend_link']));
 
     return $response;
+  }
+
+  /**
+   * Helper to build the custom TFA identity confirmation message.
+   *
+   * @return array
+   * A render array containing the markup.
+   */
+  private function buildIdentityConfirmationMessage(): array {
+    $module_handler = \Drupal::service('module_handler');
+    $path = $module_handler->getModule('tide_tfa')->getPath();
+    $icon_url = base_path() . $path . '/icons/info–icon.png';
+
+    // Build the HTML string manually.
+    // So the tags does not get stripped out.
+    $html = '<div id="send-button-wrapper">';
+    $html .= '  <div class="messages messages--status" role="contentinfo" style="border-left: 6px solid #3371FF; background-image: none !important;">';
+    
+    // Header with custom icon
+    $html .= '<div class="messages__header">';
+    $html .= '  <span style="background: #FFFFFF url(' . $icon_url . ') no-repeat center; ' .
+            'background-size: 21px; width: 20px; height: 20px; border-radius: 10px; ' .
+            'display: inline-block; margin-right: 20px;"></span>';
+    $html .= '  <strong">' . $this->t('Confirm your identity') . '</strong>';
+    $html .= '</div>';
+
+    // Content
+    $html .= '    <div class="messages__content"">';
+    $html .=        $this->t('You have requested a new verification code. Enter the 8-digit verification code that was sent to your registered email.');
+    $html .= '    </div>';
+    
+    $html .= '  </div>';
+    $html .= '</div>';
+
+    return [
+      '#markup' => Markup::create($html),
+    ];
   }
 
 }

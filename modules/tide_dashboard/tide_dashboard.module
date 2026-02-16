@@ -49,6 +49,10 @@ function tide_dashboard_user_login() {
  * Implements hook_system_breadcrumb_alter().
  */
 function tide_dashboard_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+  if (\Drupal::currentUser()->isAnonymous()) {
+    return;
+  }
+
   $links = $breadcrumb->getLinks();
 
   if (!empty($links)) {
