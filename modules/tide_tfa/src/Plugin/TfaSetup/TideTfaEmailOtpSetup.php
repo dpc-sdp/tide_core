@@ -28,10 +28,16 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
     $params = $form_state->getValues();
     $userData = $this->userData->get('tfa', $params['account']->id(), 'tfa_email_otp');
 
+    $form['email_otp_heading'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'h2',
+      '#value' => $this->t('Email authentication for login'),
+    ];
+
     // [SD-294] Changing the title and description.
     $form['enabled'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Yes, email me a verification code every time I log in'),
+      '#title' => $this->t('I agree to be sent a verification code via email each time I log in.'),
       '#description' => $this->t('Each single-use verification code expires after use, or after 10 minutes if not used.'),
       '#required' => TRUE,
       '#default_value' => $userData['enable'] ?? 0,
@@ -58,7 +64,7 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
     // [SD-294] Modify the description.
     $description = '';
     if ($params['enabled']) {
-      $description .= $this->t('<p><b>Enabled</b></p>');
+      $description .= $this->t('<p><b>Multi-factor authentication enabled</b></p>');
     }
     $output = [
       'heading' => [
@@ -73,16 +79,16 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
         '#value' => $description,
       ],
       'link' => [
-        '#theme' => 'links',
+        '#type' => 'link',
         '#access' => !$params['enabled'],
-        '#links' => [
-          'admin' => [
-            'title' => $this->t('Enable two-factor authentication via email'),
-            'url' => Url::fromRoute('tfa.validation.setup', [
-              'user' => $params['account']->id(),
-              'method' => $params['plugin_id'],
-            ]),
-          ],
+        '#title' => $this->t('Enable multi-factor authentication via email'),
+        '#url' => Url::fromRoute('tfa.validation.setup', [
+          'user' => $params['account']->id(),
+          'method' => $params['plugin_id'],
+        ]),
+        '#attributes' => [
+          'class' => ['enable-tfa-email-plugin-link'],
+          'style' => 'margin-left: 10px;',
         ],
       ],
     ];

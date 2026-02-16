@@ -102,19 +102,19 @@ class TideTfaOperation {
       'tfa_email_otp' => [
         'code_validity_period' => '600',
         'email_setting' => [
-          'subject' => 'Single Digtial Presence CMS two-factor authentication code',
-          'body' => 'Hi [user:display-name],\r\n\r\nYour two-factor authentication code is: [code]\r\n\r\nThis code is valid for [length] minutes. \r\n\r\nThis code will expire when you have logged in.\r\n\r\nFrom the SDP team\r\n\r\nRead more about 2FA: https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507',
+          'subject' => 'Single Digital Presence CMS multi-factor authentication code',
+          'body' => "Hi [user:display-name],\r\n\r\nYour verification code is\r\n\r\n[code]\r\n\r\nThis code will expire in [length] minutes, and can't be reused after you have logged in.\r\n\r\nIf you did not initiate this request, please contact the Single Digital Presence support team immediately.\r\n\r\nKind regards,\r\nSingle Digital Presence team",
         ],
       ],
     ];
     $mail_settings = [
       'tfa_enabled_configuration' => [
-        'subject' => 'Your Single Digtial Presence CMS account now has two-factor authentication',
-        'body' => "[user:display-name],\r\n\r\nThanks for configuring two-factor authentication on your Single Digital Presence account!\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nIf you ever lose the device you configured, you should act quickly to delete its association with this account.\r\n\r\nFrom the SDP team\r\n\r\nRead more about 2FA: https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507",
+        'subject' => 'Your Single Digtial Presence CMS account now has multi-factor authentication',
+        'body' => "Hi [user:display-name],\r\n\r\nThanks for enabling multi-factor authentication on your Single Digital Presence CMS account.\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nRead more about multi-factor authentication https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507\r\n\r\nKind regards,\r\nSingle Digital Presence team",
       ],
       'tfa_disabled_configuration' => [
-        'subject' => 'Your Single Digtial Presence CMS account now has two-factor authentication',
-        'body' => "[user:display-name],\r\n\r\nThanks for configuring two-factor authentication on your Single Digital Presence account!\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nIf you ever lose the device you configured, you should act quickly to delete its association with this account.\r\n\r\nFrom the SDP team\r\n\r\nRead more about 2FA: https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507",
+        'subject' => 'Your Single Digital Presence CMS account no longer has multi-factor authentication',
+        'body' => "Hi [user:display-name],\r\n\r\nMulti-factor authentication has been disabled on your Single Digital Presence CMS user account.\r\n\r\nIf you did not take this action, please contact your site administrator immediately.\r\n\r\nRead more about multi-factor authentication https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507\r\n\r\nKind regards,\r\nSingle Digital Presence team",
       ],
     ];
 
@@ -144,6 +144,21 @@ class TideTfaOperation {
     foreach ($roles_permissions as $rid => $permissions) {
       user_role_grant_permissions($rid, $permissions);
     }
+  }
+
+  /**
+   * Setup view password.
+   */
+  public static function setupViewPassword() {
+    $moduleHandler = \Drupal::service('module_handler');
+    $moduleInstaller = \Drupal::service('module_installer');
+
+    if (!$moduleHandler->moduleExists('view_password')) {
+      $moduleInstaller->install(['view_password']);
+    }
+
+    $config = \Drupal::configFactory()->getEditable('view_password.settings');
+    $config->set('form_ids', (string) 'tfa_setup')->save();
   }
 
 }

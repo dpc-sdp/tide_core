@@ -21,4 +21,46 @@ function tide_tfa_install() {
 
   // Setup TFA role permissions.
   $tideTfaOperation->setupTfaRolePermissions();
+
+  // Setup view password.
+  $tideTfaOperation->setupViewPassword();
+}
+
+/**
+ * Setup view password.
+ */
+function tide_tfa_update_10000() {
+  $tideTfaOperation = new TideTfaOperation();
+  $tideTfaOperation->setupViewPassword();
+}
+
+/**
+ * Update TFA email settings for SDP.
+ */
+function tide_tfa_update_10001() {
+  $config = \Drupal::configFactory()->getEditable('tfa.settings');
+
+  $validation_settings = $config->get('validation_plugin_settings');
+
+  if (isset($validation_settings['tfa_email_otp'])) {
+    $validation_settings['tfa_email_otp']['email_setting'] = [
+      'subject' => 'Single Digital Presence CMS multi-factor authentication code',
+      'body' => "Hi [user:display-name],\r\n\r\nYour verification code is\r\n\r\n[code]\r\n\r\nThis code will expire in [length] minutes, and can't be reused after you have logged in.\r\n\r\nIf you did not initiate this request, please contact the Single Digital Presence support team immediately.\r\n\r\nKind regards,\r\nSingle Digital Presence team",
+    ];
+    $config->set('validation_plugin_settings', $validation_settings);
+  }
+
+  $mail_settings = [
+    'tfa_enabled_configuration' => [
+      'subject' => 'Your Single Digtial Presence CMS account now has multi-factor authentication',
+      'body' => "Hi [user:display-name],\r\n\r\nThanks for enabling multi-factor authentication on your Single Digital Presence CMS account.\r\n\r\nThis additional level of security will help to ensure that only you are able to log in to your account.\r\n\r\nRead more about multi-factor authentication https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507\r\n\r\nKind regards,\r\nSingle Digital Presence team",
+    ],
+    'tfa_disabled_configuration' => [
+      'subject' => 'Your Single Digital Presence CMS account no longer has multi-factor authentication',
+      'body' => "Hi [user:display-name],\r\n\r\nMulti-factor authentication has been disabled on your Single Digital Presence CMS user account.\r\n\r\nIf you did not take this action, please contact your site administrator immediately.\r\n\r\nRead more about multi-factor authentication https://digital-vic.atlassian.net/servicedesk/customer/article/2439479507\r\n\r\nKind regards,\r\nSingle Digital Presence team",
+    ],
+  ];
+
+  $config->set('mail', $mail_settings);
+  $config->save();
 }
