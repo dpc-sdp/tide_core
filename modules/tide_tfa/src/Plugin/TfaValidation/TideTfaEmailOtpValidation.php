@@ -2,12 +2,12 @@
 
 namespace Drupal\tide_tfa\Plugin\TfaValidation;
 
-use Drupal\Core\Render\Markup;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
 use Drupal\tfa_email_otp\Plugin\TfaValidation\TfaEmailOtpValidation;
 
 /**
@@ -178,7 +178,7 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
    * Helper to build the custom TFA identity confirmation message.
    *
    * @return array
-   * A render array containing the markup.
+   *   A render array containing the markup.
    */
   private function buildIdentityConfirmationMessage(): array {
     $module_handler = \Drupal::service('module_handler');
@@ -189,8 +189,8 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
     // So the tags does not get stripped out.
     $html = '<div id="send-button-wrapper">';
     $html .= '  <div class="messages messages--status" role="contentinfo" style="border-left: 6px solid #3371FF; background-image: none !important;">';
-    
-    // Header with custom icon
+
+    // Header with custom icon.
     $html .= '<div class="messages__header">';
     $html .= '  <span style="background: #FFFFFF url(' . $icon_url . ') no-repeat center; ' .
             'background-size: 21px; width: 20px; height: 20px; border-radius: 10px; ' .
@@ -198,11 +198,11 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
     $html .= '  <strong">' . $this->t('Confirm your identity') . '</strong>';
     $html .= '</div>';
 
-    // Content
+    // Content.
     $html .= '    <div class="messages__content"">';
-    $html .=        $this->t('You have requested a new verification code. Enter the 8-digit verification code that was sent to your registered email.');
+    $html .= $this->t('You have requested a new verification code. Enter the 8-digit verification code that was sent to your registered email.');
     $html .= '    </div>';
-    
+
     $html .= '  </div>';
     $html .= '</div>';
 
