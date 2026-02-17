@@ -2,8 +2,8 @@
 
 namespace Drupal\tide_webform\Plugin\WebformElement;
 
-use Drupal\webform\Plugin\WebformElementBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\webform\Plugin\WebformElementBase;
 
 /**
  * Provides a 'webform_json_element' element.
@@ -49,14 +49,19 @@ class WebformJsonElement extends WebformElementBase {
    * Form element validation handler for the JSON payload.
    *
    * @param array $element
-   * The render element being validated.
+   *   The render element being validated.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   * The current state of the form.
+   *   The current state of the form.
    */
   public static function validateJson(array &$element, FormStateInterface $form_state) {
     $value = $element['#value'];
     if (!empty($value) && is_null(json_decode($value))) {
-      $form_state->setError($element, t('Invalid JSON: ' . json_last_error_msg()));
+      $form_state->setError(
+        $element,
+        t('Invalid JSON: @error', [
+          '@error' => json_last_error_msg(),
+        ])
+      );
     }
   }
 
