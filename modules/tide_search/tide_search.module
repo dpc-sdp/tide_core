@@ -537,16 +537,17 @@ function tide_search_media_delete(MediaInterface $entity) {
  * Helper function to notify Search API indexes about Media changes.
  */
 function _tide_search_search_api_sync(MediaInterface $entity, $action) {
+  $datasource_id = 'filtered_media';
   // Load all search indexes.
   $indexes = Index::loadMultiple();
 
   foreach ($indexes as $index) {
-    if (!$index->isValidDatasource('filtered_media')) {
+    if (!$index->isValidDatasource($datasource_id)) {
       continue;
     }
 
     // Get the datasource instance and its specific config.
-    $datasource = $index->getDatasource('filtered_media');
+    $datasource = $index->getDatasource($datasource_id);
     $config = $datasource->getConfiguration();
 
     $target_bundles = $config['bundles'] ?? [];
@@ -568,16 +569,11 @@ function _tide_search_search_api_sync(MediaInterface $entity, $action) {
     // If deleted OR it no longer meets criteria.
     // Remove from index tracker.
     if ($action === 'delete' || !$is_published || !$is_field_checked) {
-      $index->trackItemsDeleted('filtered_media', [$item_id]);
+      $index->trackItemsDeleted($datasource_id, [$item_id]);
     }
     // Otherwise, mark as inserted or updated.
     else {
-      if ($action === 'insert') {
-        $index->trackItemsInserted('filtered_media', [$item_id]);
-      }
-      elseif ($action === 'update') {
-        $index->trackItemsUpdated('filtered_media', [$item_id]);
-      }
+      $index->trackItemsInserted($datasource_id, [$item_id]);
     }
   }
 }
