@@ -617,15 +617,11 @@ function tide_core_node_access_records(NodeInterface $node) {
  * Implements hook_node_grants().
  */
 function tide_core_node_grants(AccountInterface $account, $op) {
-  if ($op === 'view') {
-    $view_unpublished_content_roles = array_keys(user_roles(TRUE, 'view any unpublished content'));
-    $account_roles = $account->getRoles();
-    if (!empty(array_intersect($account_roles, $view_unpublished_content_roles))) {
-      $grants = [];
-      $grants['tide_core'][] = 1;
+  if ($op === 'view' && $account->hasPermission('view any unpublished content')) {
+    $grants = [];
+    $grants['tide_core'][] = 1;
 
-      return $grants;
-    }
+    return $grants;
   }
   return [];
 }
