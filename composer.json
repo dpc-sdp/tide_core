@@ -419,6 +419,9 @@
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
             },
+            "drupal/views_data_export": {
+                "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296#comment-16456090": "https://www.drupal.org/files/issues/2026-02-05/views_data_export-3173296-45.patch"
+            },
             "drupal/jsonapi_extras": {
                 "Make max value of page[limit] configurable per entity/bundle - https://www.drupal.org/project/jsonapi_extras/issues/2884292#comment-14794882": "https://www.drupal.org/files/issues/2022-11-21/max_page_limit_configuration-2884292-33.patch"
             },
@@ -431,6 +434,9 @@
             "drupal/tfa": {
                 "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15468410": "https://www.drupal.org/files/issues/2024-02-29/DD-1756-force-tfa-user-setup-3223327-38.patch",
                 "TfaLoginController enforces opaque form expiration - https://www.drupal.org/project/tfa/issues/3390083#comment-15753259": "https://www.drupal.org/files/issues/2024-09-02/3390083-3.patch"
+            },
+            "drupal/elasticsearch_connector": {
+                "Allow dashes in index name": "https://gist.githubusercontent.com/vincent-gao/f2ba31f6b1dfa51874136621f3625fc7/raw/28079f32294cb3fd239d4c6417ac97dc46531fea/elasticsearch_connector-dashed-index.patch"
             },
            "drupal/redirect": {
                 "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
