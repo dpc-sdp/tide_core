@@ -7,10 +7,10 @@ use Drupal\jsonapi\Controller\EntityResource;
 use Drupal\jsonapi\ResourceType\ResourceType;
 use Drupal\node\NodeInterface;
 use Drupal\tide_share_link\Entity\ShareLinkTokenInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Psr\Container\ContainerInterface;
 
 /**
  * Resource controller for Share Link Token.

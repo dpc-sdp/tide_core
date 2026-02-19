@@ -6,8 +6,8 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\path_alias\AliasManager as CoreAliasManager;
-use Drupal\path_alias\AliasRepositoryInterface;
 use Drupal\path_alias\AliasPrefixListInterface;
+use Drupal\path_alias\AliasRepositoryInterface;
 
 /**
  * Class alias manager.

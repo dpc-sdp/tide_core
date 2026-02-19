@@ -2,8 +2,8 @@
 
 namespace Drupal\tide_core\Plugin\views\field;
 
-use Drupal\user\Plugin\views\field\Roles;
 use Drupal\user\Entity\Role;
+use Drupal\user\Plugin\views\field\Roles;
 
 /**
  * A handler to provide a list of roles sorted alphabetically.

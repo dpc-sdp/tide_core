@@ -8,9 +8,9 @@ use Drupal\tide_api\Event\GetRouteEvent;
 use Drupal\tide_api\TideApiEvents;
 use Drupal\tide_api\TideApiHelper;
 use Drupal\tide_site\TideSiteHelper;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Psr\Container\ContainerInterface;
 
 /**
  * Class get route subscriber for tide_site.

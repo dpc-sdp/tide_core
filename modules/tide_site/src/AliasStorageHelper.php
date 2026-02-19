@@ -27,6 +27,7 @@ class AliasStorageHelper {
   public function setContainer(ContainerInterface $container): void {
     $this->container = $container;
   }
+
   const ALIAS_SCHEMA_MAX_LENGTH = 255;
 
   /**
@@ -128,7 +129,7 @@ class AliasStorageHelper {
    * @return string[]
    *   The list of aliases, keyed by site ID.
    */
-  public function getAllSiteAliases(PathAliasInterface $path, NodeInterface $node = NULL) {
+  public function getAllSiteAliases(PathAliasInterface $path, ?NodeInterface $node = NULL) {
     $aliases = [];
     if (!$node) {
       $node = $this->getNodeFromPathEntity($path);
@@ -158,7 +159,7 @@ class AliasStorageHelper {
    * @param int[] $site_ids
    *   The list of site to create alias (optional).
    */
-  public function createSiteAliases(PathAliasInterface $path, NodeInterface $node = NULL, array $site_ids = []) {
+  public function createSiteAliases(PathAliasInterface $path, ?NodeInterface $node = NULL, array $site_ids = []) {
     if (!$node) {
       $node = $this->getNodeFromPathEntity($path);
     }
