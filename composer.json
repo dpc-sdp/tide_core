@@ -450,6 +450,9 @@
       },
       "drupal/content_lock": {
         "Fatal error 'Truncated incorrect DOUBLE value' on MySQL 8 when deleting config entities": "https://www.drupal.org/files/issues/2026-02-12/content_lock-3571174-3.patch"
+      },
+      "drupal/stage_file_proxy": {
+        "Image style derivatives broken for filenames with multiple dots - https://www.drupal.org/project/stage_file_proxy/issues/3574729#comment-16478435": "https://www.drupal.org/files/issues/2026-02-20/stage_file_proxy-3574729-2.patch"
       }
     },
     "installer-paths": {
