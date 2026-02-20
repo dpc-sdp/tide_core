@@ -8,7 +8,7 @@ use Drupal\tide_api\Event\GetRouteEvent;
 use Drupal\tide_api\TideApiEvents;
 use Drupal\tide_api\TideApiHelper;
 use Drupal\tide_site\TideSiteHelper;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,8 +18,19 @@ use Symfony\Component\HttpFoundation\Response;
  * @package Drupal\tide_site\EventSubscriber
  */
 class TideSiteGetRouteSubscriber implements EventSubscriberInterface {
-  use ContainerAwareTrait;
   use StringTranslationTrait;
+
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
 
   /**
    * Tide Site Helper.

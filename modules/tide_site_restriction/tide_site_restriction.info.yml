@@ -2,7 +2,7 @@ name: Tide Site Restriction
 type: module
 description: 'Provides user restriction by Sites.'
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - tide_core:tide_core
   - tide_core:tide_site

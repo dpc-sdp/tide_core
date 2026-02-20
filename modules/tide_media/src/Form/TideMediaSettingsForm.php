@@ -4,6 +4,7 @@ namespace Drupal\tide_media\Form;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
@@ -33,8 +34,8 @@ class TideMediaSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, CacheBackendInterface $discovery_cache, LanguageManagerInterface $language_manager) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typed_config_manager, CacheBackendInterface $discovery_cache, LanguageManagerInterface $language_manager) {
+    parent::__construct($config_factory, $typed_config_manager);
     $this->cacheDiscovery = $discovery_cache;
     $this->languageManager = $language_manager;
   }
@@ -45,6 +46,7 @@ class TideMediaSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
+      $container->get('config.typed'),
       $container->get('cache.discovery'),
       $container->get('language_manager')
     );
