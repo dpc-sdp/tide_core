@@ -46,7 +46,16 @@ function tide_dashboard_user_login() {
 }
 
 /**
- * Implements hook_system_breadcrumb_alter().
+ * Alters the system breadcrumb for authenticated users.
+ *
+ * Replaces the default "Home" breadcrumb link (which normally points to
+ * the <front> route) with a link to '/admin/workbench' for logged-in users.
+ *
+ * This ensures that administrators and editors navigating within the
+ * backend are directed back to the Workbench dashboard instead of the
+ * public homepage when using breadcrumb navigation.
+ *
+ * Anonymous users are excluded from this alteration.
  */
 function tide_dashboard_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
   if (\Drupal::currentUser()->isAnonymous()) {
