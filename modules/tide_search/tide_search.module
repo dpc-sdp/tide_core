@@ -8,6 +8,8 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\media\MediaInterface;
+use Drupal\search_api\Entity\Index;
 use Drupal\search_api\IndexInterface;
 
 /**
@@ -508,4 +510,70 @@ function tide_search_theme_suggestions_node_add_list(array $variables) {
   }
 
   return $suggestions;
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function tide_search_media_insert(MediaInterface $entity) {
+  _tide_search_search_api_sync($entity, 'insert');
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function tide_search_media_update(MediaInterface $entity) {
+  _tide_search_search_api_sync($entity, 'update');
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function tide_search_media_delete(MediaInterface $entity) {
+  _tide_search_search_api_sync($entity, 'delete');
+}
+
+/**
+ * Helper function to notify Search API indexes about Media changes.
+ */
+function _tide_search_search_api_sync(MediaInterface $entity, $action) {
+  $datasource_id = 'filtered_media';
+  // Load all search indexes.
+  $indexes = Index::loadMultiple();
+
+  foreach ($indexes as $index) {
+    if (!$index->isValidDatasource($datasource_id)) {
+      continue;
+    }
+
+    // Get the datasource instance and its specific config.
+    $datasource = $index->getDatasource($datasource_id);
+    $config = $datasource->getConfiguration();
+
+    $target_bundles = $config['bundles'] ?? [];
+    $indexing_field = $config['indexing_field'] ?? '';
+
+    // Only proceed if this Media entity belongs.
+    if (!in_array($entity->bundle(), $target_bundles)) {
+      continue;
+    }
+
+    $item_id = $entity->id();
+
+    // Determine if the item meets the indexing criteria.
+    $is_published = $entity->isPublished();
+    $field_exists = !empty($indexing_field) && $entity->hasField($indexing_field);
+    $is_field_checked = $field_exists && (bool) $entity->get($indexing_field)->value;
+
+    // Logic for tracking changes.
+    // If deleted OR it no longer meets criteria.
+    // Remove from index tracker.
+    if ($action === 'delete' || !$is_published || !$is_field_checked) {
+      $index->trackItemsDeleted($datasource_id, [$item_id]);
+    }
+    // Otherwise, mark as inserted or updated.
+    else {
+      $index->trackItemsInserted($datasource_id, [$item_id]);
+    }
+  }
 }
