@@ -88,7 +88,6 @@ class TideTfaEmailOtpSetup extends TfaEmailOtpSetup {
         ]),
         '#attributes' => [
           'class' => ['enable-tfa-email-plugin-link'],
-          'style' => 'margin-left: 10px;',
         ],
       ],
     ];

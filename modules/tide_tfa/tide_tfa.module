@@ -28,7 +28,7 @@ function tide_tfa_form_alter(&$form, FormStateInterface $form_state, $form_id) {
       && !$current_user->hasPermission('administer tfa for other users')
     ) {
       $form['current_pass']['#description'] = t(
-        'The current password is mandatory.'
+        'The current password field is mandatory.'
       );
     }
   }

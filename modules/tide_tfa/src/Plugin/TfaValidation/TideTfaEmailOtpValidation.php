@@ -195,7 +195,7 @@ class TideTfaEmailOtpValidation extends TfaEmailOtpValidation {
     $html .= '  <span style="background: #FFFFFF url(' . $icon_url . ') no-repeat center; ' .
             'background-size: 21px; width: 20px; height: 20px; border-radius: 10px; ' .
             'display: inline-block; margin-right: 20px;"></span>';
-    $html .= '  <strong">' . $this->t('Confirm your identity') . '</strong>';
+    $html .= '  <strong>' . $this->t('Confirm your identity') . '</strong>';
     $html .= '</div>';
 
     // Content.

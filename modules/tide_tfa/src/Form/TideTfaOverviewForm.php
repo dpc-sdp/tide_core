@@ -96,9 +96,6 @@ class TideTfaOverviewForm extends TfaOverviewForm {
               ':url' => $disable_url->toString(),
             ]);
           }
-          else {
-            $status_text = $this->t('Status: Multi-factor authentication enabled');
-          }
         }
         else {
           $status_text = $this->t('Status: Multi-factor authentication disabled');
