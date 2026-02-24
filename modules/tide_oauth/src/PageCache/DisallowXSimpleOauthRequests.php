@@ -21,7 +21,7 @@ class DisallowXSimpleOauthRequests extends DisallowSimpleOauthRequests {
   /**
    * {@inheritdoc}
    */
-  public function isOauth2Request(Request $request) {
+  public function isOauth2Request(Request $request): bool {
     $is_oauth2_requests = parent::isOauth2Request($request);
     if ($is_oauth2_requests) {
       return TRUE;

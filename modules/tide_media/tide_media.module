@@ -14,8 +14,10 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\Core\Url;
 use Drupal\file\FileInterface;
+use Drupal\file\IconMimeTypes;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -186,10 +188,15 @@ function tide_media_preprocess_file_link(&$variables) {
   }
 
   $description = $variables['description'];
-  $file_size = format_size($file->getSize());
+  // Fallback to filename when description is NULL to prevent TypeError
+  // in Html::escape() via FormattableMarkup.
+  if (empty($description)) {
+    $description = $file->getFilename();
+  }
+  $file_size = ByteSizeMarkup::create($file->getSize());
 
   $mime_type = $file->getMimeType();
-  $mime_category = file_icon_class($mime_type);
+  $mime_category = IconMimeTypes::getIconClass($mime_type);
   switch ($mime_category) {
     case 'application-pdf':
       $file_type = 'PDF';
@@ -289,11 +296,17 @@ function tide_media_entity_base_field_info_alter(&$fields, EntityTypeInterface $
 function tide_media_preprocess_image(&$variables) {
   // Return the absolute URL for images.
   if (!empty($variables['uri'])) {
-    $config = \Drupal::config('tide_media.settings');
-    if ($config->get('file_absolute_url')) {
-      $variables['attributes']['src'] = \Drupal::service('file_url_generator')->generateAbsoluteString($variables['uri']);
-      if ($config->get('force_https')) {
-        $variables['attributes']['src'] = str_replace('http://', 'https://', $variables['attributes']['src']);
+    $uri = $variables['uri'];
+    // Only process stream wrapper URIs (e.g. public://, private://).
+    // Skip URIs that are already full URLs (e.g. from focal_point preview)
+    // to avoid double-processing which breaks filenames with spaces.
+    if (strpos($uri, '://') !== FALSE && !preg_match('#^https?://#', $uri)) {
+      $config = \Drupal::config('tide_media.settings');
+      if ($config->get('file_absolute_url')) {
+        $variables['attributes']['src'] = \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+        if ($config->get('force_https')) {
+          $variables['attributes']['src'] = str_replace('http://', 'https://', $variables['attributes']['src']);
+        }
       }
     }
   }

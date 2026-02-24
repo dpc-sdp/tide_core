@@ -2,7 +2,7 @@ name: Tide User Expire
 type: module
 package: Tide
 description: An extension of user_expire module.
-core_version_requirement: ^8.9 || ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - dpc-sdp:tide_core
   - user_expire:user_expire

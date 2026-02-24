@@ -6,8 +6,8 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\path_alias\AliasManager as CoreAliasManager;
+use Drupal\path_alias\AliasPrefixListInterface;
 use Drupal\path_alias\AliasRepositoryInterface;
-use Drupal\path_alias\AliasWhitelistInterface;
 
 /**
  * Class alias manager.
@@ -26,7 +26,7 @@ class AliasManager extends CoreAliasManager {
   /**
    * {@inheritdoc}
    */
-  public function __construct(AliasRepositoryInterface $repository, AliasWhitelistInterface $whitelist, LanguageManagerInterface $language_manager, CacheBackendInterface $cache, protected ?TimeInterface $time, AliasStorageHelper $alias_helper) {
+  public function __construct(AliasRepositoryInterface $repository, AliasPrefixListInterface $whitelist, LanguageManagerInterface $language_manager, CacheBackendInterface $cache, protected TimeInterface $time, AliasStorageHelper $alias_helper) {
     parent::__construct($repository, $whitelist, $language_manager, $cache, $time);
     $this->aliasHelper = $alias_helper;
   }

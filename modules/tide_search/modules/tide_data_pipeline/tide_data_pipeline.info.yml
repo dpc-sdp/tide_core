@@ -1,7 +1,7 @@
 name: Tide Data Pipeline
 type: module
 description: Data pipeline for SDP
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 package: data_pipelines
 dependencies:
   - data_pipelines:data_pipelines

@@ -1,7 +1,7 @@
 name: 'Tide TFA'
 type: module
 description: 'The extension of TFA module.'
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 package: Tide
 dependencies:
   - drupal:real_aes

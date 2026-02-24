@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\path_alias\PathAliasInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class alias storage helper.
@@ -15,7 +15,18 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
  * @package Drupal\tide_site
  */
 class AliasStorageHelper {
-  use ContainerAwareTrait;
+
+  /**
+   * The service container.
+   */
+  protected ContainerInterface $container;
+
+  /**
+   * Sets the service container.
+   */
+  public function setContainer(ContainerInterface $container): void {
+    $this->container = $container;
+  }
 
   const ALIAS_SCHEMA_MAX_LENGTH = 255;
 
@@ -118,7 +129,7 @@ class AliasStorageHelper {
    * @return string[]
    *   The list of aliases, keyed by site ID.
    */
-  public function getAllSiteAliases(PathAliasInterface $path, NodeInterface $node = NULL) {
+  public function getAllSiteAliases(PathAliasInterface $path, ?NodeInterface $node = NULL) {
     $aliases = [];
     if (!$node) {
       $node = $this->getNodeFromPathEntity($path);
@@ -148,7 +159,7 @@ class AliasStorageHelper {
    * @param int[] $site_ids
    *   The list of site to create alias (optional).
    */
-  public function createSiteAliases(PathAliasInterface $path, NodeInterface $node = NULL, array $site_ids = []) {
+  public function createSiteAliases(PathAliasInterface $path, ?NodeInterface $node = NULL, array $site_ids = []) {
     if (!$node) {
       $node = $this->getNodeFromPathEntity($path);
     }

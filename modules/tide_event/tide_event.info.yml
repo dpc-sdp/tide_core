@@ -2,7 +2,7 @@ name: Tide Event
 description: 'Provides Event content type and related configuration. '
 type: module
 package: Tide
-core_version_requirement: ^9.5 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - drupal:datetime_range
   - drupal:menu_ui

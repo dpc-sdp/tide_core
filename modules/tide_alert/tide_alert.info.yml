@@ -2,7 +2,7 @@ name: Tide Alert
 type: module
 description: 'Provides Alert content type and related configuration. '
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - drupal:menu_ui
   - tide_core:tide_core

@@ -100,7 +100,7 @@ function tide_landing_page_update_10102() {
  * Remove style option field from call to action component.
  */
 function tide_landing_page_update_10103() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
   // Delete field configuration manually.
   $field_names = ['field_paragraph_cta_style'];
@@ -133,7 +133,7 @@ function tide_landing_page_update_10103() {
  * Change weight of paragraph types.
  */
 function tide_landing_page_update_10104() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_landing_page') . '/config/install'];
   $config = 'field.field.node.landing_page.field_landing_page_component';
   // Read only from /config/install.

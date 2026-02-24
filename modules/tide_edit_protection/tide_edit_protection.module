@@ -179,5 +179,5 @@ function tide_edit_protection_preprocess_status_messages(&$variables) {
  */
 function tide_edit_protection_entity_predelete(EntityInterface $entity) {
   \Drupal::service('content_lock')
-    ->release($entity->id(), LanguageInterface::LANGCODE_NOT_SPECIFIED);
+    ->release($entity, LanguageInterface::LANGCODE_NOT_SPECIFIED);
 }

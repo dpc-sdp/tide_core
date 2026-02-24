@@ -2,7 +2,7 @@ name: Tide Webform
 description: 'Provides Webform and related configuration.'
 type: module
 package: Tide
-core_version_requirement: ^9.5 || ^10
+core_version_requirement: ^10.5 || ^11
 dependencies:
   - config_filter:config_filter
   - config_ignore:config_ignore
