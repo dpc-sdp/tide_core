@@ -19,8 +19,9 @@ class BreadcrumbComputedField extends FieldItemList {
   /**
    * Computes the breadcrumb trail value.
    *
-   * Fetches the trail from the tide_breadcrumbs.breadcrumb_builder service and populates
-   * the field items with 'title' and 'url' properties for each crumb.
+   * Fetches the trail from the tide_breadcrumbs.breadcrumb_builder service
+   * and populates the field items with 'title' and
+   * 'url' properties for each crumb.
    */
   protected function computeValue() {
     $node = $this->getEntity();

@@ -127,7 +127,7 @@ class TideBreadcrumbBuilder {
             $found_node_in_menu = TRUE;
           }
         }
- 
+
         if (!$found_node_in_menu) {
           $chained_trail[] = ['title' => $nodeTitle, 'url' => $node->toUrl()->toString()];
         }
