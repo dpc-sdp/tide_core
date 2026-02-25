@@ -19,7 +19,7 @@ class BreadcrumbComputedField extends FieldItemList {
   /**
    * Computes the breadcrumb trail value.
    *
-   * Fetches the trail from the tide_breadcrumbs.builder service and populates
+   * Fetches the trail from the tide_breadcrumbs.breadcrumb_builder service and populates
    * the field items with 'title' and 'url' properties for each crumb.
    */
   protected function computeValue() {
@@ -30,7 +30,7 @@ class BreadcrumbComputedField extends FieldItemList {
     }
 
     /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $breadcrumb_service */
-    $breadcrumb_service = \Drupal::service('tide_breadcrumbs.builder');
+    $breadcrumb_service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
     $trail = $breadcrumb_service->buildFullTrail($node);
 
     if (!empty($trail) && is_array($trail)) {

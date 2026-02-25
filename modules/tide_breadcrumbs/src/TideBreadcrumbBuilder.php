@@ -2,11 +2,11 @@
 
 namespace Drupal\tide_breadcrumbs;
 
-use Drupal\node\NodeInterface;
-use Drupal\Core\Menu\MenuLinkTreeInterface;
-use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
+use Drupal\Core\Menu\MenuLinkTreeInterface;
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
 
 /**
@@ -36,9 +36,9 @@ class TideBreadcrumbBuilder {
    * Constructs a new TideBreadcrumbBuilder object.
    *
    * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
-   * The menu link tree service.
+   *   The menu link tree service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   * The entity type manager.
+   *   The entity type manager.
    */
   public function __construct(
     MenuLinkTreeInterface $menu_tree,
@@ -56,15 +56,15 @@ class TideBreadcrumbBuilder {
    * within its specific menu.
    *
    * @param \Drupal\node\NodeInterface $node
-   * The node for which to build the trail.
+   *   The node for which to build the trail.
    *
    * @return array
-   * An array of breadcrumb items, each containing 'title' and 'url'.
+   *   An array of breadcrumb items, each containing 'title' and 'url'.
    */
   public function buildFullTrail(NodeInterface $node) {
     $targetNid = (string) $node->id();
     $nodeTitle = $node->getTitle();
-    
+
     // Get all relevant section terms (including ancestors up to Level 2).
     $section_terms = $this->getOrderedSectionTerms($node);
     $primary_site_term = $node->get('field_node_primary_site')->entity;
@@ -73,9 +73,9 @@ class TideBreadcrumbBuilder {
     $found_node_in_menu = FALSE;
 
     if ($primary_site_term instanceof TermInterface) {
-      $primary_menu_id = !$primary_site_term->get('field_site_main_menu')->isEmpty() 
+      $primary_menu_id = !$primary_site_term->get('field_site_main_menu')->isEmpty()
         ? $primary_site_term->get('field_site_main_menu')->entity->id() : NULL;
-      
+
       // Start with Absolute Primary Home.
       $chained_trail[] = $this->getPrimaryHomeLink($primary_site_term);
 
@@ -84,9 +84,9 @@ class TideBreadcrumbBuilder {
         if ($term->get('field_site_main_menu')->isEmpty()) {
           continue;
         }
-        
+
         $menu_id = $term->get('field_site_main_menu')->entity->id();
-        
+
         // Search current section menu for the node.
         $node_trail_in_this_menu = $this->getTrailFromMenu($menu_id, $targetNid, $primary_menu_id);
 
@@ -98,11 +98,11 @@ class TideBreadcrumbBuilder {
               $chained_trail = array_merge($chained_trail, $bridge);
             }
           }
-          
+
           $chained_trail = array_merge($chained_trail, $node_trail_in_this_menu);
           $found_node_in_menu = TRUE;
-          break; 
-        } 
+          break;
+        }
         else {
           // Node not here, add Section Home and continue relay.
           $section_root = $this->getMenuRootByWeight($menu_id, $primary_menu_id);
@@ -127,7 +127,7 @@ class TideBreadcrumbBuilder {
             $found_node_in_menu = TRUE;
           }
         }
-        
+ 
         if (!$found_node_in_menu) {
           $chained_trail[] = ['title' => $nodeTitle, 'url' => $node->toUrl()->toString()];
         }
@@ -147,10 +147,10 @@ class TideBreadcrumbBuilder {
    * Crawls taxonomy to find all parents between tagged term and Primary Site.
    *
    * @param \Drupal\node\NodeInterface $node
-   * The node containing site taxonomy references.
+   *   The node containing site taxonomy references.
    *
    * @return \Drupal\taxonomy\TermInterface[]
-   * An array of ordered taxonomy terms from shallowest to deepest.
+   *   An array of ordered taxonomy terms from shallowest to deepest.
    */
   protected function getOrderedSectionTerms(NodeInterface $node) {
     if (!$node->hasField('field_node_primary_site') || $node->get('field_node_primary_site')->isEmpty()) {
@@ -160,12 +160,14 @@ class TideBreadcrumbBuilder {
     $primary_id = $node->get('field_node_primary_site')->target_id;
     $field_items = $node->get('field_node_site');
     $direct_terms = ($field_items instanceof EntityReferenceFieldItemListInterface) ? $field_items->referencedEntities() : [];
-    
+
     $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
     $all_relevant_terms = [];
 
     foreach ($direct_terms as $term) {
-      if ($term->id() == $primary_id) continue;
+      if ($term->id() == $primary_id) {
+        continue;
+      }
 
       // Load all ancestors.
       $ancestors = $term_storage->loadAllParents($term->id());
@@ -178,7 +180,7 @@ class TideBreadcrumbBuilder {
     }
 
     // Sort terms by depth so Parent comes before Grandchild.
-    usort($all_relevant_terms, function($a, $b) use ($term_storage) {
+    usort($all_relevant_terms, function ($a, $b) use ($term_storage) {
       $depth_a = count($term_storage->loadAllParents($a->id()));
       $depth_b = count($term_storage->loadAllParents($b->id()));
       return $depth_a <=> $depth_b;
@@ -191,18 +193,18 @@ class TideBreadcrumbBuilder {
    * Finds the root of a menu by weight, using title resolution logic.
    *
    * @param string $menu_name
-   * The machine name of the menu.
+   *   The machine name of the menu.
    * @param string|null $primary_menu_id
-   * The machine name of the primary menu for title logic.
+   *   The machine name of the primary menu for title logic.
    *
    * @return array|null
-   * The root crumb array or NULL if not found.
+   *   The root crumb array or NULL if not found.
    */
   protected function getMenuRootByWeight($menu_name, $primary_menu_id = NULL) {
     $parameters = new MenuTreeParameters();
     $parameters->onlyEnabledLinks();
     $tree = $this->menuTree->load($menu_name, $parameters);
-    
+
     $root_element = NULL;
     $min_weight = NULL;
 
@@ -228,19 +230,21 @@ class TideBreadcrumbBuilder {
    * Generates a trail from a specific menu for a given node.
    *
    * @param string $menu_name
-   * The machine name of the menu to search.
+   *   The machine name of the menu to search.
    * @param string $targetNid
-   * The node ID to search for.
+   *   The node ID to search for.
    * @param string|null $primary_menu_id
-   * The machine name of the primary menu.
+   *   The machine name of the primary menu.
    *
    * @return array|null
-   * The trail array or NULL if the node is not in the menu.
+   *   The trail array or NULL if the node is not in the menu.
    */
   protected function getTrailFromMenu($menu_name, $targetNid, $primary_menu_id = NULL) {
     $parameters = new MenuTreeParameters();
     $tree = $this->menuTree->load($menu_name, $parameters);
-    if (empty($tree)) return NULL;
+    if (empty($tree)) {
+      return NULL;
+    }
 
     $trail = $this->searchTree($tree, $targetNid, 'nid', [], $menu_name, $primary_menu_id);
 
@@ -257,52 +261,60 @@ class TideBreadcrumbBuilder {
    * Recursively searches a menu tree for a target NID or URL.
    *
    * @param array $tree
-   * The menu tree array.
+   *   The menu tree array.
    * @param string $target
-   * The NID or URL to search for.
+   *   The NID or URL to search for.
    * @param string $mode
-   * Either 'nid' or 'url'.
+   *   Either 'nid' or 'url'.
    * @param array $trail
-   * The accumulated trail.
+   *   The accumulated trail.
    * @param string|null $current_menu_id
-   * The ID of the menu currently being searched.
+   *   The ID of the menu currently being searched.
    * @param string|null $primary_menu_id
-   * The ID of the primary site menu.
+   *   The ID of the primary site menu.
    *
    * @return array|null
-   * The found trail or NULL.
+   *   The found trail or NULL.
    */
   protected function searchTree(array $tree, $target, $mode = 'nid', $trail = [], $current_menu_id = NULL, $primary_menu_id = NULL) {
     foreach ($tree as $element) {
       $link = $element->link;
-      if (!$link->isEnabled()) continue;
+      if (!$link->isEnabled()) {
+        continue;
+      }
 
       try {
         $currentUrl = $link->getUrlObject()->toString();
         $title = $this->resolveLinkTitle($link, $current_menu_id, $primary_menu_id);
-      } catch (\Exception $e) { continue; }
+      }
+      catch (\Exception $e) {
+        continue;
+      }
 
       $currentTrail = $trail;
       $currentTrail[] = ['title' => $title, 'url' => $currentUrl];
 
-      $matched = false;
+      $matched = FALSE;
       if ($mode === 'nid') {
         $urlObj = $link->getUrlObject();
         if ($urlObj->isRouted() && $urlObj->getRouteName() === 'entity.node.canonical') {
           $params = $urlObj->getRouteParameters();
-          if (isset($params['node']) && (string)$params['node'] === (string)$target) {
-            $matched = true;
+          if (isset($params['node']) && (string) $params['node'] === (string) $target) {
+            $matched = TRUE;
           }
         }
-      } elseif ($mode === 'url') {
+      }
+      elseif ($mode === 'url') {
         $normTarget = rtrim(parse_url($target, PHP_URL_PATH), '/');
         $normCurrent = rtrim(parse_url($currentUrl, PHP_URL_PATH), '/');
         if ($normTarget === $normCurrent && !empty($normTarget)) {
-          $matched = true;
+          $matched = TRUE;
         }
       }
 
-      if ($matched) return $currentTrail;
+      if ($matched) {
+        return $currentTrail;
+      }
 
       if (!empty($element->subtree)) {
         if ($result = $this->searchTree($element->subtree, $target, $mode, $currentTrail, $current_menu_id, $primary_menu_id)) {
@@ -317,14 +329,14 @@ class TideBreadcrumbBuilder {
    * Ensures Primary Menu items use Menu Title; Section items use Node Title.
    *
    * @param \Drupal\Core\Menu\MenuLinkInterface $link
-   * The menu link plugin.
+   *   The menu link plugin.
    * @param string|null $current_menu_id
-   * The menu being searched.
+   *   The menu being searched.
    * @param string|null $primary_menu_id
-   * The primary site menu ID.
+   *   The primary site menu ID.
    *
    * @return string
-   * The resolved title.
+   *   The resolved title.
    */
   protected function resolveLinkTitle($link, $current_menu_id, $primary_menu_id) {
     if ($current_menu_id === $primary_menu_id) {
@@ -348,14 +360,14 @@ class TideBreadcrumbBuilder {
    * Gets a trail based on a specific URL within a menu.
    *
    * @param string $menu_name
-   * The menu machine name.
+   *   The menu machine name.
    * @param string $url
-   * The URL to search for.
+   *   The URL to search for.
    * @param string|null $primary_menu_id
-   * The primary menu machine name.
+   *   The primary menu machine name.
    *
    * @return array|null
-   * The trail or NULL.
+   *   The trail or NULL.
    */
   protected function getTrailByUrl($menu_name, $url, $primary_menu_id = NULL) {
     $parameters = new MenuTreeParameters();
@@ -367,10 +379,10 @@ class TideBreadcrumbBuilder {
    * Generates the starting crumb for the primary site home.
    *
    * @param \Drupal\taxonomy\TermInterface $site_term
-   * The primary site taxonomy term.
+   *   The primary site taxonomy term.
    *
    * @return array
-   * The home crumb array with the title forced to 'Home'.
+   *   The home crumb array with the title forced to 'Home'.
    */
   protected function getPrimaryHomeLink(TermInterface $site_term) {
     $url = '/';
@@ -388,10 +400,10 @@ class TideBreadcrumbBuilder {
    * Removes duplicate items from the trail based on the URL path.
    *
    * @param array $trail
-   * The raw trail array.
+   *   The raw trail array.
    *
    * @return array
-   * The deduplicated trail.
+   *   The deduplicated trail.
    */
   protected function deduplicateTrail(array $trail) {
     $unique = [];
@@ -405,4 +417,5 @@ class TideBreadcrumbBuilder {
     }
     return $unique;
   }
+
 }
