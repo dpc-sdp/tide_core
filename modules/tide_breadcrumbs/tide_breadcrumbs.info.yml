@@ -1,0 +1,8 @@
+name: 'Tide breadcrumbs'
+type: module
+description: 'Provides a chained breadcrumb system that bridges Primary and Section site menus based on taxonomy hierarchy.'
+package: Tide
+core_version_requirement: ^10 || ^11
+dependencies:
+  - dpc-sdp:tide_core
+  - dpc-sdp:tide_api

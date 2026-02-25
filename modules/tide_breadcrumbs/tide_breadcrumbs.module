@@ -1,0 +1,97 @@
+<?php
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_entity_bundle_field_info().
+ *
+ * Registers a computed field 'tide_breadcrumb' for node entities. This field
+ * is handled by the BreadcrumbComputedField class and provides a structured
+ * data representation of the breadcrumb trail, typically for use in
+ * decoupled applications or Search API indexing.
+ */
+function tide_breadcrumbs_entity_bundle_field_info(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+  $fields = [];
+
+  if ($entity_type->id() === 'node') {
+    $fields['tide_breadcrumb'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Tide Breadcrumb'))
+      ->setComputed(TRUE)
+      ->setClass('\Drupal\tide_breadcrumbs\BreadcrumbComputedField')
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setReadOnly(TRUE);
+  }
+
+  return $fields;
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ *
+ * Defines a pseudo-field (extra field) for the 'display' context of all node 
+ * bundles. This allows the computed breadcrumb trail to be toggled and 
+ * positioned via the "Manage Display" UI.
+ */
+function tide_breadcrumbs_entity_extra_field_info() {
+  $extra = [];
+  // Add this to specific node types, or all of them.
+  foreach (\Drupal\node\Entity\NodeType::loadMultiple() as $bundle) {
+    $extra['node'][$bundle->id()]['display']['computed_breadcrumb_trail'] = [
+      'label' => t('Computed Breadcrumb Trail'),
+      'description' => t('Displays the full chained breadcrumb trail.'),
+      'weight' => -10,
+      'visible' => TRUE,
+    ];
+  }
+  return $extra;
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ *
+ * Responsible for rendering the visual representation of the breadcrumb trail
+ * when a node is viewed. It consumes the TideBreadcrumbBuilder service to 
+ * generate the trail and formats it as a series of links separated by arrows.
+ */
+function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
+  // Check if our custom extra field is enabled for this view mode.
+  if ($display->getComponent('computed_breadcrumb_trail')) {
+    /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $builder */
+    $builder = \Drupal::service('tide_breadcrumbs.builder');
+    $trail = $builder->buildFullTrail($node);
+
+    if (!empty($trail)) {
+      $breadcrumb_items = [];
+      foreach ($trail as $item) {
+        $breadcrumb_items[] = [
+          '#type' => 'link',
+          '#title' => $item['title'],
+          '#url' => \Drupal\Core\Url::fromUserInput($item['url']),
+        ];
+      }
+
+      // Build the render array with a heading and horizontal layout.
+      $build['computed_breadcrumb_trail'] = [
+        '#prefix' => '<div class="custom-breadcrumb-container"><strong>Breadcrumb:</strong> <nav class="custom-breadcrumb">',
+        '#suffix' => '</nav></div>',
+        '#attached' => [
+          'library' => ['tide_breadcrumbs/breadcrumb_styles'],
+        ],
+      ];
+
+      // Insert separators between links.
+      foreach ($breadcrumb_items as $index => $link_render) {
+        $build['computed_breadcrumb_trail'][] = $link_render;
+        
+        // Don't add an arrow after the very last item.
+        if ($index < count($breadcrumb_items) - 1) {
+          $build['computed_breadcrumb_trail'][] = ['#markup' => ' <span class="divider">→</span> '];
+        }
+      }
+    }
+  }
+}
