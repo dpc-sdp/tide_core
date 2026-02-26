@@ -78,6 +78,15 @@ function tide_core_views_data_alter(array &$data) {
       'id' => 'tide_enhanced_mime_type_filter',
     ],
   ];
+  $data['node_field_data']['author_by_role_filter'] = [
+    'title' => t('Author (by role)'),
+    'filter' => [
+      'title' => t('Author (by role)'),
+      'help' => t('Filter content by author, limited to users with selected roles.'),
+      'field' => 'uid',
+      'id' => 'author_by_role_filter',
+    ],
+  ];
 }
 
 /**
@@ -907,5 +916,33 @@ function tide_core_menu_local_tasks_alter(&$data, $route_name, &$ref_root) {
   // Update "View" to "View profile".
   if (isset($data['tabs'][0]['entity.user.canonical'])) {
     $data['tabs'][0]['entity.user.canonical']['#link']['title'] = t('View profile');
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function tide_core_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $filters = [
+    'author_by_role_filter',
+    'field_topic_target_id',
+  ];
+  foreach ($filters as $filter) {
+    if (!empty($form['#id']) && $form['#id'] == 'views-exposed-form-summary-contents-filters-page-1') {
+      if (!empty($form[$filter]['#multiple'])) {
+        $form[$filter]['#type'] = 'select2';
+        $form[$filter]['#select2'] = [
+          'allowClear' => TRUE,
+          'dropdownAutoWidth' => FALSE,
+          'width' => 'resolve',
+          'closeOnSelect' => FALSE,
+          'placeholder' => t('- Any -'),
+        ];
+      }
+    }
+  }
+  // Sort Topic filter options alphabetically by label.
+  if (!empty($form['field_topic_target_id']['#options'])) {
+    asort($form['field_topic_target_id']['#options']);
   }
 }
