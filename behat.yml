@@ -20,6 +20,7 @@ default:
         - '%paths.base%/modules/tide_webform/tests/behat/features'
         - '%paths.base%/modules/tide_publication/tests/behat/features'
         - '%paths.base%/modules/tide_alert/tests/behat/features'
+        - '%paths.base%/modules/tide_tfa/tests/behat/features'
       contexts:
       - Tide\Tests\Context\FeatureContext
       - Drupal\DrupalExtension\Context\MinkContext

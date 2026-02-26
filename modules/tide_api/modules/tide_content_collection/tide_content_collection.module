@@ -27,7 +27,7 @@ function tide_content_collection_paragraph_access(ParagraphInterface $entity, $o
  */
 function tide_content_collection_paragraph_create_access(AccountInterface $account = NULL, array $context = [], $entity_bundle = NULL) {
   $type = $entity_bundle;
-  if ($type === 'content_collection' && !$account->hasPermission('access content_collection paragraph')) {
+  if (($type === 'content_collection' || $type === 'content_collection_enhanced') && !$account->hasPermission('access content_collection paragraph')) {
     return AccessResult::forbidden()->cachePerPermissions();
   }
   return AccessResult::neutral()->cachePerPermissions();
