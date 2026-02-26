@@ -1219,3 +1219,25 @@ function tide_core_update_10031() {
   }
   $approver_role->save();
 }
+
+/**
+ * Drupal 11 introduced the new field, but it causes errors in drush updb,
+ * we need to alter table beforehand to avoid these issues.
+ */
+function tide_core_update_10032(): void {
+  $schema = \Drupal::database()->schema();
+
+  if ($schema->tableExists('router') && !$schema->fieldExists('router', 'alias')) {
+    $spec = [
+      'fields' => [
+        'alias' => [
+          'description' => 'The alias of the route, if applicable.',
+          'type' => 'varchar_ascii',
+          'length' => 255,
+        ],
+      ],
+    ];
+    $schema->addField('router', 'alias', $spec['fields']['alias']);
+    $schema->addIndex('router', 'alias', ['alias'], $spec);
+  }
+}
