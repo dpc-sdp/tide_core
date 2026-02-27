@@ -62,8 +62,25 @@ class TideBreadcrumbBuilder {
    *   An array of breadcrumb items, each containing 'title' and 'url'.
    */
   public function buildFullTrail(NodeInterface $node) {
+    $nodeTitle = $node->getTitle() ?: 'Title not found';
+    // If the node is being created or cloned, return a simplified trail.
+    if ($node->isNew()) {
+      $primary_site_term = $node->get('field_node_primary_site')->entity;
+
+      // Default to site root if no primary site is selected yet.
+      $home_crumb = ['title' => 'Home', 'url' => '/'];
+
+      if ($primary_site_term instanceof TermInterface) {
+        $home_crumb = $this->getPrimaryHomeLink($primary_site_term);
+      }
+
+      return [
+        $home_crumb,
+        ['title' => $nodeTitle, 'url' => '#'],
+      ];
+    }
+
     $targetNid = (string) $node->id();
-    $nodeTitle = $node->getTitle();
 
     // Get all relevant section terms (including ancestors up to Level 2).
     $section_terms = $this->getOrderedSectionTerms($node);
@@ -388,7 +405,7 @@ class TideBreadcrumbBuilder {
     $url = '/';
     if (!$site_term->get('field_site_homepage')->isEmpty()) {
       $home_node = $site_term->get('field_site_homepage')->entity;
-      if ($home_node instanceof NodeInterface) {
+      if ($home_node instanceof NodeInterface && !$home_node->isNew()) {
         $url = $home_node->toUrl()->toString();
       }
     }
