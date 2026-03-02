@@ -1,0 +1,10 @@
+views.filter.author_by_role_filter:
+  type: views.filter.in_operator
+  label: 'Author by role filter'
+  mapping:
+    roles:
+      type: sequence
+      label: 'Roles'
+      sequence:
+        type: string
+        label: 'Role'

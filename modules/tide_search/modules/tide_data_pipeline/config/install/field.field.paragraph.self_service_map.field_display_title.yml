@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_display_title
+    - paragraphs.paragraphs_type.self_service_map
+id: paragraph.self_service_map.field_display_title
+field_name: field_display_title
+entity_type: paragraph
+bundle: self_service_map
+label: 'Display title in front end'
+description: 'Uncheck this box if you don’t want the map title to display on the website.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Tide tide_data_pipeline module functionality.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function tide_data_pipeline_entity_extra_field_info() {
+  $extra = [];
+
+  $extra['paragraph']['self_service_map']['form']['csv_template_download'] = [
+    'label' => t('CSV template download (Pseudo Field)'),
+    'description' => t('Display a button for editors to download a CSV template, with the file configured by administrators in the backend.'),
+    'visible' => TRUE,
+  ];
+  return $extra;
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ */
+function tide_data_pipeline_field_widget_single_element_form_alter(&$element, FormStateInterface $form_state, $context) {
+  if (($element['#paragraph_type'] ?? '') !== 'self_service_map') {
+    return;
+  }
+  $display = \Drupal::service('entity_display.repository')->getFormDisplay('paragraph', 'self_service_map', 'default');
+  $component = $display->getComponent('csv_template_download');
+  if (!$component) {
+    return;
+  }
+  if (!file_exists('public://csv_templates/Generic_dataset_template.csv')) {
+    return;
+  }
+  $edit_mode_flag = $element['top']['actions']['actions']['edit_button']['#paragraphs_mode'] ?? NULL;
+  if ($edit_mode_flag === 'edit') {
+    return;
+  }
+  $file_url = \Drupal::service('file_url_generator')->generateAbsoluteString('public://csv_templates/Generic_dataset_template.csv');
+  $link = Link::fromTextAndUrl(
+    t('Dataset template file'),
+    Url::fromUri($file_url, [
+      'attributes' => [
+        'class' => ['file'],
+      ],
+    ])
+  );
+
+  $icon_svg_raw = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 5px; color: #666;">
+    <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+    <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
+  </svg>';
+  $element_data = [];
+  $full_html_string = '<span class="file" style="display: inline-flex; align-items: center;">' . $icon_svg_raw . $link->toString() . '</span>';
+  $element_data['subform']['csv_template_download'] = [
+    '#type' => 'item',
+    '#title' => t('Dataset'),
+    '#description' => t('Click on the link below to download a dataset template. You have to import your dataset using this template before you can create your map. DO NOT change any of the headings in Row 1 of the template or your data won’t display.'),
+    '#markup' => Markup::create($full_html_string),
+    '#weight' => $component['weight'] ?? 0,
+  ];
+
+  if (isset($element['subform'])) {
+    $element['subform']['csv_template_download'] = $element_data;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function tide_data_pipeline_preprocess_form_element(&$variables) {
+  if (isset($variables['element']['#name']) && $variables['element']['#name'] == 'field_landing_page_component[0][subform][csv_template_download][subform][csv_template_download]') {
+    $variables['description_display'] = 'before';
+  }
+}
