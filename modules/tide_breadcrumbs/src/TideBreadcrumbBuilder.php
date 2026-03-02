@@ -76,7 +76,6 @@ class TideBreadcrumbBuilder {
 
       return [
         $home_crumb,
-        ['title' => $nodeTitle, 'url' => '#'],
       ];
     }
 
@@ -90,19 +89,18 @@ class TideBreadcrumbBuilder {
     $found_node_in_menu = FALSE;
 
     if ($primary_site_term instanceof TermInterface) {
-      $primary_menu_id = !$primary_site_term->get('field_site_main_menu')->isEmpty()
-        ? $primary_site_term->get('field_site_main_menu')->entity->id() : NULL;
+      $primary_menu_id = $primary_site_term->get('field_site_main_menu')->target_id;
 
       // Start with Absolute Primary Home.
       $chained_trail[] = $this->getPrimaryHomeLink($primary_site_term);
 
       // THE RELAY: Chain from Parent -> Child -> Grandchild.
       foreach ($section_terms as $term) {
-        if ($term->get('field_site_main_menu')->isEmpty()) {
+        $menu_id = $term->get('field_site_main_menu')->target_id;
+
+        if (!$menu_id) {
           continue;
         }
-
-        $menu_id = $term->get('field_site_main_menu')->entity->id();
 
         // Search current section menu for the node.
         $node_trail_in_this_menu = $this->getTrailFromMenu($menu_id, $targetNid, $primary_menu_id);
@@ -153,8 +151,17 @@ class TideBreadcrumbBuilder {
 
     // Deduplicate URLs.
     $chained_trail = $this->deduplicateTrail($chained_trail);
+
+    // Remove the current page item from the breadcrumb trail.
     if (!empty($chained_trail)) {
-      $chained_trail[count($chained_trail) - 1]['title'] = $nodeTitle;
+      $last_item = end($chained_trail);
+      $nodeUrl = rtrim($node->toUrl()->toString(), '/');
+      $lastItemUrl = rtrim($last_item['url'], '/');
+
+      // Check if the last item is the current node by URL or Title.
+      if ($lastItemUrl === $nodeUrl || $last_item['title'] === $nodeTitle) {
+        array_pop($chained_trail);
+      }
     }
 
     return $chained_trail;
