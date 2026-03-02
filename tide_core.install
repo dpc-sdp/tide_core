@@ -6,6 +6,7 @@
  */
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\metatag\Entity\MetatagDefaults;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\tide_core\TideCoreOperation;
@@ -1221,9 +1222,22 @@ function tide_core_update_10031() {
 }
 
 /**
- * Add Topic field, Author by role filter and Topic filter to the content view.
+ * Update token for the metatag description field.
  */
 function tide_core_update_10032() {
+  $metatag = MetatagDefaults::load('node');
+  if ($metatag) {
+    $tags = $metatag->get('tags');
+    $tags['description'] = "[node:field_landing_page_summary]";
+    $metatag->set('tags', $tags);
+    $metatag->save();
+  }
+}
+
+/**
+ * Add Topic field, Author by role filter and Topic filter to the content view.
+ */
+function tide_core_update_10033() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
   $config_read = _tide_read_config('views.view.summary_contents_filters', $config_location, FALSE);
