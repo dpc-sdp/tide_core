@@ -920,7 +920,10 @@ function tide_core_menu_local_tasks_alter(&$data, $route_name, &$ref_root) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Apply the select2 effect to the Author and Topic options in the content view.
+ *
+ * Apply the select2 effect to the Author and Topic options in the content view,
+ * and implement custom sorting for the Topic options.
  */
 function tide_core_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $filters = [
