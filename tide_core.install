@@ -1233,3 +1233,50 @@ function tide_core_update_10032() {
     $metatag->save();
   }
 }
+
+/**
+ * Add Topic field, Author by role filter and Topic filter to the content view.
+ */
+function tide_core_update_10033() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('views.view.summary_contents_filters', $config_location, FALSE);
+
+  $config = \Drupal::configFactory()->getEditable('views.view.summary_contents_filters');
+  if ($config->isNew()) {
+    return;
+  }
+
+  $raw_data = $config->getRawData();
+  $display_options = &$raw_data['display']['default']['display_options'];
+
+  // Insert field_topic after 'name' and before 'type' in fields.
+  $new_fields = [];
+  foreach ($display_options['fields'] as $key => $value) {
+    $new_fields[$key] = $value;
+    if ($key === 'name') {
+      $new_fields['field_topic'] = $config_read['display']['default']['display_options']['fields']['field_topic'];
+    }
+  }
+  $display_options['fields'] = $new_fields;
+
+  // Insert author_by_role_filter and field_topic_target_id after 'Sub-Site'
+  // (sub_sites_filter) and before 'Content type' (type) in filters.
+  $new_filters = [];
+  foreach ($display_options['filters'] as $key => $value) {
+    $new_filters[$key] = $value;
+    if ($key === 'sub_sites_filter' || $key === 'field_node_site_target_id') {
+      $new_filters['author_by_role_filter'] = $config_read['display']['default']['display_options']['filters']['author_by_role_filter'];
+      $new_filters['field_topic_target_id'] = $config_read['display']['default']['display_options']['filters']['field_topic_target_id'];
+    }
+  }
+  $display_options['filters'] = $new_filters;
+
+  // Update style info: make 'name' sortable and add 'field_topic' column.
+  $style_info = &$display_options['style']['options']['info'];
+  $style_info['name']['sortable'] = TRUE;
+  $style_info['field_topic'] = $config_read['display']['default']['display_options']['style']['options']['info']['field_topic'];
+
+  $config->setData($raw_data);
+  $config->save();
+}
