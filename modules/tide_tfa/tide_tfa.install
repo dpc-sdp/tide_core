@@ -8,6 +8,18 @@
 use Drupal\tide_tfa\TideTfaOperation;
 
 /**
+ * Implements hook_requirements_alter().
+ *
+ * Bypass tfa requirement for reset login page.
+ *
+ */
+function tide_tfa_requirements_alter(array &$requirements) {
+  if (isset($requirements['tfa.route.user.reset.login'])) {
+    unset($requirements['tfa.route.user.reset.login']);
+  }
+}
+
+/**
  * Setup TFA.
  */
 function tide_tfa_install() {
