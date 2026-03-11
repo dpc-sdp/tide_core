@@ -1013,6 +1013,21 @@ display:
           entity_type: node
           entity_field: changed
           plugin_id: date
+        name:
+          id: name
+          table: taxonomy_term_field_data
+          field: name
+          relationship: field_topic
+          group_type: group
+          admin_label: ''
+          entity_type: taxonomy_term
+          entity_field: name
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
       title: Content
       empty:
         area_text_custom:
@@ -1031,6 +1046,15 @@ display:
           admin_label: author
           required: true
           plugin_id: standard
+        field_topic:
+          id: field_topic
+          table: node__field_topic
+          field: field_topic
+          relationship: none
+          group_type: group
+          admin_label: 'field_topic: Taxonomy term'
+          plugin_id: standard
+          required: false
       show_admin_links: false
       filter_groups:
         operator: AND
