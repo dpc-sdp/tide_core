@@ -136,7 +136,9 @@ class TideBreadcrumbBuilder {
       // FALLBACK: Node not found in any Section Menu.
       if (!$found_node_in_menu) {
         if (count($chained_trail) === 1 && $primary_menu_id) {
-          $primary_search = $this->getTrailFromMenu($primary_menu_id, $targetNid, $primary_menu_id);
+          // When falling back to the primary menu, skip adding the root crumb.
+          // This prevents showing the 1st menu item directly after "Home".
+          $primary_search = $this->getTrailFromMenu($primary_menu_id, $targetNid, $primary_menu_id, TRUE);
           if ($primary_search) {
             $chained_trail = array_merge($chained_trail, $primary_search);
             $found_node_in_menu = TRUE;
@@ -189,6 +191,8 @@ class TideBreadcrumbBuilder {
     $all_relevant_terms = [];
 
     foreach ($direct_terms as $term) {
+      // If the section term is the same as the primary site, skip it.
+      // This prevents the builder from treating the Primary Site as its own Section.
       if ($term->id() == $primary_id) {
         continue;
       }
@@ -259,11 +263,13 @@ class TideBreadcrumbBuilder {
    *   The node ID to search for.
    * @param string|null $primary_menu_id
    *   The machine name of the primary menu.
+   * @param bool $skip_root
+   *   Whether to skip prepending the menu root/first item.
    *
    * @return array|null
    *   The trail array or NULL if the node is not in the menu.
    */
-  protected function getTrailFromMenu($menu_name, $targetNid, $primary_menu_id = NULL) {
+  protected function getTrailFromMenu($menu_name, $targetNid, $primary_menu_id = NULL, $skip_root = FALSE) {
     $parameters = new MenuTreeParameters();
     $tree = $this->menuTree->load($menu_name, $parameters);
     if (empty($tree)) {
@@ -272,7 +278,7 @@ class TideBreadcrumbBuilder {
 
     $trail = $this->searchTree($tree, $targetNid, 'nid', [], $menu_name, $primary_menu_id);
 
-    if ($trail) {
+    if ($trail && !$skip_root) {
       $root_crumb = $this->getMenuRootByWeight($menu_name, $primary_menu_id);
       if ($root_crumb && $trail[0]['url'] !== $root_crumb['url']) {
         array_unshift($trail, $root_crumb);
