@@ -192,7 +192,7 @@ class TideBreadcrumbBuilder {
 
     foreach ($direct_terms as $term) {
       // If the section term is the same as the primary site, skip it.
-      // This prevents the builder from treating the Primary Site as its own Section.
+      // Prevents builder from treating Primary Site as its own Section.
       if ($term->id() == $primary_id) {
         continue;
       }
