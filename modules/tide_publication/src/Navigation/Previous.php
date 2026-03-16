@@ -5,7 +5,7 @@ namespace Drupal\tide_publication\Navigation;
 use Drupal\Core\Cache\CacheableMetadata;
 
 /**
- * Class Next.
+ * Class Previous.
  */
 class Previous extends Base {
 
@@ -31,11 +31,16 @@ class Previous extends Base {
           $prev = $delta - 1;
           if (isset($hierarchy[$prev])) {
             $this->list[] = $this->createItem(0, ['target_id' => $hierarchy[$prev]['entity_id']]);
-            return;
+            // Use break instead of return so we reach the cache dependency call below.
+            break;
           }
         }
       }
     }
+
+    // Attach the collected cache metadata to the entity.
+    // This tells Drupal that this field depends on all nodes in the hierarchy.
+    $entity->addCacheableDependency($cache);
   }
 
 }
