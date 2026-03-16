@@ -5,7 +5,7 @@ namespace Drupal\tide_publication\Navigation;
 use Drupal\Core\Cache\CacheableMetadata;
 
 /**
- * Class Children.
+ * Class Children for navigation.
  */
 class Children extends Base {
 
@@ -46,7 +46,7 @@ class Children extends Base {
     }
 
     // Add the collected cacheable metadata to the parent entity.
-    // This ensures that if any child changes, the cache for this field is invalidated.
+    // If any child changes, the cache for this field is invalidated.
     $entity->addCacheableDependency($cache);
   }
 

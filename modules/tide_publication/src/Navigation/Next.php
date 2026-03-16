@@ -39,7 +39,7 @@ class Next extends Base {
     }
 
     // Add the collected cacheable metadata to the parent entity.
-    // This ensures the field invalidates if the root or any hierarchy node changes.
+    // Make sure field invalidates if the root or any hierarchy node changes.
     $entity->addCacheableDependency($cache);
   }
 

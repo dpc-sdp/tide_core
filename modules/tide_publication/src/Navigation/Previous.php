@@ -5,7 +5,7 @@ namespace Drupal\tide_publication\Navigation;
 use Drupal\Core\Cache\CacheableMetadata;
 
 /**
- * Class Previous.
+ * Class Previous for navigation.
  */
 class Previous extends Base {
 
@@ -39,7 +39,7 @@ class Previous extends Base {
     }
 
     // Attach the collected cache metadata to the entity.
-    // This tells Drupal that this field depends on all nodes in the hierarchy.
+    // Tells Drupal field depends on all nodes in the hierarchy.
     $entity->addCacheableDependency($cache);
   }
 
