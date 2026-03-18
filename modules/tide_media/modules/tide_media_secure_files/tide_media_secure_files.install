@@ -172,3 +172,30 @@ function tide_media_secure_files_update_10002() {
     \Drupal::logger('tide_media_secure_files')->error('YAML file does not exist.');
   }
 }
+
+/**
+ * Add secure file approver role.
+ */
+function tide_media_secure_files_update_10003() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_media_secure_files') . '/config/install'];
+  $config_read = _tide_read_config('user.role.secure_file_approver', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('user_role');
+  $id = $storage->getIDFromConfigName('user.role.secure_file_approver', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) == NULL) {
+    $role = $storage->createFromStorageRecord($config_read);
+    $role->save();
+    // Copy permissions from approver and secure_file_user if they exist.
+    $source_roles = ['approver', 'secure_file_user'];
+    foreach ($source_roles as $source_rid) {
+      $source_role = Role::load($source_rid);
+      if ($source_role) {
+        foreach ($source_role->getPermissions() as $permission) {
+          if (!$role->hasPermission($permission)) {
+            $role->grantPermission($permission);
+          }
+        }
+      }
+    }
+  }
+}
