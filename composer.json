@@ -19,7 +19,7 @@
         "drupal/core": "10.6.x",
         "drupal/core-recommended": "10.6.x",
         "drupal/monitoring": "^1.13",
-        "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
+        "drupal/ckeditor_templates": "^2.0",
         "drupal/ctools": "^3.14",
         "drupal/js_cookie": "^1.0",
         "drupal/diff": "^1.1",
@@ -132,7 +132,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions", "drupal/create_menus_permission"]
         },
         "choices": {
             "_webform": true,
@@ -348,11 +348,6 @@
                 "dev-1.x",
                 "1.x-dev"
             ]
-        },
-        "drupal/ckeditor_templates": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         }
     },
     "extra": {

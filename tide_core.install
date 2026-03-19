@@ -1341,3 +1341,33 @@ function tide_core_update_10035() {
     $config_entity->save();
   }
 }
+
+/**
+ * Update the templates to be compatible with the latest CKEditor upstream.
+ */
+function tide_core_update_10036() {
+  $templates      = [
+    'ckeditor_templates.ckeditor_templates.blockquote',
+    'ckeditor_templates.ckeditor_templates.primary_button',
+    'ckeditor_templates.ckeditor_templates.secondary_button',
+  ];
+  $config_factory = \Drupal::configFactory();
+  foreach ($templates as $template) {
+    $config = $config_factory->getEditable($template);
+    $old_code = $config->get('code');
+    if (is_string($old_code)) {
+      $html = str_replace(["\r\n", "\r", "\n"], '', $old_code);
+      $html = preg_replace('/>\s+</', '><', $html);
+      $html = trim($html);
+      $config->set('code', [
+        'value'  => $html,
+        'format' => 'rich_text',
+      ]);
+    }
+    // Add thumb_alternative if not set.
+    if ($config->get('thumb_alternative') === NULL) {
+      $config->set('thumb_alternative', '');
+    }
+    $config->save(TRUE);
+  }
+}
