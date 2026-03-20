@@ -13,3 +13,4 @@ formats:
   summary_text: summary_text
   admin_text: admin_text
 weight: 0
+thumb_alternative: ''
