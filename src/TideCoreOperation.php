@@ -285,4 +285,15 @@ class TideCoreOperation {
     }
   }
 
+  /**
+   * Assign permissions for CKEditor template usage.
+   */
+  public function assignCkeditorTemplatesPermission() {
+    $role = Role::load('authenticated');
+    if ($role) {
+      $role->grantPermission('insert ckeditor templates');
+      $role->save();
+    }
+  }
+
 }
