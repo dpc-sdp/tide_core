@@ -5,6 +5,7 @@ namespace Drupal\tide_breadcrumbs;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
 use Drupal\node\NodeInterface;
+use Drupal\Core\Cache\CacheableMetadata;
 
 /**
  * Represents the computed breadcrumb trail field for nodes.
@@ -37,7 +38,6 @@ class BreadcrumbComputedField extends FieldItemList {
     if (!empty($trail) && is_array($trail)) {
       // Reset the list to ensure no stale data exists during computation.
       $this->list = [];
-
       foreach ($trail as $delta => $item) {
         // Create an item for each crumb in the trail.
         $this->list[$delta] = $this->createItem($delta, [
@@ -46,6 +46,16 @@ class BreadcrumbComputedField extends FieldItemList {
         ]);
       }
     }
+
+    // Fetch metadata from the service.
+    $tags = $breadcrumb_service->getCacheTags($node);
+    $contexts = $breadcrumb_service->getCacheContexts();
+
+    $cacheable_metadata = (new CacheableMetadata())
+      ->addCacheTags($tags)
+      ->addCacheContexts($contexts);
+    $node->addCacheableDependency($cacheable_metadata);
+
   }
 
   /**

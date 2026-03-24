@@ -33,6 +33,13 @@ class TideBreadcrumbBuilder {
   protected $entityTypeManager;
 
   /**
+   * Discovered cache tags during the build process.
+   *
+   * @var array
+   */
+  protected $discoveredTags = [];
+
+  /**
    * Constructs a new TideBreadcrumbBuilder object.
    *
    * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
@@ -62,6 +69,9 @@ class TideBreadcrumbBuilder {
    *   An array of breadcrumb items, each containing 'title' and 'url'.
    */
   public function buildFullTrail(NodeInterface $node) {
+    // Initialize tags with the target node.
+    $this->discoveredTags = $node->getCacheTags();
+
     $nodeTitle = $node->getTitle() ?: 'Title not found';
     // If the node is being created or cloned, return a simplified trail.
     if ($node->isNew()) {
@@ -197,12 +207,17 @@ class TideBreadcrumbBuilder {
         continue;
       }
 
+      // Add the term itself to discovery.
+      $this->discoveredTags = array_merge($this->discoveredTags, $term->getCacheTags());
+
       // Load all ancestors.
       $ancestors = $term_storage->loadAllParents($term->id());
       foreach ($ancestors as $ancestor) {
         // Exclude Level 1 (Primary Site) but keep everything else (Level 2+).
         if ($ancestor->id() != $primary_id) {
           $all_relevant_terms[$ancestor->id()] = $ancestor;
+          // Add ancestor terms to discovery.
+          $this->discoveredTags = array_merge($this->discoveredTags, $ancestor->getCacheTags());
         }
       }
     }
@@ -378,7 +393,15 @@ class TideBreadcrumbBuilder {
       $params = $urlObj->getRouteParameters();
       if (!empty($params['node'])) {
         $node = $this->entityTypeManager->getStorage('node')->load($params['node']);
-        if ($node) {
+        if ($node instanceof NodeInterface) {
+          // Capture the cache tags of the parent node.
+          $this->discoveredTags = array_merge($this->discoveredTags, $node->getCacheTags());
+
+          // Check for translation to ensure correct language titles.
+          $lang_code = \Drupal::languageManager()->getCurrentLanguage()->getId();
+          if ($node->hasTranslation($lang_code)) {
+            return $node->getTranslation($lang_code)->getTitle();
+          }
           return $node->getTitle();
         }
       }
@@ -415,11 +438,16 @@ class TideBreadcrumbBuilder {
    *   The home crumb array with the title forced to 'Home'.
    */
   protected function getPrimaryHomeLink(TermInterface $site_term) {
+    // Add taxonomy term tags to discovery.
+    $this->discoveredTags = array_merge($this->discoveredTags, $site_term->getCacheTags());
+
     $url = '/';
     if (!$site_term->get('field_site_homepage')->isEmpty()) {
       $home_node = $site_term->get('field_site_homepage')->entity;
       if ($home_node instanceof NodeInterface && !$home_node->isNew()) {
         $url = $home_node->toUrl()->toString();
+        // Add home node tags to discovery.
+        $this->discoveredTags = array_merge($this->discoveredTags, $home_node->getCacheTags());
       }
     }
 
@@ -430,10 +458,10 @@ class TideBreadcrumbBuilder {
    * Removes duplicate items from the trail based on the URL path.
    *
    * @param array $trail
-   *   The raw trail array.
+   * The raw trail array.
    *
    * @return array
-   *   The deduplicated trail.
+   * The deduplicated trail.
    */
   protected function deduplicateTrail(array $trail) {
     $unique = [];
@@ -446,6 +474,34 @@ class TideBreadcrumbBuilder {
       }
     }
     return $unique;
+  }
+
+  /**
+   * Returns cache tags for automatic invalidation.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The current node.
+   *
+   * @return array
+   *   An array of unique cache tags.
+   */
+  public function getCacheTags(NodeInterface $node) {
+    $tags = $this->discoveredTags;
+
+    // Invalidate when the menu structure changes.
+    $tags[] = 'config:system.menu.main';
+
+    return array_unique($tags);
+  }
+
+  /**
+   * Returns cache contexts for language and path awareness.
+   *
+   * @return array
+   *   An array of cache contexts.
+   */
+  public function getCacheContexts() {
+    return ['url.path', 'languages', 'user.permissions'];
   }
 
 }
