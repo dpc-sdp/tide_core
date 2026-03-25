@@ -2,10 +2,10 @@
 
 namespace Drupal\tide_breadcrumbs;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
 use Drupal\node\NodeInterface;
-use Drupal\Core\Cache\CacheableMetadata;
 
 /**
  * Represents the computed breadcrumb trail field for nodes.
