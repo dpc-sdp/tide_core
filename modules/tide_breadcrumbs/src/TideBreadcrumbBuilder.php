@@ -458,10 +458,10 @@ class TideBreadcrumbBuilder {
    * Removes duplicate items from the trail based on the URL path.
    *
    * @param array $trail
-   * The raw trail array.
+   *   The raw trail array.
    *
    * @return array
-   * The deduplicated trail.
+   *   The deduplicated trail.
    */
   protected function deduplicateTrail(array $trail) {
     $unique = [];
@@ -486,9 +486,22 @@ class TideBreadcrumbBuilder {
    *   An array of unique cache tags.
    */
   public function getCacheTags(NodeInterface $node) {
+    // If discoveredTags only contains the current node.
+    // it means buildFullTrail hasn't run yet.
+    // We run it to "discover" parents.
+    if (count($this->discoveredTags) <= 1) {
+      $this->buildFullTrail($node);
+    }
+
     $tags = $this->discoveredTags;
 
-    // Invalidate when the menu structure changes.
+    // Ensure site term is included.
+    if ($node->hasField('field_node_primary_site') && !$node->get('field_node_primary_site')->isEmpty()) {
+      if ($site = $node->get('field_node_primary_site')->entity) {
+        $tags = array_merge($tags, $site->getCacheTags());
+      }
+    }
+
     $tags[] = 'config:system.menu.main';
 
     return array_unique($tags);
