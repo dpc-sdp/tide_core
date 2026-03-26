@@ -65,20 +65,6 @@ function tide_breadcrumbs_entity_extra_field_info() {
  * generate the trail and formats it as a series of links separated by arrows.
  */
 function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
-  if ($view_mode === 'full') {
-    $service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
-    // Merge Tags.
-    $build['#cache']['tags'] = \Drupal\Core\Cache\Cache::mergeTags(
-      $build['#cache']['tags'] ?? [], 
-      $service->getCacheTags($node)
-    );
-
-    // 2. Merge Contexts.
-    $build['#cache']['contexts'] = \Drupal\Core\Cache\Cache::mergeContexts(
-      $build['#cache']['contexts'] ?? [], 
-      $service->getCacheContexts()
-    );
-  }
   // Check if our custom extra field is enabled for this view mode.
   if ($display->getComponent('computed_breadcrumb_trail')) {
     /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $builder */
@@ -112,6 +98,35 @@ function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityVi
         if ($index < count($breadcrumb_items) - 1) {
           $build['computed_breadcrumb_trail'][] = ['#markup' => ' <span class="divider">→</span> '];
         }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_storage_load().
+ */
+function tide_breadcrumbs_node_storage_load(array $entities) {
+  // Guard 1: Skip heavy logic during background CLI tasks/migrations
+  // unless we are specifically debugging via Drush.
+  if (PHP_SAPI === 'cli') {
+    return;
+  }
+
+  $service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+  $processed = &drupal_static(__FUNCTION__, []);
+
+  foreach ($entities as $node) {
+    if ($node instanceof NodeInterface) {
+      $nid = $node->id();
+
+      // Only process if we haven't touched this node in this request yet.
+      if (!isset($processed[$nid])) {
+        $service->buildFullTrail($node);
+        $node->addCacheTags($service->getCacheTags($node));
+        $node->addCacheContexts($service->getCacheContexts());
+        
+        $processed[$nid] = TRUE;
       }
     }
   }
