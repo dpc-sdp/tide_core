@@ -2,7 +2,6 @@
 
 namespace Drupal\tide_breadcrumbs;
 
-use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
 use Drupal\node\NodeInterface;
@@ -51,11 +50,8 @@ class BreadcrumbComputedField extends FieldItemList {
     $tags = $breadcrumb_service->getCacheTags($node);
     $contexts = $breadcrumb_service->getCacheContexts();
 
-    $cacheable_metadata = (new CacheableMetadata())
-      ->addCacheTags($tags)
-      ->addCacheContexts($contexts);
-    $node->addCacheableDependency($cacheable_metadata);
-
+    $node->addCacheTags($tags);
+    $node->addCacheContexts($contexts);
   }
 
   /**
