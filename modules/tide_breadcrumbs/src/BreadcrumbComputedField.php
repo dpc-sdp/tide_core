@@ -33,10 +33,9 @@ class BreadcrumbComputedField extends FieldItemList {
     /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $breadcrumb_service */
     $breadcrumb_service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
     $trail = $breadcrumb_service->buildFullTrail($node);
+    $this->list = [];
 
     if (!empty($trail) && is_array($trail)) {
-      // Reset the list to ensure no stale data exists during computation.
-      $this->list = [];
       foreach ($trail as $delta => $item) {
         // Create an item for each crumb in the trail.
         $this->list[$delta] = $this->createItem($delta, [
@@ -45,13 +44,6 @@ class BreadcrumbComputedField extends FieldItemList {
         ]);
       }
     }
-
-    // Fetch metadata from the service.
-    $tags = $breadcrumb_service->getCacheTags($node);
-    $contexts = $breadcrumb_service->getCacheContexts();
-
-    $node->addCacheTags($tags);
-    $node->addCacheContexts($contexts);
   }
 
   /**
