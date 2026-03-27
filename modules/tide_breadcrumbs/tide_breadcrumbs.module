@@ -106,19 +106,16 @@ function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityVi
 /**
  * Implements hook_entity_storage_load().
  *
- * This hook is used to inject breadcrumb cache metadata (tags and contexts) 
+ * This hook is used to inject breadcrumb cache metadata (tags and contexts)
  * directly into node entities as they are loaded from storage.
  *
  * This is critical for:
- * - JSON:API: Ensures parent node tags appear in 
+ * - JSON:API: Ensures parent node tags appear in
  * X-Drupal-Cache-Tags headers.
  *
  * PERFORMANCE:
- * - Includes a CLI guard to prevent heavy breadcrumb calculation during 
+ * - Includes a CLI guard to prevent heavy breadcrumb calculation during
  * bulk Drush operations or Cron jobs unless necessary.
- *
- * @param \Drupal\node\NodeInterface[] $entities
- *   An array of node entities being loaded.
  *
  * @see \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder
  * @see \Drupal\tide_breadcrumbs\BreadcrumbComputedField
