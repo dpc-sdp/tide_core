@@ -40,6 +40,20 @@ class TideBreadcrumbBuilder {
   protected $discoveredTags = [];
 
   /**
+   * Static cache for the calculated trail.
+   *
+   * @var array
+   */
+  protected $staticTrail = [];
+
+  /**
+   * Static cache for ordered section terms per node.
+   *
+   * @var array
+   */
+  protected $staticSectionTerms = [];
+
+  /**
    * Constructs a new TideBreadcrumbBuilder object.
    *
    * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
@@ -69,6 +83,12 @@ class TideBreadcrumbBuilder {
    *   An array of breadcrumb items, each containing 'title' and 'url'.
    */
   public function buildFullTrail(NodeInterface $node) {
+    // Check static cache first. Using NID as key.
+    $nid = $node->id() ?: 'new';
+    if (isset($this->staticTrail[$nid])) {
+      return $this->staticTrail[$nid];
+    }
+
     // Initialize tags with the target node.
     $this->discoveredTags = $node->getCacheTags();
 
@@ -84,9 +104,8 @@ class TideBreadcrumbBuilder {
         $home_crumb = $this->getPrimaryHomeLink($primary_site_term);
       }
 
-      return [
-        $home_crumb,
-      ];
+      $this->staticTrail['new'] = [$home_crumb];
+      return $this->staticTrail['new'];
     }
 
     $targetNid = (string) $node->id();
@@ -176,6 +195,7 @@ class TideBreadcrumbBuilder {
       }
     }
 
+    $this->staticTrail[$targetNid] = $chained_trail;
     return $chained_trail;
   }
 
@@ -189,6 +209,11 @@ class TideBreadcrumbBuilder {
    *   An array of ordered taxonomy terms from shallowest to deepest.
    */
   protected function getOrderedSectionTerms(NodeInterface $node) {
+    $nid = $node->id() ?: 'new';
+    if (isset($this->staticSectionTerms[$nid])) {
+      return $this->staticSectionTerms[$nid];
+    }
+
     if (!$node->hasField('field_node_primary_site') || $node->get('field_node_primary_site')->isEmpty()) {
       return [];
     }
@@ -229,6 +254,7 @@ class TideBreadcrumbBuilder {
       return $depth_a <=> $depth_b;
     });
 
+    $this->staticSectionTerms[$nid] = $all_relevant_terms;
     return $all_relevant_terms;
   }
 
@@ -486,10 +512,10 @@ class TideBreadcrumbBuilder {
    *   An array of unique cache tags.
    */
   public function getCacheTags(NodeInterface $node) {
-    // If discoveredTags only contains the current node.
-    // it means buildFullTrail hasn't run yet.
-    // We run it to "discover" parents.
-    if (count($this->discoveredTags) <= 1) {
+    $nid = $node->id() ?: 'new';
+
+    // Ensure the trail has been built to discover tags.
+    if (!isset($this->staticTrail[$nid])) {
       $this->buildFullTrail($node);
     }
 

@@ -102,3 +102,47 @@ function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityVi
     }
   }
 }
+
+/**
+ * Implements hook_entity_storage_load().
+ *
+ * This hook is used to inject breadcrumb cache metadata (tags and contexts) 
+ * directly into node entities as they are loaded from storage.
+ *
+ * This is critical for:
+ * - JSON:API: Ensures parent node tags appear in 
+ * X-Drupal-Cache-Tags headers.
+ *
+ * PERFORMANCE:
+ * - Includes a CLI guard to prevent heavy breadcrumb calculation during 
+ * bulk Drush operations or Cron jobs unless necessary.
+ *
+ * @param \Drupal\node\NodeInterface[] $entities
+ *   An array of node entities being loaded.
+ *
+ * @see \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder
+ * @see \Drupal\tide_breadcrumbs\BreadcrumbComputedField
+ */
+function tide_breadcrumbs_node_storage_load(array $entities) {
+  if (PHP_SAPI === 'cli') {
+    return;
+  }
+
+  $service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+  $processed = &drupal_static(__FUNCTION__, []);
+
+  foreach ($entities as $node) {
+    if ($node instanceof NodeInterface) {
+      $nid = $node->id();
+
+      // Only process if we haven't touched this node in this request yet.
+      if (!isset($processed[$nid])) {
+        $service->buildFullTrail($node);
+        $node->addCacheTags($service->getCacheTags($node));
+        $node->addCacheContexts($service->getCacheContexts());
+
+        $processed[$nid] = TRUE;
+      }
+    }
+  }
+}
