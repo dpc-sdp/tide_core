@@ -125,21 +125,35 @@ function tide_breadcrumbs_node_storage_load(array $entities) {
     return;
   }
 
-  $service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
-  $processed = &drupal_static(__FUNCTION__, []);
+  $is_processing = &drupal_static(__FUNCTION__ . '_running', FALSE);
+  if ($is_processing) {
+    return;
+  }
 
-  foreach ($entities as $node) {
-    if ($node instanceof NodeInterface) {
-      $nid = $node->id();
+  $is_processing = TRUE;
 
-      // Only process if we haven't touched this node in this request yet.
-      if (!isset($processed[$nid])) {
-        $service->buildFullTrail($node);
-        $node->addCacheTags($service->getCacheTags($node));
-        $node->addCacheContexts($service->getCacheContexts());
+  try {
+    $service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+    $processed = &drupal_static(__FUNCTION__, []);
 
-        $processed[$nid] = TRUE;
+    foreach ($entities as $node) {
+      if ($node instanceof NodeInterface) {
+        $nid = $node->id();
+        if (!isset($processed[$nid])) {
+          $service->buildFullTrail($node);
+          $node->addCacheTags($service->getCacheTags($node));
+          $node->addCacheContexts($service->getCacheContexts());
+          $processed[$nid] = TRUE;
+        }
       }
     }
+  } 
+  catch (\Exception $e) {
+    \Drupal::logger('tide_breadcrumbs')->error($e->getMessage());
+  }
+  finally {
+    // This ensures the lock is ALWAYS released.
+    // Even if an error occurs.
+    $is_processing = FALSE;
   }
 }

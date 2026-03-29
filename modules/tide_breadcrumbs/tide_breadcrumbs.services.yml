@@ -1,4 +1,7 @@
 services:
   tide_breadcrumbs.breadcrumb_builder:
     class: Drupal\tide_breadcrumbs\TideBreadcrumbBuilder
-    arguments: ['@menu.link_tree', '@entity_type.manager']
+    arguments: 
+      - '@menu.link_tree'
+      - '@entity_type.manager'
+      - '@database'

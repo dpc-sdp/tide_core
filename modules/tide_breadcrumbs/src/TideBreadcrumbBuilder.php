@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_breadcrumbs;
 
+use \Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Menu\MenuLinkTreeInterface;
@@ -54,19 +55,30 @@ class TideBreadcrumbBuilder {
   protected $staticSectionTerms = [];
 
   /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * Constructs a new TideBreadcrumbBuilder object.
    *
    * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
    *   The menu link tree service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database connection.
    */
   public function __construct(
     MenuLinkTreeInterface $menu_tree,
-    EntityTypeManagerInterface $entity_type_manager
+    EntityTypeManagerInterface $entity_type_manager,
+    Connection $database
   ) {
     $this->menuTree = $menu_tree;
     $this->entityTypeManager = $entity_type_manager;
+    $this->database = $database;
   }
 
   /**
@@ -288,7 +300,7 @@ class TideBreadcrumbBuilder {
     if ($root_element) {
       $title = $this->resolveLinkTitle($root_element->link, $menu_name, $primary_menu_id);
       return [
-        'title' => $title,
+        'title' => $title['title'] ?? $root_element->link->getTitle(),
         'url' => $root_element->link->getUrlObject()->toString(),
       ];
     }
@@ -356,7 +368,8 @@ class TideBreadcrumbBuilder {
 
       try {
         $currentUrl = $link->getUrlObject()->toString();
-        $title = $this->resolveLinkTitle($link, $current_menu_id, $primary_menu_id);
+        $title_data = $this->resolveLinkTitle($link, $current_menu_id, $primary_menu_id);
+        $title = $title_data['title'];
       }
       catch (\Exception $e) {
         continue;
@@ -409,30 +422,58 @@ class TideBreadcrumbBuilder {
    * @return string
    *   The resolved title.
    */
-  protected function resolveLinkTitle($link, $current_menu_id, $primary_menu_id) {
+  protected function resolveLinkTitle($link, $current_menu_id, $primary_menu_id): array {
+    // Primary menu items must use the menu link title.
     if ($current_menu_id === $primary_menu_id) {
-      return $link->getTitle();
+      return [
+        'title' => $link->getTitle(),
+        'attributes' => [],
+      ];
     }
 
+    // Section items should try to use the node title.
     $urlObj = $link->getUrlObject();
     if ($urlObj->isRouted() && $urlObj->getRouteName() === 'entity.node.canonical') {
       $params = $urlObj->getRouteParameters();
-      if (!empty($params['node'])) {
-        $node = $this->entityTypeManager->getStorage('node')->load($params['node']);
-        if ($node instanceof NodeInterface) {
-          // Capture the cache tags of the parent node.
-          $this->discoveredTags = array_merge($this->discoveredTags, $node->getCacheTags());
+      $nid = $params['node'] ?? NULL;
 
-          // Check for translation to ensure correct language titles.
-          $lang_code = \Drupal::languageManager()->getCurrentLanguage()->getId();
-          if ($node->hasTranslation($lang_code)) {
-            return $node->getTranslation($lang_code)->getTitle();
-          }
-          return $node->getTitle();
+      if ($nid) {
+        /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
+        $lang_code = \Drupal::languageManager()->getCurrentLanguage()->getId();
+
+        // Use direct db query to avoid triggering hook_node_storage_load().
+        // This prevents the infinite loop.
+        $query = $this->database->select('node_field_data', 'nfd');
+        $query->fields('nfd', ['title']);
+        $query->condition('nfd.nid', $nid);
+        $query->condition('nfd.langcode', $lang_code);
+        $node_title = $query->execute()->fetchField();
+
+        // Fallback to default translation.
+        if (!$node_title) {
+          $node_title = $this->database->select('node_field_data', 'nfd')
+            ->fields('nfd', ['title'])
+            ->condition('nfd.nid', $nid)
+            ->condition('nfd.default_langcode', 1)
+            ->execute()->fetchField();
+        }
+
+        if ($node_title) {
+          $this->discoveredTags[] = "node:$nid";
+          
+          return [
+            'title' => $node_title,
+            'attributes' => ['data-breadcrumb-source' => 'node'],
+          ];
         }
       }
     }
-    return $link->getTitle();
+
+    // Fallback to Menu Link Title.
+    return [
+      'title' => $link->getTitle(),
+      'attributes' => [],
+    ];
   }
 
   /**
@@ -521,14 +562,25 @@ class TideBreadcrumbBuilder {
 
     $tags = $this->discoveredTags;
 
-    // Ensure site term is included.
+    // Primary Site Menu Dependency.
     if ($node->hasField('field_node_primary_site') && !$node->get('field_node_primary_site')->isEmpty()) {
-      if ($site = $node->get('field_node_primary_site')->entity) {
+      $site = $node->get('field_node_primary_site')->entity;
+      if ($site instanceof TermInterface) {
         $tags = array_merge($tags, $site->getCacheTags());
+        
+        if ($site->hasField('field_site_main_menu') && !$site->get('field_site_main_menu')->isEmpty()) {
+          $tags[] = 'config:system.menu.' . $site->get('field_site_main_menu')->target_id;
+        }
       }
     }
 
-    $tags[] = 'config:system.menu.main';
+    // Section Site Menu Dependencies.
+    $section_terms = $this->getOrderedSectionTerms($node);
+    foreach ($section_terms as $term) {
+      if ($term->hasField('field_site_main_menu') && !$term->get('field_site_main_menu')->isEmpty()) {
+        $tags[] = 'config:system.menu.' . $term->get('field_site_main_menu')->target_id;
+      }
+    }
 
     return array_unique($tags);
   }
