@@ -197,5 +197,6 @@ function tide_media_secure_files_update_10003() {
         }
       }
     }
+    $role->save();
   }
 }
