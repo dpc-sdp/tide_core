@@ -2,7 +2,7 @@
 
 namespace Drupal\tide_breadcrumbs;
 
-use \Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Menu\MenuLinkTreeInterface;
@@ -460,7 +460,7 @@ class TideBreadcrumbBuilder {
 
         if ($node_title) {
           $this->discoveredTags[] = "node:$nid";
-          
+
           return [
             'title' => $node_title,
             'attributes' => ['data-breadcrumb-source' => 'node'],
@@ -567,7 +567,7 @@ class TideBreadcrumbBuilder {
       $site = $node->get('field_node_primary_site')->entity;
       if ($site instanceof TermInterface) {
         $tags = array_merge($tags, $site->getCacheTags());
-        
+
         if ($site->hasField('field_site_main_menu') && !$site->get('field_site_main_menu')->isEmpty()) {
           $tags[] = 'config:system.menu.' . $site->get('field_site_main_menu')->target_id;
         }

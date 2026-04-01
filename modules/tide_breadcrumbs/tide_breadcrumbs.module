@@ -147,7 +147,7 @@ function tide_breadcrumbs_node_storage_load(array $entities) {
         }
       }
     }
-  } 
+  }
   catch (\Exception $e) {
     \Drupal::logger('tide_breadcrumbs')->error($e->getMessage());
   }
