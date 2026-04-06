@@ -1382,3 +1382,14 @@ function tide_core_update_10037() {
   $tideCoreOperation = new TideCoreOperation();
   $tideCoreOperation->assignCkeditorTemplatesPermission();
 }
+
+/**
+ * Revoke 'bypass site restriction' permission from previewer role.
+ */
+function tide_core_update_10038() {
+  $role = Role::load('previewer');
+  if ($role && $role->hasPermission('bypass site restriction')) {
+    $role->revokePermission('bypass site restriction');
+    $role->save();
+  }
+}
