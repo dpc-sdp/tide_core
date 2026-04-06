@@ -15,6 +15,7 @@ use Drupal\tide_site\TideSiteHelper;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -109,6 +110,16 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
       $path = $api_helper->getRequestedPath($request);
       // Only prefix non-homepage and unrouted path.
       if ($path !== '/') {
+        // If the path already has a site prefix, 301 redirect to the clean
+        // path so the FE uses canonical URLs without site prefixes.
+        if ($this->helper->hasSitePrefix($path)) {
+          $clean_path = preg_replace('#^/site-\d+/#', '/', $path);
+          $query = $request->query->all();
+          $query['path'] = $clean_path;
+          $redirect_url = $request->getBaseUrl() . $request->getPathInfo() . '?' . http_build_query($query);
+          $event->setResponse(new RedirectResponse($redirect_url, Response::HTTP_MOVED_PERMANENTLY));
+          return;
+        }
         try {
           $url = Url::fromUri('internal:' . $path);
           if (!$url->isRouted() && !$this->helper->hasSitePrefix($path)) {
