@@ -65,6 +65,9 @@ function tide_core_install() {
 
   // Enables paragraphs_library.
   $tideCoreOperation->alterParagraphsLibrary();
+
+  // Assign permissions for CKEditor template usage.
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
 }
 
 /**
@@ -1369,5 +1372,24 @@ function tide_core_update_10036() {
       $config->set('thumb_alternative', '');
     }
     $config->save(TRUE);
+  }
+}
+
+/**
+ * Assign permissions for CKEditor template usage.
+ */
+function tide_core_update_10037() {
+  $tideCoreOperation = new TideCoreOperation();
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
+}
+
+/**
+ * Revoke 'bypass site restriction' permission from previewer role.
+ */
+function tide_core_update_10038() {
+  $role = Role::load('previewer');
+  if ($role && $role->hasPermission('bypass site restriction')) {
+    $role->revokePermission('bypass site restriction');
+    $role->save();
   }
 }

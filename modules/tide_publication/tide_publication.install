@@ -496,3 +496,18 @@ function tide_publication_update_10012() {
   }
   $entity_form_display->save();
 }
+
+/**
+ * Fix 'Publication infomation' typo in group_publication_metadata label.
+ */
+function tide_publication_update_10013() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $entity_form_display */
+  $entity_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.publication.default');
+  $field_group = $entity_form_display->getThirdPartySettings('field_group');
+
+  if (isset($field_group['group_publication_metadata']) && $field_group['group_publication_metadata']['label'] === 'Publication infomation') {
+    $field_group['group_publication_metadata']['label'] = 'Publication information';
+    $entity_form_display->setThirdPartySetting('field_group', 'group_publication_metadata', $field_group['group_publication_metadata']);
+    $entity_form_display->save();
+  }
+}
