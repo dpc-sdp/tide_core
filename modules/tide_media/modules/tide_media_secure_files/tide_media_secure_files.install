@@ -200,3 +200,46 @@ function tide_media_secure_files_update_10003() {
     $role->save();
   }
 }
+
+/**
+ * Add secure_file_approver role to tide_locked_content view access.
+ */
+function tide_media_secure_files_update_10004() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_edit_protection')) {
+    \Drupal::logger('tide_media_secure_files')->notice('tide_edit_protection module is not enabled, skipping views.view.tide_locked_content update.');
+    return;
+  }
+  $config = \Drupal::configFactory()->getEditable('views.view.tide_locked_content');
+  $role_key = 'display.default.display_options.access.options.role';
+  $roles = $config->get($role_key);
+  if (is_array($roles) && !isset($roles['secure_file_approver'])) {
+    $roles['secure_file_approver'] = 'secure_file_approver';
+    $config->set($role_key, $roles);
+    $config->save();
+    \Drupal::logger('tide_media_secure_files')->notice('Added secure_file_approver role to tide_locked_content view access.');
+  }
+}
+
+/**
+ * Add secure_file_approver role to tfa.settings required_roles.
+ */
+function tide_media_secure_files_update_10005() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_tfa')) {
+    \Drupal::logger('tide_media_secure_files')->notice('tide_tfa module is not enabled, skipping tfa.settings update.');
+    return;
+  }
+
+  $config = \Drupal::configFactory()->getEditable('tfa.settings');
+  if ($config->isNew()) {
+    \Drupal::logger('tide_media_secure_files')->warning('tfa.settings config not found.');
+    return;
+  }
+
+  $roles = $config->get('required_roles');
+  if (is_array($roles) && !isset($roles['secure_file_approver'])) {
+    $roles['secure_file_approver'] = 'secure_file_approver';
+    $config->set('required_roles', $roles);
+    $config->save();
+    \Drupal::logger('tide_media_secure_files')->notice('Added secure_file_approver role to tfa.settings required_roles.');
+  }
+}
