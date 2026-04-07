@@ -79,7 +79,7 @@ class TideNodeBulkForm extends NodeBulkForm {
       if ($current_user) {
         $roles = $current_user->getRoles();
         if (
-          in_array('approver', $roles) &&
+          (in_array('approver', $roles) || in_array('secure_file_approver', $roles)) &&
           isset($form['header']['node_bulk_form']['action']['#options']['node_delete_action'])
         ) {
           unset($form['header']['node_bulk_form']['action']['#options']['node_delete_action']);
