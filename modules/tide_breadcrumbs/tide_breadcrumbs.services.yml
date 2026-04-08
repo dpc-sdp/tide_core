@@ -5,3 +5,9 @@ services:
       - '@menu.link_tree'
       - '@entity_type.manager'
       - '@database'
+
+tide_breadcrumbs.jsonapi_cache_subscriber:
+    class: Drupal\tide_breadcrumbs\EventSubscriber\BreadcrumbCacheTagSubscriber
+    arguments: ['@tide_breadcrumbs.breadcrumb_builder']
+    tags:
+      - { name: event_subscriber }
