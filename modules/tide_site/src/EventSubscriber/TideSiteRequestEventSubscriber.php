@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Drupal\node\Entity\Node;
 
 /**
  * Class TideApiRequestEventSubscriber.
@@ -52,6 +53,13 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
   protected $jsonApiEnabled = FALSE;
 
   /**
+   * The Tide Breadcrumb Builder service.
+   *
+   * @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder
+   */
+  protected $breadcrumbBuilder;
+
+  /**
    * JsonApiExtrasRouteAlterSubscriber constructor.
    *
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
@@ -59,9 +67,10 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\tide_site\TideSiteHelper $helper
    *   The Tide Site Helper service.
    */
-  public function __construct(ModuleHandlerInterface $module_handler, TideSiteHelper $helper) {
+  public function __construct(ModuleHandlerInterface $module_handler, TideSiteHelper $helper, $breadcrumb_builder) {
     $this->moduleHandler = $module_handler;
     $this->helper = $helper;
+    $this->breadcrumbBuilder = $breadcrumb_builder;
     $this->jsonApiEnabled = $this->moduleHandler->moduleExists('jsonapi');
   }
 
@@ -79,8 +88,38 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
       'onResponseAddSiteFilterCacheContext',
       127,
     ];
+    $events[KernelEvents::RESPONSE][] = ['onResponseAddBreadcrumbCacheTags', 127];
 
     return $events;
+  }
+
+  /**
+   * New Method: Injects Breadcrumb/Parent tags into JSON:API responses.
+   */
+  public function onResponseAddBreadcrumbCacheTags(ResponseEvent $event) {
+    $response = $event->getResponse();
+
+    if (!$response instanceof CacheableResponseInterface) {
+      return;
+    }
+
+    // 1. Get the raw JSON content.
+    $content = json_decode($response->getContent(), TRUE);
+    
+    // 2. Extract the NID (drupal_internal__nid is 87 in your print_r).
+    $nid = $content['data']['attributes']['drupal_internal__nid'] ?? NULL;
+
+    if ($nid) {
+      // 3. Load the node once to get the parent tags from your service.
+      $node = Node::load($nid);
+      
+      if ($node) {
+        $tags = $this->breadcrumbBuilder->getCacheTags($node);
+        
+        // 4. Inject them directly into the metadata you saw in your print_r.
+        $response->getCacheableMetadata()->addCacheTags($tags);
+      }
+    }
   }
 
   /**

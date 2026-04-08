@@ -71,6 +71,7 @@ class TideSiteServiceProvider extends ServiceProviderBase {
         ->setArguments([
           new Reference('module_handler'),
           new Reference('tide_site.helper'),
+          new Reference('tide_breadcrumbs.breadcrumb_builder'),
         ])
         ->addMethodCall('setContainer', [new Reference('service_container')])
         ->addMethodCall('setStringTranslation', [new Reference('string_translation')]);
