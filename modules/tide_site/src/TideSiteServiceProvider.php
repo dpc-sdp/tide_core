@@ -65,7 +65,7 @@ class TideSiteServiceProvider extends ServiceProviderBase {
         ->addTag('event_subscriber');
     }
 
-    if (isset($modules['jsonapi']) && isset($modules['jsonapi_extras'])) {
+    if (isset($modules['jsonapi']) && isset($modules['jsonapi_extras']) && isset($modules['tide_breadcrumbs'])) {
       $container->register('tide_site.request_event_subscriber', 'Drupal\tide_site\EventSubscriber\TideSiteRequestEventSubscriber')
         ->addTag('event_subscriber')
         ->setArguments([
