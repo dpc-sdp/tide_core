@@ -125,6 +125,25 @@ function tide_breadcrumbs_node_storage_load(array $entities) {
     return;
   }
 
+  // Should only trigger for specific paths.
+  $request = \Drupal::request();
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  $path = $request->getPathInfo();
+
+  $allowed_routes = [
+    'entity.node.canonical',
+    'jsonapi.node--landing_page.individual',
+    'jsonapi.node--landing_page.collection',
+  ];
+
+  $is_allowed_path = (strpos($path, '/api/') === 0) || (strpos($path, '/admin/') === FALSE);
+
+  $should_run = in_array($route_name, $allowed_routes);
+
+  if (!$should_run && !$is_allowed_path) {
+    return;
+  }
+
   $is_processing = &drupal_static(__FUNCTION__ . '_running', FALSE);
   if ($is_processing) {
     return;
