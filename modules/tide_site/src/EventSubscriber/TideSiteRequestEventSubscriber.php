@@ -15,7 +15,6 @@ use Drupal\tide_site\TideSiteHelper;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -110,27 +109,22 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
       $path = $api_helper->getRequestedPath($request);
       // Only prefix non-homepage and unrouted path.
       if ($path !== '/') {
-        // If the path already has a site prefix, 301 redirect to the clean
-        // path so the FE uses canonical URLs without site prefixes.
+        // If the path already has a site prefix, return a redirect response
+        // in the same format as Drupal redirect module so the FE can handle
+        // it with its existing redirect logic.
         if ($this->helper->hasSitePrefix($path)) {
           $clean_path = preg_replace('#^/site-\d+/#', '/', $path);
-          $query = $request->query->all();
-          $query['path'] = $clean_path;
-          $redirect_url = $request->getBaseUrl() . $request->getPathInfo() . '?' . http_build_query($query);
-          $event->setResponse(new RedirectResponse($redirect_url, Response::HTTP_MOVED_PERMANENTLY));
+          $this->setRedirectRouteResponse($event, $request, $clean_path);
           return;
         }
         // If the path is an internal node path (e.g. /node/1234), resolve
-        // to its alias and 301 redirect to the canonical URL.
+        // to its alias and return a redirect response.
         if (preg_match('#^/node/\d+$#', $path)) {
           /** @var \Drupal\path_alias\AliasManagerInterface $alias_manager */
           $alias_manager = $this->container->get('path_alias.manager');
           $alias = $alias_manager->getAliasByPath($path);
           if ($alias && $alias !== $path) {
-            $query = $request->query->all();
-            $query['path'] = $alias;
-            $redirect_url = $request->getBaseUrl() . $request->getPathInfo() . '?' . http_build_query($query);
-            $event->setResponse(new RedirectResponse($redirect_url, Response::HTTP_MOVED_PERMANENTLY));
+            $this->setRedirectRouteResponse($event, $request, $alias);
             return;
           }
         }
@@ -303,6 +297,38 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
     $response = new JsonResponse($json_response, $code);
     $event->setResponse($response);
     $event->stopPropagation();
+  }
+
+  /**
+   * Set a redirect route JSON response matching Drupal redirect module format.
+   */
+  protected function setRedirectRouteResponse(RequestEvent $event, Request $request, $redirect_url, $status_code = '301') {
+    $self_href = $request->getSchemeAndHttpHost() . $request->getRequestUri();
+    /** @var \Drupal\Component\Uuid\UuidInterface $uuid_service */
+    $uuid_service = $this->container->get('uuid');
+    $json_response = [
+      'data' => [
+        'type' => 'route',
+        'links' => [
+          'self' => [
+            'href' => $self_href,
+          ],
+        ],
+        'id' => $uuid_service->generate(),
+        'attributes' => [
+          'status_code' => $status_code,
+          'redirect_url' => $redirect_url,
+          'redirect_type' => 'internal',
+        ],
+      ],
+      'links' => [
+        'self' => [
+          'href' => $self_href,
+        ],
+      ],
+    ];
+    $response = new JsonResponse($json_response);
+    $event->setResponse($response);
   }
 
   /**
