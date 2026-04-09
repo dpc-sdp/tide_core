@@ -120,6 +120,20 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
           $event->setResponse(new RedirectResponse($redirect_url, Response::HTTP_MOVED_PERMANENTLY));
           return;
         }
+        // If the path is an internal node path (e.g. /node/1234), resolve
+        // to its alias and 301 redirect to the canonical URL.
+        if (preg_match('#^/node/\d+$#', $path)) {
+          /** @var \Drupal\path_alias\AliasManagerInterface $alias_manager */
+          $alias_manager = $this->container->get('path_alias.manager');
+          $alias = $alias_manager->getAliasByPath($path);
+          if ($alias && $alias !== $path) {
+            $query = $request->query->all();
+            $query['path'] = $alias;
+            $redirect_url = $request->getBaseUrl() . $request->getPathInfo() . '?' . http_build_query($query);
+            $event->setResponse(new RedirectResponse($redirect_url, Response::HTTP_MOVED_PERMANENTLY));
+            return;
+          }
+        }
         try {
           $url = Url::fromUri('internal:' . $path);
           if (!$url->isRouted() && !$this->helper->hasSitePrefix($path)) {
