@@ -24,6 +24,18 @@ class BreadcrumbComputedField extends FieldItemList {
    * 'url' properties for each crumb.
    */
   protected function computeValue() {
+    // Ignore the admin paths.
+    if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+      return;
+    }
+
+    // Fallback check for the URI string.
+    // Just in case the router isn't ready.
+    $request = \Drupal::request();
+    if (strpos($request->getRequestUri(), '/admin/') !== FALSE) {
+      return;
+    }
+
     $node = $this->getEntity();
     // Ensure we are working with a node entity.
     if (!$node instanceof NodeInterface) {
