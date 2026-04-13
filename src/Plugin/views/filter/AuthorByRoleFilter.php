@@ -4,7 +4,6 @@ namespace Drupal\tide_core\Plugin\views\filter;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\user\Entity\User;
 use Drupal\user\RoleInterface;
 use Drupal\views\Plugin\views\filter\InOperator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
