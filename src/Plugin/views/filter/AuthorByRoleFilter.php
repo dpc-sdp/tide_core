@@ -4,7 +4,6 @@ namespace Drupal\tide_core\Plugin\views\filter;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\user\Entity\User;
 use Drupal\user\RoleInterface;
 use Drupal\views\Plugin\views\filter\InOperator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -121,25 +120,29 @@ class AuthorByRoleFilter extends InOperator {
     }
 
     $this->valueOptions = [];
-    // Anonymous user will display always.
-    $this->valueOptions[User::getAnonymousUser()->id()] = User::getAnonymousUser()->getDisplayName();
+    $this->valueOptions[0] = $this->t('Anonymous');
+
     $roles = array_filter($this->options['roles'] ?? []);
 
-    $query = $this->userStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->sort('name');
+    // Use a direct database query.
+    $db = \Drupal::database();
+    $query = $db->select('users_field_data', 'u');
+    $query->fields('u', ['uid', 'name']);
+    $query->condition('u.status', 1);
+    $query->condition('u.uid', 0, '>');
+    $query->orderBy('u.name', 'ASC');
 
+    // If roles are filtered.
+    // Join the user__roles table.
     if (!empty($roles)) {
-      $query->condition('roles', array_values($roles), 'IN');
+      $query->join('user__roles', 'ur', 'ur.entity_id = u.uid');
+      $query->condition('ur.roles_target_id', array_values($roles), 'IN');
     }
 
-    $uids = $query->execute();
+    $results = $query->execute()->fetchAllKeyed();
 
-    if ($uids) {
-      $users = $this->userStorage->loadMultiple($uids);
-      foreach ($users as $user) {
-        $this->valueOptions[$user->id()] = $user->getDisplayName();
-      }
+    foreach ($results as $uid => $name) {
+      $this->valueOptions[$uid] = $name;
     }
 
     return $this->valueOptions;

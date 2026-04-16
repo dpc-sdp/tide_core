@@ -87,6 +87,12 @@ function tide_core_views_data_alter(array &$data) {
       'id' => 'author_by_role_filter',
     ],
   ];
+  // Use sort-aware field handler for field_topic so that table click sorting
+  // delegates to the sort handler (which sorts by taxonomy term name via
+  // relationship) instead of sorting by the raw target_id.
+  if (isset($data['node__field_topic']['field_topic']['field'])) {
+    $data['node__field_topic']['field_topic']['field']['id'] = 'sort_aware_field';
+  }
 }
 
 /**

@@ -65,6 +65,9 @@ function tide_core_install() {
 
   // Enables paragraphs_library.
   $tideCoreOperation->alterParagraphsLibrary();
+
+  // Assign permissions for CKEditor template usage.
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
 }
 
 /**
@@ -1279,4 +1282,114 @@ function tide_core_update_10033() {
 
   $config->setData($raw_data);
   $config->save();
+}
+
+/**
+ * Add topic sort handler and field_topic relationship to the content view.
+ */
+function tide_core_update_10034() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('views.view.summary_contents_filters', $config_location, FALSE);
+
+  $config = \Drupal::configFactory()->getEditable('views.view.summary_contents_filters');
+  if ($config->isNew()) {
+    return;
+  }
+
+  $raw_data = $config->getRawData();
+  $display_options = &$raw_data['display']['default']['display_options'];
+
+  // Add the 'name' sort handler (sort by taxonomy term name via field_topic
+  // relationship) after the existing 'changed' sort.
+  if (!isset($display_options['sorts']['name'])) {
+    $new_sorts = [];
+    foreach ($display_options['sorts'] as $key => $value) {
+      $new_sorts[$key] = $value;
+      if ($key === 'changed') {
+        $new_sorts['name'] = $config_read['display']['default']['display_options']['sorts']['name'];
+      }
+    }
+    $display_options['sorts'] = $new_sorts;
+  }
+
+  // Add the 'field_topic' relationship (joins to taxonomy_term_field_data)
+  // after the existing 'uid' relationship.
+  if (!isset($display_options['relationships']['field_topic'])) {
+    $new_relationships = [];
+    foreach ($display_options['relationships'] as $key => $value) {
+      $new_relationships[$key] = $value;
+      if ($key === 'uid') {
+        $new_relationships['field_topic'] = $config_read['display']['default']['display_options']['relationships']['field_topic'];
+      }
+    }
+    $display_options['relationships'] = $new_relationships;
+  }
+
+  $config->setData($raw_data);
+  $config->save();
+}
+
+/**
+ * Set default Metatag settings for Media entities.
+ */
+function tide_core_update_10035() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  $config_read = _tide_read_config('metatag.metatag_defaults.media', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('metatag_defaults');
+  $id = $storage->getIDFromConfigName('metatag.metatag_defaults.media', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}
+
+/**
+ * Update the templates to be compatible with the latest CKEditor upstream.
+ */
+function tide_core_update_10036() {
+  $templates      = [
+    'ckeditor_templates.ckeditor_templates.blockquote',
+    'ckeditor_templates.ckeditor_templates.primary_button',
+    'ckeditor_templates.ckeditor_templates.secondary_button',
+  ];
+  $config_factory = \Drupal::configFactory();
+  foreach ($templates as $template) {
+    $config = $config_factory->getEditable($template);
+    $old_code = $config->get('code');
+    if (is_string($old_code)) {
+      $html = str_replace(["\r\n", "\r", "\n"], '', $old_code);
+      $html = preg_replace('/>\s+</', '><', $html);
+      $html = trim($html);
+      $config->set('code', [
+        'value'  => $html,
+        'format' => 'rich_text',
+      ]);
+    }
+    // Add thumb_alternative if not set.
+    if ($config->get('thumb_alternative') === NULL) {
+      $config->set('thumb_alternative', '');
+    }
+    $config->save(TRUE);
+  }
+}
+
+/**
+ * Assign permissions for CKEditor template usage.
+ */
+function tide_core_update_10037() {
+  $tideCoreOperation = new TideCoreOperation();
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
+}
+
+/**
+ * Revoke 'bypass site restriction' permission from previewer role.
+ */
+function tide_core_update_10038() {
+  $role = Role::load('previewer');
+  if ($role && $role->hasPermission('bypass site restriction')) {
+    $role->revokePermission('bypass site restriction');
+    $role->save();
+  }
 }
