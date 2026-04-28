@@ -111,7 +111,7 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
     ],
     'tide_site_moderated_content_filters' => [
       'moderated_content' => 'field_node_site_target_id',
-    ]
+    ],
   ];
 
   $account = \Drupal::currentUser();
