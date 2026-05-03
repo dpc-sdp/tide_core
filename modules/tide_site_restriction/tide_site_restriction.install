@@ -17,3 +17,12 @@ function tide_site_restriction_install() {
   TideSiteRestrictionOperation::addNecessarySettings();
 
 }
+
+/**
+ * Creates the initial configuration for site hierarchy restriction.
+ */
+function tide_site_restriction_update_10001() {
+  \Drupal::configFactory()->getEditable('tide_site_restriction.settings')
+    ->set('limit_site_hierarchy', TRUE)
+    ->save();
+}

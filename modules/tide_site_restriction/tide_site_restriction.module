@@ -8,6 +8,7 @@
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -476,5 +477,18 @@ function tide_site_restriction_field_widget_single_element_form_alter(&$element,
         $element[$key]['#disabled'] = TRUE;
       }
     }
+  }
+}
+
+/**
+ * Implements hook_entity_bundle_field_info_alter().
+ *
+ * Adds the SiteHierarchy validation constraint to the 'field_node_site' field.
+ * This ensures the hierarchy restrictions (max one parent, max one child)
+ * are enforced at the entity level for all node bundles.
+ */
+function tide_site_restriction_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+  if ($entity_type->id() === 'node' && isset($fields['field_node_site'])) {
+    $fields['field_node_site']->addConstraint('SiteHierarchy', []);
   }
 }
