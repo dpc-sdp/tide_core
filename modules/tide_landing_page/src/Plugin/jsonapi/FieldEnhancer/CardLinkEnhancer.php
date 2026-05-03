@@ -150,6 +150,12 @@ class CardLinkEnhancer extends ResourceFieldEnhancerBase {
             $card_fields['date'] = $event_dates ? $event_dates : '';
           }
         }
+        if ($paragraph && $paragraph->field_paragraph_location->getValue()) {
+          $event_location = $paragraph->field_paragraph_location->getValue()[0];
+          if ($event_location != NULL) {
+            $card_fields['location'] = $event_location;
+          }
+        }
       }
     }
     if ($module_handler->moduleExists('tide_grant')) {

@@ -208,3 +208,32 @@ function _grant_approvers_pfdp_permission() {
     $role->save();
   }
 }
+
+/**
+ * Add the link column to content_report view.
+ */
+function tide_site_update_10006() {
+  $config = \Drupal::configFactory()->getEditable('views.view.tide_content_report');
+
+  if ($config->isNew()) {
+    return;
+  }
+
+  $fields_path = 'display.default.display_options.fields';
+  $fields = $config->get($fields_path);
+
+  // Skip if already added.
+  if (isset($fields['view_node'])) {
+    return;
+  }
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/install'];
+  $view_config = _tide_read_config('views.view.tide_content_report', $config_location, FALSE);
+  if (empty($view_config['display']['default']['display_options']['fields']['view_node'])) {
+    return;
+  }
+  $fields['view_node'] = $view_config['display']['default']['display_options']['fields']['view_node'];
+  $config->set($fields_path, $fields);
+  $config->save(TRUE);
+}

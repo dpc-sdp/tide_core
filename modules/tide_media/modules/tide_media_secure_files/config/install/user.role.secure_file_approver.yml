@@ -1,0 +1,85 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - media.type.secure_file
+    - filter.format.admin_text
+    - filter.format.rich_text
+    - filter.format.summary_text
+  module:
+    - media
+    - block
+    - content_lock
+    - content_moderation
+    - entity_browser
+    - filter
+    - node
+    - path
+    - redirect
+    - scheduled_transitions
+    - system
+    - paragraphs_library
+    - tide_core
+    - toolbar
+id: secure_file_approver
+label: 'Secure File Approver'
+weight: 103
+is_admin: null
+permissions:
+  - 'create field_secure_file'
+  - 'create secure_file media'
+  - 'delete any secure_file media'
+  - 'delete any secure_file media revisions'
+  - 'delete own secure_file media'
+  - 'edit any secure_file media'
+  - 'edit field_secure_file'
+  - 'edit own field_secure_file'
+  - 'edit own secure_file media'
+  - 'revert any secure_file media revisions'
+  - 'view any secure_file media revisions'
+  - 'view field_secure_file'
+  - 'view own field_secure_file'
+  - 'access administration pages'
+  - 'access content overview'
+  - 'access media overview'
+  - 'access toolbar'
+  - 'administer blocks'
+  - 'addrow tablefield'
+  - 'administer menu'
+  - 'administer redirects'
+  - 'administer url aliases'
+  - 'break content lock'
+  - 'create document media'
+  - 'create file media'
+  - 'create image media'
+  - 'create url aliases'
+  - 'create paragraph library item'
+  - 'edit paragraph library item'
+  - 'delete all revisions'
+  - 'delete any media'
+  - 'delete media'
+  - 'edit any audio media'
+  - 'edit any document media'
+  - 'edit any file media'
+  - 'edit any image media'
+  - 'import tablefield'
+  - 'rebuild tablefield'
+  - 'revert all revisions'
+  - 'update media'
+  - 'use editorial transition archive'
+  - 'use editorial transition archived_draft'
+  - 'use editorial transition archived_published'
+  - 'use editorial transition create_new_draft'
+  - 'use editorial transition needs_review'
+  - 'use editorial transition needs_review_draft'
+  - 'use editorial transition publish'
+  - 'use text format admin_text'
+  - 'use text format rich_text'
+  - 'use text format summary_text'
+  - 'view all revisions'
+  - 'view all scheduled transitions'
+  - 'view any unpublished content'
+  - 'view latest version'
+  - 'view own unpublished content'
+  - 'view the administration theme'
+  - 'tide node bulk update'
