@@ -197,13 +197,18 @@ class TideBreadcrumbBuilder {
 
     // Remove the current page item from the breadcrumb trail.
     if (!empty($chained_trail)) {
-      $last_item = end($chained_trail);
-      $nodeUrl = rtrim($node->toUrl()->toString(), '/');
-      $lastItemUrl = rtrim($last_item['url'], '/');
+      // Check if the current page is homepage.
+      $count = count($chained_trail);
+      $primaryHomeLink = $this->getPrimaryHomeLink($primary_site_term);
+      if ($count > 1 || ($count === 1 && $chained_trail[0]['url'] !== $primaryHomeLink['url'])) {
+        $last_item = end($chained_trail);
+        $nodeUrl = rtrim($node->toUrl()->toString(), '/');
+        $lastItemUrl = rtrim($last_item['url'], '/');
 
-      // Check if the last item is the current node by URL or Title.
-      if ($lastItemUrl === $nodeUrl || $last_item['title'] === $nodeTitle) {
-        array_pop($chained_trail);
+        // Check if the last item is the current node by URL or Title.
+        if ($lastItemUrl === $nodeUrl || $last_item['title'] === $nodeTitle) {
+          array_pop($chained_trail);
+        }
       }
     }
 
