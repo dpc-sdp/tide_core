@@ -600,4 +600,62 @@ class TideBreadcrumbBuilder {
     return ['url.path', 'languages', 'user.permissions'];
   }
 
+  /**
+   * Builds a path focused on the lowest section, including Primary Menu ancestors.
+   * 
+   * Logic: Home -> [Primary Menu Ancestors] -> [Deepest Section Home] -> Current Page.
+   */
+  public function buildBreadcrumbFocusedUrlPath(NodeInterface $node) {
+    $path = [];
+    
+    if (!$node->hasField('field_node_primary_site') || $node->get('field_node_primary_site')->isEmpty()) {
+      return $path;
+    }
+
+    $primary_site_term = $node->get('field_node_primary_site')->entity;
+    if (!$primary_site_term instanceof TermInterface) {
+      return $path;
+    }
+
+    $primary_menu_id = $primary_site_term->get('field_site_main_menu')->target_id;
+
+    // Find the lowest section that has a valid menu root.
+    $section_terms = $this->getOrderedSectionTerms($node);
+    $deepest_home = NULL;
+    
+    foreach (array_reverse($section_terms) as $term) {
+      $menu_id = $term->get('field_site_main_menu')->target_id;
+      if ($menu_id) {
+        $root = $this->getMenuRootByWeight($menu_id, $primary_menu_id);
+        if ($root) {
+          $deepest_home = $root;
+          break; 
+        }
+      }
+    }
+
+    // Bridge between primary site menu and site section menu.
+    if ($deepest_home && $primary_menu_id) {
+      $bridge = $this->getTrailByUrl($primary_menu_id, $deepest_home['url'], $primary_menu_id);
+      if ($bridge) {
+        // Add the ancestors from the Primary Menu.
+        // Home > About > [Deepest Section].
+        $path = array_merge($path, $bridge);
+      }
+      else {
+        // If no bridge found.
+        // Just add the deepest section home directly.
+        $path[] = $deepest_home;
+      }
+    }
+
+    // Add the current node.
+    $path[] = [
+      'title' => $node->getTitle(),
+      'url' => $node->toUrl()->toString(),
+    ];
+
+    return $this->deduplicateTrail($path);
+  }
+
 }
