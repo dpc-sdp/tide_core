@@ -482,16 +482,9 @@ function tide_site_restriction_field_widget_single_element_form_alter(&$element,
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
- * Adds custom validation to enforce site hierarchy rules and handles 
+ * Adds custom validation to enforce site hierarchy rules and handles
  * auto-selection of site fields if the user only has access to a single site.
  * Logic is bypassed for 'administrator' and 'site_admin' roles.
- *
- * @param array $form
- *   Nested array of form elements that comprise the form.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The current state of the form.
- * @param string $form_id
- *   String representing the name of the form itself.
  */
 function tide_site_restriction_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $config = \Drupal::config('tide_site_restriction.settings');
