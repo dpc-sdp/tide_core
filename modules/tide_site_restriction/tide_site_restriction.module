@@ -8,7 +8,6 @@
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -481,14 +480,112 @@ function tide_site_restriction_field_widget_single_element_form_alter(&$element,
 }
 
 /**
- * Implements hook_entity_bundle_field_info_alter().
+ * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
- * Adds the SiteHierarchy validation constraint to the 'field_node_site' field.
- * This ensures the hierarchy restrictions (max one parent, max one child)
- * are enforced at the entity level for all node bundles.
+ * Adds custom validation to enforce site hierarchy rules and handles 
+ * auto-selection of site fields if the user only has access to a single site.
+ * Logic is bypassed for 'administrator' and 'site_admin' roles.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param string $form_id
+ *   String representing the name of the form itself.
  */
-function tide_site_restriction_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
-  if ($entity_type->id() === 'node' && isset($fields['field_node_site'])) {
-    $fields['field_node_site']->addConstraint('SiteHierarchy', []);
+function tide_site_restriction_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $config = \Drupal::config('tide_site_restriction.settings');
+  $is_enabled = $config->get('limit_site_hierarchy');
+
+  if ($is_enabled === FALSE) {
+    return;
+  }
+  $user = \Drupal::currentUser();
+  $roles = $user->getRoles();
+
+  $is_admin = array_intersect(['administrator', 'site_admin'], $roles);
+  if (!empty($is_admin)) {
+    return;
+  }
+
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+  $form['#validate'][] = '_tide_site_restriction_node_form_validate';
+
+  $options = $form['field_node_primary_site']['widget']['#options'] ?? [];
+  if (count($options) === 1 && $node->isNew()) {
+    $target_site_id = key($options);
+
+    // Set the value for Primary Site.
+    $form['field_node_primary_site']['widget']['#default_value'] = $target_site_id;
+
+    // Set the value for the Site field.
+    if (isset($form['field_node_site'])) {
+      $form['field_node_site']['widget']['#default_value'] = [$target_site_id];
+    }
+  }
+}
+
+/**
+ * Custom validation handler for node forms to enforce site selection rules.
+ *
+ * This validator ensures that:
+ * 1. A maximum of one Root (Level 1) and one Child (Section) is selected.
+ * 2. If a Root site is selected in 'field_node_site', it must match
+ *    'field_node_primary_site'.
+ * 3. Any selected Child sites in 'field_node_site' must be direct or indirect
+ *    descendants of the 'field_node_primary_site'.
+ *
+ * @param array $form
+ *   The form structure.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form, used to retrieve values and set errors.
+ */
+function _tide_site_restriction_node_form_validate($form, FormStateInterface $form_state) {
+  $primary_site = $form_state->getValue('field_node_primary_site');
+  $site_list = $form_state->getValue('field_node_site');
+
+  $primary_site_id = !empty($primary_site[0]['target_id']) ? $primary_site[0]['target_id'] : NULL;
+
+  if (!$site_list || !$primary_site_id) {
+    return;
+  }
+
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $selected_root_id = NULL;
+  $root_count = 0;
+  $child_count = 0;
+  $invalid_children = [];
+
+  foreach ($site_list as $item) {
+    if ($tid = $item['target_id']) {
+      $parents = $term_storage->loadParents($tid);
+      if (empty($parents)) {
+        $root_count++;
+        $selected_root_id = $tid;
+      }
+      else {
+        $child_count++;
+        // Check if this child belongs to the selected Primary Site.
+        if (!isset($parents[$primary_site_id])) {
+          $invalid_children[] = $tid;
+        }
+      }
+    }
+  }
+
+  // Hierarchy limit check.
+  if ($root_count > 1 || $child_count > 1) {
+    $form_state->setErrorByName('field_node_site', t('You can select a maximum of one primary site and one site section.'));
+  }
+
+  // Ensures the "Root" selected in site matches "Primary Site" field.
+  if ($selected_root_id && $primary_site_id != $selected_root_id) {
+    $form_state->setErrorByName('field_node_site', t('The selected site must match the site selected in Primary Site field.'));
+  }
+
+  // Ensures the "Child" is actually a child of the "Primary Site".
+  if (!empty($invalid_children)) {
+    $form_state->setErrorByName('field_node_site', t('The selected site section does not belong to the selected Primary Site.'));
   }
 }
