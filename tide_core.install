@@ -1393,3 +1393,10 @@ function tide_core_update_10038() {
     $role->save();
   }
 }
+
+/**
+ * Install views_bulk_operations and views_bulk_edit.
+ */
+function tide_core_update_10039() {
+  \Drupal::service('module_installer')->install(['views_bulk_operations', 'views_bulk_edit']);
+}
