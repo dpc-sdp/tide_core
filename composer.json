@@ -16,11 +16,12 @@
         "drupal/config_perms": "2.x-dev@dev",
         "drupal/config_split": "^2.0",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/core": "10.5.2",
-        "drupal/core-recommended": "10.5.2",
+        "drupal/core": "10.6.x",
+        "drupal/core-recommended": "10.6.x",
         "drupal/monitoring": "^1.13",
-        "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
+        "drupal/ckeditor_templates": "^2.0",
         "drupal/ctools": "^3.14",
+        "drupal/js_cookie": "^1.0",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "2.3.1",
         "drupal/entity_browser": "^2.9",
@@ -96,6 +97,8 @@
         "drupal/select2": "^1.7",
         "oomphinc/composer-installers-extender": "^2.0",
         "select2/select2": "^4.0",
+        "drupal/views_bulk_operations": "^4.3",
+        "drupal/views_bulk_edit": "^3.0",
         "npm-asset/select2": "^4.0",
         "lcobucci/clock": "3.2.0",
         "drupal/form_options_attributes": "^2.0",
@@ -131,7 +134,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions", "drupal/create_menus_permission"]
         },
         "choices": {
             "_webform": true,
@@ -347,11 +350,6 @@
                 "dev-1.x",
                 "1.x-dev"
             ]
-        },
-        "drupal/ckeditor_templates": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         }
     },
     "extra": {
@@ -462,6 +460,12 @@
             },
             "drupal/consumers": {
                 "Entity update still required after update to 1.23": "https://www.drupal.org/files/issues/2026-01-27/drupal-consumers-3569150_07.patch"
+            },
+            "drupal/views_bulk_edit": {
+                "Fix Required fields to really not be required - https://www.drupal.org/project/views_bulk_edit/issues/3024419#comment-16363763": "https://www.drupal.org/files/issues/2025-11-28/3024419-72.patch"
+            },
+            "drupal/views_bulk_operations": {
+                "getSubscribedEvents() fails on `drush updb` due to autoloader negative-cache (missing class_exists() guard) - https://www.drupal.org/project/views_bulk_operations/issues/3589629#comment-16583537": "https://www.drupal.org/files/issues/2026-05-12/views_bulk_operations-class-exists-guard-3589629-2.patch"
             }
           },
         "installer-paths": {

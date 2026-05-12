@@ -65,6 +65,9 @@ function tide_core_install() {
 
   // Enables paragraphs_library.
   $tideCoreOperation->alterParagraphsLibrary();
+
+  // Assign permissions for CKEditor template usage.
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
 }
 
 /**
@@ -1325,4 +1328,75 @@ function tide_core_update_10034() {
 
   $config->setData($raw_data);
   $config->save();
+}
+
+/**
+ * Set default Metatag settings for Media entities.
+ */
+function tide_core_update_10035() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  $config_read = _tide_read_config('metatag.metatag_defaults.media', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('metatag_defaults');
+  $id = $storage->getIDFromConfigName('metatag.metatag_defaults.media', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}
+
+/**
+ * Update the templates to be compatible with the latest CKEditor upstream.
+ */
+function tide_core_update_10036() {
+  $templates      = [
+    'ckeditor_templates.ckeditor_templates.blockquote',
+    'ckeditor_templates.ckeditor_templates.primary_button',
+    'ckeditor_templates.ckeditor_templates.secondary_button',
+  ];
+  $config_factory = \Drupal::configFactory();
+  foreach ($templates as $template) {
+    $config = $config_factory->getEditable($template);
+    $old_code = $config->get('code');
+    if (is_string($old_code)) {
+      $html = str_replace(["\r\n", "\r", "\n"], '', $old_code);
+      $html = preg_replace('/>\s+</', '><', $html);
+      $html = trim($html);
+      $config->set('code', [
+        'value'  => $html,
+        'format' => 'rich_text',
+      ]);
+    }
+    // Add thumb_alternative if not set.
+    if ($config->get('thumb_alternative') === NULL) {
+      $config->set('thumb_alternative', '');
+    }
+    $config->save(TRUE);
+  }
+}
+
+/**
+ * Assign permissions for CKEditor template usage.
+ */
+function tide_core_update_10037() {
+  $tideCoreOperation = new TideCoreOperation();
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
+}
+
+/**
+ * Revoke 'bypass site restriction' permission from previewer role.
+ */
+function tide_core_update_10038() {
+  $role = Role::load('previewer');
+  if ($role && $role->hasPermission('bypass site restriction')) {
+    $role->revokePermission('bypass site restriction');
+    $role->save();
+  }
+}
+
+/**
+ * Install views_bulk_operations and views_bulk_edit.
+ */
+function tide_core_update_10039() {
+  \Drupal::service('module_installer')->install(['views_bulk_operations', 'views_bulk_edit']);
 }

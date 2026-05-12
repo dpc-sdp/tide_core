@@ -26,7 +26,7 @@ trait TideCommonTrait {
   /**
    * Overriding parent function.
    */
-  public function assertAuthenticatedByRole($role) {
+  public function assertAuthenticatedByRole(string $role): void {
     // Override parent assertion to allow using 'anonymous user' role without
     // actually creating a user with role. By default,
     // assertAuthenticatedByRole() will create a user with 'authenticated role'

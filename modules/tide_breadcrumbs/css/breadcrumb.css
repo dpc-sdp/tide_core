@@ -1,0 +1,34 @@
+/**
+ * Styles for the computed breadcrumb trail.
+ */
+.custom-breadcrumb-container {
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.custom-breadcrumb-container strong {
+  margin-right: 10px;
+  color: #333;
+}
+
+.custom-breadcrumb {
+  display: inline;
+}
+
+.custom-breadcrumb a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #0056b3;
+}
+
+.custom-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.custom-breadcrumb .divider {
+  color: #888;
+  padding: 0 8px;
+  font-size: 0.9em;
+  vertical-align: middle;
+}
