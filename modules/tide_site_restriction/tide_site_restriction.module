@@ -482,9 +482,16 @@ function tide_site_restriction_field_widget_single_element_form_alter(&$element,
 /**
  * Implements hook_form_BASE_FORM_ID_alter() for node_form.
  *
- * Adds custom validation to enforce site hierarchy rules and handles
+ * Adds custom validation to enforce site hierarchy rules and handles 
  * auto-selection of site fields if the user only has access to a single site.
  * Logic is bypassed for 'administrator' and 'site_admin' roles.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param string $form_id
+ *   String representing the name of the form itself.
  */
 function tide_site_restriction_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $config = \Drupal::config('tide_site_restriction.settings');
@@ -505,8 +512,18 @@ function tide_site_restriction_form_node_form_alter(&$form, FormStateInterface $
   $node = $form_state->getFormObject()->getEntity();
   $form['#validate'][] = '_tide_site_restriction_node_form_validate';
 
+  // Help text under the Site field heading (AC SD-1485).
+  if (isset($form['field_node_site']['widget'])) {
+    $form['field_node_site']['widget']['#description'] = t('You must select only one site section.');
+  }
+
+  // Skip auto-select on quick_node_clone forms — $node->isNew() is TRUE for
+  // clones too, but the form already carries field values copied from the
+  // source node. Forcing defaults here would wipe the cloned Site sections.
+  $is_clone_form = strpos($form_id, '_quick_node_clone_form') !== FALSE;
+
   $options = $form['field_node_primary_site']['widget']['#options'] ?? [];
-  if (count($options) === 1 && $node->isNew()) {
+  if (count($options) === 1 && $node->isNew() && !$is_clone_form) {
     $target_site_id = key($options);
 
     // Set the value for Primary Site.
@@ -552,24 +569,31 @@ function _tide_site_restriction_node_form_validate($form, FormStateInterface $fo
 
   foreach ($site_list as $item) {
     if ($tid = $item['target_id']) {
-      $parents = $term_storage->loadParents($tid);
-      if (empty($parents)) {
+      // loadAllParents() returns the term itself plus every ancestor, so a
+      // grandchild resolves to its full chain up to the root — needed to
+      // validate L1 + L3 selections where loadParents() only sees the L2
+      // immediate parent.
+      $ancestors = $term_storage->loadAllParents($tid);
+      unset($ancestors[$tid]);
+      if (empty($ancestors)) {
         $root_count++;
         $selected_root_id = $tid;
       }
       else {
         $child_count++;
-        // Check if this child belongs to the selected Primary Site.
-        if (!isset($parents[$primary_site_id])) {
+        // Check if the Primary Site appears anywhere in the ancestor chain.
+        if (!isset($ancestors[$primary_site_id])) {
           $invalid_children[] = $tid;
         }
       }
     }
   }
 
-  // Hierarchy limit check.
-  if ($root_count > 1 || $child_count > 1) {
-    $form_state->setErrorByName('field_node_site', t('You can select a maximum of one primary site and one site section.'));
+  // Only one root site is allowed. Multiple child sections are valid as long
+  // as each is a descendant of the Primary Site, e.g. selecting both an L2
+  // section and its L3 sub-section.
+  if ($root_count > 1) {
+    $form_state->setErrorByName('field_node_site', t('only one site can be selected, please select only one site'));
   }
 
   // Ensures the "Root" selected in site matches "Primary Site" field.
