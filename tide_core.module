@@ -227,6 +227,12 @@ function tide_core_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       '@language-code-list' => $language_code_list_link,
     ]);
   }
+  $user = \Drupal::currentUser();
+  if (!$user->hasPermission('use views bulk edit')) {
+    if ($form_id === 'views_form_summary_contents_filters_page_1' && isset($form['header']['node_bulk_form']['action']['#options']['node_edit_action'])) {
+      unset($form['header']['node_bulk_form']['action']['#options']['node_edit_action']);
+    }
+  }
 }
 
 /**

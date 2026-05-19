@@ -97,6 +97,8 @@
         "drupal/select2": "^1.7",
         "oomphinc/composer-installers-extender": "^2.0",
         "select2/select2": "^4.0",
+        "drupal/views_bulk_operations": "^4.3",
+        "drupal/views_bulk_edit": "^3.0",
         "npm-asset/select2": "^4.0",
         "lcobucci/clock": "3.2.0",
         "drupal/form_options_attributes": "^2.0",
@@ -459,6 +461,12 @@
             },
             "drupal/consumers": {
                 "Entity update still required after update to 1.23": "https://www.drupal.org/files/issues/2026-01-27/drupal-consumers-3569150_07.patch"
+            },
+            "drupal/views_bulk_edit": {
+                "Fix Required fields to really not be required - https://www.drupal.org/project/views_bulk_edit/issues/3024419#comment-16363763": "https://www.drupal.org/files/issues/2025-11-28/3024419-72.patch"
+            },
+            "drupal/views_bulk_operations": {
+                "getSubscribedEvents() fails on `drush updb` due to autoloader negative-cache (missing class_exists() guard) - https://www.drupal.org/project/views_bulk_operations/issues/3589629#comment-16583537": "https://www.drupal.org/files/issues/2026-05-12/views_bulk_operations-class-exists-guard-3589629-2.patch"
             }
           },
         "installer-paths": {
