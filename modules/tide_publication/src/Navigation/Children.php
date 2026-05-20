@@ -5,7 +5,7 @@ namespace Drupal\tide_publication\Navigation;
 use Drupal\Core\Cache\CacheableMetadata;
 
 /**
- * Class Root.
+ * Class Children for navigation.
  */
 class Children extends Base {
 
@@ -44,6 +44,10 @@ class Children extends Base {
 
       $this->list[] = $this->createItem($weight, ['target_id' => $child_id]);
     }
+
+    // Add the collected cacheable metadata to the parent entity.
+    // If any child changes, the cache for this field is invalidated.
+    $entity->addCacheableDependency($cache);
   }
 
 }

@@ -31,11 +31,16 @@ class Next extends Base {
           $next = $delta + 1;
           if (isset($hierarchy[$next])) {
             $this->list[] = $this->createItem(0, ['target_id' => $hierarchy[$next]['entity_id']]);
-            return;
+            // Break the loop and proceed to add cache metadata.
+            break;
           }
         }
       }
     }
+
+    // Add the collected cacheable metadata to the parent entity.
+    // Make sure field invalidates if the root or any hierarchy node changes.
+    $entity->addCacheableDependency($cache);
   }
 
 }
