@@ -237,3 +237,21 @@ function tide_site_update_10006() {
   $config->set($fields_path, $fields);
   $config->save(TRUE);
 }
+
+/**
+ * Change site option to multiple select for moderated content filters.
+ */
+function tide_site_update_10007() {
+  $view_ids = [
+    'views.view.tide_site_moderated_content_filters',
+    'views.view.summary_contents_filters',
+  ];
+  foreach ($view_ids as $view_id) {
+    $config = \Drupal::configFactory()->getEditable($view_id);
+    $key = 'display.default.display_options.filters.field_node_site_target_id.expose.multiple';
+    if ($config->get($key) === FALSE) {
+      $config->set($key, TRUE);
+      $config->save(TRUE);
+    }
+  }
+}
