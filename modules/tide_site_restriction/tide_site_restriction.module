@@ -109,6 +109,9 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
     'media' => [
       'media_page_list' => 'field_media_site_target_id',
     ],
+    'tide_site_moderated_content_filters' => [
+      'moderated_content' => 'field_node_site_target_id',
+    ],
   ];
 
   $account = \Drupal::currentUser();
@@ -122,20 +125,18 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
     $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
     $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
 
+    // Visual (multi-value + Select2) is handled by tide_site. Here we only
+    // inject the user's allowed sites as the default exposed input so the
+    // view is restricted on first load.
     $filters = $view->display_handler->getOption('filters');
-    if (!empty($filters[$filter])) {
-      $filters[$filter]['expose']['multiple'] = TRUE;
-      $view->display_handler->setOption('filters', $filters);
-
-      if (!$user_can_bypass_restriction) {
-        /** @var \Drupal\user\Entity\User $user */
-        $user = User::load($account->id());
-        $user_sites = $site_restriction_helper->getUserSites($user);
-        $exposed_input = $view->getExposedInput();
-        if (!empty($user_sites) && empty($exposed_input)) {
-          $exposed_input[$filter] = $user_sites;
-          $view->setExposedInput($exposed_input);
-        }
+    if (!empty($filters[$filter]) && !$user_can_bypass_restriction) {
+      /** @var \Drupal\user\Entity\User $user */
+      $user = User::load($account->id());
+      $user_sites = $site_restriction_helper->getUserSites($user);
+      $exposed_input = $view->getExposedInput();
+      if (!empty($user_sites) && empty($exposed_input)) {
+        $exposed_input[$filter] = $user_sites;
+        $view->setExposedInput($exposed_input);
       }
     }
   }
@@ -226,10 +227,11 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
  * Implements hook_form_FORM_ID_alter().
  */
 function tide_site_restriction_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  // Enable Select2 to Site filter of Content Admin view.
+  // Enable Select2 on Site filters for the views this module owns.
+  // summary_contents_filters and tide_site_moderated_content_filters are
+  // styled by tide_site instead, so they're intentionally omitted here.
   $form_ids = [
     'views-exposed-form-media-media-page-list' => 'field_media_site_target_id',
-    'views-exposed-form-summary-contents-filters-page-1' => 'sub_sites_filter',
     'views-exposed-form-user-admin-people-page-1' => 'field_user_site_target_id_1',
   ];
   foreach ($form_ids as $form_id => $filter) {
