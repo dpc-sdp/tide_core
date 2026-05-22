@@ -21,7 +21,6 @@ dependencies:
     - link
     - path
     - select2
-    - tide_site_restriction
 third_party_settings:
   field_group:
     group_tags_and_metadata:
@@ -157,14 +156,14 @@ content:
       placeholder_title: ''
     third_party_settings: {  }
   field_node_primary_site:
-    type: tide_site_restriction_field_widget
+    type: options_buttons
     weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
     field_name: field_node_primary_site
   field_node_site:
-    type: tide_site_restriction_field_widget
+    type: options_buttons
     weight: 5
     region: content
     settings: {  }
