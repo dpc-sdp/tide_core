@@ -1,0 +1,103 @@
+uuid: 2826e25d-0fca-4640-a943-d6d519225db7
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.full
+    - field.field.node.external_site_link.field_content_keywords
+    - field.field.node.external_site_link.field_featured_image
+    - field.field.node.external_site_link.field_landing_page_summary
+    - field.field.node.external_site_link.field_node_department
+    - field.field.node.external_site_link.field_node_link
+    - field.field.node.external_site_link.field_node_primary_site
+    - field.field.node.external_site_link.field_node_site
+    - field.field.node.external_site_link.field_tags
+    - field.field.node.external_site_link.field_topic
+    - node.type.external_site_link
+  module:
+    - link
+    - user
+id: node.external_site_link.full
+targetEntityType: node
+bundle: external_site_link
+mode: full
+content:
+  field_content_keywords:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_featured_image:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_landing_page_summary:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_node_department:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  field_node_link:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_node_primary_site:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 7
+    region: content
+  field_node_site:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 8
+    region: content
+  field_tags:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 5
+    region: content
+  field_topic:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
+hidden:
+  computed_breadcrumb_trail: true
+  links: true
+  search_api_excerpt: true

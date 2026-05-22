@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Tide Profile module install file..
+ */
+
+use Drupal\tide_external_site_link\TideExternalSiteLinkOperation;
+
+/**
+ * Implements hook_install().
+ */
+function tide_external_site_link_install() {
+  // Don't do anything else during config sync.
+  if (\Drupal::isConfigSyncing()) {
+    return;
+  }
+
+  TideExternalSiteLinkOperation::addToWorkflows();
+  TideExternalSiteLinkOperation::assignNecessaryPermissions();
+  TideExternalSiteLinkOperation::addFieldsToSearchApi();
+}

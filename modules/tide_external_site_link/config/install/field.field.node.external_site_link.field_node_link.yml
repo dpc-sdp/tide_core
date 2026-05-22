@@ -1,0 +1,36 @@
+uuid: bd92bee5-5424-47df-a04c-22c356bf8a64
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_node_link
+    - node.type.external_site_link
+  module:
+    - link
+    - link_field_autocomplete_filter
+third_party_settings:
+  link_field_autocomplete_filter:
+    negate: null
+    allowed_content_types:
+      external_site_link: '0'
+      alert: '0'
+      event: '0'
+      grant: '0'
+      landing_page: '0'
+      news: '0'
+      test: '0'
+      tide_search_listing: '0'
+id: node.external_site_link.field_node_link
+field_name: field_node_link
+entity_type: node
+bundle: external_site_link
+label: 'Website URL'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 0
+  link_type: 16
+field_type: link
