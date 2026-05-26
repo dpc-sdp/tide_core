@@ -22,7 +22,6 @@ dependencies:
     - link
     - path
     - select2
-    - term_reference_tree
 third_party_settings:
   field_group:
     group_tags_and_metadata:
@@ -105,15 +104,14 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_content_category:
-    type: term_reference_tree
+    type: select2_entity_reference
     weight: 4
     region: content
     settings:
-      start_minimized: true
-      leaves_only: false
-      select_parents: false
-      cascading_selection: 0
-      max_depth: 0
+      width: 100%
+      autocomplete: false
+      match_operator: CONTAINS
+      match_limit: 10
     third_party_settings: {  }
   field_content_keywords:
     type: string_textfield
