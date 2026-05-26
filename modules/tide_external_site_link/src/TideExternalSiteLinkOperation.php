@@ -113,7 +113,7 @@ class TideExternalSiteLinkOperation {
 
     // Index the keywords field.
     $summary_field = new Field($index, 'field_content_keywords');
-    $summary_field->setType('text');
+    $summary_field->setType('string');
     $summary_field->setPropertyPath('field_content_keywords');
     $summary_field->setDatasourceId('entity:node');
     $summary_field->setLabel('Content keywords');

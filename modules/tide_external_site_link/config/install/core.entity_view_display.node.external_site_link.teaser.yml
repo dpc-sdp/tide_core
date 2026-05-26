@@ -1,9 +1,9 @@
-uuid: beee30d7-24b3-45a8-a2d0-c12f3e1eb389
 langcode: en
 status: false
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.external_site_link.field_content_category
     - field.field.node.external_site_link.field_content_keywords
     - field.field.node.external_site_link.field_featured_image
     - field.field.node.external_site_link.field_landing_page_summary
@@ -26,12 +26,18 @@ content:
     third_party_settings: {  }
     weight: -10
     region: content
+  content_moderation_control:
+    settings: {  }
+    third_party_settings: {  }
+    weight: -20
+    region: content
   links:
     settings: {  }
     third_party_settings: {  }
     weight: 100
     region: content
 hidden:
+  field_content_category: true
   field_content_keywords: true
   field_featured_image: true
   field_landing_page_summary: true

@@ -1,9 +1,9 @@
-uuid: 2826e25d-0fca-4640-a943-d6d519225db7
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.node.full
+    - field.field.node.external_site_link.field_content_category
     - field.field.node.external_site_link.field_content_keywords
     - field.field.node.external_site_link.field_featured_image
     - field.field.node.external_site_link.field_landing_page_summary
@@ -22,13 +22,26 @@ targetEntityType: node
 bundle: external_site_link
 mode: full
 content:
+  content_moderation_control:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_content_category:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 7
+    region: content
   field_content_keywords:
     type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 3
+    weight: 4
     region: content
   field_featured_image:
     type: entity_reference_label
@@ -36,14 +49,14 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 2
+    weight: 3
     region: content
   field_landing_page_summary:
     type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 0
+    weight: 1
     region: content
   field_node_department:
     type: entity_reference_label
@@ -51,7 +64,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 6
+    weight: 8
     region: content
   field_node_link:
     type: link
@@ -63,7 +76,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 1
+    weight: 2
     region: content
   field_node_primary_site:
     type: entity_reference_label
@@ -71,7 +84,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 7
+    weight: 9
     region: content
   field_node_site:
     type: entity_reference_label
@@ -79,7 +92,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 8
+    weight: 10
     region: content
   field_tags:
     type: entity_reference_label
@@ -87,7 +100,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 5
+    weight: 6
     region: content
   field_topic:
     type: entity_reference_label
@@ -95,7 +108,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 4
+    weight: 5
     region: content
 hidden:
   computed_breadcrumb_trail: true
