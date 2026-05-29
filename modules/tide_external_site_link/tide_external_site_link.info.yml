@@ -25,3 +25,5 @@ config_devel:
     - field.field.node.external_site_link.field_tags.yml
     - field.field.node.external_site_link.field_topic.yml
     - node.type.external_site_link.yml
+  optional:
+    - pathauto.pattern.external_site_links
