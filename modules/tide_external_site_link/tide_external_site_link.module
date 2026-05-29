@@ -83,6 +83,8 @@ function tide_external_site_link_form_node_form_alter(&$form, FormStateInterface
     unset($form['url_redirects']);
     // Simple XML Sitemap.
     unset($form['simple_sitemap']);
+    // Preview button.
+    unset($form['actions']['preview']);
 
     $form['actions']['submit']['#submit'][] = 'tide_external_site_link_node_form_submit';
   }
