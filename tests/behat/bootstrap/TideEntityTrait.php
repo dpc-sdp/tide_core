@@ -29,7 +29,10 @@ trait TideEntityTrait {
   public function createEntities($type, $bundle, TableNode $nodesTable) {
     foreach ($nodesTable->getHash() as $nodeHash) {
       $entity = (object) $nodeHash;
-      $entity->bundle = $type;
+      $entity_type = \Drupal::entityTypeManager()->getDefinition($type);
+      if ($entity_type->hasKey('bundle')) {
+        $entity->{$entity_type->getKey('bundle')} = $bundle;
+      }
       $this->entityCreate($entity, $type, $bundle);
     }
   }

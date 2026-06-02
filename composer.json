@@ -16,11 +16,12 @@
         "drupal/config_perms": "2.x-dev@dev",
         "drupal/config_split": "^2.0",
         "drupal/config_update": "^2.0@alpha",
-        "drupal/core": "10.5.2",
-        "drupal/core-recommended": "10.5.2",
+        "drupal/core": "10.6.x",
+        "drupal/core-recommended": "10.6.x",
         "drupal/monitoring": "^1.13",
-        "drupal/ckeditor_templates": "dev-feature/d10-compatible-with-ck5-support",
+        "drupal/ckeditor_templates": "^2.0",
         "drupal/ctools": "^3.14",
+        "drupal/js_cookie": "^1.0",
         "drupal/diff": "^1.1",
         "drupal/editor_advanced_link": "2.3.1",
         "drupal/entity_browser": "^2.9",
@@ -44,7 +45,7 @@
         "drupal/media_entity_audio": "^3.1",
         "drupal/metatag": "^2.0",
         "drupal/override_node_options": "^2.7",
-        "drupal/paragraphs": "^1.15",
+        "drupal/paragraphs": "1.19",
         "drupal/password_policy": "^4.0",
         "drupal/password_strength": "^2.0@beta",
         "drupal/pathauto": "^1.11",
@@ -59,8 +60,8 @@
         "drupal/smtp": "^1.2",
         "drupal/stage_file_proxy": "^2.0",
         "drupal/tablefield": "2.4",
-        "drupal/tfa": "1.9",
-        "drupal/tfa_email_otp": "^1.0@beta",
+        "drupal/tfa": "^1.12",
+        "drupal/tfa_email_otp": "^1.0",
         "drupal/token_conditions": "dev-compatible-with-d10",
         "drupal/token_filter": "^2.0",
         "drupal/twig_field_value": "^2.0",
@@ -72,7 +73,7 @@
         "drupal/scheduled_transitions": "2.5",
         "drupal/link_field_autocomplete_filter": "^2.0",
         "drupal/queue_mail": "^1.5",
-        "drupal/token": "^1.15",
+        "drupal/token": "1.16",
         "drupal/user_created_by_field": "^1.1",
         "drupal/username_enumeration_prevention": "^1.3",
         "drupal/quick_node_clone": "^1.16",
@@ -96,6 +97,8 @@
         "drupal/select2": "^1.7",
         "oomphinc/composer-installers-extender": "^2.0",
         "select2/select2": "^4.0",
+        "drupal/views_bulk_operations": "^4.3",
+        "drupal/views_bulk_edit": "^3.0",
         "npm-asset/select2": "^4.0",
         "lcobucci/clock": "3.2.0",
         "drupal/form_options_attributes": "^2.0",
@@ -124,13 +127,14 @@
         "drupal/shield": "^1.8",
         "drupal/media_alias_display": "^2.1",
         "drupal/search_api_exclude_entity": "^3.0",
-        "drupal/default_paragraphs": "^2.0"
+        "drupal/default_paragraphs": "^2.0",
+        "drupal/view_password": "^6.0"
     },
     "repositories": {
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/ckeditor_templates", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions", "drupal/create_menus_permission"]
         },
         "choices": {
             "_webform": true,
@@ -346,17 +350,12 @@
                 "dev-1.x",
                 "1.x-dev"
             ]
-        },
-        "drupal/ckeditor_templates": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/ckeditor_templates.git"
         }
     },
     "extra": {
         "patches": {
             "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-14405529": "https://www.drupal.org/files/issues/2022-02-10/3263615-admin_audit_trail-option_for_cli-3.patch"
+                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16412890": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
             },
             "drupal/core": {
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16166063": "https://www.drupal.org/files/issues/2025-06-26/xss-refactor-filter-attributes-10.5.x-3109650-85.patch",
@@ -409,12 +408,12 @@
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
             },
             "drupal/key": {
-                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch",
-                "Error: Call to a member function getKeyValue on null - https://www.drupal.org/project/key/issues/3385523": "https://www.drupal.org/files/issues/2023-09-06/3385523-4.patch"
+                "KeyProviderInterface::getKeyValue() doesn't always return a string - https://www.drupal.org/project/key/issues/3356052#comment-16093356": "https://www.drupal.org/files/issues/2025-05-02/key_3356052_11.patch"
             },
             "drupal/data_pipelines": {
                 "Add data-pipelines:reindex-all Drush command to reindex all datasets at once - https://www.drupal.org/project/data_pipelines/issues/3540691": "https://www.drupal.org/files/issues/2025-08-11/3228246-add-reindex-all-drush-command.patch",
-                "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch"
+                "Drush data-pipelines:reindex interact hook uses wrong argument name (machine_name vs machine_names) - https://www.drupal.org/project/data_pipelines/issues/3541050#comment-16226016": "https://www.drupal.org/files/issues/2025-08-12/3541050-machine-names-argument-mismatch.patch",
+                "data_pipelines_update_8017 fails with `SQLSTATE[01000]: Data truncated` when updating entity keys and adding field - https://www.drupal.org/project/data_pipelines/issues/3560388#comment-16363758": "https://www.drupal.org/files/issues/2025-11-28/data_pipelines-3560388-2.patch"
             },
             "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
                 "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch",
@@ -427,7 +426,8 @@
                 "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
             },
             "drupal/content_lock": {
-                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch"
+                "Altering timeout message - https://www.drupal.org/project/content_lock/issues/3214877#comment-14108752": "https://www.drupal.org/files/issues/2021-05-20/content_lock_3214877_3.patch",
+                "Fatal error 'Truncated incorrect DOUBLE value' on MySQL 8 when deleting config entities": "https://www.drupal.org/files/issues/2026-02-03/content_lock-3571174_2.patch"
             },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
@@ -449,16 +449,25 @@
                 "Force user to setup TFA when required and there are no remaining skips - https://www.drupal.org/project/tfa/issues/3223327#comment-15468410": "https://www.drupal.org/files/issues/2024-02-29/DD-1756-force-tfa-user-setup-3223327-38.patch",
                 "TfaLoginController enforces opaque form expiration - https://www.drupal.org/project/tfa/issues/3390083#comment-15753259": "https://www.drupal.org/files/issues/2024-09-02/3390083-3.patch"
             },
-            "drupal/tfa_email_otp": {
-                "Disable Verify button on first landing to the tfa form - https://www.drupal.org/project/tfa_email_otp/issues/3469826#comment-15740693": "https://www.drupal.org/files/issues/2024-08-23/3469826-disable-verify-button.patch"
-            },
             "drupal/elasticsearch_connector": {
                 "Allow dashes in index name": "https://gist.githubusercontent.com/nicksantamaria/95677ffa87a9e1433bfc27c3ebdefd35/raw/68d6eb055150d1e99ad6f0da49d68a6a4c2d6348/elasticsearch_connector-dashed-index.patch"
             },
            "drupal/select2": {
                 "remove Drag to re-order entity_type description": "https://www.drupal.org/files/issues/2023-09-08/select2-remove-drag-to-reorder-description-3178287-11.patch"
+            },
+           "drupal/redirect": {
+                "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
+            },
+            "drupal/consumers": {
+                "Entity update still required after update to 1.23": "https://www.drupal.org/files/issues/2026-01-27/drupal-consumers-3569150_07.patch"
+            },
+            "drupal/views_bulk_edit": {
+                "Fix Required fields to really not be required - https://www.drupal.org/project/views_bulk_edit/issues/3024419#comment-16363763": "https://www.drupal.org/files/issues/2025-11-28/3024419-72.patch"
+            },
+            "drupal/views_bulk_operations": {
+                "getSubscribedEvents() fails on `drush updb` due to autoloader negative-cache (missing class_exists() guard) - https://www.drupal.org/project/views_bulk_operations/issues/3589629#comment-16583537": "https://www.drupal.org/files/issues/2026-05-12/views_bulk_operations-class-exists-guard-3589629-2.patch"
             }
-        },
+          },
         "installer-paths": {
             "docroot/libraries/{$name}": [
                 "type:drupal-library",
@@ -472,6 +481,9 @@
         "allow-plugins": {
             "composer/installers": true,
             "oomphinc/composer-installers-extender": true
-        }
+        },
+        "audit": {
+          "block-insecure": false
+      }
     }
 }

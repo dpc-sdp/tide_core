@@ -26,7 +26,7 @@ trait TideCommonTrait {
   /**
    * Overriding parent function.
    */
-  public function assertAuthenticatedByRole($role) {
+  public function assertAuthenticatedByRole(string $role): void {
     // Override parent assertion to allow using 'anonymous user' role without
     // actually creating a user with role. By default,
     // assertAuthenticatedByRole() will create a user with 'authenticated role'
@@ -128,6 +128,36 @@ JS;
       throw new \Exception('The horizontal tab with text "' . $text . '" not found.');
     }
     $link->click();
+  }
+
+  /**
+   * @Then /^I click on the element "([^"]*)"$/
+   *
+   * @param string $selector
+   *   A CSS selector.
+   */
+  public function clickOnElement(string $selector) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('css', $selector);
+    if ($element === NULL) {
+      throw new \Exception('The element "' . $selector . '" was not found.');
+    }
+    $element->click();
+  }
+
+  /**
+   * @Then /^I click on the modal element "([^"]*)"$/
+   *
+   * @param string $selector
+   *   A CSS selector.
+   */
+  public function clickOnModalElement(string $selector) {
+    $page = $this->getSession()->getPage();
+    $element = $page->find('css', "[role='dialog'] {$selector}");
+    if ($element === NULL) {
+      throw new \Exception('The element "' . $selector . '" was not found in modal.');
+    }
+    $element->click();
   }
 
   /**

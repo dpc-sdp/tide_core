@@ -10,6 +10,3 @@ access user creation page:
 access role management page:
   title: 'Access role management page'
   description: 'Allow access to /admin/people/roles'
-access permissions management page:
-  title: 'Access permissions management page'
-  description: 'Allow access to /admin/people/permissions'

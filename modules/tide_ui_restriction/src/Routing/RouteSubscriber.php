@@ -38,7 +38,6 @@ class RouteSubscriber extends RouteSubscriberBase {
       '/admin/people/create' => 'access user creation page',
       '/admin/people/role-settings' => 'access role management page',
       '/admin/people/roles' => 'access role management page',
-      '/admin/people/permissions' => 'access permissions management page',
     ];
     foreach ($collection as $route) {
       $path = $route->getPath();

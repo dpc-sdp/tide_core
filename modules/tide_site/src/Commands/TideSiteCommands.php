@@ -45,7 +45,7 @@ class TideSiteCommands extends DrushCommands {
             $domain = explode('|', $fe_domain);
             $term = Term::load($domain[0]);
             // Check if the term exists before trying to manipulate it.
-            if ($term) {
+            if (!empty($term) && $term->bundle == 'sites') {
               $term->set('field_site_domains', str_replace('<br/>', "\r\n", $domain[1]));
               $term->save();
             }

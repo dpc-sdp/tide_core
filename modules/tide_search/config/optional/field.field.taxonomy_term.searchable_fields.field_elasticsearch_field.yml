@@ -9,8 +9,8 @@ field_name: field_elasticsearch_field
 entity_type: taxonomy_term
 bundle: searchable_fields
 label: 'Elasticsearch field'
-description: ''
-required: false
+description: 'This is the elasticsearch key of the display value, i.e. the field that stores the displayed title.'
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

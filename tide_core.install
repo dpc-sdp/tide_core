@@ -6,6 +6,7 @@
  */
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\metatag\Entity\MetatagDefaults;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\tide_core\TideCoreOperation;
@@ -64,6 +65,9 @@ function tide_core_install() {
 
   // Enables paragraphs_library.
   $tideCoreOperation->alterParagraphsLibrary();
+
+  // Assign permissions for CKEditor template usage.
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
 }
 
 /**
@@ -720,7 +724,7 @@ function tide_core_update_10022() {
 /**
  * Adds the 'Tags and Metadata' group to all content types.
  */
-function tide_core_update_10023() {
+function tide_core_update_10024() {
   // Fields settings.
   $tag_fields = [
     10 => 'field_topic',
@@ -911,19 +915,13 @@ function tide_core_update_10023() {
     }
 
     // Change field_content_category to optional.
-    // Change field_tags's label to 'Audience'.
     $storage = \Drupal::entityTypeManager()->getStorage('field_config');
     /** @var \Drupal\field\Entity\FieldConfig $field_content_category */
     $field_content_category = $storage->load('node.' . $id . '.field_content_category');
-    $field_tags = $storage->load('node.' . $id . '.field_tags');
     if ($field_content_category) {
       $field_content_category->setRequired(FALSE);
       $field_content_category->setDescription('');
       $field_content_category->save();
-    }
-    if ($field_tags) {
-      $field_tags->set('label', 'Audience');
-      $field_tags->save();
     }
 
     // Update field_featured_image.
@@ -1044,7 +1042,7 @@ function tide_core_update_10023() {
 /**
  * Change field_content_category to select2 widget,and also remove parent.
  */
-function tide_core_update_10024() {
+function tide_core_update_10025() {
   $default_category_id = 1416;
   $field_content_category_widget_settings = [
     'type' => 'select2_entity_reference',
@@ -1116,7 +1114,7 @@ function tide_core_update_10024() {
 /**
  * Change widget for field_topic and field_tags.
  */
-function tide_core_update_10025() {
+function tide_core_update_10026() {
   $fields_to_change = [
     'field_topic',
     'field_tags',
@@ -1150,7 +1148,7 @@ function tide_core_update_10025() {
 /**
  * Revoke `delete` from all content types on the 3 roles.
  */
-function tide_core_update_10026() {
+function tide_core_update_10027() {
   $content_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
   $roles = [
     'editor',
@@ -1169,7 +1167,7 @@ function tide_core_update_10026() {
 /**
  * Fixes mismatched entity and/or field definitions" error.
  */
-function tide_core_update_10027() {
+function tide_core_update_10028() {
   $entity_type_manager = \Drupal::entityTypeManager();
   $entity_type_manager->clearCachedDefinitions();
   $entity_type_ids = [];
@@ -1182,4 +1180,223 @@ function tide_core_update_10027() {
     }
     Drush::output()->writeln('Installed/Updated the entity type(s): ' . implode(', ', $entity_type_ids));
   }
+}
+
+/**
+ * Install field_show_feature_image storage.
+ */
+function tide_core_update_10029() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('field.storage.node.field_show_feature_image', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $id = $storage->getIDFromConfigName('field.storage.node.field_show_feature_image', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}
+
+/**
+ * Revoke the "administer permissions" approver_plus.
+ */
+function tide_core_update_10030() {
+  $role = Role::load('approver_plus');
+
+  if ($role && $role->hasPermission('administer permissions')) {
+    $role->revokePermission('administer permissions');
+    $role->save();
+  }
+}
+
+/**
+ * Assign editor's clone permissions to approvers.
+ */
+function tide_core_update_10031() {
+  $editor_role = Role::load('editor');
+  $editor_permissions = $editor_role->getPermissions();
+  $approver_role = Role::load('approver');
+  foreach ($editor_permissions as $permission) {
+    if (strpos($permission, 'clone') === 0) {
+      $approver_role->grantPermission($permission);
+    }
+  }
+  $approver_role->save();
+}
+
+/**
+ * Update token for the metatag description field.
+ */
+function tide_core_update_10032() {
+  $metatag = MetatagDefaults::load('node');
+  if ($metatag) {
+    $tags = $metatag->get('tags');
+    $tags['description'] = "[node:field_landing_page_summary]";
+    $metatag->set('tags', $tags);
+    $metatag->save();
+  }
+}
+
+/**
+ * Add Topic field, Author by role filter and Topic filter to the content view.
+ */
+function tide_core_update_10033() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('views.view.summary_contents_filters', $config_location, FALSE);
+
+  $config = \Drupal::configFactory()->getEditable('views.view.summary_contents_filters');
+  if ($config->isNew()) {
+    return;
+  }
+
+  $raw_data = $config->getRawData();
+  $display_options = &$raw_data['display']['default']['display_options'];
+
+  // Insert field_topic after 'name' and before 'type' in fields.
+  $new_fields = [];
+  foreach ($display_options['fields'] as $key => $value) {
+    $new_fields[$key] = $value;
+    if ($key === 'name') {
+      $new_fields['field_topic'] = $config_read['display']['default']['display_options']['fields']['field_topic'];
+    }
+  }
+  $display_options['fields'] = $new_fields;
+
+  // Insert author_by_role_filter and field_topic_target_id after 'Sub-Site'
+  // (sub_sites_filter) and before 'Content type' (type) in filters.
+  $new_filters = [];
+  foreach ($display_options['filters'] as $key => $value) {
+    $new_filters[$key] = $value;
+    if ($key === 'sub_sites_filter' || $key === 'field_node_site_target_id') {
+      $new_filters['author_by_role_filter'] = $config_read['display']['default']['display_options']['filters']['author_by_role_filter'];
+      $new_filters['field_topic_target_id'] = $config_read['display']['default']['display_options']['filters']['field_topic_target_id'];
+    }
+  }
+  $display_options['filters'] = $new_filters;
+
+  // Update style info: make 'name' sortable and add 'field_topic' column.
+  $style_info = &$display_options['style']['options']['info'];
+  $style_info['name']['sortable'] = TRUE;
+  $style_info['field_topic'] = $config_read['display']['default']['display_options']['style']['options']['info']['field_topic'];
+
+  $config->setData($raw_data);
+  $config->save();
+}
+
+/**
+ * Add topic sort handler and field_topic relationship to the content view.
+ */
+function tide_core_update_10034() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $config_read = _tide_read_config('views.view.summary_contents_filters', $config_location, FALSE);
+
+  $config = \Drupal::configFactory()->getEditable('views.view.summary_contents_filters');
+  if ($config->isNew()) {
+    return;
+  }
+
+  $raw_data = $config->getRawData();
+  $display_options = &$raw_data['display']['default']['display_options'];
+
+  // Add the 'name' sort handler (sort by taxonomy term name via field_topic
+  // relationship) after the existing 'changed' sort.
+  if (!isset($display_options['sorts']['name'])) {
+    $new_sorts = [];
+    foreach ($display_options['sorts'] as $key => $value) {
+      $new_sorts[$key] = $value;
+      if ($key === 'changed') {
+        $new_sorts['name'] = $config_read['display']['default']['display_options']['sorts']['name'];
+      }
+    }
+    $display_options['sorts'] = $new_sorts;
+  }
+
+  // Add the 'field_topic' relationship (joins to taxonomy_term_field_data)
+  // after the existing 'uid' relationship.
+  if (!isset($display_options['relationships']['field_topic'])) {
+    $new_relationships = [];
+    foreach ($display_options['relationships'] as $key => $value) {
+      $new_relationships[$key] = $value;
+      if ($key === 'uid') {
+        $new_relationships['field_topic'] = $config_read['display']['default']['display_options']['relationships']['field_topic'];
+      }
+    }
+    $display_options['relationships'] = $new_relationships;
+  }
+
+  $config->setData($raw_data);
+  $config->save();
+}
+
+/**
+ * Set default Metatag settings for Media entities.
+ */
+function tide_core_update_10035() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+  $config_read = _tide_read_config('metatag.metatag_defaults.media', $config_location, TRUE);
+  $storage = \Drupal::entityTypeManager()->getStorage('metatag_defaults');
+  $id = $storage->getIDFromConfigName('metatag.metatag_defaults.media', $storage->getEntityType()->getConfigPrefix());
+  if ($storage->load($id) === NULL) {
+    $config_entity = $storage->createFromStorageRecord($config_read);
+    $config_entity->save();
+  }
+}
+
+/**
+ * Update the templates to be compatible with the latest CKEditor upstream.
+ */
+function tide_core_update_10036() {
+  $templates      = [
+    'ckeditor_templates.ckeditor_templates.blockquote',
+    'ckeditor_templates.ckeditor_templates.primary_button',
+    'ckeditor_templates.ckeditor_templates.secondary_button',
+  ];
+  $config_factory = \Drupal::configFactory();
+  foreach ($templates as $template) {
+    $config = $config_factory->getEditable($template);
+    $old_code = $config->get('code');
+    if (is_string($old_code)) {
+      $html = str_replace(["\r\n", "\r", "\n"], '', $old_code);
+      $html = preg_replace('/>\s+</', '><', $html);
+      $html = trim($html);
+      $config->set('code', [
+        'value'  => $html,
+        'format' => 'rich_text',
+      ]);
+    }
+    // Add thumb_alternative if not set.
+    if ($config->get('thumb_alternative') === NULL) {
+      $config->set('thumb_alternative', '');
+    }
+    $config->save(TRUE);
+  }
+}
+
+/**
+ * Assign permissions for CKEditor template usage.
+ */
+function tide_core_update_10037() {
+  $tideCoreOperation = new TideCoreOperation();
+  $tideCoreOperation->assignCkeditorTemplatesPermission();
+}
+
+/**
+ * Revoke 'bypass site restriction' permission from previewer role.
+ */
+function tide_core_update_10038() {
+  $role = Role::load('previewer');
+  if ($role && $role->hasPermission('bypass site restriction')) {
+    $role->revokePermission('bypass site restriction');
+    $role->save();
+  }
+}
+
+/**
+ * Install views_bulk_operations and views_bulk_edit.
+ */
+function tide_core_update_10039() {
+  \Drupal::service('module_installer')->install(['views_bulk_operations', 'views_bulk_edit']);
 }

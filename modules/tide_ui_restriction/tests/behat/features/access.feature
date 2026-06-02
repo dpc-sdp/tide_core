@@ -9,7 +9,11 @@ Feature: Access restrictions
     When I go to "admin/people/create"
     Then I should get a 404 HTTP response
 
-
+  @api
+  Scenario: Approver plus role should not have access to the permission page.
+    Given I am logged in as a user with the "approver_plus" role
+    When I go to "admin/people/permissions"
+    Then I should get a 404 HTTP response
 
   @api @trait:LinkTrait
   Scenario: approver_plus user can see but not edit admin and site_admin users.

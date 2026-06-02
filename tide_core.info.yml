@@ -117,6 +117,7 @@ dependencies:
   - drupal:text
   - drupal:user
   - drupal:path_alias
+  - prlp:prlp
   - key_value_field:key_value_field
   - pathauto:pathauto
   - entity_browser:entity_browser
@@ -124,6 +125,8 @@ dependencies:
   - create_menus_permission:create_menus_permission
   - search_api:search_api
   - search_api_exclude_entity:search_api_exclude_entity
+  - views_bulk_operations:views_bulk_operations
+  - views_bulk_edit:views_bulk_edit
 themes:
   - claro
 config_devel:

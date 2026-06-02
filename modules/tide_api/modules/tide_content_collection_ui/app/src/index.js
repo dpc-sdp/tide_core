@@ -1,0 +1,26 @@
+import { getJson, initApp, setJson } from '@dpc-sdp/tide-content-collection-ui'
+import '@dpc-sdp/tide-content-collection-ui/styles'
+
+;(($) => {
+  Drupal.behaviors.contentCollection = {
+    attach: function (context) {
+      once('content-collection-init', '.content-collection-app', context).forEach(function (container) {
+        const wrap = container.closest('.field--type-tide-content-collection-ui')
+        const index = container.getAttribute('data-index') || '0'
+        const config = container.getAttribute('data-config') || '{}'
+        const field = wrap?.querySelector(`#content-collection-value-${index}`)
+        const exists = container?.querySelector(`.tide-form`)
+
+        if (!exists && field) {
+          initApp(container, {
+            index,
+            form: getJson(field.value),
+            config: getJson(config),
+            update: (form) => (field.value = setJson(form)),
+            baseUrl: window.location.origin
+          })
+        }
+      })
+    }
+  }
+})(jQuery)

@@ -1,0 +1,4 @@
+services:
+  tide_content_collection_ui.node_autocomplete_controller:
+    class: Drupal\tide_content_collection_ui\Controller\ContentCollectionNodeAutocomplete
+    arguments: ['@entity_type.manager']

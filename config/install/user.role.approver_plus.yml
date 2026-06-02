@@ -46,7 +46,6 @@ permissions:
   - 'administer block types'
   - 'administer blocks'
   - 'administer menu'
-  - 'administer permissions'
   - 'administer redirects'
   - 'administer url aliases'
   - 'administer users'

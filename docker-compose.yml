@@ -147,7 +147,7 @@ services:
       lagoon.type: none
 
   clamav:
-    image: "clamav/clamav-debian:1.2.0-6"
+    image: "clamav/clamav-debian:stable"
     environment:
       <<: *default-environment
     ports:

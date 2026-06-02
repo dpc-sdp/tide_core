@@ -39,6 +39,15 @@ class WebformElementsEnhancer extends ResourceFieldEnhancerBase {
       if (isset($element['#type']) && $element['#type'] === 'processed_text') {
         $element = $this->transformProcessedText($element);
       }
+      if (isset($element['#type']) && $element['#type'] === 'webform_json_element') {
+        if (!empty($element['#json_payload']) && is_string($element['#json_payload'])) {
+          $decoded = json_decode($element['#json_payload'], TRUE);
+          // Only replace if it's valid JSON.
+          if (json_last_error() === JSON_ERROR_NONE) {
+            $element['#json_payload'] = $decoded;
+          }
+        }
+      }
       // Apply token replacements recursively.
       $this->replaceTokensInDefaultValue($element, $token_service);
     }
