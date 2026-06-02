@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsButtonsWidget;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -86,6 +87,138 @@ class TideSiteRestrictionFieldWidget extends OptionsButtonsWidget implements Con
       $container->get('tide_site_restriction.helper'),
       $container->get('content_moderation.moderation_information')
     );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $element = parent::formElement($items, $delta, $element, $form, $form_state);
+
+    $field_name = $this->fieldDefinition->getName();
+    $entity_type = $this->fieldDefinition->getTargetEntityTypeId();
+
+    // The JS coupling only makes sense for the node Primary Site / Site fields.
+    $is_primary = TideSiteFields::isSiteField($field_name, TideSiteFields::FIELD_PRIMARY_SITE);
+    $is_site = TideSiteFields::isSiteField($field_name, TideSiteFields::FIELD_SITE);
+    if ($entity_type !== 'node' || (!$is_primary && !$is_site)) {
+      return $element;
+    }
+
+    // Users who can bypass the site restriction (e.g. administrator,
+    // site_admin) may freely select any sites: skip the JS coupling and the
+    // single-tree validation entirely.
+    if ($this->helper->canBypassRestriction($this->currentUser)) {
+      return $element;
+    }
+
+    // Attach the behaviour and the data it needs. Both field instances push
+    // into the same drupalSettings bucket; the shared payload is idempotent and
+    // each instance only declares its own role.
+    $element['#attached']['library'][] = 'tide_site_restriction/site_fields';
+    $element['#attached']['drupalSettings']['tideSiteRestriction'] = [
+      'fields' => [$is_primary ? 'primary' : 'site' => $field_name],
+      'isNew' => $this->isNewEntityForm($form_state),
+    ];
+
+    // Backend safety net: enforce the single-tree invariant on the Site field.
+    if ($is_site) {
+      $element['#tide_primary_field'] = TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_PRIMARY_SITE, $entity_type);
+      $element['#tide_site_field'] = $field_name;
+      $element['#element_validate'][] = [static::class, 'validateSiteTree'];
+    }
+
+    return $element;
+  }
+
+  /**
+   * Determines whether the widget is rendered on a new entity form.
+   *
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return bool
+   *   TRUE if the entity being edited is new.
+   */
+  protected function isNewEntityForm(FormStateInterface $form_state) {
+    $form_object = $form_state->getFormObject();
+    return $form_object instanceof EntityFormInterface && $form_object->getEntity()->isNew();
+  }
+
+  /**
+   * Element validate handler enforcing the Primary Site tree invariant.
+   *
+   * The Site field must contain the selected Primary Site and may only contain
+   * terms that belong to that Primary Site's tree (the Primary Site or one of
+   * its descendants). This mirrors the JS behaviour for php submits.
+   */
+  public static function validateSiteTree(array &$element, FormStateInterface $form_state) {
+    $primary_field = $element['#tide_primary_field'] ?? NULL;
+    $site_field = $element['#tide_site_field'] ?? NULL;
+    if (!$primary_field || !$site_field) {
+      return;
+    }
+
+    $primary_tid = static::extractTargetIds($form_state->getValue($primary_field));
+    $primary_tid = reset($primary_tid);
+    // When no Primary Site is selected, the field's own required validation
+    // reports it; there is nothing to cross-check here.
+    if (empty($primary_tid)) {
+      return;
+    }
+
+    $site_tids = static::extractTargetIds($form_state->getValue($site_field));
+
+    if (!in_array($primary_tid, $site_tids)) {
+      $form_state->setError($element, t('The Site field must include the selected Primary Site.'));
+      return;
+    }
+
+    /** @var \Drupal\tide_site_restriction\Helper $helper */
+    $helper = \Drupal::service('tide_site_restriction.helper');
+    foreach ($site_tids as $site_tid) {
+      $trail = $helper->getSiteTrail($site_tid) ?: [];
+      if (!in_array($primary_tid, $trail)) {
+        $form_state->setError($element, t('Selected Site must belong to the selected Primary Site.'));
+        return;
+      }
+    }
+
+    // Besides the Primary Site itself, at most one child (at any depth) may be
+    // selected.
+    $children = array_diff($site_tids, [$primary_tid]);
+    if (count($children) > 1) {
+      $form_state->setError($element, t('You may select at most one Site in addition to the Primary Site.'));
+    }
+  }
+
+  /**
+   * Normalises a submitted reference field value into a list of target ids.
+   *
+   * @param mixed $value
+   *   The raw form value (scalar, list of scalars or list of items).
+   *
+   * @return array
+   *   The list of non-empty target ids as strings.
+   */
+  protected static function extractTargetIds($value) {
+    $ids = [];
+    if (is_array($value)) {
+      foreach ($value as $item) {
+        if (is_array($item) && isset($item['target_id'])) {
+          $ids[] = $item['target_id'];
+        }
+        elseif (is_scalar($item)) {
+          $ids[] = $item;
+        }
+      }
+    }
+    elseif (is_scalar($value) && $value !== '') {
+      $ids[] = $value;
+    }
+    return array_values(array_filter(array_map('strval', $ids), function ($id) {
+      return $id !== '' && $id !== '0' && $id !== '_none';
+    }));
   }
 
   /**
