@@ -92,6 +92,40 @@ class TideSiteRestrictionFieldWidget extends OptionsButtonsWidget implements Con
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return [
+      'enable_site_coupling' => TRUE,
+    ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element = parent::settingsForm($form, $form_state);
+    $element['enable_site_coupling'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Couple Primary Site and Site fields'),
+      '#description' => $this->t('When enabled, the Site field is bound to the selected Primary Site: it keeps the Primary Site checked and allows at most one additional child site, and changing the Primary Site rebuilds the selection. Disable to turn this behaviour off and let editors select sites manually. Only applies to the node Primary Site / Site fields and users who cannot bypass the site restriction.'),
+      '#default_value' => $this->getSetting('enable_site_coupling'),
+    ];
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = parent::settingsSummary();
+    $summary[] = $this->getSetting('enable_site_coupling')
+      ? $this->t('Primary Site / Site coupling: enabled')
+      : $this->t('Primary Site / Site coupling: disabled');
+    return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
@@ -102,6 +136,12 @@ class TideSiteRestrictionFieldWidget extends OptionsButtonsWidget implements Con
     $is_primary = TideSiteFields::isSiteField($field_name, TideSiteFields::FIELD_PRIMARY_SITE);
     $is_site = TideSiteFields::isSiteField($field_name, TideSiteFields::FIELD_SITE);
     if ($entity_type !== 'node' || (!$is_primary && !$is_site)) {
+      return $element;
+    }
+
+    // The behaviour can be switched off per field on "Manage form display".
+    // Both fields must keep it enabled for the coupling to take effect.
+    if (!$this->getSetting('enable_site_coupling')) {
       return $element;
     }
 
