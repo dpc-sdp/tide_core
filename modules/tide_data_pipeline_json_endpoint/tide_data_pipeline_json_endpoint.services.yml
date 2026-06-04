@@ -1,7 +1,1 @@
-services:
-  tide_data_pipeline_json_endpoint.api_key_access_check:
-    class: Drupal\tide_data_pipeline_json_endpoint\Access\ApiKeyAccessCheck
-    arguments:
-      - '@key.repository'
-    tags:
-      - { name: access_check, applies_to: _data_pipeline_api_key }
+services: {}

@@ -37,7 +37,6 @@ class JsonEndpointSource extends PluginBase implements DatasetSourceInterface, C
 
   // DatasetSourceBase.__construct is final, so this plugin extends PluginBase
   // directly and implements DatasetSourceInterface without a source resource.
-
   const STORAGE_SCHEME = 'private';
   const STORAGE_DIR = 'data_pipelines_json_endpoint';
 
@@ -51,6 +50,9 @@ class JsonEndpointSource extends PluginBase implements DatasetSourceInterface, C
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
     return new static(
       $configuration,

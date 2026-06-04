@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Drupal\Tests\tide_data_pipeline_json_endpoint\Kernel;
 
 use DG\BypassFinals;
-use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\data_pipelines\Entity\Dataset;
 use Drupal\data_pipelines\Entity\Destination;
+use Drupal\data_pipelines\Form\DatasetBatchOperations;
+use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\tide_data_pipeline_json_endpoint\Controller\DatasetPushController;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Tests the DatasetPushController business logic.
  *
  * These tests call the controller method directly, bypassing the routing layer.
- * OAuth bearer token validation and the _permission access check are enforced
- * by the routing system and should be covered by functional (browser) tests.
+ * OAuth bearer token authentication and the _permission access check are
+ * enforced by the routing system and should be covered by functional tests.
  *
  * @group tide_data_pipeline_json_endpoint
  *
@@ -32,7 +33,6 @@ class DatasetPushControllerTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'key',
     'options',
     'link',
     'file',
@@ -45,6 +45,9 @@ class DatasetPushControllerTest extends KernelTestBase {
     'system',
   ];
 
+  /**
+   * Absolute path to the private filesystem used during tests.
+   */
   protected string $privatePath;
 
   /**
@@ -59,7 +62,6 @@ class DatasetPushControllerTest extends KernelTestBase {
     $this->installEntitySchema('file');
     $this->installEntitySchema('data_pipelines');
     $this->installSchema('file', ['file_usage']);
-    $this->installConfig(['tide_data_pipeline_json_endpoint']);
     $this->setUpCurrentUser();
     BypassFinals::enable(FALSE);
   }
@@ -84,7 +86,7 @@ class DatasetPushControllerTest extends KernelTestBase {
   }
 
   /**
-   * Creates and saves a published json_endpoint dataset with a state destination.
+   * Creates and saves a published json_endpoint dataset with a state dest.
    */
   private function createPublishedDataset(string $machine_name): Dataset {
     $destination = Destination::create([
@@ -150,7 +152,7 @@ class DatasetPushControllerTest extends KernelTestBase {
   }
 
   /**
-   * Tests that a save_only push followed by manual reprocessing works end-to-end.
+   * Tests that a save_only push followed by manual reprocessing works.
    */
   public function testSaveOnlyThenManualReprocessProducesExpectedData(): void {
     $machine_name = 'push_then_reprocess';
@@ -166,12 +168,12 @@ class DatasetPushControllerTest extends KernelTestBase {
     $dataset_id = (int) $dataset->id();
     $context = ['sandbox' => [], 'finished' => 0, 'results' => [], 'message' => ''];
     do {
-      \Drupal\data_pipelines\Form\DatasetBatchOperations::operationQueueItem($dataset_id, $context);
+      DatasetBatchOperations::operationQueueItem($dataset_id, $context);
     } while ($context['finished'] !== 1);
 
     $context = ['sandbox' => [], 'finished' => 0, 'results' => [], 'message' => ''];
     do {
-      \Drupal\data_pipelines\Form\DatasetBatchOperations::operationProcess($dataset_id, $context);
+      DatasetBatchOperations::operationProcess($dataset_id, $context);
     } while ($context['finished'] !== 1);
 
     $stored = \Drupal::state()->get('test_push_result');
