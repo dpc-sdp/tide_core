@@ -505,5 +505,5 @@ function tide_landing_page_update_10116() {
   }
 
   $settings['handler_settings']['target_bundles']['embedded_search_form'] = 'embedded_search_form';
-  $field->setSetting($settings)->save();
+  $field->setSettings($settings)->save();
 }
