@@ -473,3 +473,37 @@ function tide_landing_page_update_10114() {
       ->save();
   }
 }
+
+/**
+ * Update the search banner (embedded_search_form) description.
+ */
+function tide_landing_page_update_10115() {
+  $config = \Drupal::configFactory()->getEditable('paragraphs.paragraphs_type.embedded_search_form');
+
+  if ($config->isNew()) {
+    return;
+  }
+
+  $config->set('description', 'Display a search bar allowing users to perform a search.');
+  $config->save();
+}
+
+/**
+ * Add the search banner (embedded_search_form) to landing page components.
+ */
+function tide_landing_page_update_10116() {
+  $field = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.landing_page.field_landing_page_component');
+
+  if (!$field) {
+    return;
+  }
+
+  $settings = $field->getSettings();
+
+  if (!isset($settings['handler_settings']['target_bundles']) || array_key_exists('embedded_search_form', $settings['handler_settings']['target_bundles'])) {
+    return;
+  }
+
+  $settings['handler_settings']['target_bundles']['embedded_search_form'] = 'embedded_search_form';
+  $field->setSetting($settings)->save();
+}
