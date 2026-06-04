@@ -25,10 +25,16 @@ class DatasetPushController extends ControllerBase {
 
   public function __construct(private readonly FileSystemInterface $fileSystem) {}
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container): static {
     return new static($container->get('file_system'));
   }
 
+  /**
+   * Handles an authenticated JSON payload push for a dataset.
+   */
   public function push(Request $request, string $machine_name): JsonResponse {
     if (!str_contains($request->headers->get('Content-Type', ''), 'application/json')) {
       return new JsonResponse(['error' => 'Content-Type must be application/json.'], 415);

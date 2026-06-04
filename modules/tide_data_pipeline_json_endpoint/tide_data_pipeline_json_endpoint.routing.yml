@@ -5,6 +5,6 @@ tide_data_pipeline_json_endpoint.push:
     _title: 'Push Dataset Data'
   methods: [POST]
   requirements:
-    _data_pipeline_api_key: 'TRUE'
+    _permission: 'push data pipeline json endpoint'
   options:
     no_cache: TRUE

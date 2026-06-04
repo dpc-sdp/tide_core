@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Drupal\Tests\tide_data_pipeline_json_endpoint\Kernel;
 
 use DG\BypassFinals;
-use Drupal\KernelTests\KernelTestBase;
-use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\data_pipelines\DatasetData;
 use Drupal\data_pipelines\Entity\Dataset;
 use Drupal\data_pipelines\Source\DatasetSourcePluginManager;
+use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
 
 /**
@@ -39,6 +39,9 @@ class JsonEndpointSourceKernelTest extends KernelTestBase {
     'system',
   ];
 
+  /**
+   * Absolute path to the private filesystem used during tests.
+   */
   protected string $privatePath;
 
   /**
@@ -175,7 +178,7 @@ class JsonEndpointSourceKernelTest extends KernelTestBase {
   }
 
   /**
-   * Tests that extraction returns empty when the stored file contains invalid JSON.
+   * Tests that extraction returns empty when the stored file has invalid JSON.
    */
   public function testExtractReturnsEmptyOnInvalidJson(): void {
     $machine_name = 'test_invalid_json';

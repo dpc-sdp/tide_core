@@ -1,3 +1,3 @@
-# No permissions — access to the push endpoint is controlled by the API key
-# stored in the key.key.data_pipeline_push_api_key configuration entity and
-# validated via the ApiKeyAccessCheck service.
+push data pipeline json endpoint:
+  title: 'Push data pipeline JSON endpoint'
+  description: 'Allows pushing data to the JSON endpoint dataset source via the authenticated POST endpoint.'
