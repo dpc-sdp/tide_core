@@ -20,14 +20,14 @@ function tide_external_site_link_entity_bundle_create($entity_type_id, $bundle):
     $roles = ['approver', 'editor'];
 
     $permissions = [
-      'create profile content',
-      'delete any profile content',
-      'delete own profile content',
-      'delete profile revisions',
-      'edit any profile content',
-      'edit own profile content',
-      'revert profile revisions',
-      'view profile revisions',
+      'create external_site_link content',
+      'delete any external_site_link content',
+      'delete own external_site_link content',
+      'delete external_site_link revisions',
+      'edit any external_site_link content',
+      'edit own external_site_link content',
+      'revert external_site_link revisions',
+      'view external_site_link revisions',
     ];
 
     foreach ($roles as $role_name) {
