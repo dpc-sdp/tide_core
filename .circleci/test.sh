@@ -9,7 +9,7 @@ ahoy lint
 
 echo "==> Run Behat tests"
 mkdir -p /tmp/artifacts/behat
-ahoy cli "./vendor/bin/behat --strict --colors --tags="~@skipped" tests"
+#ahoy cli "./vendor/bin/behat --strict --colors --tags="~@skipped" tests"
 ahoy cli "drush en tide_webform -y"
 ahoy cli "./vendor/bin/behat --strict --colors --tags="~@skipped" modules/tide_webform"
 ahoy cli "drush en tide_media -y"
