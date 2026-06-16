@@ -35,7 +35,7 @@ class TideApiIncludeResolver extends IncludeResolver {
     assert($data instanceof ResourceObject || $data instanceof ResourceObjectData);
     $data = $data instanceof ResourceObjectData ? $data : new ResourceObjectData([$data], 1);
     $include_tree = self::toIncludeTree($data, $include_parameter);
-    return IncludedData::deduplicate($this->resolveIncludeTree($include_tree, $data));
+    return IncludedData::deduplicate($this->innerService->resolveIncludeTree($include_tree, $data));
   }
 
   /**
