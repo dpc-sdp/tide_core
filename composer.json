@@ -462,6 +462,9 @@
             },
             "drupal/views_bulk_operations": {
                 "getSubscribedEvents() fails on `drush updb` due to autoloader negative-cache (missing class_exists() guard) - https://www.drupal.org/project/views_bulk_operations/issues/3589629#comment-16583537": "https://www.drupal.org/files/issues/2026-05-12/views_bulk_operations-class-exists-guard-3589629-2.patch"
+            },
+            "drupal/jsonapi_resources": {
+                "ResourceObjectNormalizer should declare a decoration_priority to stay innermost - https://git.drupalcode.org/project/jsonapi_resources/-/work_items/3599418": "https://git.drupalcode.org/project/jsonapi_resources/-/merge_requests/39.patch"
             }
           },
         "installer-paths": {
