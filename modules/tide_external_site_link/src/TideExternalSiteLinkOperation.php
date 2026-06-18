@@ -112,14 +112,28 @@ class TideExternalSiteLinkOperation {
     $index = $index_storage->load('node');
 
     // Index the keywords field.
-    $summary_field = new Field($index, 'field_content_keywords');
-    $summary_field->setType('string');
-    $summary_field->setPropertyPath('field_content_keywords');
-    $summary_field->setDatasourceId('entity:node');
-    $summary_field->setLabel('Content keywords');
-    $index->addField($summary_field);
+    $keywords_field = new Field($index, 'field_content_keywords');
+    $keywords_field->setType('text');
+    $keywords_field->setPropertyPath('field_content_keywords');
+    $keywords_field->setDatasourceId('entity:node');
+    $keywords_field->setLabel('Content keywords');
+    $index->addField($keywords_field);
 
     $index->save();
+  }
+
+  /**
+   * Add site restriction support to site and primary site fields.
+   */
+  public static function addSiteRestrictionSupport() {
+    if (!(\Drupal::moduleHandler()->moduleExists('tide_site_restriction'))) {
+      return;
+    }
+
+    $config = \Drupal::configFactory()->getEditable('core.entity_form_display.node.external_site_link.default');
+    $config->set('content.field_node_primary_site.type', 'tide_site_restriction_field_widget');
+    $config->set('content.field_node_site.type', 'tide_site_restriction_field_widget');
+    $config->save();
   }
 
 }
