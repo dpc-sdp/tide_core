@@ -749,6 +749,30 @@ function tide_site_tide_api_jsonapi_custom_query_parameters_alter(&$custom_param
  * Implements hook_form_FORM_ID_alter().
  */
 function tide_site_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Apply Select2 widget to Site exposed filters on the Content and
+  // Moderated content admin views. Visual only — works for both single and
+  // multi-value selects; whether it's multi is decided by the view config.
+  // Lists both possible filter keys so it works in either deployment
+  // (with or without tide_site_restriction, which swaps the filter name).
+  $select2_form_filters = [
+    'views-exposed-form-summary-contents-filters-page-1' => ['field_node_site_target_id', 'sub_sites_filter'],
+    'views-exposed-form-tide-site-moderated-content-filters-moderated-content' => ['field_node_site_target_id'],
+  ];
+  if (!empty($form['#id']) && isset($select2_form_filters[$form['#id']])) {
+    foreach ($select2_form_filters[$form['#id']] as $filter) {
+      if (!empty($form[$filter])) {
+        $form[$filter]['#type'] = 'select2';
+        $form[$filter]['#select2'] = [
+          'allowClear' => TRUE,
+          'dropdownAutoWidth' => FALSE,
+          'width' => 'resolve',
+          'closeOnSelect' => FALSE,
+          'placeholder' => t('- Any -'),
+        ];
+      }
+    }
+  }
+
   $view = $form_state->get('view');
   if ($view && $view instanceof ViewExecutable) {
     if ($view->id() === 'summary_contents' && $view->current_display === 'page') {
