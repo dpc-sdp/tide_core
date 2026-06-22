@@ -115,8 +115,9 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
         // in the same format as Drupal redirect module so the FE can handle
         // it with its existing redirect logic.
         if ($this->helper->hasSitePrefix($path)) {
-          $clean_path = preg_replace('#^/site-\d+/#', '/', $path);
-          if ($alias_manager->getPathByAlias($path) !== $path) {
+          $internal_path = $alias_manager->getPathByAlias($path);
+          if ($internal_path !== $path && $this->redirectStaysOnSite($internal_path, $path)) {
+            $clean_path = preg_replace('#^/site-\d+/#', '/', $path);
             $this->setRedirectRouteResponse($event, $request, $clean_path);
             return;
           }
@@ -299,6 +300,53 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
     $response = new JsonResponse($json_response, $code);
     $event->setResponse($response);
     $event->stopPropagation();
+  }
+
+  /**
+   * Whether stripping the site prefix keeps the content on the current site.
+   *
+   * A site-prefixed alias (e.g. /site-8888/working-cms-demo) is only safe to
+   * canonicalise to its prefix-less form when the referenced content's primary
+   * site is the same site as the prefix. Otherwise the prefix-less alias would
+   * resolve on the content's primary-site domain, jumping the visitor to a
+   * different site.
+   *
+   * @param string $internal_path
+   *   The internal system path the alias resolves to (e.g. /node/123).
+   * @param string $prefixed_path
+   *   The original site-prefixed request path.
+   *
+   * @return bool
+   *   TRUE if the content's primary site matches the prefix (or the content
+   *   cannot be resolved, preserving the previous behaviour); FALSE when the
+   *   primary site differs and the prefix must be kept.
+   */
+  protected function redirectStaysOnSite($internal_path, $prefixed_path) {
+    if (!preg_match('#^/node/(\d+)$#', $internal_path, $matches)) {
+      // Not a node alias: keep the previous behaviour.
+      return TRUE;
+    }
+    $prefix_site_id = $this->helper->getSiteIdFromSitePrefix($prefixed_path);
+    if (!$prefix_site_id) {
+      return TRUE;
+    }
+    try {
+      $node = $this->container->get('entity_type.manager')
+        ->getStorage('node')
+        ->load($matches[1]);
+    }
+    catch (\Exception $exception) {
+      return TRUE;
+    }
+    if (!$node) {
+      return TRUE;
+    }
+    $primary_site = $this->helper->getEntityPrimarySite($node);
+    // No primary site to compare against: keep the previous behaviour.
+    if (!$primary_site) {
+      return TRUE;
+    }
+    return (string) $primary_site->id() === (string) $prefix_site_id;
   }
 
   /**
