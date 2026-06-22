@@ -66,6 +66,19 @@ class TideExternalSiteLinkOperation {
         'revert external_site_link revisions',
         'view external_site_link revisions',
       ],
+      'site_admin' => [
+        'add scheduled transitions node external_site_link',
+        'clone external_site_link content',
+        'create external_site_link content',
+        'delete any external_site_link content',
+        'delete external_site_link revisions',
+        'delete own external_site_link content',
+        'edit any external_site_link content',
+        'edit own external_site_link content',
+        'revert external_site_link revisions',
+        'view external_site_link revisions',
+        'view scheduled transitions node external_site_link',
+      ],
       'approver' => [
         'add scheduled transitions node external_site_link',
         'create external_site_link content',
@@ -78,7 +91,7 @@ class TideExternalSiteLinkOperation {
         'view external_site_link revisions',
         'view scheduled transitions node external_site_link',
       ],
-      'site_admin' => [
+      'contributor' => [
         'clone external_site_link content',
         'create external_site_link content',
         'delete any external_site_link content',

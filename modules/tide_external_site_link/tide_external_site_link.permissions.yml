@@ -1,0 +1,39 @@
+'add scheduled transitions node external_site_link':
+  title: 'Add scheduled transitions node external_site_link'
+  description: 'Allows user to add scheduled transitions node external_site_link.'
+
+'clone external_site_link content':
+  title: 'Clone external_site_link content'
+  description: 'Allows user to clone external_site_link content.'
+
+'create external_site_link content':
+  title: 'Create external_site_link content'
+  description: 'Allows user to create external_site_link content.'
+
+'delete any external_site_link content':
+  title: 'Delete any external_site_link content'
+  description: 'Allows user to delete any external_site_link content.'
+'delete external_site_link revisions':
+  title: 'Delete external_site_link revisions'
+  description: 'Allows user to delete external_site_link revisions.'
+'delete own external_site_link content':
+  title: 'Delete own external_site_link content'
+  description: 'Allows user to delete own external_site_link content.'
+
+'edit any external_site_link content':
+  title: 'Edit any external_site_link content'
+  description: 'Allows user to edit any external_site_link content.'
+'edit own external_site_link content':
+  title: 'Edit own external_site_link content'
+  description: 'Allows user to edit own external_site_link content.'
+
+'revert external_site_link revisions':
+  title: 'Revert external_site_link revisions'
+  description: 'Allows user to revert external_site_link revisions.'
+
+'view external_site_link revisions':
+  title: 'View external_site_link revisions'
+  description: 'Allows user to view external_site_link revisions.'
+'view scheduled transitions node external_site_link':
+ title: 'View scheduled transitions node external_site_link'
+ description: 'Allows user to view scheduled transitions node external_site_link.'

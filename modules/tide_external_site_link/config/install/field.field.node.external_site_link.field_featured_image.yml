@@ -9,8 +9,8 @@ id: node.external_site_link.field_featured_image
 field_name: field_featured_image
 entity_type: node
 bundle: external_site_link
-label: Image
-description: ''
+label: 'Featured Image'
+description: 'Featured images will display in featured card and navigation links to this external site. They must be 496px high x 818px wide.'
 required: false
 translatable: false
 default_value: {  }
