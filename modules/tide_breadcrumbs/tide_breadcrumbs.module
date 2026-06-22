@@ -12,6 +12,8 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
+use Drupal\tide_breadcrumbs\JsonLdComputedField;
+use Drupal\tide_breadcrumbs\Plugin\schema_metatag\PropertyType\TideBreadcrumbList;
 
 /**
  * Implements hook_entity_bundle_field_info().
@@ -30,6 +32,15 @@ function tide_breadcrumbs_entity_bundle_field_info(EntityTypeInterface $entity_t
       ->setComputed(TRUE)
       ->setClass('\Drupal\tide_breadcrumbs\BreadcrumbComputedField')
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setReadOnly(TRUE);
+  }
+
+  if ($entity_type->id() === 'node' && $bundle === 'news') {
+    $fields['json_ld'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('JSON-LD'))
+      ->setDescription(t('Pre-assembled JSON-LD string for this node, ready to be injected into a script[type="application/ld+json"] tag by the headless frontend.'))
+      ->setComputed(TRUE)
+      ->setClass(JsonLdComputedField::class)
       ->setReadOnly(TRUE);
   }
 
@@ -165,5 +176,21 @@ function tide_breadcrumbs_node_storage_load(array $entities) {
     // This ensures the lock is ALWAYS released.
     // Even if an error occurs.
     $is_processing = FALSE;
+  }
+}
+
+/**
+ * Implements hook_schema_metatag_property_type_plugins_alter().
+ *
+ * Replaces contrib's BreadcrumbList property type with the Tide-aware
+ * subclass that sources the trail from the tide_breadcrumb computed field
+ * and emits absolute URLs on the node's primary Tide site domain.
+ *
+ * @see \Drupal\tide_breadcrumbs\Plugin\schema_metatag\PropertyType\TideBreadcrumbList
+ */
+function tide_breadcrumbs_schema_metatag_property_type_plugins_alter(array &$definitions) {
+  if (isset($definitions['breadcrumb_list'])) {
+    $definitions['breadcrumb_list']['class'] = TideBreadcrumbList::class;
+    $definitions['breadcrumb_list']['provider'] = 'tide_breadcrumbs';
   }
 }
