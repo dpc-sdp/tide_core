@@ -6,6 +6,8 @@ use Drupal\node\NodeInterface;
 use Drupal\schema_metatag\Plugin\schema_metatag\PropertyType\BreadcrumbList;
 
 /**
+ * Tide BreadcrumbList.
+ *
  * Tide-aware BreadcrumbList that reads from the tide_breadcrumb computed
  * field rather than running Drupal's BreadcrumbManager against the current
  * route.
