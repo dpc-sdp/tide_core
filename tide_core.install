@@ -1400,3 +1400,10 @@ function tide_core_update_10038() {
 function tide_core_update_10039() {
   \Drupal::service('module_installer')->install(['views_bulk_operations', 'views_bulk_edit']);
 }
+
+/**
+ * Install tide_external_site_link.
+ */
+function tide_core_update_10040() {
+  \Drupal::service('module_installer')->install(['tide_external_site_link']);
+}

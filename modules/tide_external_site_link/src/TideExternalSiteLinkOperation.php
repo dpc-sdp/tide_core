@@ -38,10 +38,7 @@ class TideExternalSiteLinkOperation {
     $config = $config_factory->getEditable('scheduled_transitions.settings');
     $bundles = $config->get('bundles');
     if ($bundles) {
-      foreach ($bundles as $bundle) {
-        $enabled_bundles = [];
-        $enabled_bundles[] = $bundle['bundle'];
-      }
+      $enabled_bundles = array_column($bundles, 'bundle');
       if (!in_array('external_site_link', $enabled_bundles)) {
         $bundles[] = ['entity_type' => 'node', 'bundle' => 'external_site_link'];
         $config->set('bundles', $bundles)->save();
@@ -85,9 +82,6 @@ class TideExternalSiteLinkOperation {
         'add scheduled transitions node external_site_link',
         'clone external_site_link content',
         'create external_site_link content',
-        'delete any external_site_link content',
-        'delete external_site_link revisions',
-        'delete own external_site_link content',
         'edit any external_site_link content',
         'edit own external_site_link content',
         'reschedule scheduled transitions node external_site_link',
@@ -99,9 +93,6 @@ class TideExternalSiteLinkOperation {
         'add scheduled transitions node external_site_link',
         'clone external_site_link content',
         'create external_site_link content',
-        'delete any external_site_link content',
-        'delete external_site_link revisions',
-        'delete own external_site_link content',
         'edit any external_site_link content',
         'edit own external_site_link content',
         'reschedule scheduled transitions node external_site_link',
@@ -112,13 +103,11 @@ class TideExternalSiteLinkOperation {
       'contributor' => [
         'clone external_site_link content',
         'create external_site_link content',
-        'delete any external_site_link content',
-        'delete external_site_link revisions',
-        'delete own external_site_link content',
         'edit any external_site_link content',
         'edit own external_site_link content',
         'revert external_site_link revisions',
         'view external_site_link revisions',
+        'view scheduled transitions node external_site_link',
       ],
     ];
 

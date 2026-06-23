@@ -16,7 +16,7 @@ use Drupal\workflows\Entity\Workflow;
  */
 function tide_external_site_link_entity_bundle_create($entity_type_id, $bundle): void {
   if ($entity_type_id == 'node' && $bundle == 'external_site_link') {
-    // Enable Editorial workflow for external site link if workflow module is enabled.
+    // Enable Editorial workflow for external site link.
     $moduleHandler = \Drupal::service('module_handler');
     if ($moduleHandler->moduleExists('workflows')) {
       $editorial_workflow = Workflow::load('editorial');
