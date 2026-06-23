@@ -17,7 +17,8 @@ function tide_external_site_link_install() {
   }
 
   TideExternalSiteLinkOperation::addToWorkflows();
-  TideExternalSiteLinkOperation::assignNecessaryPermissions();
+  TideExternalSiteLinkOperation::addToScheduledTransitions();
   TideExternalSiteLinkOperation::addFieldsToSearchApi();
   TideExternalSiteLinkOperation::addSiteRestrictionSupport();
+  TideExternalSiteLinkOperation::assignNecessaryPermissions();
 }
