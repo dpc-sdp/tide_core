@@ -1,0 +1,15 @@
+langcode: en
+status: true
+dependencies: {  }
+id: node__news
+label: 'Content: News'
+tags:
+  schema_article_date_modified: '[node:changed:html_datetime]'
+  schema_article_date_published: '[node:field_news_date:date:html_datetime]'
+  schema_article_description: '[node:field_news_intro_text]'
+  schema_article_headline: '[node:title]'
+  schema_article_id: '[node:url:fe_url]'
+  schema_article_image: 'a:2:{s:5:"@type";s:11:"ImageObject";s:3:"url";s:63:"[node:field_featured_image:entity:field_media_image:entity:url]";}'
+  schema_article_main_entity_of_page: '[node:url:fe_url]'
+  schema_article_publisher: 'a:2:{s:5:"@type";s:12:"Organization";s:4:"name";s:40:"[node:field_node_department:entity:name]";}'
+  schema_article_type: NewsArticle

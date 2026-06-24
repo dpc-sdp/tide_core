@@ -5,7 +5,8 @@ package: Tide
 core_version_requirement: ^10 || ^11
 dependencies:
   - dpc-sdp:tide_core
-  - dpc-sdp:tide_api
+  - tide_core:tide_api
+  - tide_core:tide_site
   - schema_metatag:schema_metatag
   - schema_metatag:schema_web_page
   - schema_metatag:schema_article
