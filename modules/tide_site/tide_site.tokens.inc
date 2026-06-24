@@ -79,7 +79,7 @@ function tide_site_tokens($type, $tokens, array $data, array $options, Bubbleabl
                 $fe_url = $helper->getNodeUrlFromPrimarySite($node);
                 $fe_url = $alias_helper->getPathAliasWithoutSitePrefix(['alias' => $fe_url], $site_url);
                 $replacements[$original] = $fe_url;
-                // Invalidate when the node or its primary site (domain) changes.
+                // Invalidate when the node or its primary_site changes.
                 $bubbleable_metadata->addCacheableDependency($node);
                 $primary_site = $helper->getEntityPrimarySite($node);
                 if ($primary_site) {
