@@ -1,0 +1,8 @@
+site_fields:
+  version: 1.x
+  js:
+    js/site_fields.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - core/drupalSettings
