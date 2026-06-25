@@ -245,6 +245,33 @@ function tide_site_update_10007() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/install'];
   $config_read = _tide_read_config('views.view.media_report', $config_location, TRUE);
+
+  $has_secure_file = (bool) \Drupal::entityTypeManager()
+    ->getStorage('field_storage_config')
+    ->load('media.field_secure_file');
+  if (!$has_secure_file) {
+    foreach (array_keys($config_read['display'] ?? []) as $display_id) {
+      if (empty($config_read['display'][$display_id]['display_options'])) {
+        continue;
+      }
+      $options = &$config_read['display'][$display_id]['display_options'];
+      // Remove the "Secure File URL" field handler.
+      unset($options['fields']['uri_1']);
+      // Remove the relationship pointing at the secure file.
+      unset($options['relationships']['field_secure_file_target_id']);
+      // Drop the uri_1 token from the "Path name" rewrite so it no longer
+      // references the removed field.
+      if (isset($options['fields']['nothing']['alter']['text'])) {
+        $options['fields']['nothing']['alter']['text'] = str_replace(
+          'uri ?: uri_1 ?: uri_2',
+          'uri ?: uri_2',
+          $options['fields']['nothing']['alter']['text']
+        );
+      }
+      unset($options);
+    }
+  }
+
   $storage = \Drupal::entityTypeManager()->getStorage('view');
   $id = $storage->getIDFromConfigName('views.view.media_report', $storage->getEntityType()->getConfigPrefix());
   if ($storage->load($id) === NULL) {
