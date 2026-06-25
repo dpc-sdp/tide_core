@@ -161,6 +161,30 @@ JS;
   }
 
   /**
+   * @Then /^I click on iFramed element "([^"]*)" within "([^"]*)"$/
+   *
+   * @param string $selector
+   *   A CSS selector.
+   * @param string $name
+   *   An iFrame name.
+   */
+  public function clickOnIframedElement(string $selector, string $name) {
+    $this->getSession()->switchToIFrame($name);
+
+    $page = $this->getSession()->getPage();
+    $element = $page->find('css', $selector);
+
+    if ($element === NULL) {
+      throw new \Exception('The element "' . $selector . '" was not found in iframe.');
+    }
+
+    $element->focus();
+    $element->click();
+
+    $this->getSession()->switchToIFrame();
+  }
+
+  /**
    * @Then /^I click on the detail "([^"]*)"$/
    * @Then /^I click on the detail with text "([^"]*)"$/
    *
