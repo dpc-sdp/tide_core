@@ -462,6 +462,9 @@
             },
             "drupal/views_bulk_operations": {
                 "getSubscribedEvents() fails on `drush updb` due to autoloader negative-cache (missing class_exists() guard) - https://www.drupal.org/project/views_bulk_operations/issues/3589629#comment-16583537": "https://www.drupal.org/files/issues/2026-05-12/views_bulk_operations-class-exists-guard-3589629-2.patch"
+            },
+            "drupal/entity_embed": {
+                "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132": "https://www.drupal.org/files/issues/2026-06-15/entity-embed-allow-custom-data-attrs-javascript.patch"
             }
           },
         "installer-paths": {
