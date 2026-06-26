@@ -1402,8 +1402,42 @@ function tide_core_update_10039() {
 }
 
 /**
- * Install tide_external_site_link.
+ * Hide nav title field node form displays.
  */
 function tide_core_update_10040() {
+  $description = 'Tick this checkbox to display a side menu on this page. The menu belongs to the site section this page is tagged to. To change the menu heading that displays on live, pages, <a href=\'https://digital-vic.atlassian.net/servicedesk/customer/portal/27/group/145/create/507\' target="_blank">submit a support request</a>.';
+  $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo('node');
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
+  foreach (array_keys($bundles) as $bundle) {
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+    $form_display = $storage->load('node.' . $bundle . '.default');
+    if ($form_display === NULL) {
+      continue;
+    }
+    $changed = FALSE;
+    if ($form_display->getComponent('field_landing_page_nav_title') !== NULL) {
+      $form_display->removeComponent('field_landing_page_nav_title');
+      $changed = TRUE;
+    }
+    $group = $form_display->getThirdPartySetting('field_group', 'group_site_section_navigation');
+    if ($group !== NULL) {
+      $group['children'] = array_values(array_diff($group['children'] ?? [], ['field_landing_page_nav_title']));
+      $group['format_settings']['show_empty_fields'] = FALSE;
+      $group['format_settings']['label_as_html'] = TRUE;
+      $group['format_settings']['description'] = $description;
+      unset($group['format_settings']['formatter']);
+      $form_display->setThirdPartySetting('field_group', 'group_site_section_navigation', $group);
+      $changed = TRUE;
+    }
+    if ($changed) {
+      $form_display->save();
+    }
+  }
+}
+
+/**
+ * Install tide_external_site_link.
+ */
+function tide_core_update_10041() {
   \Drupal::service('module_installer')->install(['tide_external_site_link']);
 }
