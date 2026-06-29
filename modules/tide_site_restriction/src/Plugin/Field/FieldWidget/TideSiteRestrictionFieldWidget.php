@@ -94,7 +94,7 @@ class TideSiteRestrictionFieldWidget extends OptionsButtonsWidget implements Con
    */
   public static function defaultSettings() {
     return [
-      'enable_site_coupling' => TRUE,
+      'enable_site_coupling' => FALSE,
     ] + parent::defaultSettings();
   }
 
