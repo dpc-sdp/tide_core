@@ -22,6 +22,11 @@ services:
   tide_core.autocomplete_matcher:
     class: Drupal\tide_core\EntityAutocompleteMatcher
     arguments: ['@plugin.manager.entity_reference_selection']
+  tide_core.breadcrumb:
+    class: Drupal\tide_core\TideBreadcrumb
+    arguments:
+      - '@menu.link_tree'
+      - '@module_handler'
   tide_core.common_services:
     class: Drupal\tide_core\TideCommonServices
   tide_core.system_info_service:

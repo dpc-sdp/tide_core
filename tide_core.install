@@ -1434,3 +1434,41 @@ function tide_core_update_10040() {
     }
   }
 }
+
+/**
+ * Enable the JSON-LD engine: schema modules + node WebPage/breadcrumb defaults.
+ */
+function tide_core_update_10041() {
+  // The JSON-LD engine now lives in tide_core, so ensure the schema modules
+  // that power it are installed.
+  \Drupal::service('module_installer')->install(['schema_metatag', 'schema_web_page']);
+
+  // Enable a WebPage + breadcrumb schema default at the node level so every
+  // bundle emits a schema.org BreadcrumbList in its JSON-LD. The actual trail
+  // is provided by the tide_core breadcrumb service (overridable via
+  // hook_tide_breadcrumb_alter()).
+  $storage = \Drupal::entityTypeManager()->getStorage('metatag_defaults');
+  /** @var \Drupal\metatag\Entity\MetatagDefaults|null $defaults */
+  $defaults = $storage->load('node');
+
+  // Create the node defaults from shipped config if they are missing.
+  if ($defaults === NULL) {
+    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+    $config_name = 'metatag.metatag_defaults.node';
+    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+    $config_read = _tide_read_config($config_name, $config_location, TRUE);
+    if ($config_read) {
+      $storage->createFromStorageRecord($config_read)->save();
+    }
+    return;
+  }
+
+  // Otherwise add the schema tags without clobbering existing values.
+  $tags = $defaults->get('tags') ?: [];
+  $tags += [
+    'schema_web_page_type' => 'WebPage',
+    'schema_web_page_breadcrumb' => 'Yes',
+  ];
+  $defaults->set('tags', $tags);
+  $defaults->save();
+}
