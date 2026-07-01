@@ -13,3 +13,4 @@ tags:
   schema_article_main_entity_of_page: '[node:url:fe_url]'
   schema_article_publisher: 'a:2:{s:5:"@type";s:12:"Organization";s:4:"name";s:40:"[node:field_node_department:entity:name]";}'
   schema_article_type: NewsArticle
+  schema_web_page_publisher: 'a:2:{s:5:"@type";s:12:"Organization";s:4:"name";s:40:"[node:field_node_department:entity:name]";}'

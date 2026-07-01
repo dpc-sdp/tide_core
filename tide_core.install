@@ -70,10 +70,7 @@ function tide_core_install() {
   $tideCoreOperation->assignCkeditorTemplatesPermission();
 
   // Enable the JSON-LD engine schema defaults (WebPage + BreadcrumbList) on the
-  // node metatag default. Done here rather than via config/optional because the
-  // metatag module ships its own metatag.metatag_defaults.node in config/install
-  // that would otherwise shadow ours, and hook_update_N does not run on a fresh
-  // install. Mirrors tide_core_update_10041() for existing sites.
+  // node metatag default.
   $tideCoreOperation->enableJsonLdSchemaDefaults();
 }
 
@@ -1446,8 +1443,8 @@ function tide_core_update_10040() {
  * Enable the JSON-LD engine: schema modules + node WebPage/breadcrumb defaults.
  */
 function tide_core_update_10041() {
-  // Enable the schema modules and add the WebPage + breadcrumb schema default at
-  // the node level so every bundle emits a schema.org BreadcrumbList in its
+  // Enable the schema modules and add the WebPage + breadcrumb schema default
+  // at the node level so every bundle emits a schema.org BreadcrumbList in its
   // JSON-LD. The actual trail is provided by the tide_core breadcrumb service
   // (overridable via hook_tide_breadcrumb_alter()). Shared with hook_install()
   // so fresh installs get the same defaults.
@@ -1481,5 +1478,25 @@ function tide_core_update_10042() {
     if ($record) {
       $field->createFromStorageRecord($record)->save();
     }
+  }
+}
+
+/**
+ * Show the per-site 'Enable breadcrumbs' field on the Sites term form.
+ */
+function tide_core_update_10043() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('taxonomy_term.sites.default');
+  if ($form_display && $form_display->getComponent('field_enable_breadcrumbs') === NULL) {
+    $form_display->setComponent('field_enable_breadcrumbs', [
+      'type' => 'boolean_checkbox',
+      'weight' => 28,
+      'region' => 'content',
+      'settings' => ['display_label' => TRUE],
+      'third_party_settings' => [],
+    ]);
+    $form_display->save();
   }
 }

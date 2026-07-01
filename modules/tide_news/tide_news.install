@@ -231,3 +231,20 @@ function tide_news_update_10005() {
     $config_entity->save();
   }
 }
+
+/**
+ * Add the WebPage publisher (owner = department) to the News schema defaults.
+ */
+function tide_news_update_10006() {
+  /** @var \Drupal\metatag\Entity\MetatagDefaults|null $defaults */
+  $defaults = \Drupal::entityTypeManager()->getStorage('metatag_defaults')->load('node__news');
+  if ($defaults === NULL) {
+    return;
+  }
+  $tags = $defaults->get('tags') ?: [];
+  if (!isset($tags['schema_web_page_publisher'])) {
+    $tags['schema_web_page_publisher'] = 'a:2:{s:5:"@type";s:12:"Organization";s:4:"name";s:40:"[node:field_node_department:entity:name]";}';
+    $defaults->set('tags', $tags);
+    $defaults->save();
+  }
+}
