@@ -68,6 +68,13 @@ function tide_core_install() {
 
   // Assign permissions for CKEditor template usage.
   $tideCoreOperation->assignCkeditorTemplatesPermission();
+
+  // Enable the JSON-LD engine schema defaults (WebPage + BreadcrumbList) on the
+  // node metatag default. Done here rather than via config/optional because the
+  // metatag module ships its own metatag.metatag_defaults.node in config/install
+  // that would otherwise shadow ours, and hook_update_N does not run on a fresh
+  // install. Mirrors tide_core_update_10041() for existing sites.
+  $tideCoreOperation->enableJsonLdSchemaDefaults();
 }
 
 /**
@@ -1439,36 +1446,40 @@ function tide_core_update_10040() {
  * Enable the JSON-LD engine: schema modules + node WebPage/breadcrumb defaults.
  */
 function tide_core_update_10041() {
-  // The JSON-LD engine now lives in tide_core, so ensure the schema modules
-  // that power it are installed.
-  \Drupal::service('module_installer')->install(['schema_metatag', 'schema_web_page']);
+  // Enable the schema modules and add the WebPage + breadcrumb schema default at
+  // the node level so every bundle emits a schema.org BreadcrumbList in its
+  // JSON-LD. The actual trail is provided by the tide_core breadcrumb service
+  // (overridable via hook_tide_breadcrumb_alter()). Shared with hook_install()
+  // so fresh installs get the same defaults.
+  (new TideCoreOperation())->enableJsonLdSchemaDefaults();
+}
 
-  // Enable a WebPage + breadcrumb schema default at the node level so every
-  // bundle emits a schema.org BreadcrumbList in its JSON-LD. The actual trail
-  // is provided by the tide_core breadcrumb service (overridable via
-  // hook_tide_breadcrumb_alter()).
-  $storage = \Drupal::entityTypeManager()->getStorage('metatag_defaults');
-  /** @var \Drupal\metatag\Entity\MetatagDefaults|null $defaults */
-  $defaults = $storage->load('node');
+/**
+ * Install the per-site 'Enable breadcrumbs' field on the Sites vocabulary.
+ */
+function tide_core_update_10042() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
 
-  // Create the node defaults from shipped config if they are missing.
-  if ($defaults === NULL) {
-    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-    $config_name = 'metatag.metatag_defaults.node';
-    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
-    $config_read = _tide_read_config($config_name, $config_location, TRUE);
-    if ($config_read) {
-      $storage->createFromStorageRecord($config_read)->save();
+  // Field storage.
+  $storage_config = 'field.storage.taxonomy_term.field_enable_breadcrumbs';
+  $field_storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $storage_id = $field_storage->getIDFromConfigName($storage_config, $field_storage->getEntityType()->getConfigPrefix());
+  if ($field_storage->load($storage_id) === NULL) {
+    $record = _tide_read_config($storage_config, $config_location, TRUE);
+    if ($record) {
+      $field_storage->createFromStorageRecord($record)->save();
     }
-    return;
   }
 
-  // Otherwise add the schema tags without clobbering existing values.
-  $tags = $defaults->get('tags') ?: [];
-  $tags += [
-    'schema_web_page_type' => 'WebPage',
-    'schema_web_page_breadcrumb' => 'Yes',
-  ];
-  $defaults->set('tags', $tags);
-  $defaults->save();
+  // Field instance on the Sites vocabulary.
+  $field_config = 'field.field.taxonomy_term.sites.field_enable_breadcrumbs';
+  $field = \Drupal::entityTypeManager()->getStorage('field_config');
+  $field_id = $field->getIDFromConfigName($field_config, $field->getEntityType()->getConfigPrefix());
+  if ($field->load($field_id) === NULL) {
+    $record = _tide_read_config($field_config, $config_location, TRUE);
+    if ($record) {
+      $field->createFromStorageRecord($record)->save();
+    }
+  }
 }

@@ -54,6 +54,26 @@ class JsonLdComputedField extends FieldItemList {
       if (empty($items)) {
         return '';
       }
+
+      // parseJsonld() only skips groups whose sole key is @type, so a group
+      // with an empty value (e.g. a WebPage whose breadcrumb is empty because
+      // the site has breadcrumbs disabled) still renders as "breadcrumb": [].
+      // Trim empty values from each @graph entry and drop entries that end up
+      // empty or @type-only.
+      if (!empty($items['@graph'])) {
+        $graph = [];
+        foreach ($items['@graph'] as $entry) {
+          $trimmed = SchemaMetatagManager::arrayTrim($entry);
+          if (!empty($trimmed)) {
+            $graph[] = $trimmed;
+          }
+        }
+        if (empty($graph)) {
+          return '';
+        }
+        $items['@graph'] = $graph;
+      }
+
       return SchemaMetatagManager::encodeJsonld($items) ?: '';
     });
 
@@ -78,7 +98,9 @@ class JsonLdComputedField extends FieldItemList {
     }
     /** @var \Drupal\tide_site\TideSiteHelper $helper */
     $helper = \Drupal::service('tide_site.helper');
-    $site = $helper->getEntityPrimarySite($node);
+    // Use the site currently being viewed so breadcrumb URLs are on the same
+    // domain the content is served from (multisite-aware), not always primary.
+    $site = \Drupal::service('tide_core.breadcrumb')->getViewingSite($node);
     // Force https regardless of the (possibly http) backend request scheme.
     return $site ? $helper->getSiteBaseUrl($site, 'https') : '';
   }

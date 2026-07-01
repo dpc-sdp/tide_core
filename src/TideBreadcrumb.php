@@ -4,18 +4,26 @@ namespace Drupal\tide_core;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Menu\MenuLinkTreeInterface;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Builds a simple, menu-based breadcrumb trail for a node.
  *
  * This is the always-on baseline breadcrumb engine that lives in tide_core.
- * The logic is deliberately minimal: it locates the node inside its primary
- * site's main menu, walks up the parent chain to collect the ancestor crumbs,
- * and prepends a "Home" crumb.
+ * The logic is deliberately minimal: it locates the node inside the main menu
+ * of the site being viewed, walks up the parent chain to collect the ancestor
+ * crumbs, and prepends a "Home" crumb.
+ *
+ * On a multisite CMS a node can belong to several sites. The trail is built for
+ * the site currently being viewed (the JSON:API "site" query parameter), so the
+ * per-site toggle and menu are resolved against that site rather than the
+ * primary site. It falls back to the primary site when no site is in scope
+ * (e.g. back-end rendering).
  *
  * The computed trail is passed through hook_tide_breadcrumb_alter() so other
  * modules (e.g. a reworked tide_breadcrumbs) can override or augment it before
@@ -38,6 +46,13 @@ class TideBreadcrumb {
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
+
+  /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
 
   /**
    * Per-request static cache of computed trails, keyed by node id.
@@ -67,10 +82,13 @@ class TideBreadcrumb {
    *   The menu link tree service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack, used to resolve the site currently being viewed.
    */
-  public function __construct(MenuLinkTreeInterface $menu_tree, ModuleHandlerInterface $module_handler) {
+  public function __construct(MenuLinkTreeInterface $menu_tree, ModuleHandlerInterface $module_handler, RequestStack $request_stack) {
     $this->menuTree = $menu_tree;
     $this->moduleHandler = $module_handler;
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -86,17 +104,28 @@ class TideBreadcrumb {
    */
   public function build(NodeInterface $node): array {
     $nid = $node->id() ?: 'new';
-    if (isset($this->trails[$nid])) {
-      return $this->trails[$nid];
+    // Resolve the site being viewed first: the trail (and the per-site toggle)
+    // vary per site on a multisite CMS, so the static cache is keyed by both.
+    $site_term = $this->getViewingSite($node);
+    $cache_key = $nid . ':' . ($site_term ? $site_term->id() : 'none');
+    if (isset($this->trails[$cache_key])) {
+      return $this->trails[$cache_key];
     }
 
     $this->cacheTags = $node->getCacheTags();
     $menu_name = NULL;
     $trail = [];
 
-    $site_term = $this->getPrimarySite($node);
     if ($site_term instanceof TermInterface) {
       $this->cacheTags = Cache::mergeTags($this->cacheTags, $site_term->getCacheTags());
+
+      // Per-site switch (default off): only build a breadcrumb when the site
+      // being viewed has it explicitly enabled. When disabled, emit nothing and
+      // skip the alter so other modules cannot re-add a trail for this site.
+      if (!$this->siteBreadcrumbsEnabled($site_term)) {
+        $this->trails[$cache_key] = [];
+        return [];
+      }
 
       // Always start at Home.
       $trail[] = $this->getHomeCrumb();
@@ -115,10 +144,10 @@ class TideBreadcrumb {
     // Let other modules override or augment the computed trail. This is the
     // organic override point: a future tide_breadcrumbs can substitute its
     // own calculation here, which in turn changes the JSON-LD BreadcrumbList.
-    $context = ['node' => $node, 'menu' => $menu_name];
+    $context = ['node' => $node, 'menu' => $menu_name, 'site' => $site_term];
     $this->moduleHandler->alter('tide_breadcrumb', $trail, $node, $context);
 
-    $this->trails[$nid] = $trail;
+    $this->trails[$cache_key] = $trail;
     return $trail;
   }
 
@@ -164,6 +193,66 @@ class TideBreadcrumb {
   }
 
   /**
+   * Resolves the site currently being viewed for a node.
+   *
+   * On a multisite CMS a node can belong to several sites. The headless
+   * front-end requests content with a "site" query parameter, so the breadcrumb
+   * must be built for that site. Only honoured when the node belongs to the
+   * requested site; otherwise the node's primary site is used (e.g. back-end
+   * rendering, where no site parameter is present).
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   *
+   * @return \Drupal\taxonomy\TermInterface|null
+   *   The site term to build the breadcrumb for, or NULL.
+   */
+  public function getViewingSite(NodeInterface $node): ?TermInterface {
+    $primary = $this->getPrimarySite($node);
+
+    $request = $this->requestStack->getCurrentRequest();
+    $site_id = $request ? $request->query->get('site') : NULL;
+    if (empty($site_id)) {
+      return $primary;
+    }
+
+    foreach ($this->getNodeSiteTerms($node) as $term) {
+      if ((string) $term->id() === (string) $site_id) {
+        return $term;
+      }
+    }
+    return $primary;
+  }
+
+  /**
+   * Returns all site terms a node belongs to (primary and section sites).
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node.
+   *
+   * @return \Drupal\taxonomy\TermInterface[]
+   *   Site terms keyed by term id.
+   */
+  protected function getNodeSiteTerms(NodeInterface $node): array {
+    $terms = [];
+    foreach (['field_node_primary_site', 'field_node_site'] as $field) {
+      if (!$node->hasField($field)) {
+        continue;
+      }
+      $items = $node->get($field);
+      if (!$items instanceof EntityReferenceFieldItemListInterface) {
+        continue;
+      }
+      foreach ($items->referencedEntities() as $term) {
+        if ($term instanceof TermInterface) {
+          $terms[$term->id()] = $term;
+        }
+      }
+    }
+    return $terms;
+  }
+
+  /**
    * Resolves the main menu machine name for a site term.
    *
    * @param \Drupal\taxonomy\TermInterface $site_term
@@ -177,6 +266,23 @@ class TideBreadcrumb {
       return $site_term->get('field_site_main_menu')->target_id;
     }
     return NULL;
+  }
+
+  /**
+   * Checks whether a site has breadcrumbs enabled.
+   *
+   * Controlled by the boolean field_enable_breadcrumbs on the Sites vocabulary.
+   * Defaults to off: breadcrumbs are only built for sites that opt in.
+   *
+   * @param \Drupal\taxonomy\TermInterface $site_term
+   *   The site taxonomy term.
+   *
+   * @return bool
+   *   TRUE when breadcrumbs are enabled for the site.
+   */
+  protected function siteBreadcrumbsEnabled(TermInterface $site_term): bool {
+    return $site_term->hasField('field_enable_breadcrumbs')
+      && (bool) $site_term->get('field_enable_breadcrumbs')->value;
   }
 
   /**
@@ -317,7 +423,8 @@ class TideBreadcrumb {
    *   Cache contexts.
    */
   public function getCacheContexts(): array {
-    return ['url.path', 'languages'];
+    // The trail varies by the site being viewed (JSON:API "site" parameter).
+    return ['url.path', 'url.query_args:site', 'languages'];
   }
 
 }

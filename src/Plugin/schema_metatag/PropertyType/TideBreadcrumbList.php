@@ -35,6 +35,12 @@ class TideBreadcrumbList extends BreadcrumbList {
     $builder = \Drupal::service('tide_core.breadcrumb');
     $trail = $builder->build($node);
 
+    // No trail (e.g. the site has breadcrumbs disabled) means no BreadcrumbList
+    // at all — don't emit a lone current-page item.
+    if (empty($trail)) {
+      return [];
+    }
+
     $items = [];
     $position = 1;
     foreach ($trail as $crumb) {

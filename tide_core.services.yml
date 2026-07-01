@@ -27,6 +27,7 @@ services:
     arguments:
       - '@menu.link_tree'
       - '@module_handler'
+      - '@request_stack'
   tide_core.common_services:
     class: Drupal\tide_core\TideCommonServices
   tide_core.system_info_service:
