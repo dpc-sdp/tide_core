@@ -33,9 +33,45 @@ class DatasetPushController extends ControllerBase {
   }
 
   /**
+   * Logger channel for auditing dataset pushes.
+   */
+  const LOGGER_CHANNEL = 'tide_data_pipeline_json_endpoint';
+
+  /**
    * Handles an authenticated JSON payload push for a dataset.
    */
   public function push(Request $request, string $machine_name): JsonResponse {
+    $logger = $this->getLogger(static::LOGGER_CHANNEL);
+    $account = $this->currentUser();
+    $body = $request->getContent();
+
+    // Record every incoming push, including ones that fail validation, so a
+    // full audit trail is kept in watchdog (dblog and Sumo Logic via syslog).
+    $logger->info('Dataset push received for "@machine_name" from @ip by @user (uid @uid), @bytes bytes. Payload: @payload', [
+      '@machine_name' => $machine_name,
+      '@ip' => $request->getClientIp() ?? 'unknown',
+      '@user' => $account->getAccountName() ?: 'anonymous',
+      '@uid' => $account->id(),
+      '@bytes' => strlen($body),
+      '@payload' => $body,
+    ]);
+
+    $response = $this->doPush($request, $machine_name, $body);
+
+    $logger->log($response->getStatusCode() >= 400 ? 'warning' : 'info',
+      'Dataset push for "@machine_name" completed with HTTP @status: @response', [
+        '@machine_name' => $machine_name,
+        '@status' => $response->getStatusCode(),
+        '@response' => $response->getContent(),
+      ]);
+
+    return $response;
+  }
+
+  /**
+   * Validates and processes the pushed payload.
+   */
+  private function doPush(Request $request, string $machine_name, string $body): JsonResponse {
     if (!str_contains($request->headers->get('Content-Type', ''), 'application/json')) {
       return new JsonResponse(['error' => 'Content-Type must be application/json.'], 415);
     }
@@ -54,7 +90,6 @@ class DatasetPushController extends ControllerBase {
       return new JsonResponse(['error' => 'Dataset is not published.'], 422);
     }
 
-    $body = $request->getContent();
     try {
       json_decode($body, flags: JSON_THROW_ON_ERROR);
     }
