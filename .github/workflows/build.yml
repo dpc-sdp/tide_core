@@ -4,15 +4,77 @@ on:
   push:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tide_build:
     name: tide_build
-    secrets: inherit
-    uses: dpc-sdp/github-actions/.github/workflows/tide_build.yml@v1.6.5
-    with:
-      module_build: true
-      runner: biggy-tide
-  export_config:
-    name: export_config
-    secrets: inherit
-    uses: dpc-sdp/github-actions/.github/workflows/export_config.yml@v1.6.5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate composer configuration
+        run: composer validate --ansi --strict --no-check-all --no-check-lock
+
+      - name: Install DDEV
+        uses: ddev/github-action-setup-ddev@v1
+        with:
+          autostart: false
+
+      - name: Start DDEV
+        run: ddev start -y
+
+      - name: Build Drupal site (poser)
+        run: ddev poser
+
+      - name: Symlink module into the site
+        run: ddev symlink-project
+
+      - name: Install site
+        run: ddev install-site
+
+      - name: Lint code
+        run: ddev exec vendor/bin/phpcs .
+
+      - name: Run PHPUnit unit tests
+        run: ddev exec vendor/bin/phpunit --testsuite unit
+
+      - name: Run Behat tests (tide_core)
+        run: ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' tests
+
+      - name: Upload Behat screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: behat-screenshots
+          path: screenshots
+          if-no-files-found: ignore
+
+      # TODO: per-module Behat suites are deferred while the DDEV migration
+      # settles. Re-enable by uncommenting; the sequence mirrors the legacy
+      # .circleci/test.sh (progressively enable each module, then run its
+      # Behat suite).
+      #
+      # - name: Run Behat tests (per module)
+      #   run: |
+      #     for m in tide_webform tide_media tide_event tide_grant tide_news tide_landing_page; do
+      #       ddev drush en -y "$m"
+      #       ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' "modules/$m"
+      #     done
+      #     ddev drush en -y tide_site
+      #     ddev exec vendor/bin/behat --strict --colors modules/tide_site
+      #     ddev drush en -y tide_ui_restriction
+      #     ddev exec vendor/bin/behat --strict --colors modules/tide_ui_restriction
+      #     ddev drush en -y tide_api tide_content_collection_ui tide_share_link
+      #     ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_api
+
+  # TODO: export_config previously used the ahoy-based reusable workflow
+  # (dpc-sdp/github-actions/.github/workflows/export_config.yml) and needs a
+  # DDEV-based rewrite before this branch is merged.
+  # export_config:
+  #   name: export_config
+  #   secrets: inherit
+  #   uses: dpc-sdp/github-actions/.github/workflows/export_config.yml@v1.6.5
