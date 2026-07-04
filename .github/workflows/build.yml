@@ -45,6 +45,51 @@ jobs:
       - name: Run Behat tests (tide_core)
         run: ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' tests
 
+      - name: Run Behat tests (tide_webform)
+        run: |
+          ddev drush en -y tide_webform
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_webform
+
+      - name: Run Behat tests (tide_media)
+        run: |
+          ddev drush en -y tide_media
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_media
+
+      - name: Run Behat tests (tide_event)
+        run: |
+          ddev drush en -y tide_event
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_event
+
+      - name: Run Behat tests (tide_grant)
+        run: |
+          ddev drush en -y tide_grant
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_grant
+
+      - name: Run Behat tests (tide_news)
+        run: |
+          ddev drush en -y tide_news
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_news
+
+      - name: Run Behat tests (tide_landing_page)
+        run: |
+          ddev drush en -y tide_landing_page
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_landing_page
+
+      - name: Run Behat tests (tide_site)
+        run: |
+          ddev drush en -y tide_site
+          ddev exec vendor/bin/behat --strict --colors modules/tide_site
+
+      - name: Run Behat tests (tide_ui_restriction)
+        run: |
+          ddev drush en -y tide_ui_restriction
+          ddev exec vendor/bin/behat --strict --colors modules/tide_ui_restriction
+
+      - name: Run Behat tests (tide_api)
+        run: |
+          ddev drush en -y tide_api tide_content_collection_ui tide_share_link
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_api
+
       - name: Upload Behat screenshots
         if: failure()
         uses: actions/upload-artifact@v4
@@ -52,24 +97,6 @@ jobs:
           name: behat-screenshots
           path: screenshots
           if-no-files-found: ignore
-
-      # TODO: per-module Behat suites are deferred while the DDEV migration
-      # settles. Re-enable by uncommenting; the sequence mirrors the legacy
-      # .circleci/test.sh (progressively enable each module, then run its
-      # Behat suite).
-      #
-      # - name: Run Behat tests (per module)
-      #   run: |
-      #     for m in tide_webform tide_media tide_event tide_grant tide_news tide_landing_page; do
-      #       ddev drush en -y "$m"
-      #       ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' "modules/$m"
-      #     done
-      #     ddev drush en -y tide_site
-      #     ddev exec vendor/bin/behat --strict --colors modules/tide_site
-      #     ddev drush en -y tide_ui_restriction
-      #     ddev exec vendor/bin/behat --strict --colors modules/tide_ui_restriction
-      #     ddev drush en -y tide_api tide_content_collection_ui tide_share_link
-      #     ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_api
 
   # TODO: export_config previously used the ahoy-based reusable workflow
   # (dpc-sdp/github-actions/.github/workflows/export_config.yml) and needs a
