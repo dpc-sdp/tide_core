@@ -11,6 +11,7 @@
 /dpc-sdp
 .idea
 .env.local
+.phpunit.result.cache
 docker-compose.override.yml
 screenshots
 vendor
