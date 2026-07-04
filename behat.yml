@@ -33,22 +33,22 @@ default:
     Drupal\MinkExtension:
       files_path: '%paths.base%/tests/behat/fixtures'
       selenium2:
-        wd_host: "http://chrome:4444/wd/hub"
+        wd_host: "http://selenium-chrome:4444/wd/hub"
         capabilities: { "browser": "chrome", "version": "*", "marionette": true }
       browserkit_http: ~
       ajax_timeout: 5
       browser_name: chrome
       javascript_session: selenium2
-      base_url: http://nginx:8080
+      base_url: http://web
     # Provides integration with Drupal APIs.
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: drupal
       drush_driver: drush
       drupal:
-        drupal_root: docroot
+        drupal_root: web
       drush:
-        root: docroot
+        root: web
       selectors:
         message_selector: '.messages'
         error_message_selector: '.messages.messages--error'
@@ -80,7 +80,7 @@ default:
       purge: false
     Imbo\BehatApiExtension:
       apiClient:
-        base_uri: http://nginx:8080
+        base_uri: http://web
         timeout: 5.0
         verify: false # Set to true if using production HTTPS locally
 

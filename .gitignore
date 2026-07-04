@@ -2,6 +2,9 @@
 # https://help.github.com/articles/ignoring-files/#create-a-global-gitignore
 
 /composer.lock
+/composer.contrib.json
+/composer.contrib.lock
+/web
 /composer.build.json
 /composer.build.lock
 /docroot
