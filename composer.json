@@ -29,7 +29,7 @@
         "drupal/entity_embed": "1.7",
         "drupal/environment_indicator": "^4.0",
         "drupal/fast_404": "^3.0",
-        "drupal/field_group": "^3.6",
+        "drupal/field_group": "^4.0.0",
         "drupal/google_analytics": "^4.0",
         "drupal/hotjar": "^3.1",
         "drupal/linkit": "^7.0",
@@ -96,8 +96,10 @@
         "drupal/migrate_file": "^2.0",
         "drupal/select2": "^1.7",
         "oomphinc/composer-installers-extender": "^2.0",
-        "select2/select2": "^4.0",
-        "npm-asset/select2": "^4.0",
+        "select2/select2": "4.0.*",
+        "drupal/views_bulk_operations": "^4.3",
+        "drupal/views_bulk_edit": "^3.0",
+        "npm-asset/select2": "4.0.*",
         "lcobucci/clock": "3.2.0",
         "drupal/form_options_attributes": "^2.0",
         "drupal/term_reference_tree": "^2.0",
@@ -382,10 +384,6 @@
             "drupal/token": {
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
             },
-            "drupal/field_group": {
-                "Nested groups render on other entity forms (or when fields are inaccessible) when they shouldn't: https://www.drupal.org/project/field_group/issues/3098550#comment-15712652": "https://www.drupal.org/files/issues/2024-08-05/3098550-19.patch",
-                "Tabs with invalid input are not focused - https://www.drupal.org/project/field_group/issues/2894351#comment-15712685": "https://www.drupal.org/files/issues/2024-08-05/2894351-32.patch"
-            },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch"
             },
@@ -415,7 +413,8 @@
             },
             "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": {
                 "Complete the fix for bulk indexing on Elasticsearch endpoint - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3540879": "https://www.drupal.org/files/issues/2025-08-12/3511558-Change-bulk-deleting-on-Elasticsearch-endpoint.patch",
-                "False positive mappings defined at top level error triggered unconditionally in ElasticSearchDatasetPipeline constructor - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3541059#comment-16226097": "https://www.drupal.org/files/issues/2025-08-13/3541059-fix-elasticsearch-mapping-warning-in-constructor.patch"
+                "False positive mappings defined at top level error triggered unconditionally in ElasticSearchDatasetPipeline constructor - https://www.drupal.org/project/data_pipelines_elasticsearch/issues/3541059#comment-16226097": "https://www.drupal.org/files/issues/2025-08-13/3541059-fix-elasticsearch-mapping-warning-in-constructor.patch",
+                "Allow datasets to define a custom document `_id` instead of the positional delta": "https://www.drupal.org/files/issues/2026-06-17/allow_external_id_datasets_3601849_2.patch"
             },
             "drupal/paragraphs": {
                 "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
@@ -458,6 +457,15 @@
             },
             "drupal/consumers": {
                 "Entity update still required after update to 1.23": "https://www.drupal.org/files/issues/2026-01-27/drupal-consumers-3569150_07.patch"
+            },
+            "drupal/views_bulk_edit": {
+                "Fix Required fields to really not be required - https://www.drupal.org/project/views_bulk_edit/issues/3024419#comment-16363763": "https://www.drupal.org/files/issues/2025-11-28/3024419-72.patch"
+            },
+            "drupal/views_bulk_operations": {
+                "getSubscribedEvents() fails on `drush updb` due to autoloader negative-cache (missing class_exists() guard) - https://www.drupal.org/project/views_bulk_operations/issues/3589629#comment-16583537": "https://www.drupal.org/files/issues/2026-05-12/views_bulk_operations-class-exists-guard-3589629-2.patch"
+            },
+            "drupal/entity_embed": {
+                "Entity embed dialog can no longer use custom data- attributes in CKEditor 5 - https://www.drupal.org/project/entity_embed/issues/3410132": "https://www.drupal.org/files/issues/2026-06-15/entity-embed-allow-custom-data-attrs-javascript.patch"
             }
           },
         "installer-paths": {

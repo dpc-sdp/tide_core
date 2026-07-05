@@ -145,4 +145,23 @@ class TideSiteRestrictionOperation {
     }
   }
 
+  /**
+   * Set field_node_site help text.
+   */
+  public static function updateHelpText() {
+    $help_text = 'You must select only one site section.';
+    $field_configs = \Drupal::entityTypeManager()
+      ->getStorage('field_config')
+      ->loadByProperties([
+        'entity_type' => 'node',
+        'field_name' => 'field_node_site',
+      ]);
+    foreach ($field_configs as $field_config) {
+      if ($field_config->getDescription() !== $help_text) {
+        $field_config->setDescription($help_text);
+        $field_config->save();
+      }
+    }
+  }
+
 }

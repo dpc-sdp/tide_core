@@ -1,0 +1,8 @@
+name: 'Tide Data Pipeline JSON Endpoint Test'
+type: module
+description: 'Test fixtures and pipelines for tide_data_pipeline_json_endpoint.'
+core_version_requirement: ^10 || ^11
+package: Testing
+dependencies:
+  - data_pipelines:data_pipelines
+  - tide_core:tide_data_pipeline_json_endpoint

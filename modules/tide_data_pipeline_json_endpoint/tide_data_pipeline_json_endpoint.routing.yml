@@ -1,0 +1,10 @@
+tide_data_pipeline_json_endpoint.push:
+  path: '/api/datasets/{machine_name}/push'
+  defaults:
+    _controller: '\Drupal\tide_data_pipeline_json_endpoint\Controller\DatasetPushController::push'
+    _title: 'Push Dataset Data'
+  methods: [POST]
+  requirements:
+    _permission: 'push data pipeline json endpoint'
+  options:
+    no_cache: TRUE
