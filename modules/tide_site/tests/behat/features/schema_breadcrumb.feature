@@ -5,10 +5,14 @@ Feature: JSON-LD breadcrumb (tide_core)
   Schema.org BreadcrumbList, gated per site, so that structured data reflects
   the site's information architecture.
 
-  The breadcrumb engine lives in tide_core: it builds the trail from the node's
-  primary-site main menu (starting at the site root "Home"), is switched on/off
-  per site via the "Enable breadcrumbs" field, and is exposed through the node's
-  computed json_ld field.
+  The breadcrumb engine lives in tide_core: it builds the trail from the main
+  menu of the site being viewed (starting at the site root "Home"), is switched
+  on/off per site via the "Enable breadcrumbs" field, and is exposed through the
+  node's computed json_ld field.
+
+  This feature lives under tide_site (not tide_core) because the scenarios set
+  field_node_primary_site / field_node_site on nodes, and those field instances
+  are only provisioned onto content types when tide_site is installed.
 
   Background:
     Given vocabulary "sites" with name "Sites" exists
