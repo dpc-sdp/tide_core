@@ -5,6 +5,7 @@
  * Tide Breadcrumbs module functionality.
  */
 
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -74,11 +75,19 @@ function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityVi
     if (!empty($trail)) {
       $breadcrumb_items = [];
       foreach ($trail as $item) {
-        $breadcrumb_items[] = [
-          '#type' => 'link',
-          '#title' => $item['title'],
-          '#url' => Url::fromUserInput($item['url']),
-        ];
+        if (!empty($item['title'] && !empty($item['url']))) {
+          if (UrlHelper::isExternal($item['url'])) {
+            $url = Url::fromUri($item['url']);
+          }
+          else {
+            $url = Url::fromUserInput($item['url']);
+          }
+          $breadcrumb_items[] = [
+            '#type' => 'link',
+            '#title' => $item['title'],
+            '#url' => $url,
+          ];
+        }
       }
 
       // Build the render array with a heading and horizontal layout.

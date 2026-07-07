@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {}
+id: data_pipeline_pusher
+label: 'Data Pipeline Pusher'
+weight: 100
+is_admin: null
+permissions:
+  - 'push data pipeline json endpoint'

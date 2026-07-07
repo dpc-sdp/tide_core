@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for tide_data_pipeline_json_endpoint.
+ */
+
+use Drupal\consumers\Entity\Consumer;
+use Drupal\user\Entity\User;
+
+/**
+ * Implements hook_install().
+ */
+function tide_data_pipeline_json_endpoint_install(): void {
+  // Create a dedicated service user for the push consumer.
+  $user = User::create([
+    'name' => 'leap_user',
+    'mail' => 'leap_user@example.com',
+    'status' => 1,
+  ]);
+  $user->addRole('editor');
+  $user->save();
+
+  // Create the OAuth consumer for the data_pipeline_pusher role.
+  // The consumer is confidential — a client secret must be set via
+  // /admin/config/services/consumer before it can issue access tokens.
+  Consumer::create([
+    'label' => 'Data Pipeline Pusher',
+    'client_id' => 'data_pipeline_pusher',
+    'machine_name' => 'leap_access',
+    'confidential' => 1,
+    'is_default' => FALSE,
+    'third_party' => 0,
+    'status' => 1,
+    'user_id' => $user->id(),
+    'roles' => [['target_id' => 'data_pipeline_pusher']],
+  ])->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tide_data_pipeline_json_endpoint_uninstall(): void {
+  $consumers = \Drupal::entityTypeManager()
+    ->getStorage('consumer')
+    ->loadByProperties(['client_id' => 'data_pipeline_pusher']);
+  foreach ($consumers as $consumer) {
+    $consumer->delete();
+  }
+}
