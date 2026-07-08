@@ -1507,3 +1507,107 @@ function tide_core_update_10043() {
 function tide_core_update_10044() {
   \Drupal::service('module_installer')->install(['tide_external_site_link']);
 }
+
+/**
+ * Install the per-site 'Content Security Policy' field on the Sites vocabulary.
+ */
+function tide_core_update_10045() {
+  \Drupal::service('module_installer')->install(['json_field']);
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  // Field storage, then field instance on the Sites vocabulary.
+  $configs = [
+    'field.storage.taxonomy_term.field_content_security_policy' => 'field_storage_config',
+    'field.field.taxonomy_term.sites.field_content_security_policy' => 'field_config',
+  ];
+  foreach ($configs as $config_name => $entity_type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
+    $id = $storage->getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) === NULL) {
+      $record = _tide_read_config($config_name, $config_location, TRUE);
+      if ($record) {
+        $storage->createFromStorageRecord($record)->save();
+      }
+    }
+  }
+
+  // Show the field immediately after 'Domains' on the Sites term form.
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('taxonomy_term.sites.default');
+  if ($form_display && $form_display->getComponent('field_content_security_policy') === NULL) {
+    _tide_core_display_insert_after($form_display, 'field_site_domains', 'field_content_security_policy', [
+      'type' => 'json_textarea',
+      'region' => 'content',
+      'settings' => [
+        'rows' => 5,
+        'placeholder' => '',
+      ],
+      'third_party_settings' => [],
+    ]);
+  }
+
+  // Show the field immediately after 'Domains' on the Sites term view display.
+  /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface|null $view_display */
+  $view_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display')
+    ->load('taxonomy_term.sites.default');
+  if ($view_display && $view_display->getComponent('field_content_security_policy') === NULL) {
+    _tide_core_display_insert_after($view_display, 'field_site_domains', 'field_content_security_policy', [
+      'type' => 'json',
+      'label' => 'above',
+      'region' => 'content',
+      'settings' => [
+        'attach_library' => TRUE,
+      ],
+      'third_party_settings' => [],
+    ]);
+  }
+}
+
+/**
+ * Adds a component to a display immediately after an existing component.
+ *
+ * All components (and field_group groups) weighted at or below the insertion
+ * point are shifted down by one to make room. Falls back to appending the
+ * component last when the anchor component is not on the display.
+ *
+ * @param \Drupal\Core\Entity\Display\EntityFormDisplayInterface|\Drupal\Core\Entity\Display\EntityViewDisplayInterface $display
+ *   The entity form or view display.
+ * @param string $anchor_name
+ *   The name of the existing component to insert after.
+ * @param string $new_name
+ *   The name of the component to add.
+ * @param array $options
+ *   The component options (type, settings, etc.); weight is set here.
+ */
+function _tide_core_display_insert_after($display, $anchor_name, $new_name, array $options) {
+  $components = $display->getComponents();
+  $anchor = $components[$anchor_name] ?? NULL;
+  if ($anchor !== NULL) {
+    $weight = ($anchor['weight'] ?? 0) + 1;
+    foreach ($components as $name => $component) {
+      if ($name !== $anchor_name && ($component['weight'] ?? 0) >= $weight) {
+        $component['weight']++;
+        $display->setComponent($name, $component);
+      }
+    }
+    foreach ($display->getThirdPartySettings('field_group') as $group_name => $group) {
+      if (($group['weight'] ?? 0) >= $weight) {
+        $group['weight']++;
+        $display->setThirdPartySetting('field_group', $group_name, $group);
+      }
+    }
+  }
+  else {
+    $weights = array_map(function (array $component) {
+      return $component['weight'] ?? 0;
+    }, $components);
+    $weight = $weights ? max($weights) + 1 : 0;
+  }
+  $display->setComponent($new_name, ['weight' => $weight] + $options);
+  $display->save();
+}
