@@ -120,6 +120,7 @@ dependencies:
   - drupal:user
   - drupal:path_alias
   - prlp:prlp
+  - json_field:json_field
   - key_value_field:key_value_field
   - pathauto:pathauto
   - entity_browser:entity_browser
