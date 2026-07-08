@@ -1500,3 +1500,10 @@ function tide_core_update_10043() {
     $form_display->save();
   }
 }
+
+/**
+ * Install tide_external_site_link.
+ */
+function tide_core_update_10044() {
+  \Drupal::service('module_installer')->install(['tide_external_site_link']);
+}

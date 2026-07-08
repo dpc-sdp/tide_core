@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: external_site_links
+label: 'External Site Links'
+type: 'canonical_entities:node'
+pattern: '/external-[node:title]'
+selection_criteria:
+  8c134b99-1ffd-45e8-9203-853160c079bf:
+    id: 'entity_bundle:node'
+    bundles:
+      external_site_link: external_site_link
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 8c134b99-1ffd-45e8-9203-853160c079bf
+selection_logic: and
+weight: -40
+relationships: {  }

@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_content_category
+    - node.type.external_site_link
+    - taxonomy.vocabulary.content_category
+id: node.external_site_link.field_content_category
+field_name: field_content_category
+entity_type: node
+bundle: external_site_link
+label: 'Content category'
+description: 'Select the most relevant option from the <a href="https://www.vic.gov.au/content-categories">list of content categories</a>. This field will help with search and filtering on the website.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      content_category: content_category
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
