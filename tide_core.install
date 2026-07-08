@@ -68,6 +68,10 @@ function tide_core_install() {
 
   // Assign permissions for CKEditor template usage.
   $tideCoreOperation->assignCkeditorTemplatesPermission();
+
+  // Enable the JSON-LD engine schema defaults (WebPage + BreadcrumbList) on the
+  // node metatag default.
+  $tideCoreOperation->enableJsonLdSchemaDefaults();
 }
 
 /**
@@ -1436,8 +1440,70 @@ function tide_core_update_10040() {
 }
 
 /**
- * Install tide_external_site_link.
+ * Enable the JSON-LD engine: schema modules + node WebPage/breadcrumb defaults.
  */
 function tide_core_update_10041() {
+  // Enable the schema modules and add the WebPage + breadcrumb schema default
+  // at the node level so every bundle emits a schema.org BreadcrumbList in its
+  // JSON-LD. The actual trail is provided by the tide_core breadcrumb service
+  // (overridable via hook_tide_breadcrumb_alter()). Shared with hook_install()
+  // so fresh installs get the same defaults.
+  (new TideCoreOperation())->enableJsonLdSchemaDefaults();
+}
+
+/**
+ * Install the per-site 'Enable breadcrumbs' field on the Sites vocabulary.
+ */
+function tide_core_update_10042() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  // Field storage.
+  $storage_config = 'field.storage.taxonomy_term.field_enable_breadcrumbs';
+  $field_storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $storage_id = $field_storage->getIDFromConfigName($storage_config, $field_storage->getEntityType()->getConfigPrefix());
+  if ($field_storage->load($storage_id) === NULL) {
+    $record = _tide_read_config($storage_config, $config_location, TRUE);
+    if ($record) {
+      $field_storage->createFromStorageRecord($record)->save();
+    }
+  }
+
+  // Field instance on the Sites vocabulary.
+  $field_config = 'field.field.taxonomy_term.sites.field_enable_breadcrumbs';
+  $field = \Drupal::entityTypeManager()->getStorage('field_config');
+  $field_id = $field->getIDFromConfigName($field_config, $field->getEntityType()->getConfigPrefix());
+  if ($field->load($field_id) === NULL) {
+    $record = _tide_read_config($field_config, $config_location, TRUE);
+    if ($record) {
+      $field->createFromStorageRecord($record)->save();
+    }
+  }
+}
+
+/**
+ * Show the per-site 'Enable breadcrumbs' field on the Sites term form.
+ */
+function tide_core_update_10043() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('taxonomy_term.sites.default');
+  if ($form_display && $form_display->getComponent('field_enable_breadcrumbs') === NULL) {
+    $form_display->setComponent('field_enable_breadcrumbs', [
+      'type' => 'boolean_checkbox',
+      'weight' => 28,
+      'region' => 'content',
+      'settings' => ['display_label' => TRUE],
+      'third_party_settings' => [],
+    ]);
+    $form_display->save();
+  }
+}
+
+/**
+ * Install tide_external_site_link.
+ */
+function tide_core_update_10044() {
   \Drupal::service('module_installer')->install(['tide_external_site_link']);
 }
