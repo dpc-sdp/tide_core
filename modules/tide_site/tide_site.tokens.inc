@@ -16,6 +16,11 @@ function tide_site_token_info_alter(&$data) {
     'description' => t('The base path component without site prefix.'),
   ];
 
+  $data['tokens']['url']['fe_url'] = [
+    'name' => t('Front-end URL'),
+    'description' => t("The node's absolute front-end URL built from its primary site's first domain."),
+  ];
+
   $data['tokens']['node']['publication-parent-prefix'] = [
     'name' => t('Publication parent with prefix'),
     'description' => t('The publication parent to use with linkit'),
@@ -54,6 +59,35 @@ function tide_site_tokens($type, $tokens, array $data, array $options, Bubbleabl
           $value = !($url->getOption('alias')) ? \Drupal::service('path_alias.manager')->getAliasByPath($path, $langcode) : $path;
           $value = preg_replace("/^\/site\-(\d+)\//", '/', $value, 1);
           $replacements[$original] = $value;
+          break;
+
+        case 'fe_url':
+          // [node:url] passes the node's canonical Url object. Recover the node
+          // from the route to build its absolute front-end URL using the
+          // primary site's first domain, with the /site-XXXX/ prefix stripped.
+          if ($url->isRouted() && $url->getRouteName() === 'entity.node.canonical') {
+            $nid = $url->getRouteParameters()['node'] ?? NULL;
+            $node = $nid ? \Drupal::entityTypeManager()->getStorage('node')->load($nid) : NULL;
+            if ($node) {
+              /** @var \Drupal\tide_site\TideSiteHelper $helper */
+              $helper = \Drupal::service('tide_site.helper');
+              /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+              $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+              $site_url = $helper->getEntityPrimarySiteBaseUrl($node);
+              // No primary site: leave empty instead of emitting /node/123.
+              if ($site_url) {
+                $fe_url = $helper->getNodeUrlFromPrimarySite($node);
+                $fe_url = $alias_helper->getPathAliasWithoutSitePrefix(['alias' => $fe_url], $site_url);
+                $replacements[$original] = $fe_url;
+                // Invalidate when the node or its domain changes.
+                $bubbleable_metadata->addCacheableDependency($node);
+                $primary_site = $helper->getEntityPrimarySite($node);
+                if ($primary_site) {
+                  $bubbleable_metadata->addCacheableDependency($primary_site);
+                }
+              }
+            }
+          }
           break;
       }
     }

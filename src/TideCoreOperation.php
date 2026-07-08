@@ -296,4 +296,53 @@ class TideCoreOperation {
     }
   }
 
+  /**
+   * Enables the JSON-LD engine schema defaults on the node metatag default.
+   *
+   * Ensures the schema modules are installed and that every node bundle emits a
+   * schema.org WebPage + BreadcrumbList in its JSON-LD. The actual trail is
+   * provided by the tide_core breadcrumb service (overridable via
+   * hook_tide_breadcrumb_alter()).
+   *
+   * This lives here (rather than only in config/optional) because the metatag
+   * module ships its own metatag.metatag_defaults.node in config/install, so
+   * tide_core's optional copy is skipped on a fresh install and the schema tags
+   * would never be applied. Idempotent: safe to call on install and update.
+   */
+  public function enableJsonLdSchemaDefaults() {
+    // The JSON-LD engine lives in tide_core, so ensure the schema modules that
+    // power it are installed.
+    $module_installer = \Drupal::service('module_installer');
+    foreach (['schema_metatag', 'schema_web_page'] as $module) {
+      if (!\Drupal::moduleHandler()->moduleExists($module)) {
+        $module_installer->install([$module]);
+      }
+    }
+
+    $storage = \Drupal::entityTypeManager()->getStorage('metatag_defaults');
+    /** @var \Drupal\metatag\Entity\MetatagDefaults|null $defaults */
+    $defaults = $storage->load('node');
+
+    // Create the node defaults from shipped config if they are missing.
+    if ($defaults === NULL) {
+      \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+      $config_name = 'metatag.metatag_defaults.node';
+      $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
+      $config_read = _tide_read_config($config_name, $config_location, TRUE);
+      if ($config_read) {
+        $storage->createFromStorageRecord($config_read)->save();
+      }
+      return;
+    }
+
+    // Otherwise add the schema tags without clobbering existing values.
+    $tags = $defaults->get('tags') ?: [];
+    $tags += [
+      'schema_web_page_type' => 'WebPage',
+      'schema_web_page_breadcrumb' => 'Yes',
+    ];
+    $defaults->set('tags', $tags);
+    $defaults->save();
+  }
+
 }

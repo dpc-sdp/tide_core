@@ -18,6 +18,9 @@ dependencies:
   - maxlength:maxlength
   - metatag:metatag
   - metatag:metatag_open_graph
+  - schema_metatag:schema_metatag
+  - schema_metatag:schema_article
+  - schema_metatag:schema_organization
   - paragraphs:paragraphs
   - select2:select2
   - smart_trim:smart_trim
@@ -45,6 +48,7 @@ config_devel:
     - field.field.node.news.field_topic
     - field.storage.node.field_news_date
     - field.storage.news.field_news_intro_text
+    - metatag.metatag_defaults.node__news
   optional:
     - field.field.node.news.field_show_content_rating
     - jsonapi_extras.jsonapi_resource_config.node--news
