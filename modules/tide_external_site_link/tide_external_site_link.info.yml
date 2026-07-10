@@ -1,0 +1,29 @@
+name: Tide External Site Link
+type: module
+description: 'Provides external site link content type and related configuration.'
+package: Tide
+core_version_requirement: ^9 || ^10
+dependencies:
+  - tide_core:tide_core
+  - tide_landing_page:tide_landing_page
+  - tide_media:tide_media
+  - drupal:menu_ui
+  - select2:select2
+config_devel:
+  install:
+    - core.entity_form_display.node.external_site_link.default.yml
+    - core.entity_view_display.node.external_site_link.default.yml
+    - core.entity_view_display.node.external_site_link.full.yml
+    - core.entity_view_display.node.external_site_link.teaser.yml
+    - field.field.node.external_site_link.field_content_keywords.yml
+    - field.field.node.external_site_link.field_featured_image.yml
+    - field.field.node.external_site_link.field_landing_page_summary.yml
+    - field.field.node.external_site_link.field_node_department.yml
+    - field.field.node.external_site_link.field_node_link.yml
+    - field.field.node.external_site_link.field_node_primary_site.yml
+    - field.field.node.external_site_link.field_node_site.yml
+    - field.field.node.external_site_link.field_tags.yml
+    - field.field.node.external_site_link.field_topic.yml
+    - node.type.external_site_link.yml
+  optional:
+    - pathauto.pattern.external_site_links

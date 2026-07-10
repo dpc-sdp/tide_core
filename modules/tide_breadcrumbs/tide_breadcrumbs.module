@@ -5,6 +5,7 @@
  * Tide Breadcrumbs module functionality.
  */
 
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -74,11 +75,19 @@ function tide_breadcrumbs_node_view(array &$build, NodeInterface $node, EntityVi
     if (!empty($trail)) {
       $breadcrumb_items = [];
       foreach ($trail as $item) {
-        $breadcrumb_items[] = [
-          '#type' => 'link',
-          '#title' => $item['title'],
-          '#url' => Url::fromUserInput($item['url']),
-        ];
+        if (!empty($item['title'] && !empty($item['url']))) {
+          if (UrlHelper::isExternal($item['url'])) {
+            $url = Url::fromUri($item['url']);
+          }
+          else {
+            $url = Url::fromUserInput($item['url']);
+          }
+          $breadcrumb_items[] = [
+            '#type' => 'link',
+            '#title' => $item['title'],
+            '#url' => $url,
+          ];
+        }
       }
 
       // Build the render array with a heading and horizontal layout.
@@ -166,4 +175,32 @@ function tide_breadcrumbs_node_storage_load(array $entities) {
     // Even if an error occurs.
     $is_processing = FALSE;
   }
+}
+
+/**
+ * Implements hook_tide_breadcrumb_alter().
+ *
+ * Overrides tide_core's baseline menu breadcrumb with the chained
+ * Primary/Section-site trail computed by tide_breadcrumbs, so the JSON-LD
+ * BreadcrumbList reflects the richer taxonomy-aware hierarchy whenever this
+ * module is enabled. URL normalisation (front-end host, https, /site-XXXX
+ * stripping) is still applied downstream by tide_core.
+ *
+ * @see \Drupal\tide_core\TideBreadcrumb::build()
+ * @see \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder::buildFullTrail()
+ */
+function tide_breadcrumbs_tide_breadcrumb_alter(array &$trail, NodeInterface $node, array $context) {
+  /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $builder */
+  $builder = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+  $custom = $builder->buildFullTrail($node);
+  if (empty($custom)) {
+    return;
+  }
+
+  // Keep "Home" pointing at the site root, consistent with tide_core.
+  if (($custom[0]['title'] ?? '') === 'Home') {
+    $custom[0]['url'] = '/';
+  }
+
+  $trail = $custom;
 }

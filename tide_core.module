@@ -25,7 +25,9 @@ use Drupal\node\NodeInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\redirect\Entity\Redirect;
 use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
+use Drupal\tide_core\JsonLdComputedField;
 use Drupal\tide_core\Plugin\CornerGraphicField;
+use Drupal\tide_core\Plugin\schema_metatag\PropertyType\TideBreadcrumbList;
 use Drupal\tide_core\Render\Element\AdminToolbar;
 use Drupal\user\RoleInterface;
 use Drupal\views\ViewExecutable;
@@ -959,5 +961,44 @@ function tide_core_form_views_exposed_form_alter(&$form, FormStateInterface $for
   // Sort Topic filter options alphabetically by label.
   if (!empty($form['field_topic_target_id']['#options'])) {
     asort($form['field_topic_target_id']['#options']);
+  }
+}
+
+/**
+ * Implements hook_entity_bundle_field_info().
+ *
+ * Registers a generic, read-only 'json_ld' computed field on every node bundle.
+ * The field assembles the schema_metatag JSON-LD string for the node and is
+ * empty unless the bundle has schema_metatag tags configured (via metatag
+ * defaults), so it is safe to expose everywhere.
+ */
+function tide_core_entity_bundle_field_info(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+  $fields = [];
+
+  if ($entity_type->id() === 'node') {
+    $fields['json_ld'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('JSON-LD'))
+      ->setDescription(t('Pre-assembled JSON-LD string for this node, ready to be injected into a script[type="application/ld+json"] tag by the headless frontend.'))
+      ->setComputed(TRUE)
+      ->setClass(JsonLdComputedField::class)
+      ->setReadOnly(TRUE);
+  }
+
+  return $fields;
+}
+
+/**
+ * Implements hook_schema_metatag_property_type_plugins_alter().
+ *
+ * Replaces contrib's BreadcrumbList property type with the Tide-aware subclass
+ * that sources the trail from the tide_core breadcrumb service (which applies
+ * hook_tide_breadcrumb_alter()) and works under JSON:API.
+ *
+ * @see \Drupal\tide_core\Plugin\schema_metatag\PropertyType\TideBreadcrumbList
+ */
+function tide_core_schema_metatag_property_type_plugins_alter(array &$definitions) {
+  if (isset($definitions['breadcrumb_list'])) {
+    $definitions['breadcrumb_list']['class'] = TideBreadcrumbList::class;
+    $definitions['breadcrumb_list']['provider'] = 'tide_core';
   }
 }

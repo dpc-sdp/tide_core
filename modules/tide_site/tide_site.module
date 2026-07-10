@@ -942,7 +942,7 @@ function tide_site_tide_help(string $route_name, RouteMatchInterface $route_matc
  */
 function tide_site_preprocess_views_view(&$variables) {
   $view = $variables['view'];
-  if ($view->id() == 'tide_content_report') {
+  if ($view->id() == 'tide_content_report' || $view->id() === 'media_report') {
     $variables['#attached']['library'][] = 'tide_site/content_report_csv_limit';
   }
 }

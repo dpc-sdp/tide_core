@@ -68,6 +68,10 @@ function tide_core_install() {
 
   // Assign permissions for CKEditor template usage.
   $tideCoreOperation->assignCkeditorTemplatesPermission();
+
+  // Enable the JSON-LD engine schema defaults (WebPage + BreadcrumbList) on the
+  // node metatag default.
+  $tideCoreOperation->enableJsonLdSchemaDefaults();
 }
 
 /**
@@ -1399,4 +1403,228 @@ function tide_core_update_10038() {
  */
 function tide_core_update_10039() {
   \Drupal::service('module_installer')->install(['views_bulk_operations', 'views_bulk_edit']);
+}
+
+/**
+ * Hide nav title field node form displays.
+ */
+function tide_core_update_10040() {
+  $description = 'Tick this checkbox to display a side menu on this page. The menu belongs to the site section this page is tagged to. To change the menu heading that displays on live, pages, <a href=\'https://digital-vic.atlassian.net/servicedesk/customer/portal/27/group/145/create/507\' target="_blank">submit a support request</a>.';
+  $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo('node');
+  $storage = \Drupal::entityTypeManager()->getStorage('entity_form_display');
+  foreach (array_keys($bundles) as $bundle) {
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+    $form_display = $storage->load('node.' . $bundle . '.default');
+    if ($form_display === NULL) {
+      continue;
+    }
+    $changed = FALSE;
+    if ($form_display->getComponent('field_landing_page_nav_title') !== NULL) {
+      $form_display->removeComponent('field_landing_page_nav_title');
+      $changed = TRUE;
+    }
+    $group = $form_display->getThirdPartySetting('field_group', 'group_site_section_navigation');
+    if ($group !== NULL) {
+      $group['children'] = array_values(array_diff($group['children'] ?? [], ['field_landing_page_nav_title']));
+      $group['format_settings']['show_empty_fields'] = FALSE;
+      $group['format_settings']['label_as_html'] = TRUE;
+      $group['format_settings']['description'] = $description;
+      unset($group['format_settings']['formatter']);
+      $form_display->setThirdPartySetting('field_group', 'group_site_section_navigation', $group);
+      $changed = TRUE;
+    }
+    if ($changed) {
+      $form_display->save();
+    }
+  }
+}
+
+/**
+ * Enable the JSON-LD engine: schema modules + node WebPage/breadcrumb defaults.
+ */
+function tide_core_update_10041() {
+  // Enable the schema modules and add the WebPage + breadcrumb schema default
+  // at the node level so every bundle emits a schema.org BreadcrumbList in its
+  // JSON-LD. The actual trail is provided by the tide_core breadcrumb service
+  // (overridable via hook_tide_breadcrumb_alter()). Shared with hook_install()
+  // so fresh installs get the same defaults.
+  (new TideCoreOperation())->enableJsonLdSchemaDefaults();
+}
+
+/**
+ * Install the per-site 'Enable breadcrumbs' field on the Sites vocabulary.
+ */
+function tide_core_update_10042() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  // Field storage.
+  $storage_config = 'field.storage.taxonomy_term.field_enable_breadcrumbs';
+  $field_storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $storage_id = $field_storage->getIDFromConfigName($storage_config, $field_storage->getEntityType()->getConfigPrefix());
+  if ($field_storage->load($storage_id) === NULL) {
+    $record = _tide_read_config($storage_config, $config_location, TRUE);
+    if ($record) {
+      $field_storage->createFromStorageRecord($record)->save();
+    }
+  }
+
+  // Field instance on the Sites vocabulary.
+  $field_config = 'field.field.taxonomy_term.sites.field_enable_breadcrumbs';
+  $field = \Drupal::entityTypeManager()->getStorage('field_config');
+  $field_id = $field->getIDFromConfigName($field_config, $field->getEntityType()->getConfigPrefix());
+  if ($field->load($field_id) === NULL) {
+    $record = _tide_read_config($field_config, $config_location, TRUE);
+    if ($record) {
+      $field->createFromStorageRecord($record)->save();
+    }
+  }
+}
+
+/**
+ * Show the per-site 'Enable breadcrumbs' field on the Sites term form.
+ */
+function tide_core_update_10043() {
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('taxonomy_term.sites.default');
+  if ($form_display && $form_display->getComponent('field_enable_breadcrumbs') === NULL) {
+    $form_display->setComponent('field_enable_breadcrumbs', [
+      'type' => 'boolean_checkbox',
+      'weight' => 28,
+      'region' => 'content',
+      'settings' => ['display_label' => TRUE],
+      'third_party_settings' => [],
+    ]);
+    $form_display->save();
+  }
+}
+
+/**
+ * Install tide_external_site_link.
+ */
+function tide_core_update_10044() {
+  \Drupal::service('module_installer')->install(['tide_external_site_link']);
+}
+
+/**
+ * Install the CSP and Permissions-Policy fields on the Sites vocabulary.
+ */
+function tide_core_update_10045() {
+  \Drupal::service('module_installer')->install(['json_field']);
+
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+
+  // Field storages, then field instances on the Sites vocabulary.
+  $configs = [
+    'field.storage.taxonomy_term.field_content_security_policy' => 'field_storage_config',
+    'field.field.taxonomy_term.sites.field_content_security_policy' => 'field_config',
+    'field.storage.taxonomy_term.field_web_feature_perm_policy' => 'field_storage_config',
+    'field.field.taxonomy_term.sites.field_web_feature_perm_policy' => 'field_config',
+  ];
+  foreach ($configs as $config_name => $entity_type) {
+    $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
+    $id = $storage->getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) === NULL) {
+      $record = _tide_read_config($config_name, $config_location, TRUE);
+      if ($record) {
+        $storage->createFromStorageRecord($record)->save();
+      }
+    }
+  }
+
+  // Insert each field immediately below its anchor: 'Content Security
+  // Policy' under 'Domains', then 'Web feature permissions policy' under
+  // 'Content Security Policy'. Order matters: the first insert creates the
+  // anchor of the second.
+  $inserts = [
+    'field_content_security_policy' => 'field_site_domains',
+    'field_web_feature_perm_policy' => 'field_content_security_policy',
+  ];
+
+  /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface|null $form_display */
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('taxonomy_term.sites.default');
+  if ($form_display) {
+    foreach ($inserts as $field_name => $anchor) {
+      if ($form_display->getComponent($field_name) === NULL) {
+        _tide_core_display_insert_after($form_display, $anchor, $field_name, [
+          'type' => 'json_textarea',
+          'region' => 'content',
+          'settings' => [
+            'rows' => 5,
+            'placeholder' => '',
+          ],
+          'third_party_settings' => [],
+        ]);
+      }
+    }
+  }
+
+  /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface|null $view_display */
+  $view_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display')
+    ->load('taxonomy_term.sites.default');
+  if ($view_display) {
+    foreach ($inserts as $field_name => $anchor) {
+      if ($view_display->getComponent($field_name) === NULL) {
+        _tide_core_display_insert_after($view_display, $anchor, $field_name, [
+          'type' => 'json',
+          'label' => 'above',
+          'region' => 'content',
+          'settings' => [
+            'attach_library' => TRUE,
+          ],
+          'third_party_settings' => [],
+        ]);
+      }
+    }
+  }
+}
+
+/**
+ * Adds a component to a display immediately after an existing component.
+ *
+ * All components (and field_group groups) weighted at or below the insertion
+ * point are shifted down by one to make room. Falls back to appending the
+ * component last when the anchor component is not on the display.
+ *
+ * @param \Drupal\Core\Entity\Display\EntityFormDisplayInterface|\Drupal\Core\Entity\Display\EntityViewDisplayInterface $display
+ *   The entity form or view display.
+ * @param string $anchor_name
+ *   The name of the existing component to insert after.
+ * @param string $new_name
+ *   The name of the component to add.
+ * @param array $options
+ *   The component options (type, settings, etc.); weight is set here.
+ */
+function _tide_core_display_insert_after($display, $anchor_name, $new_name, array $options) {
+  $components = $display->getComponents();
+  $anchor = $components[$anchor_name] ?? NULL;
+  if ($anchor !== NULL) {
+    $weight = ($anchor['weight'] ?? 0) + 1;
+    foreach ($components as $name => $component) {
+      if ($name !== $anchor_name && ($component['weight'] ?? 0) >= $weight) {
+        $component['weight']++;
+        $display->setComponent($name, $component);
+      }
+    }
+    foreach ($display->getThirdPartySettings('field_group') as $group_name => $group) {
+      if (($group['weight'] ?? 0) >= $weight) {
+        $group['weight']++;
+        $display->setThirdPartySetting('field_group', $group_name, $group);
+      }
+    }
+  }
+  else {
+    $weights = array_map(function (array $component) {
+      return $component['weight'] ?? 0;
+    }, $components);
+    $weight = $weights ? max($weights) + 1 : 0;
+  }
+  $display->setComponent($new_name, ['weight' => $weight] + $options);
+  $display->save();
 }
