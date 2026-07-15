@@ -25,7 +25,7 @@ services:
   tide_core.breadcrumb:
     class: Drupal\tide_core\TideBreadcrumb
     arguments:
-      - '@menu.link_tree'
+      - '@plugin.manager.menu.link'
       - '@module_handler'
       - '@request_stack'
   tide_core.common_services:
