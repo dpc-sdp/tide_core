@@ -988,6 +988,25 @@ function tide_core_entity_bundle_field_info(EntityTypeInterface $entity_type, $b
 }
 
 /**
+ * Implements hook_metatags_alter().
+ *
+ * The schema BreadcrumbList property type resolves its node through the
+ * tide_core.breadcrumb service because it runs deep inside the metatag
+ * pipeline with no access to the entity being processed. Scope the node here,
+ * inside the pipeline itself, so the trail is correct wherever the pipeline
+ * is triggered: the 'metatag' computed field (whose raw elements the json_ld
+ * computed field reuses), HTML page rendering, or previews.
+ *
+ * @see \Drupal\tide_core\JsonLdComputedField::computeValue()
+ * @see \Drupal\tide_core\Plugin\schema_metatag\PropertyType\TideBreadcrumbList::resolveCurrentNode()
+ */
+function tide_core_metatags_alter(array &$metatags, array &$context) {
+  if (isset($context['entity']) && $context['entity'] instanceof NodeInterface) {
+    \Drupal::service('tide_core.breadcrumb')->setContextNode($context['entity']);
+  }
+}
+
+/**
  * Implements hook_schema_metatag_property_type_plugins_alter().
  *
  * Replaces contrib's BreadcrumbList property type with the Tide-aware subclass
