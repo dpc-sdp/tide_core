@@ -1628,3 +1628,58 @@ function _tide_core_display_insert_after($display, $anchor_name, $new_name, arra
   $display->setComponent($new_name, ['weight' => $weight] + $options);
   $display->save();
 }
+
+/**
+ * Optimize global metatag settings for node bundles using the firehose widget.
+ *
+ * Finds node form displays using 'metatag_firehose' and ensures their bundle
+ * specific entity groups are limited to basic, advanced, and open_graph.
+ */
+function tide_core_update_10046() {
+  $config_factory = \Drupal::configFactory();
+  $updated = FALSE;
+
+  // Identify which bundles actually use the firehose widget.
+  $bundles_using_firehose = [];
+  foreach ($config_factory->listAll('core.entity_form_display.node.') as $form_display_name) {
+    $form_display = $config_factory->get($form_display_name);
+    $content_components = $form_display->get('content');
+
+    if (!is_array($content_components)) {
+      continue;
+    }
+
+    foreach ($content_components as $component_settings) {
+      if (isset($component_settings['type']) && $component_settings['type'] === 'metatag_firehose') {
+        $name_parts = explode('.', $form_display_name);
+        if (isset($name_parts[3])) {
+          $bundles_using_firehose[] = $name_parts[3];
+        }
+        break;
+      }
+    }
+  }
+
+  $bundles_using_firehose = array_unique($bundles_using_firehose);
+
+  if (!empty($bundles_using_firehose)) {
+    // Update metatag settings configuration.
+    $metatag_settings = $config_factory->getEditable('metatag.settings');
+    $entity_type_groups = $metatag_settings->get('entity_type_groups') ?: [];
+
+    $target_groups = ['basic', 'advanced', 'open_graph'];
+
+    foreach ($bundles_using_firehose as $bundle) {
+      // Check if groups are completely unconfigured.
+      if (!isset($entity_type_groups['node'][$bundle]) || empty($entity_type_groups['node'][$bundle])) {
+        $entity_type_groups['node'][$bundle] = $target_groups;
+        $updated = TRUE;
+      }
+    }
+
+    if ($updated) {
+      $metatag_settings->set('entity_type_groups', $entity_type_groups);
+      $metatag_settings->save(TRUE);
+    }
+  }
+}
