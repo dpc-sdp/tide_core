@@ -5,7 +5,6 @@ namespace Drupal\tide_search\ElasticSearch\Parameters\Factory;
 use Drupal\elasticsearch_connector\ElasticSearch\Parameters\Factory\IndexFactory;
 use Drupal\elasticsearch_connector\Entity\Cluster;
 use Drupal\elasticsearch_connector\Event\PrepareIndexEvent;
-use Drupal\search_api\Entity\Server;
 use Drupal\search_api\IndexInterface;
 
 /**
