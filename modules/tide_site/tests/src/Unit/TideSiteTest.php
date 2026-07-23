@@ -14,7 +14,7 @@ abstract class TideSiteTest extends UnitTestCase {
    *
    * @param array $parents
    *   Array of term and it's parents names, ordered from term to the "oldest"
-   *   parent.
+   *   parent. Mocked term ids are assigned sequentially starting from 1.
    *
    * @return array
    *   Array of mocked term objects.
@@ -22,9 +22,10 @@ abstract class TideSiteTest extends UnitTestCase {
   protected function prepareMockTermParents(array $parents) {
     $list = [];
 
-    foreach ($parents as $name) {
+    foreach (array_values($parents) as $index => $name) {
       $mock = self::createMock('\Drupal\taxonomy\Entity\Term');
       $mock->method('getName')->willReturn($name);
+      $mock->method('id')->willReturn((string) ($index + 1));
       $list[] = $mock;
     }
 
