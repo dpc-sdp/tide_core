@@ -6,6 +6,7 @@ dependencies:
     - field.field.taxonomy_term.sites.field_acknowledgement_to_country
     - field.field.taxonomy_term.sites.field_additional_comment
     - field.field.taxonomy_term.sites.field_bottom_corner_graphic
+    - field.field.taxonomy_term.sites.field_enable_breadcrumbs
     - field.field.taxonomy_term.sites.field_notes
     - field.field.taxonomy_term.sites.field_print_friendly_logo
     - field.field.taxonomy_term.sites.field_prominence_ack_to_country
@@ -23,6 +24,7 @@ dependencies:
     - field.field.taxonomy_term.sites.field_site_logo
     - field.field.taxonomy_term.sites.field_site_main_menu
     - field.field.taxonomy_term.sites.field_site_og_image
+    - field.field.taxonomy_term.sites.field_content_security_policy
     - field.field.taxonomy_term.sites.field_site_show_exit_site
     - field.field.taxonomy_term.sites.field_site_slogan
     - field.field.taxonomy_term.sites.field_site_social_links
@@ -30,6 +32,7 @@ dependencies:
     - field.field.taxonomy_term.sites.field_site_twitter_image
     - field.field.taxonomy_term.sites.field_title_of_table_of_contents
     - field.field.taxonomy_term.sites.field_top_corner_graphic
+    - field.field.taxonomy_term.sites.field_web_feature_perm_policy
     - image.style.thumbnail
     - taxonomy.vocabulary.sites
   module:
@@ -39,6 +42,7 @@ dependencies:
     - key_value_field
     - link
     - maxlength
+    - json_field
     - paragraphs
     - svg_image
     - text
@@ -51,7 +55,7 @@ third_party_settings:
       label: 'Table of contents'
       region: content
       parent_name: ''
-      weight: 19
+      weight: 21
       format_type: details
       format_settings:
         classes: ''
@@ -66,7 +70,7 @@ third_party_settings:
       label: 'Site theme values'
       region: content
       parent_name: ''
-      weight: 20
+      weight: 22
       format_type: details
       format_settings:
         classes: ''
@@ -81,7 +85,7 @@ third_party_settings:
       label: 'Site feature flag values'
       region: content
       parent_name: ''
-      weight: 21
+      weight: 23
       format_type: details
       format_settings:
         classes: ''
@@ -96,7 +100,7 @@ third_party_settings:
       label: 'Site favicon value'
       region: content
       parent_name: ''
-      weight: 22
+      weight: 24
       format_type: details
       format_settings:
         classes: ''
@@ -112,7 +116,7 @@ third_party_settings:
       label: 'Site header corner graphics'
       region: content
       parent_name: ''
-      weight: 23
+      weight: 25
       format_type: details
       format_settings:
         classes: ''
@@ -127,7 +131,7 @@ third_party_settings:
       label: 'Site app icon'
       region: content
       parent_name: ''
-      weight: 23
+      weight: 25
       format_type: details
       format_settings:
         classes: ''
@@ -144,7 +148,7 @@ mode: default
 content:
   field_acknowledgement_to_country:
     type: string_textarea
-    weight: 13
+    weight: 15
     region: content
     settings:
       rows: 5
@@ -152,7 +156,7 @@ content:
     third_party_settings: {  }
   field_additional_comment:
     type: text_textarea
-    weight: 5
+    weight: 7
     region: content
     settings:
       rows: 5
@@ -166,9 +170,16 @@ content:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
+  field_enable_breadcrumbs:
+    type: boolean_checkbox
+    weight: 30
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   field_notes:
     type: string_textarea
-    weight: 27
+    weight: 29
     region: content
     settings:
       rows: 5
@@ -183,7 +194,7 @@ content:
     third_party_settings: {  }
   field_prominence_ack_to_country:
     type: string_textarea
-    weight: 14
+    weight: 16
     region: content
     settings:
       rows: 5
@@ -191,7 +202,7 @@ content:
     third_party_settings: {  }
   field_short_name:
     type: string_textfield
-    weight: 26
+    weight: 28
     region: content
     settings:
       size: 60
@@ -199,20 +210,20 @@ content:
     third_party_settings: {  }
   field_show_exit_site_specific:
     type: options_select
-    weight: 12
+    weight: 14
     region: content
     settings: {  }
     third_party_settings: {  }
   field_show_table_of_contents:
     type: boolean_checkbox
-    weight: 17
+    weight: 19
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   field_site_app_icon:
     type: image_image
-    weight: 25
+    weight: 27
     region: content
     settings:
       progress_indicator: throbber
@@ -257,7 +268,7 @@ content:
     third_party_settings: {  }
   field_site_footer_logos:
     type: entity_reference_paragraphs
-    weight: 9
+    weight: 11
     region: content
     settings:
       title: Paragraph
@@ -270,7 +281,7 @@ content:
     third_party_settings: {  }
   field_site_footer_menu:
     type: entity_reference_autocomplete
-    weight: 7
+    weight: 9
     region: content
     settings:
       match_operator: CONTAINS
@@ -280,7 +291,7 @@ content:
     third_party_settings: {  }
   field_site_footer_text:
     type: text_textarea
-    weight: 8
+    weight: 10
     region: content
     settings:
       rows: 5
@@ -288,7 +299,7 @@ content:
     third_party_settings: {  }
   field_site_homepage:
     type: entity_reference_autocomplete
-    weight: 10
+    weight: 12
     region: content
     settings:
       match_operator: CONTAINS
@@ -306,7 +317,7 @@ content:
     third_party_settings: {  }
   field_site_main_menu:
     type: entity_reference_autocomplete
-    weight: 6
+    weight: 8
     region: content
     settings:
       match_operator: CONTAINS
@@ -316,7 +327,7 @@ content:
     third_party_settings: {  }
   field_site_og_image:
     type: entity_browser_entity_reference
-    weight: 15
+    weight: 17
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -331,7 +342,7 @@ content:
     third_party_settings: {  }
   field_site_show_exit_site:
     type: boolean_checkbox
-    weight: 11
+    weight: 13
     region: content
     settings:
       display_label: true
@@ -346,7 +357,7 @@ content:
     third_party_settings: {  }
   field_site_social_links:
     type: link_default
-    weight: 17
+    weight: 19
     region: content
     settings:
       placeholder_url: 'https://example.com/Social'
@@ -373,7 +384,7 @@ content:
     third_party_settings: {  }
   field_site_twitter_image:
     type: entity_browser_entity_reference
-    weight: 16
+    weight: 18
     region: content
     settings:
       entity_browser: tide_image_browser
@@ -386,12 +397,28 @@ content:
         view_mode: media_browser_preview
       selection_mode: selection_append
     third_party_settings: {  }
+  field_web_feature_perm_policy:
+    type: json_textarea
+    weight: 6
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_title_of_table_of_contents:
     type: string_textfield
-    weight: 18
+    weight: 20
     region: content
     settings:
       size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_content_security_policy:
+    type: json_textarea
+    weight: 5
+    region: content
+    settings:
+      rows: 5
       placeholder: ''
     third_party_settings: {  }
   field_top_corner_graphic:
@@ -412,7 +439,7 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 18
+    weight: 20
     region: content
     settings:
       display_label: true

@@ -98,6 +98,14 @@ function tide_share_link_form_revision_overview_form_alter(&$form, FormStateInte
     return;
   }
 
+  // Allow 'removing' the create share link button for revisions.
+  $access = AccessResult::allowed();
+  \Drupal::moduleHandler()->alter('tide_share_link_form_revision_overview_form_access', $access, $node);
+
+  if ($access->isForbidden()) {
+    return;
+  }
+
   foreach (Element::children($form['node_revisions_table']) as $delta) {
     // The current revision.
     if (empty($form['node_revisions_table'][$delta]['operations']['#type'])) {

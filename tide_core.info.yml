@@ -62,6 +62,8 @@ dependencies:
   - media_entity_audio:media_entity_audio
   - metatag:metatag
   - metatag:metatag_open_graph
+  - schema_metatag:schema_metatag
+  - schema_metatag:schema_web_page
   - override_node_options:override_node_options
   - paragraphs:paragraphs
   - paragraphs:paragraphs_library
@@ -118,6 +120,7 @@ dependencies:
   - drupal:user
   - drupal:path_alias
   - prlp:prlp
+  - json_field:json_field
   - key_value_field:key_value_field
   - pathauto:pathauto
   - entity_browser:entity_browser

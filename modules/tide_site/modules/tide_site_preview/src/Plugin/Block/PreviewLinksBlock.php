@@ -119,7 +119,15 @@ class PreviewLinksBlock extends BlockBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function blockAccess(AccountInterface $account) {
-    return AccessResult::allowedIf($account->hasPermission('view tide_site preview links'));
+    $access = AccessResult::allowedIf($account->hasPermission('view tide_site preview links'));
+
+    if (!$this->currentNode || !$this->isValidRoute()) {
+      return $access;
+    }
+
+    \Drupal::moduleHandler()->alter('tide_site_preview_links_block_access', $access, $this->currentNode);
+
+    return $access;
   }
 
   /**

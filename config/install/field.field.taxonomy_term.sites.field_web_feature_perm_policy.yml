@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_web_feature_perm_policy
+    - taxonomy.vocabulary.sites
+  module:
+    - json_field
+id: taxonomy_term.sites.field_web_feature_perm_policy
+field_name: field_web_feature_perm_policy
+entity_type: taxonomy_term
+bundle: sites
+label: 'Web feature permissions policy'
+description: 'Used to populate the "Permissions-Policy" http header. These rules will be merged with a default set of rules defined in the front end application.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: json_native
