@@ -2,10 +2,10 @@ langcode: en
 status: true
 dependencies: {  }
 id: sdp_elasticsearch
-label: 'SDP ElasticSearch'
+label: 'SDP OpenSearch'
 destination: elasticsearch
 destinationSettings:
-  url: 'http://elasticsearch:9200'
+  url: 'http://opensearch:9200'
   username: null
   password: null
   prefix: sdp_data_pipelines_

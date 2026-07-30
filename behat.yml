@@ -46,6 +46,7 @@ default:
       blackbox: ~
       api_driver: drupal
       drush_driver: drush
+      login_wait: 5
       drupal:
         drupal_root: web
       drush:

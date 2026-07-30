@@ -58,7 +58,7 @@ root take effect immediately, no sync step required.
 
 To start the local development stack:
 1. Checkout this project.
-2. Run `ddev start` — starts web, db, elasticsearch, selenium-chrome and clamav services.
+2. Run `ddev start` — starts web, db, OpenSearch, selenium-chrome and clamav services.
 3. Run `ddev poser` — installs Drupal core (version pinned by `DRUPAL_CORE` in `.ddev/config.yaml`) plus all module dependencies into `web/` and `vendor/`.
 4. Run `ddev symlink-project` — symlinks this module into `web/modules/custom/tide_core` (re-run after adding/removing root-level files; also runs automatically on `ddev start`).
 5. Run `ddev install-site` — installs a fresh site (`testing` profile) and enables `tide_core` and `tide_test`.

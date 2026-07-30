@@ -53,6 +53,8 @@ jobs:
       - name: Run Behat tests (tide_media)
         run: |
           ddev drush en -y tide_media
+          ddev drush en -y tide_media_secure_files
+          ddev drush en -y tide_media_file_overwrite
           ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_media
 
       - name: Run Behat tests (tide_event)
@@ -87,8 +89,15 @@ jobs:
 
       - name: Run Behat tests (tide_api)
         run: |
-          ddev drush en -y tide_api tide_content_collection_ui tide_share_link
+          ddev drush en -y tide_api
+          ddev drush en -y tide_content_collection_ui
+          ddev drush en -y tide_share_link
           ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_api
+
+      - name: Run Behat tests (tide_external_site_link)
+        run: |
+          ddev drush en -y tide_external_site_link
+          ddev exec vendor/bin/behat --strict --colors --tags='~@skipped' modules/tide_external_site_link
 
       - name: Upload Behat screenshots
         if: failure()
