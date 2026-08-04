@@ -1702,9 +1702,8 @@ function tide_core_update_10047() {
       $bundle = $field_config->getTargetBundle();
       $field_name = $field_config->getName();
 
-      // Explicit string concatenation
       $form_display_id = $entity_type . '.' . $bundle . '.default';
-      
+
       $form_display = EntityFormDisplay::load($form_display_id);
 
       if ($form_display) {
