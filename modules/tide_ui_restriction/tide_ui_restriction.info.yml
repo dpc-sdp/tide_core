@@ -1,7 +1,7 @@
 name: Tide UI restriction
 type: module
 description: Admin UI restriction
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 package: tide
 dependencies:
   - config_perms:config_perms
@@ -9,4 +9,5 @@ dependencies:
 config_devel:
   install:
     - config_perms.custom_perms_entity.administer_custom_block_types
+    - config_perms.custom_perms_entity.bulk_update_url_aliases
   optional: {  }

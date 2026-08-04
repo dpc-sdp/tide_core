@@ -6,12 +6,15 @@ namespace Drupal\Tests\tide_data_pipeline_json_endpoint\Unit\Plugin\DatasetSourc
 
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
- * @group tide_data_pipeline_json_endpoint
- *
- * @covers \Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource
+ * Tests the JSON endpoint dataset source.
  */
+#[CoversClass(JsonEndpointSource::class)]
+#[Group('tide_data_pipeline_json_endpoint')]
 class JsonEndpointSourceTest extends UnitTestCase {
 
   /**
@@ -26,9 +29,8 @@ class JsonEndpointSourceTest extends UnitTestCase {
 
   /**
    * Tests buildStorageUri with various valid machine names.
-   *
-   * @dataProvider machineNameProvider
    */
+  #[DataProvider('machineNameProvider')]
   public function testBuildStorageUriHandlesVariousMachineNames(string $name, string $expected): void {
     $this->assertSame($expected, JsonEndpointSource::buildStorageUri($name));
   }

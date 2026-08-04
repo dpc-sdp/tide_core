@@ -127,7 +127,7 @@ function tide_core_update_10002() {
  * Add description field to accordion.
  */
 function tide_core_update_10003() {
-  module_load_include('inc', 'tide_core', 'includes/helpers');
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
   $configs = [
     'field.field.paragraph.accordion.field_paragraph_body' => 'field_config',
   ];
@@ -1680,6 +1680,30 @@ function tide_core_update_10046() {
     if ($updated) {
       $metatag_settings->set('entity_type_groups', $entity_type_groups);
       $metatag_settings->save(TRUE);
+    }
+  }
+}
+
+/**
+ * Install field storage previously supplied by Drupal installation profiles.
+ */
+function tide_core_update_11001() {
+  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/install'];
+  $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+  $config_names = [
+    'field.storage.block_content.body',
+    'field.storage.media.field_secure_file',
+    'field.storage.node.body',
+  ];
+
+  foreach ($config_names as $config_name) {
+    $id = $storage->getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
+    if ($storage->load($id) === NULL) {
+      $record = _tide_read_config($config_name, $config_location, TRUE);
+      if ($record) {
+        $storage->createFromStorageRecord($record)->save();
+      }
     }
   }
 }

@@ -27,7 +27,7 @@ function tide_site_simple_sitemap_taxonomy_term_delete($term) {
     }
   }
   catch (Exception $exception) {
-    watchdog_exception('tide_site_simple_sitemap', $exception);
+    tide_core_log_exception('tide_site_simple_sitemap', $exception);
   }
 }
 

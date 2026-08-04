@@ -111,8 +111,11 @@ function _tide_alert_should_not_be_indexed() {
     $config_factory = \Drupal::configFactory();
     $config = $config_factory->getEditable('search_api.index.node');
     $data = $config->get('datasource_settings.entity:node.bundles.selected');
-    if (!in_array('alert', $data)) {
-      array_push($data, 'alert');
+    if (!is_array($data)) {
+      return;
+    }
+    if (!in_array('alert', $data, TRUE)) {
+      $data[] = 'alert';
       $config->set('datasource_settings.entity:node.bundles.selected', $data)
         ->save();
     }

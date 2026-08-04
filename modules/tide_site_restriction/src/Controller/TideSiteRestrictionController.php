@@ -20,7 +20,7 @@ class TideSiteRestrictionController extends ControllerBase {
    *   Render array.
    */
   public function sitesAllocationTab(UserInterface $user) {
-    if ($user->field_user_site->isEmpty()) {
+    if (!$user->hasField('field_user_site') || $user->field_user_site->isEmpty()) {
       return ['#markup' => t('No sites assigned.')];
     }
     $build = $user->field_user_site->view();

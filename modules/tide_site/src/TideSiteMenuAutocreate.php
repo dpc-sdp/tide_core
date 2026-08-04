@@ -137,7 +137,7 @@ class TideSiteMenuAutocreate {
         }
         catch (\Exception $exception) {
           $messages['error'][] = $this->t('Unable to automatically create a menu @menu.', ['@menu' => $menu_name]);
-          watchdog_exception('tide_site', $exception);
+          tide_core_log_exception('tide_site', $exception);
         }
       }
     }

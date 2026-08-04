@@ -6,13 +6,15 @@ namespace Drupal\Tests\tide_data_pipeline\Kernel\Transform;
 
 use Drupal\data_pipelines\Entity\Dataset;
 use Drupal\Tests\data_pipelines\Kernel\Transform\TransformTest;
+use Drupal\tide_data_pipeline\Transform\MultiValueProcessor;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Defines a class for testing transform functionality.
- *
- * @coversDefaultClass \Drupal\tide_data_pipeline\Transform\MultiValueProcessor
- * @group data_pipelines
  */
+#[CoversClass(MultiValueProcessor::class)]
+#[Group('data_pipelines')]
 class TideSearchTransformTest extends TransformTest {
 
   /**

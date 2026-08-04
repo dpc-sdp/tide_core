@@ -240,7 +240,7 @@ class TideApiHelper {
    * @return array
    *   The default response.
    */
-  public function getDefaultJsonResponse(CacheableMetadata $cache_metadata = NULL) {
+  public function getDefaultJsonResponse(?CacheableMetadata $cache_metadata = NULL) {
     $self_url = static::getRequestLink(\Drupal::request(), \Drupal::request()->query)->setAbsolute()->toString(TRUE);
     if ($cache_metadata) {
       $cache_metadata->addCacheableDependency($self_url);
@@ -313,7 +313,7 @@ class TideApiHelper {
    * @param \Drupal\Core\Cache\CacheableMetadata $cache_metadata
    *   The cache metadata.
    */
-  public function setJsonResponseDataAttributesFromEntity(array &$json_response, EntityInterface $entity, CacheableMetadata $cache_metadata = NULL) {
+  public function setJsonResponseDataAttributesFromEntity(array &$json_response, EntityInterface $entity, ?CacheableMetadata $cache_metadata = NULL) {
     $endpoint = $this->findEndpointFromEntity($entity);
     $entity_type = $entity->getEntityTypeId();
     $json_response['data']['attributes'] = [

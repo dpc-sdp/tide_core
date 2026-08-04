@@ -94,7 +94,7 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
           }
         }
         catch (\Exception $e) {
-          watchdog_exception('YamlEnhancer_processText', $e);
+          tide_core_log_exception('YamlEnhancer_processText', $e);
         }
       }
       $result = Html::serialize($dom);

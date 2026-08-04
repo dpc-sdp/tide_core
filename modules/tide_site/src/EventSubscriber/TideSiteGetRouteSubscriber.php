@@ -7,8 +7,8 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\tide_api\Event\GetRouteEvent;
 use Drupal\tide_api\TideApiEvents;
 use Drupal\tide_api\TideApiHelper;
+use Drupal\tide_core\DependencyInjection\ContainerAwareTrait;
 use Drupal\tide_site\TideSiteHelper;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 

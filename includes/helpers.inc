@@ -101,7 +101,7 @@ function _tide_reload_default_config($module) {
  * @return array|mixed|null
  *   The config, or the value of the key in the config.
  */
-function _tide_retrieve_config_sync(string $config_name, string $key = NULL) {
+function _tide_retrieve_config_sync(string $config_name, ?string $key = NULL) {
   try {
     $config_file = Settings::get('config_sync_directory') . DIRECTORY_SEPARATOR . $config_name . '.yml';
     if (file_exists($config_file)) {
@@ -110,7 +110,7 @@ function _tide_retrieve_config_sync(string $config_name, string $key = NULL) {
     }
   }
   catch (Exception $exception) {
-    watchdog_exception('tide_core', $exception);
+    tide_core_log_exception('tide_core', $exception);
   }
   return NULL;
 }
