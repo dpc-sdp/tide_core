@@ -5,6 +5,7 @@
  * Installation functions for Tide Core.
  */
 
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\metatag\Entity\MetatagDefaults;
 use Drupal\node\Entity\Node;
@@ -1680,6 +1681,40 @@ function tide_core_update_10046() {
     if ($updated) {
       $metatag_settings->set('entity_type_groups', $entity_type_groups);
       $metatag_settings->save(TRUE);
+    }
+  }
+}
+
+/**
+ * Clean up Paragraph fields without handler settings from form displays.
+ */
+function tide_core_update_10047() {
+  /** @var \Drupal\field\Entity\FieldConfig[] $field_configs */
+  $field_configs = FieldConfig::loadMultiple();
+  $updated_displays = [];
+
+  foreach ($field_configs as $field_config) {
+    $handler = $field_config->getSetting('handler');
+    $handler_settings = $field_config->getSetting('handler_settings');
+
+    if ($handler === 'default:paragraph' && empty($handler_settings)) {
+      $entity_type = $field_config->getTargetEntityTypeId();
+      $bundle = $field_config->getTargetBundle();
+      $field_name = $field_config->getName();
+
+      // Explicit string concatenation
+      $form_display_id = $entity_type . '.' . $bundle . '.default';
+      
+      $form_display = EntityFormDisplay::load($form_display_id);
+
+      if ($form_display) {
+        $component = $form_display->getComponent($field_name);
+
+        if ($component !== NULL) {
+          $form_display->removeComponent($field_name);
+          $form_display->save();
+        }
+      }
     }
   }
 }
