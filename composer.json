@@ -122,7 +122,7 @@
         "drupal/jsonapi_menu_items": "^1.2",
         "drupal/jsonapi_resources": "^1.0.0-beta5@beta",
         "drupal/schemata": "^1.0@beta",
-        "drupal/create_menus_permission": "dev-drupal_10_compatibility",
+        "drupal/create_menus_permission": "^1.1.0",
         "drupal/key_value_field": "^1.3",
         "drupal/webform": "^6.3@beta",
         "choices/choices": "9.0.1",
@@ -181,7 +181,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/create_menus_permission"]
+            "exclude": ["drupal/token_conditions"]
         },
         "choices": {
             "_webform": true,
@@ -281,11 +281,6 @@
         "asset-packagist": {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        "drupal/create_menus_permission": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://github.com/dpc-sdp/create_menus_permission.git"
         },
         "ckeditor.autogrow": {
             "_webform": true,
@@ -413,7 +408,7 @@
                 "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16412890": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
             },
             "drupal/core": {
-                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650": "./patches/drupal11/core-xss-attributes-alter.patch",
+                "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650": "https://www.drupal.org/files/issues/2026-07-16/xss-refactor-filter-attributes-11.3.x-3109650-93.patch",
                 "Paragraphs fields cause overflow of content forms in Claro - https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
                 "Form Required Class Missing from Claro - https://www.drupal.org/project/drupal/issues/3160987#comment-14609681": "https://www.drupal.org/files/issues/2022-07-17/3160987-10.patch",
                 "DateTimeComputed tries to compute from an empty value - https://www.drupal.org/project/drupal/issues/3052608#comment-14666671": "https://www.drupal.org/files/issues/2022-08-25/DateTimeComputed-tries-to-compute-from-an-empty-value-3052608-16.patch",
@@ -423,16 +418,13 @@
                 "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch"
             },
             "drupal/ckeditor5_embedded_content": {
-                "Allow Drupal 11 installation": "./patches/drupal11/ckeditor5_embedded_content-core-version.patch"
+                "Allow Drupal 11 installation": "https://git.drupalcode.org/project/ckeditor5_embedded_content/-/merge_requests/7/diffs.patch"
             },
             "drupal/user_created_by_field": {
-                "Allow Drupal 11 installation": "./patches/drupal11/user_created_by_field-core-version.patch"
-            },
-            "drupal/create_menus_permission": {
-                "Allow Drupal 11 installation": "./patches/drupal11/create_menus_permission-core-version.patch"
+                "Allow Drupal 11 installation": "https://www.drupal.org/files/issues/2024-03-25/user_created_by_field.1.1.3.rector.patch"
             },
             "drupal/entity_hierarchy": {
-                "Use a table-independent CTE requirement check": "./patches/drupal11/entity_hierarchy-cte-requirement.patch"
+                "Use a table-independent CTE requirement check": "https://git.drupalcode.org/project/entity_hierarchy/-/merge_requests/77/diffs.patch"
             },
             "drupal/migrate_plus": {
                 "Simple XML broken with UTF-16LE - https://www.drupal.org/project/migrate_plus/issues/3051858#comment-15138496": "https://www.drupal.org/files/issues/2023-07-06/3051858-migrate_plus-simplexml_remove_trim-5.patch"
