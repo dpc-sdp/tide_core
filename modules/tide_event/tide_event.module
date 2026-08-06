@@ -175,18 +175,20 @@ function tide_event_webform_submission_presave($submission) {
 
   if ($submission->getWebform()->get('id') === 'tide_event_submission') {
     $submission_data = $submission->getData();
+    $escape = static fn($value): string => Html::escape((string) ($value ?? ''));
+    $location = is_array($submission_data['location'] ?? NULL) ? $submission_data['location'] : [];
 
     // Add Event Details.
     $event_details_data = [
       'type' => 'event_details',
       'field_paragraph_link' => [
-        'uri' => Html::escape($submission_data['website_url_for_booking']),
+        'uri' => $escape($submission_data['website_url_for_booking'] ?? NULL),
         'title' => t('Book now'),
       ],
       'field_paragraph_date_range' => [
         [
-          'value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['open_date']))),
-          'end_value' => date('Y-m-d\TH:i:00', strtotime(Html::escape($submission_data['close_date']))),
+          'value' => date('Y-m-d\TH:i:00', strtotime($escape($submission_data['open_date'] ?? NULL))),
+          'end_value' => date('Y-m-d\TH:i:00', strtotime($escape($submission_data['close_date'] ?? NULL))),
         ],
       ],
       'field_paragraph_location' => [
@@ -194,24 +196,24 @@ function tide_event_webform_submission_presave($submission) {
           'langcode' => '',
           'country_code' => 'AU',
           'administrative_area' => 'VIC',
-          'locality' => Html::escape($submission_data['location']['locality']),
-          'postal_code' => Html::escape($submission_data['location']['postal_code']),
-          'address_line1' => Html::escape($submission_data['location']['address_line1']),
-          'address_line2' => Html::escape($submission_data['location']['address_line2']),
+          'locality' => $escape($location['locality'] ?? NULL),
+          'postal_code' => $escape($location['postal_code'] ?? NULL),
+          'address_line1' => $escape($location['address_line1'] ?? NULL),
+          'address_line2' => $escape($location['address_line2'] ?? NULL),
         ],
       ],
       'field_paragraph_event_price_from' => [
-        'value' => Html::escape($submission_data['price_from']),
+        'value' => $escape($submission_data['price_from'] ?? NULL),
       ],
       'field_paragraph_event_price_to' => [
-        'value' => Html::escape($submission_data['price_to']),
+        'value' => $escape($submission_data['price_to'] ?? NULL),
       ],
 
     ];
 
     // Loop through requirements multiple value fields.
-    foreach ($submission_data['requirements'] as $requirement) {
-      $event_details_data['field_event_requirements'][] = ['target_id' => Html::escape($requirement)];
+    foreach ($submission_data['requirements'] ?? [] as $requirement) {
+      $event_details_data['field_event_requirements'][] = ['target_id' => $escape($requirement)];
     }
 
     $event_details = Paragraph::create($event_details_data);
@@ -227,30 +229,30 @@ function tide_event_webform_submission_presave($submission) {
     // Create node object with values from webform submission.
     $node = Node::create([
       'type' => 'event',
-      'title' => Html::escape($submission_data['name_of_event']),
+      'title' => $escape($submission_data['name_of_event'] ?? NULL),
       'field_event_details' => [
         'target_id' => $event_details->id(),
         'target_revision_id' => $event_details->getRevisionId(),
       ],
       'body' => [
-        'value' => Html::escape($submission_data['description']),
-        'summary' => $truncator->truncateWords(Html::escape($submission_data['description']), 30, ''),
+        'value' => $escape($submission_data['description'] ?? NULL),
+        'summary' => $truncator->truncateWords($escape($submission_data['description'] ?? NULL), 30, ''),
         'format' => 'rich_text',
       ],
       'field_event_description' => [
-        'value' => Html::escape($submission_data['description']),
+        'value' => $escape($submission_data['description'] ?? NULL),
       ],
       'field_landing_page_summary' => [
-        'value' => Html::escape($submission_data['description']),
+        'value' => $escape($submission_data['description'] ?? NULL),
       ],
       'field_node_link' => [
-        'uri' => Html::escape($submission_data['website_url_for_event_information']),
+        'uri' => $escape($submission_data['website_url_for_event_information'] ?? NULL),
       ],
       'field_node_author' => [
-        'value' => Html::escape($submission_data['contact_person']),
+        'value' => $escape($submission_data['contact_person'] ?? NULL),
       ],
-      'field_node_email' => Html::escape($submission_data['contact_email_address']),
-      'field_node_phone' => Html::escape($submission_data['contact_telephone_number']),
+      'field_node_email' => $escape($submission_data['contact_email_address'] ?? NULL),
+      'field_node_phone' => $escape($submission_data['contact_telephone_number'] ?? NULL),
     ]);
 
     if (\Drupal::moduleHandler()->moduleExists('tide_site')) {
@@ -274,8 +276,8 @@ function tide_event_webform_submission_presave($submission) {
     }
 
     // Loop through category multiple value fields.
-    foreach ($submission_data['category'] as $category) {
-      $node->field_event_category->appendItem(Html::escape($category));
+    foreach ($submission_data['category'] ?? [] as $category) {
+      $node->field_event_category->appendItem($escape($category));
     }
 
     // Set the node to Needs Review state.

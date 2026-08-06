@@ -26,7 +26,7 @@ class TideApiFieldResolver extends FieldResolver {
   /**
    * {@inheritdoc}
    */
-  public function __construct(FieldResolver $original_field_resolver, EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $field_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info, ResourceTypeRepositoryInterface $resource_type_repository, ModuleHandlerInterface $module_handler, AccountInterface $current_user = NULL) {
+  public function __construct(FieldResolver $original_field_resolver, EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $field_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info, ResourceTypeRepositoryInterface $resource_type_repository, ModuleHandlerInterface $module_handler, ?AccountInterface $current_user = NULL) {
     $this->innerService = $original_field_resolver;
     parent::__construct($entity_type_manager, $field_manager, $entity_type_bundle_info, $resource_type_repository, $module_handler, $current_user);
   }

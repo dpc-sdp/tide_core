@@ -25,7 +25,7 @@ function tide_content_collection_paragraph_access(ParagraphInterface $entity, $o
 /**
  * Implements hook_ENTITY_TYPE_create_access().
  */
-function tide_content_collection_paragraph_create_access(AccountInterface $account = NULL, array $context = [], $entity_bundle = NULL) {
+function tide_content_collection_paragraph_create_access(?AccountInterface $account = NULL, array $context = [], $entity_bundle = NULL) {
   $type = $entity_bundle;
   if (($type === 'content_collection' || $type === 'content_collection_enhanced') && !$account->hasPermission('access content_collection paragraph')) {
     return AccessResult::forbidden()->cachePerPermissions();

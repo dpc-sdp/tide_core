@@ -5,9 +5,6 @@
  * Tide Site install file.
  */
 
-use Drupal\simple_sitemap\Entity\SimpleSitemap;
-use Drupal\simple_sitemap\Entity\SimpleSitemapType;
-
 /**
  * Implements hook_install().
  */
@@ -20,23 +17,27 @@ function tide_site_simple_sitemap_install($is_syncing) {
  */
 function _update_settings() {
   // Step1, Creates a sitemap type.
-  $type = SimpleSitemapType::create([
-    'id'                => 'tide_default_sitemap_type',
-    'label'             => 'Tide default sitemap type',
-    'sitemap_generator' => 'tide_default',
-    'url_generators'    => ['tide_custom', 'tide_entity'],
-  ]);
+  $type_storage = \Drupal::entityTypeManager()->getStorage('simple_sitemap_type');
+  $type = $type_storage->load('tide_default_sitemap_type')
+    ?? $type_storage->create(['id' => 'tide_default_sitemap_type']);
+  $type->set('label', 'Tide default sitemap type');
+  $type->set('sitemap_generator', 'tide_default');
+  $type->set('url_generators', ['tide_custom', 'tide_entity']);
   $type->save();
+  // The install batch can have a negative lookup cached before this type is
+  // created. Ensure sitemap entities can resolve it in the same request.
+  $type_storage->resetCache([$type->id()]);
 
   // Step2, Creates sitemap entities.
   $sites = \Drupal::service('tide_site.helper')->getAllSites();
   $sites += ['default' => 'Default'];
+  $sitemap_storage = \Drupal::entityTypeManager()->getStorage('simple_sitemap');
   foreach ($sites as $site_id => $item) {
-    $simple_site_map = SimpleSitemap::create([
-      'id'    => $site_id === 'default' ? 'default' : 'site-' . $site_id,
-      'label' => $site_id === 'default' ? 'Default' : $item->label(),
-      'type'  => 'tide_default_sitemap_type',
-    ]);
+    $sitemap_id = $site_id === 'default' ? 'default' : 'site-' . $site_id;
+    $simple_site_map = $sitemap_storage->load($sitemap_id)
+      ?? $sitemap_storage->create(['id' => $sitemap_id]);
+    $simple_site_map->set('label', $site_id === 'default' ? 'Default' : $item->label());
+    $simple_site_map->set('type', 'tide_default_sitemap_type');
     $simple_site_map->save();
   }
 

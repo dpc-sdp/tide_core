@@ -135,7 +135,7 @@ class ImportForm extends FormBase {
         }
         catch (\Exception $exception) {
           $this->messenger()->addError($exception->getMessage());
-          watchdog_exception('tide_demo_content', $exception);
+          tide_core_log_exception('tide_demo_content', $exception);
         }
         finally {
           @unlink($temp_file);

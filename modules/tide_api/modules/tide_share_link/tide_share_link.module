@@ -187,7 +187,7 @@ function tide_share_link_node_delete(EntityInterface $entity) {
     $storage->deleteBySharedNodeId($entity->id());
   }
   catch (Exception $exception) {
-    watchdog_exception('tide_share_link', $exception);
+    tide_core_log_exception('tide_share_link', $exception);
   }
 }
 
@@ -204,7 +204,7 @@ function tide_share_link_node_revision_delete(EntityInterface $entity) {
     $storage->deleteBySharedNodeRevisionId($entity->getLoadedRevisionId());
   }
   catch (Exception $exception) {
-    watchdog_exception('tide_share_link', $exception);
+    tide_core_log_exception('tide_share_link', $exception);
   }
 }
 

@@ -68,7 +68,11 @@ class SettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('tide_block_inactive_users.settings');
-    $roles = user_role_names();
+    $role_entities = $this->entityTypeManager->getStorage('user_role')->loadMultiple();
+    $roles = [];
+    foreach ($role_entities as $role_id => $role) {
+      $roles[$role_id] = $role->label();
+    }
     unset($roles['anonymous']);
     unset($roles['administrator']);
 

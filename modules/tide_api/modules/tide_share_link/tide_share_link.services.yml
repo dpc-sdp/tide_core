@@ -1,14 +1,14 @@
 services:
   tide_share_link.page_cache.request_policy.disallow_share_link_token_authorization_requests:
     class: Drupal\tide_share_link\PageCache\RequestPolicy\DisallowShareLinkTokenAuthorizationRequests
-    arguments: [ '@entity_type.manager' ]
+    arguments: [ '@entity_type.manager', '@module_handler' ]
     public: false
     tags:
       - { name: page_cache_request_policy }
       - { name: dynamic_page_cache_request_policy }
   tide_share_link.page_cache.response_policy.disallow_share_link_token_authorization_requests:
     class: Drupal\tide_share_link\PageCache\ResponsePolicy\DisallowShareLinkTokenAuthorizationRequests
-    arguments: [ '@entity_type.manager' ]
+    arguments: [ '@entity_type.manager', '@module_handler' ]
     public: false
     tags:
       - { name: page_cache_response_policy }

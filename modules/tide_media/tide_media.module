@@ -16,8 +16,18 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\file\FileInterface;
+use Drupal\tide_media\Form\VideoEmbedFieldForm;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Implements hook_media_source_info_alter().
+ */
+function tide_media_media_source_info_alter(array &$sources) {
+  if (empty($sources['video_embed_field']['forms']['media_library_add'])) {
+    $sources['video_embed_field']['forms']['media_library_add'] = VideoEmbedFieldForm::class;
+  }
+}
 
 /**
  * Implements hook_views_pre_view().

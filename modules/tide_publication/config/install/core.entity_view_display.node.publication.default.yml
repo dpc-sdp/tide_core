@@ -250,6 +250,7 @@ content:
     region: content
   field_content_category:
     type: term_reference_tree
+    label: above
     weight: 5
     region: content
     settings:

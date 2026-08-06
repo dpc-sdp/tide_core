@@ -11,20 +11,19 @@ use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_core\TideBreadcrumb;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Tests the indexed Tide breadcrumb lookup and request cache isolation.
- *
- * @coversDefaultClass \Drupal\tide_core\TideBreadcrumb
- * @group tide_core
  */
+#[CoversClass(TideBreadcrumb::class)]
+#[Group('tide_core')]
 class TideBreadcrumbTest extends UnitTestCase {
 
   /**
    * Tests that only the target's ancestors have URLs generated.
-   *
-   * @covers ::getMenuAncestors
    */
   public function testIndexedLookupOnlyGeneratesAncestorUrls(): void {
     $manager = $this->createMock(MenuLinkManagerInterface::class);
@@ -52,8 +51,6 @@ class TideBreadcrumbTest extends UnitTestCase {
 
   /**
    * Tests that a disabled branch does not mask another valid node link.
-   *
-   * @covers ::getMenuAncestors
    */
   public function testDisabledBranchFallsThroughToNextCandidate(): void {
     $manager = $this->createMock(MenuLinkManagerInterface::class);
@@ -82,8 +79,6 @@ class TideBreadcrumbTest extends UnitTestCase {
 
   /**
    * Tests that a top-level target produces no ancestor URL generation.
-   *
-   * @covers ::getMenuAncestors
    */
   public function testTopLevelTargetHasNoAncestors(): void {
     $manager = $this->createMock(MenuLinkManagerInterface::class);
@@ -97,10 +92,6 @@ class TideBreadcrumbTest extends UnitTestCase {
 
   /**
    * Tests that cache tags do not bleed between nodes.
-   *
-   * @covers ::build
-   * @covers ::getCacheKey
-   * @covers ::getCacheTags
    */
   public function testCacheTagsAreStoredPerNodeAndSite(): void {
     $manager = $this->createMock(MenuLinkManagerInterface::class);

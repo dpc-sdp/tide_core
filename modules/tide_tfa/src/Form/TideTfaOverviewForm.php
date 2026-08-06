@@ -18,7 +18,7 @@ class TideTfaOverviewForm extends TfaOverviewForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, UserInterface $user = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?UserInterface $user = NULL) {
     $output = [];
     $output['info'] = [
       '#type' => 'markup',

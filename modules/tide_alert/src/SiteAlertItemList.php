@@ -43,7 +43,7 @@ class SiteAlertItemList extends EntityReferenceFieldItemList {
   /**
    * {@inheritdoc}
    */
-  public function __construct(DataDefinitionInterface $definition, $name = NULL, TypedDataInterface $parent = NULL) {
+  public function __construct(DataDefinitionInterface $definition, $name = NULL, ?TypedDataInterface $parent = NULL) {
     parent::__construct($definition, $name, $parent);
 
     $container = static::getContainer();
@@ -86,7 +86,7 @@ class SiteAlertItemList extends EntityReferenceFieldItemList {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_alert', $exception);
+      tide_core_log_exception('tide_alert', $exception);
     }
 
   }

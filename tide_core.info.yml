@@ -2,7 +2,7 @@ name: 'Tide Core'
 description: 'Provides core components required by other features.'
 type: module
 package: Tide
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - address:address
   - allowed_formats:allowed_formats
@@ -159,6 +159,8 @@ config_devel:
     - field.field.user.user.field_business_contact_number
     - field.field.user.user.field_business_name
     - field.field.user.user.field_notes
+    - field.storage.node.body
+    - field.storage.block_content.body
     - field.storage.node.field_audience
     - field.storage.node.field_featured_image
     - field.storage.node.field_landing_page_intro_text
@@ -180,6 +182,7 @@ config_devel:
     - field.storage.node.field_tags
     - field.storage.node.field_topic
     - field.storage.node.field_whats_next
+    - field.storage.media.field_secure_file
     - field.storage.paragraph.field_paragraph_accordion
     - field.storage.paragraph.field_paragraph_accordion_body
     - field.storage.paragraph.field_paragraph_accordion_name

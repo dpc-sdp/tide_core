@@ -23,7 +23,7 @@ use Drupal\views\ViewExecutable;
 /**
  * Implements hook_entity_field_access().
  */
-function tide_site_restriction_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, FieldItemListInterface $items = NULL) {
+function tide_site_restriction_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, ?FieldItemListInterface $items = NULL) {
   if ($field_definition->getName() == 'field_user_site' && $operation == 'edit') {
     return $account->hasPermission('administer site restriction') ? AccessResult::allowed() : AccessResult::forbidden();
   }
@@ -160,7 +160,9 @@ function tide_site_restriction_views_pre_view(ViewExecutable $view, $display_id,
     if (in_array('approver_plus', $account->getRoles())) {
       $user = User::load($account->id());
 
-      $site_values = $user->get('field_user_site')->getValue();
+      $site_values = $user && $user->hasField('field_user_site')
+        ? $user->get('field_user_site')->getValue()
+        : [];
       $site_ids = array_column($site_values, 'target_id');
 
       if (!empty($site_ids)) {
@@ -257,7 +259,7 @@ function tide_site_restriction_form_views_exposed_form_alter(&$form, FormStateIn
  */
 function tide_site_restriction_node_access_records(Node $node) {
   $grants = [];
-  if (!$node->isPublished()) {
+  if (!$node->isPublished() && $node->hasField('field_node_site')) {
     $sites_values = $node->get('field_node_site')->getValue();
     if (empty($sites_values)) {
       return $grants;
@@ -282,6 +284,9 @@ function tide_site_restriction_node_access_records(Node $node) {
  */
 function tide_site_restriction_node_grants(AccountInterface $account, $op) {
   $user = User::load($account->id());
+  if (!$user || !$user->hasField('field_user_site')) {
+    return [];
+  }
   $user_sites = $user->get('field_user_site')->getValue();
   if (empty($user_sites)) {
     return [];

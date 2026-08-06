@@ -55,7 +55,7 @@ function tide_demo_content_tide_demo_content_entity_imported(EntityInterface $en
       }
       catch (\Exception $exception) {
         \Drupal::messenger()->addError($exception->getMessage());
-        watchdog_exception('tide_demo_content', $exception);
+        tide_core_log_exception('tide_demo_content', $exception);
       }
     }
   }

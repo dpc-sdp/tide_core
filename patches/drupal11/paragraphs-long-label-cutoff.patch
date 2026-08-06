@@ -1,0 +1,23 @@
+diff --git a/css/paragraphs.widget.css b/css/paragraphs.widget.css
+--- a/css/paragraphs.widget.css
++++ b/css/paragraphs.widget.css
+@@ -250,7 +250,7 @@
+ }
+ @media (min-width: 992px) {
+   .js .paragraph-top {
+-    grid-template-columns: 150px auto 1fr auto;
++    grid-template-columns: auto auto 1fr auto;
+   }
+ }
+ .js .paragraphs-subform {
+diff --git a/css/paragraphs.widget.scss b/css/paragraphs.widget.scss
+--- a/css/paragraphs.widget.scss
++++ b/css/paragraphs.widget.scss
+@@ -226,7 +226,7 @@
+     }
+
+     @media (min-width: map.get($grid-breakpoints, 'lg')) {
+-      grid-template-columns: 150px auto 1fr auto;
++      grid-template-columns: auto auto 1fr auto;
+     }
+   }

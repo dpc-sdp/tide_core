@@ -5,12 +5,64 @@
  * Tide Search module functionality.
  */
 
+use Drupal\tide_publication\TidePublicationOperation;
+use Drupal\tide_profile\TideProfileOperation;
+use Drupal\tide_landing_page\TideLandingPageOperation;
+use Drupal\tide_external_site_link\TideExternalSiteLinkOperation;
+use Drupal\tide_event\TideEventOperation;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\media\MediaInterface;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\IndexInterface;
+
+/**
+ * Implements hook_modules_installed().
+ */
+function tide_search_modules_installed(array $modules, bool $is_syncing): void {
+  if ($is_syncing) {
+    return;
+  }
+
+  $index = Index::load('node');
+  if (!$index) {
+    return;
+  }
+
+  $providers = [
+    'tide_event' => [
+      'field_event_date_start_value',
+      TideEventOperation::class,
+    ],
+    'tide_external_site_link' => [
+      'field_content_keywords',
+      TideExternalSiteLinkOperation::class,
+    ],
+    'tide_landing_page' => [
+      'field_landing_page_intro_text',
+      TideLandingPageOperation::class,
+    ],
+    'tide_profile' => [
+      'field_profile_intro_text',
+      TideProfileOperation::class,
+    ],
+    'tide_publication' => [
+      'field_publication_authors',
+      TidePublicationOperation::class,
+    ],
+  ];
+
+  $search_was_installed = in_array('tide_search', $modules, TRUE);
+  foreach ($providers as $module => [$field_id, $operation]) {
+    $provider_was_installed = in_array($module, $modules, TRUE);
+    if (($search_was_installed || $provider_was_installed)
+      && \Drupal::moduleHandler()->moduleExists($module)
+      && !$index->getField($field_id)) {
+      $operation::addFieldsToSearchApi();
+    }
+  }
+}
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter().

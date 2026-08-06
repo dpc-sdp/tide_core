@@ -49,7 +49,7 @@ class TideSitePreviewHelper {
    *   * name: The site/section name.
    *   * url: The absolute URL of the preview link.
    */
-  public function buildFrontendPreviewLink(NodeInterface $node, TermInterface $site, TermInterface $section = NULL, array $configuration = []) : array {
+  public function buildFrontendPreviewLink(NodeInterface $node, TermInterface $site, ?TermInterface $section = NULL, array $configuration = []) : array {
     $url_options = [
       'attributes' => !(empty($configuration['open_new_window'])) ? ['target' => '_blank'] : [],
     ];
@@ -109,7 +109,7 @@ class TideSitePreviewHelper {
       return $clean_url ? Url::fromUri($clean_url, $url_options) : $url;
     }
     catch (Exception $exception) {
-      watchdog_exception('tide_site_preview', $exception);
+      tide_core_log_exception('tide_site_preview', $exception);
     }
     return '';
   }

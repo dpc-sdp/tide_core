@@ -2,18 +2,19 @@
 
 namespace Drupal\Tests\tide_site\Unit;
 
+use Drupal\tide_site\TideSiteMenuAutocreate;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+
 /**
  * Tests for TideSiteMenuAutocreate class.
- *
- * @coversDefaultClass Drupal\tide_site\TideSiteMenuAutocreate
- * @group tide
  */
-class TideSiteMenuAutocreateTest extends TideSiteTest {
+#[CoversClass(TideSiteMenuAutocreate::class)]
+#[Group('tide')]
+class TideSiteMenuAutocreateTest extends TideSiteTestBase {
 
-  /**
-   * @covers ::toMachineName
-   * @dataProvider providerToMachineName
-   */
+  #[DataProvider('providerToMachineName')]
   public function testToMachineName($input, $delimiter, $expected) {
     $mock = self::createMock('Drupal\tide_site\TideSiteMenuAutocreate');
     $actual = $this->callProtectedMethod($mock, 'toMachineName', [$input, $delimiter]);
@@ -23,7 +24,7 @@ class TideSiteMenuAutocreateTest extends TideSiteTest {
   /**
    * Data provider to test toMachineName() method.
    */
-  public function providerToMachineName() {
+  public static function providerToMachineName() {
     return [
       ['', '_', ''],
       ['abc', '_', 'abc'],
@@ -39,10 +40,7 @@ class TideSiteMenuAutocreateTest extends TideSiteTest {
     ];
   }
 
-  /**
-   * @covers ::makeMenuLabel
-   * @dataProvider providerMakeMenuLabel
-   */
+  #[DataProvider('providerMakeMenuLabel')]
   public function testMakeMenuLabel($menu_title, $parents, $expected) {
     $mock = self::prepareMock('Drupal\tide_site\TideSiteMenuAutocreate', [
       'loadTermParents' => $this->prepareMockTermParents($parents),
@@ -54,7 +52,7 @@ class TideSiteMenuAutocreateTest extends TideSiteTest {
   /**
    * Data provider to test makeMenuLabel() method.
    */
-  public function providerMakeMenuLabel() {
+  public static function providerMakeMenuLabel() {
     return [
       ['', [], ''],
       ['abc', [], 'abc'],
@@ -64,10 +62,7 @@ class TideSiteMenuAutocreateTest extends TideSiteTest {
     ];
   }
 
-  /**
-   * @covers ::makeMenuName
-   * @dataProvider providerMakeMenuName
-   */
+  #[DataProvider('providerMakeMenuName')]
   public function testMakeMenuName($menu_title, $parents, $expected) {
     $mock = self::prepareMock('Drupal\tide_site\TideSiteMenuAutocreate', [
       'loadTermParents' => $this->prepareMockTermParents($parents),
@@ -82,7 +77,7 @@ class TideSiteMenuAutocreateTest extends TideSiteTest {
    * Menu names are built from term ids (mocked sequentially from 1, ordered
    * from the term to the "oldest" parent) and truncated to 32 characters.
    */
-  public function providerMakeMenuName() {
+  public static function providerMakeMenuName() {
     return [
       ['abc', [], 'site-abc'],
       ['abc', ['t1'], 'site-abc-1'],

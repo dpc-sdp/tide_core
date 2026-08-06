@@ -186,7 +186,7 @@ function tide_workflow_notification_node_presave(NodeInterface $node) {
     }
   }
   catch (\Exception $exception) {
-    watchdog_exception('tide_workflow_notification', $exception);
+    tide_core_log_exception('tide_workflow_notification', $exception);
   }
 }
 
@@ -204,6 +204,7 @@ function tide_workflow_notification_node_presave(NodeInterface $node) {
 function _tide_workflow_notification_get_node_approvers(NodeInterface $node, $transition) {
   try {
     $results = \Drupal::entityQuery('user')
+      ->accessCheck(FALSE)
       ->condition('status', 1)
       ->condition('roles', 'approver')
       ->execute();
@@ -216,7 +217,7 @@ function _tide_workflow_notification_get_node_approvers(NodeInterface $node, $tr
     }
   }
   catch (\Exception $exception) {
-    watchdog_exception('tide_workflow_notification', $exception);
+    tide_core_log_exception('tide_workflow_notification', $exception);
   }
   return NULL;
 }

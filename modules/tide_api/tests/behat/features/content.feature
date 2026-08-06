@@ -10,7 +10,7 @@ Feature: Page
       """
       {
         "jsonapi": {
-          "version": "1.0"
+          "version": "1.1"
         },
         "links": {
           "self": {
@@ -81,7 +81,7 @@ Feature: Page
     And the response body contains JSON:
       """
       {
-        "jsonapi": { "version": "1.0" },
+        "jsonapi": { "version": "1.1" },
         "links": { "self": { "href": "@regExp(/api\\/v1\\/node\\/test/)" } },
         "meta": { "count": "@variableType(integer)" },
         "data": [
