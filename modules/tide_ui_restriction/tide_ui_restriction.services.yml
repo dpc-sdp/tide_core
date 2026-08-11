@@ -12,3 +12,5 @@ services:
     arguments: ['@module_handler']
     tags:
       - { name: event_subscriber }
+  Drupal\tide_ui_restriction\Hook\TideUiRestrictionHooks:
+    autowire: true

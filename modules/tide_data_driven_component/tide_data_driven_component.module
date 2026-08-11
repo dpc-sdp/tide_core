@@ -5,6 +5,7 @@
  * Data Driven Component module functionality.
  */
 
+use Drupal\tide_data_driven_component\Hook\TideDataDrivenComponentHooks;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\field\Entity\FieldConfig;
@@ -47,12 +48,9 @@ function tide_data_driven_component_items_list(FieldStorageConfig $definition, ?
 /**
  * Implements hook_entity_bundle_field_info_alter().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_data_driven_component_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
-  if ($entity_type->id() == 'taxonomy_term' && $bundle == 'data_driven_component') {
-    if (!empty($fields['field_machine_name'])) {
-      $fields['field_machine_name']->addConstraint('TideMachineNameField');
-    }
-  }
+  return \Drupal::service(TideDataDrivenComponentHooks::class)->entityBundleFieldInfoAlter($fields, $entity_type, $bundle);
 }
 
 /**

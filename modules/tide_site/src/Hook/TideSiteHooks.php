@@ -1,0 +1,992 @@
+<?php
+
+namespace Drupal\tide_site\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\path_alias\Entity\PathAlias;
+use Drupal\path_alias\PathAliasInterface;
+use Drupal\search_api\IndexInterface;
+use Drupal\tide_site\TideSiteFields;
+use Drupal\tide_site\TideSiteMenuAutocreate;
+use Drupal\tide_site\TideSitePathAliasListBuilder;
+use Drupal\views\ViewExecutable;
+use Drupal\Core\Render\BubbleableMetadata;
+
+/**
+ * Hook implementations for the tide site module.
+ */
+class TideSiteHooks {
+
+  /**
+   * Implements hook_entity_bundle_create().
+   */
+  #[Hook('entity_bundle_create')]
+  public function entityBundleCreate($entity_type_id, $bundle) {
+    // Don't do anything else during config sync.
+    if (\Drupal::isConfigSyncing()) {
+      return;
+    }
+
+    /** @var \Drupal\tide_site\TideSiteFields $fields_helper */
+    $fields_helper = \Drupal::service('tide_site.fields');
+
+    // Add the new bundle to file_site_homepage entity reference of Sites.
+    if ($entity_type_id === 'node') {
+      $fields_helper->addContentTypesToSiteHomepageField([$bundle]);
+    }
+
+    // Map of which fields should be created for which entity types.
+    $map = [
+      'node' => [$fields_helper::FIELD_SITE, $fields_helper::FIELD_PRIMARY_SITE],
+      'media' => [$fields_helper::FIELD_SITE],
+    ];
+
+    foreach ($map as $entity_type_map => $fields_list) {
+      if ($entity_type_id != $entity_type_map) {
+        continue;
+      }
+
+      foreach ($fields_list as $field_name) {
+        try {
+          // Create/update form display. View display is not created to avoid
+          // unexpected fields appearing in UI.
+          $field_config = $fields_helper->provisionField($field_name, $entity_type_id, $bundle);
+          \Drupal::messenger()->addMessage(t('Added field %name to the %bundle %entity_type entity and form display.', [
+            '%name' => $field_config['field_name'],
+            '%entity_type' => $entity_type_id,
+            '%bundle' => $bundle,
+          ]));
+        }
+        catch (\Exception $e) {
+          \Drupal::messenger()->addMessage(t('Unable to add a field %name to the %bundle %entity_type entity: @message', [
+            '%name' => $field_name,
+            '%entity_type' => $entity_type_id,
+            '%bundle' => $bundle,
+            '@message' => $e->getMessage(),
+          ]), 'error');
+        }
+      }
+    }
+
+  }
+
+  /**
+   * Implements hook_entity_presave().
+   */
+  #[Hook('entity_presave')]
+  public function entityPresave(EntityInterface $entity) {
+    // Attempt to add Site fields into entity form if missing.
+    if ($entity instanceof EntityFormDisplayInterface) {
+      /** @var \Drupal\tide_site\TideSiteHelper $site_helper */
+      $site_helper = \Drupal::service('tide_site.helper');
+      /** @var \Drupal\tide_site\TideSiteFields $fields_helper */
+      $fields_helper = \Drupal::service('tide_site.fields');
+
+      $entity_type = $entity->getTargetEntityTypeId();
+      $bundle = $entity->getTargetBundle();
+      // Only add site fields to supported entity types.
+      if ($site_helper->isSupportedEntityType($entity_type)) {
+        $components = $entity->getComponents();
+
+        $map = [
+          'node' => [
+            $fields_helper::FIELD_SITE,
+            $fields_helper::FIELD_PRIMARY_SITE,
+          ],
+          'media' => [$fields_helper::FIELD_SITE],
+          'user' => [$fields_helper::FIELD_SITE],
+        ];
+        foreach ($map[$entity_type] as $field_name) {
+          $field_name = $fields_helper::normaliseFieldName($field_name, $entity_type);
+
+          // Only action if this entity type/bundle to have the site field.
+          $field_config = FieldConfig::loadByName($entity_type, $bundle, $field_name);
+          if (!$field_config) {
+            continue;
+          }
+
+          // Add the site field if missing.
+          if (!isset($components[$field_name])) {
+            $entity->setComponent($field_name, [
+              'type' => 'options_buttons',
+              'region' => 'content',
+              'field_name' => $field_name,
+              'settings' => [],
+              'third_party_settings' => [],
+            ]);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_field_widget_single_element_form_alter().
+   *
+   * @todo Extract into a service.
+   */
+  #[Hook('field_widget_single_element_form_alter')]
+  public function fieldWidgetSingleElementFormAlter(&$element, FormStateInterface $form_state, $context) {
+    $field_definition = $context['items']->getFieldDefinition();
+    // Site specific exit button state change.
+    $vocabulary = $form_state->get(['taxonomy', 'vocabulary']);
+    if (!empty($vocabulary)) {
+      if ($vocabulary->id() === 'sites') {
+        $element['#attached']['library'][] = 'tide_site/tide_quick_exit';
+      }
+    }
+
+    // Restrict options to 2 levels of depth for Site field.
+    $max_depth = max(2, (int) getenv('MAX_SITE_TAXONOMY_DEPTH') ?: 2);
+    if (TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_SITE)) {
+      $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, $max_depth);
+      if (isset($element['#options'])) {
+        $element['#options'] = array_intersect_key($element['#options'], array_flip(array_column($tree, 'tid')));
+      }
+      else {
+        $element['#options'] = array_flip(array_column($tree, 'tid'));
+      }
+    }
+
+    // Restrict options to 1 level of depth for Primary Site field.
+    if (TideSiteFields::isSiteField($field_definition->getName(), TideSiteFields::FIELD_PRIMARY_SITE)) {
+      $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('sites', 0, 1);
+      if (isset($element['#options'])) {
+        $element['#options'] = array_intersect_key($element['#options'], array_flip(array_column($tree, 'tid')));
+      }
+      else {
+        $element['#options'] = array_flip(array_column($tree, 'tid'));
+      }
+    }
+  }
+
+  /**
+   * Implements hook_form_taxonomy_overview_terms_alter().
+   */
+  #[Hook('form_taxonomy_overview_terms_alter')]
+  public function formTaxonomyOverviewTermsAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $form['#validate'][] = '_tide_site_form_taxonomy_overview_terms_validate';
+  }
+
+  /**
+   * Implements hook_form_taxonomy_term_form_alter().
+   */
+  #[Hook('form_taxonomy_term_form_alter')]
+  public function formTaxonomyTermFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    if ($form_id === 'taxonomy_term_sites_form') {
+      /** @var \Drupal\tide_site\TideSiteMenuAutocreate $menu_helper */
+      $menu_helper = \Drupal::service('tide_site.menu_autocreate');
+      $altered = $menu_helper->alterFormFields($form, [
+        'field_site_main_menu',
+        'field_site_footer_menu',
+      ]);
+
+      if (!empty($altered)) {
+        $form['actions']['submit']['#submit'][] = 'tide_site_form_taxonomy_term_form_submit';
+      }
+    }
+  }
+
+  /**
+   * Implements hook_views_pre_view().
+   */
+  #[Hook('views_pre_view')]
+  public function viewsPreView(ViewExecutable $view, $display_id, array &$args) {
+    $moduleHandler = \Drupal::service('module_handler');
+    if (!$moduleHandler->moduleExists('tide_media')) {
+      return;
+    }
+
+    // Add Site field and exposed filter to the supported views.
+    $views = [
+      'media' => [
+        'media_page_list',
+      ],
+      'tide_media_browser' => [
+        'media_browser',
+        'image_browser',
+        'document_browser',
+        'embedded_video_browser',
+      ],
+    ];
+
+    $view_id = $view->id();
+    if (isset($views[$view_id]) && in_array($display_id, $views[$view_id])) {
+      $site_filter = [
+        'exposed' => TRUE,
+        'expose' => [
+          'operator_id' => 'field_media_site_target_id_op',
+          'label' => t('Site'),
+          'id' => 'media__field_media_site',
+          'use_operator' => FALSE,
+          'operator' => 'field_media_site_target_id_op',
+          'identifier' => 'field_media_site_target_id',
+          'required' => FALSE,
+          'remember' => FALSE,
+          'multiple' => FALSE,
+        ],
+        'group_type' => 'group',
+        'operator' => 'or',
+        'group' => 1,
+        'vid' => 'sites',
+        'type' => 'select',
+        'reduce_duplicates' => TRUE,
+        'limit' => TRUE,
+        'hierarchy' => TRUE,
+        'alter' => [],
+      ];
+      $view->addHandler($display_id, 'filter', 'media__field_media_site', 'field_media_site_target_id', $site_filter, 'field_media_site_target_id');
+
+      $site_field = [
+        'label' => t('Site'),
+        'group_rows' => TRUE,
+        'multi_type' => 'ul',
+        'plugin_id' => 'field',
+        'alter' => [],
+      ];
+      $view->addHandler($display_id, 'field', 'media__field_media_site', 'field_media_site', $site_field, 'field_media_site');
+
+      // Access to node_bulk_form should be restricted to the site_admin role.
+      if ($view->id() === 'summary_contents') {
+        $current_user = \Drupal::currentUser();
+        if (!in_array('site_admin', $current_user->getRoles())) {
+          $view->removeHandler('page', 'field', 'node_bulk_form');
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_config_ignore_settings_alter().
+   */
+  #[Hook('config_ignore_settings_alter')]
+  public function configIgnoreSettingsAlter(array &$settings) {
+    // Ignore all autocreated site menus.
+    $settings[] = 'system.menu.' . TideSiteMenuAutocreate::SITE_MENU_PREFIX . '*';
+  }
+
+  /**
+   * Implements hook_tide_link_enhancer_undo_transform_alter().
+   *
+   * @see \Drupal\tide_api\Plugin\jsonapi\FieldEnhancer\LinkEnhancer::doUndoTransform()
+   */
+  #[Hook('tide_link_enhancer_undo_transform_alter')]
+  public function tideLinkEnhancerUndoTransformAlter(&$data, &$context) {
+    /** @var \Drupal\tide_site\TideSiteHelper $helper */
+    $helper = \Drupal::service('tide_site.helper');
+    /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+    $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+    try {
+      // Get the Site ID parameter.
+      $request = \Drupal::request();
+      $site_id = $request->get('site');
+      if (!$site_id) {
+        return;
+      }
+
+      // Resolve site homepage.
+      if (!empty($data['uri']) && !empty($data['frontpage'])) {
+        $site = $helper->getSiteById($site_id);
+        if ($site) {
+          $homepage = $helper->getSiteHomepageEntity($site);
+          if ($homepage) {
+            $data['uri'] = 'entity:node/' . $homepage->bundle() . '/' . $homepage->uuid();
+            $data['entity'] = [
+              'uri' => 'entity:node/' . $homepage->id(),
+              'entity_type' => $homepage->getEntityTypeId(),
+              'entity_id' => $homepage->id(),
+              'bundle' => $homepage->bundle(),
+              'uuid' => $homepage->uuid(),
+            ];
+            $data['url'] = $homepage->toUrl()->toString(TRUE)->getGeneratedUrl();
+          }
+        }
+      }
+
+      if (!empty($data['entity']['entity_type']) && $helper->isSupportedEntityType($data['entity']['entity_type'])) {
+        /** @var \Drupal\Core\Entity\FieldableEntityInterface $entity */
+        $entity = \Drupal::entityTypeManager()
+          ->getStorage($data['entity']['entity_type'])
+          ->load($data['entity']['entity_id']);
+        if ($entity && $entity instanceof FieldableEntityInterface) {
+          // The URL from Tide API is already relative.
+          $data['origin_url'] = $data['url'];
+          // Check if the link belongs to the current site.
+          if ($helper->isEntityBelongToSite($entity, $site_id)) {
+            $site_url = '';
+          }
+          else {
+            $site_url = $helper->getEntityPrimarySiteBaseUrl($entity);
+            $data['url'] = $helper->getNodeUrlFromPrimarySite($entity);
+          }
+          // Remove site prefix from the  URL.
+          $data['url'] = $alias_helper->getPathAliasWithoutSitePrefix(['alias' => $data['url']], $site_url);
+        }
+      }
+    }
+    catch (Exception $exception) {
+      tide_core_log_exception('tide_site', $exception);
+    }
+  }
+
+  /**
+   * Implements hook_tide_link_enhancer_transform_alter().
+   *
+   * @see \Drupal\tide_api\Plugin\jsonapi\FieldEnhancer\LinkEnhancer::doTransform()
+   */
+  #[Hook('tide_link_enhancer_transform_alter')]
+  public function tideLinkEnhancerTransformAlter(&$value, &$context) {
+    unset($value['origin_url']);
+  }
+
+  /**
+   * Implements hook_tide_path_enhancer_undo_transform_alter().
+   *
+   * @see \Drupal\tide_api\Plugin\jsonapi\FieldEnhancer\PathEnhancer::doUndoTransform()
+   */
+  #[Hook('tide_path_enhancer_undo_transform_alter')]
+  public function tidePathEnhancerUndoTransformAlter(&$data, &$context) {
+    if (empty($data['pid']) || empty($data['url'])) {
+      return;
+    }
+
+    /** @var \Drupal\tide_site\TideSiteHelper $helper */
+    $helper = \Drupal::service('tide_site.helper');
+    /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+    $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+
+    $data['origin_alias'] = $data['alias'];
+    $data['alias'] = $alias_helper->getPathAliasWithoutSitePrefix($data);
+
+    /** @var \Drupal\path_alias\Entity\PathAlias $path_entity */
+    $path_entity = PathAlias::load($data['pid']);
+    if ($path_entity) {
+      $node = $alias_helper->getNodeFromPathEntity($path_entity);
+      if ($node) {
+        // Get the Site ID parameter.
+        $request = \Drupal::request();
+        $site_id = $request->get('site');
+        if (!$site_id) {
+          return;
+        }
+
+        // The URL from Tide API is already relative.
+        $data['origin_url'] = $data['url'];
+        // Check if the link belongs to the current site.
+        if ($helper->isEntityBelongToSite($node, $site_id)) {
+          $site_url = '';
+        }
+        else {
+          $site_url = $helper->getEntityPrimarySiteBaseUrl($node);
+          $data['url'] = $helper->getNodeUrlFromPrimarySite($node);
+        }
+        // Remove site prefix from the  URL.
+        $data['url'] = $alias_helper->getPathAliasWithoutSitePrefix(['alias' => $data['url']], $site_url);
+      }
+    }
+  }
+
+  /**
+   * Implements hook_tide_path_enhancer_transform_alter().
+   *
+   * @see \Drupal\tide_api\Plugin\jsonapi\FieldEnhancer\PathEnhancer::doTransform()
+   */
+  #[Hook('tide_path_enhancer_transform_alter')]
+  public function tidePathEnhancerTransformAlter(&$value, &$context) {
+    unset($value['origin_url'], $value['origin_alias']);
+  }
+
+  /**
+   * Implements hook_form_BASE_FORM_ID_alter() for \Drupal\node\NodeForm.
+   */
+  #[Hook('form_node_form_alter')]
+  public function formNodeFormAlter(&$form, FormStateInterface $form_state) {
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $form_state->getFormObject()->getEntity();
+    $form['tide_site_path_settings'] = [
+      '#type' => 'details',
+      '#title' => t('URL alias'),
+      '#open' => !empty($form['path']['widget'][0]['alias']['#default_value']),
+      '#group' => 'advanced',
+      '#access' => !empty($form['path']['#access']) && $node->hasField('path') && $node->get('path')->access('edit'),
+      '#attributes' => [
+        'class' => ['site-path-form'],
+      ],
+      '#weight' => 30,
+    ];
+
+    $form['tide_site_path_settings']['manage'] = Link::createFromRoute('Manage URL aliases.', 'entity.path_alias.collection', [], [
+      'attributes' => ['target' => '_blank'],
+    ])->toRenderable();
+
+    // Display all aliases of the current node.
+    if (!$node->isNew()) {
+      $aliases = \Drupal::entityTypeManager()
+        ->getStorage('path_alias')
+        ->loadByProperties([
+          'path' => '/node/' . $node->id(),
+        ]);
+      if ($aliases) {
+        $alias_list = [];
+        foreach ($aliases as $alias) {
+          if (!isset($alias_list[$alias->language()->getId()])) {
+            $alias_list[$alias->language()->getId()] = [
+              '#theme' => 'item_list',
+              '#list_type' => 'ul',
+              '#title' => ($alias->language()->getId() == LanguageInterface::LANGCODE_NOT_SPECIFIED) ? t('Language neutral') : \Drupal::languageManager()->getLanguageName($alias->language()->getId()),
+              '#items' => [],
+              '#wrapper_attributes' => ['class' => 'container'],
+            ];
+          }
+          $alias_list[$alias->language()->getId()]['#items'][] = $alias->getAlias();
+        }
+        $form['tide_site_path_settings']['aliases'] = [
+          '#theme' => 'item_list',
+          '#list_type' => 'ul',
+          '#title' => t('All site aliases'),
+          '#items' => $alias_list,
+          '#wrapper_attributes' => ['class' => 'container'],
+        ];
+      }
+    }
+
+    // Adds our #after_build callback.
+    $form['#after_build'][] = 'tide_site_form_node_form_after_build';
+  }
+
+  /**
+   * Implements hook_field_group_form_process_alter().
+   */
+  #[Hook('field_group_form_process_alter')]
+  public function fieldGroupFormProcessAlter(array &$element, &$group, &$complete_form) {
+    // Get current node from url.
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($group->group_name == 'group_sites' && $node) {
+      $element['#open'] = FALSE;
+    }
+  }
+
+  /**
+   * Implements hook_form_alter().
+   */
+  #[Hook('form_alter')]
+  public function formAlter(array &$form, FormStateInterface $form_state, $form_id) {
+    // Add more information to path Edit/Delete form
+    // when editing/deleting a site alias.
+    if (in_array($form_id, ['path_alias_form', 'path_alias_delete_form'])) {
+      /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+      $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+      $path_alias = $form_state->getFormObject()->getEntity();
+      if ($path_alias) {
+        $aliases = $alias_helper->getAllSiteAliases($path_alias);
+        if ($aliases) {
+          $form['site_warning'] = [
+            '#theme' => 'item_list',
+            '#title' => t('The below site aliases will also be @action.', [
+              '@action' => ($form_id === 'path_alias_form') ? 'updated' : 'deleted',
+            ]),
+            '#list_type' => 'ul',
+            '#items' => $aliases,
+            '#wrapper_attributes' => ['class' => 'container'],
+          ];
+          if ($form_id === 'path_alias_delete_form') {
+            foreach (array_keys($form['actions']) as $action) {
+              if ($action !== 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+                $form_state->set('current_path_alias', $path_alias);
+                $form['actions'][$action]['#submit'][] = '_tide_site_delete_all_alias';
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_insert().
+   */
+  #[Hook('path_alias_insert')]
+  public function pathAliasInsert(PathAliasInterface $path) {
+    /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+    $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+    $node = $alias_helper->getNodeFromPathEntity($path);
+    if ($node && !$alias_helper->isPathHasSitePrefix($path)) {
+      $alias_helper->createSiteAliases($path, $node);
+      /** @var \Drupal\tide_site\TideSiteHelper $helper */
+      $helper = \Drupal::service('tide_site.helper');
+      if ($helper->getEntitySites($node)) {
+        if (!$alias_helper->isPathHasSitePrefix($path)) {
+          $path->delete();
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_update().
+   */
+  #[Hook('path_alias_update')]
+  public function pathAliasUpdate(PathAliasInterface $path) {
+    /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+    $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+    $node = $alias_helper->getNodeFromPathEntity($path);
+    if ($node && !$alias_helper->isPathHasSitePrefix($path)) {
+      $alias_helper->updateSiteAliases($path, $path->original);
+      /** @var \Drupal\tide_site\TideSiteHelper $helper */
+      $helper = \Drupal::service('tide_site.helper');
+      if ($helper->getEntitySites($node)) {
+        // Delete the current path if it does not have site prefix.
+        if (!$alias_helper->isPathHasSitePrefix($path)) {
+          $path->delete();
+        }
+      }
+    }
+    // Put the logic to the very late of the process.
+    if ($node instanceof NodeInterface) {
+      \Drupal::getContainer()->get('search_api.entity_datasource.tracking_manager')
+        ->entityUpdate($node);
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_delete().
+   */
+  #[Hook('taxonomy_term_delete')]
+  public function taxonomyTermDelete($term) {
+    // Delete all site aliases of content belong to this Site term.
+    /** @var \Drupal\taxonomy\TermInterface $term */
+    if ($term->bundle() === 'sites') {
+      /** @var \Drupal\tide_site\TideSiteHelper $helper */
+      $helper = \Drupal::service('tide_site.helper');
+      $path_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+      $site_prefix = $helper->getSitePathPrefix($term);
+      $path_ids = \Drupal::entityQuery('path_alias')
+        ->accessCheck(TRUE)
+        ->condition('alias', $site_prefix . '/', 'CONTAINS')
+        ->condition('path', '/taxonomy/term/' . $term->id(), '=')
+        ->execute();
+      $path_storage->delete(PathAlias::loadMultiple($path_ids));
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_update().
+   */
+  #[Hook('node_update')]
+  public function nodeUpdate($node) {
+    // Regenerate site aliases of the updated node.
+    /** @var \Drupal\tide_site\AliasStorage $alias_storage */
+    $alias_storage_helper = \Drupal::service('tide_site.alias_storage_helper');
+
+    $path_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+
+    /** @var \Drupal\node\NodeInterface $node */
+    if (!$alias_storage_helper->loadAll(['path' => '/node/' . $node->id()])) {
+      /** @var \Drupal\pathauto\PathautoGenerator $path_auto_generator */
+      $path_auto_generator = \Drupal::service('pathauto.generator');
+      $path_auto_generator->createEntityAlias($node, 'update');
+    }
+    $old_node = $node->original;
+    $helper = \Drupal::service('tide_site.helper');
+    $old_sites = $helper->getEntitySites($old_node, TRUE) ?: ['ids' => []];
+    $new_sites = $helper->getEntitySites($node, TRUE) ?: ['ids' => []];
+    $unassigned_sites = array_diff($old_sites['ids'], $new_sites['ids']);
+    if ($unassigned_sites) {
+      foreach ($unassigned_sites as $unassigned_site_id) {
+        $site_prefix = $helper->getSitePathPrefix($unassigned_site_id);
+        $path_ids = \Drupal::entityQuery('path_alias')
+          ->accessCheck(TRUE)
+          ->condition('alias', $site_prefix . '/', 'CONTAINS')
+          ->condition('path', '/node/' . $node->id(), '=')
+          ->execute();
+        if ($path_ids) {
+          $path_storage->delete(PathAlias::loadMultiple($path_ids));
+        }
+      }
+    }
+    $new_assigned_sites = array_diff($new_sites['ids'], $old_sites['ids']);
+    if ($new_assigned_sites) {
+      /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+      $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+      $alias_helper->regenerateNodeSiteAliases($node, $new_assigned_sites);
+    }
+  }
+
+  /**
+   * Implements hook_linkit_substitution_alter().
+   */
+  #[Hook('linkit_substitution_alter')]
+  public function linkitSubstitutionAlter(&$data) {
+    if (!empty($data['canonical'])) {
+      $data['canonical']['class'] = 'Drupal\\tide_site\\Plugin\\Linkit\\Substitution\\Canonical';
+    }
+  }
+
+  /**
+   * Implements hook_search_api_index_items_alter().
+   */
+  #[Hook('search_api_index_items_alter')]
+  public function searchApiIndexItemsAlter(IndexInterface $index, array &$items) {
+    $path_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+    foreach ($items as $item) {
+
+      // Add all urls to the url field.
+      $url = $item->getField('url');
+
+      /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+      $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+
+      if (!is_null($item->getField('nid'))) {
+        $nid = $item->getField('nid')->getValues()[0];
+        $node = Node::load($nid);
+        $path = $path_storage->loadByProperties(['path' => '/node/' . $nid]);
+        $path = reset($path);
+        if ($path) {
+          $aliases = $alias_helper->getAllSiteAliases($path, $node);
+        }
+        if ($aliases) {
+          $url->setValues($aliases);
+          $item->setField('url', $url);
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_tide_api_jsonapi_custom_query_parameters_alter().
+   */
+  #[Hook('tide_api_jsonapi_custom_query_parameters_alter')]
+  public function tideApiJsonapiCustomQueryParametersAlter(&$custom_params) {
+    $custom_params[] = 'site';
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_views_exposed_form_alter')]
+  public function formViewsExposedFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $view = $form_state->get('view');
+    if ($view && $view instanceof ViewExecutable) {
+      if ($view->id() === 'summary_contents' && $view->current_display === 'page') {
+        $form['#attached']['library'][] = 'tide_site/tide_site_layout';
+        /** @var \Drupal\tide_site\TideSiteHelper $helper */
+        $helper = \Drupal::service('tide_site.helper');
+        $primary_sites_terms = $helper->getAllSites();
+        $primary_sites_term_options = [];
+        foreach ($primary_sites_terms as $term) {
+          $primary_sites_term_options[$term->id()] = $term->getName();
+        }
+        if (isset($form['moderation_state']['#options']['Editorial']) && in_array('Published', $form['moderation_state']['#options']['Editorial'])) {
+          unset($form['moderation_state']['#options']['Editorial']['editorial-published']);
+        }
+        $options = ['All' => t('- Any -')] + $primary_sites_term_options;
+        $form['field_node_primary_site_target_id']['#options'] = $options;
+      }
+    }
+  }
+
+  /**
+   * Implements hook_entity_type_alter().
+   */
+  #[Hook('entity_type_alter')]
+  public function entityTypeAlter(array &$entity_types) {
+    if (isset($entity_types['path_alias'])) {
+      $entity_types['path_alias']->setListBuilderClass(TideSitePathAliasListBuilder::class);
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_view_alter().
+   */
+  #[Hook('share_link_token_view_alter')]
+  public function shareLinkTokenViewAlter(array &$build, EntityInterface $token, EntityViewDisplayInterface $display) {
+    /** @var \Drupal\tide_share_link\Entity\ShareLinkTokenInterface $token */
+    if (!$token->isActive()) {
+      return;
+    }
+
+    if (!$display->getComponent('api_info')) {
+      return;
+    }
+
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $token->getSharedNode();
+    if (!$node) {
+      return;
+    }
+
+    $preview_urls = [];
+
+    /** @var \Drupal\tide_site\TideSiteHelper $site_helper */
+    $site_helper = \Drupal::service('tide_site.helper');
+    // Generate the preview URLs on all sites.
+    $sites = $site_helper->getEntitySites($node, TRUE);
+    if (!empty($sites['ids'])) {
+      // Prepend the preview URL of the primary site to the Preview Links.
+      $primary_site = $site_helper->getEntityPrimarySite($node);
+      if ($primary_site) {
+        if (isset($sites['ids'][$primary_site->id()])) {
+          $element = [$primary_site->id() => $sites['ids'][$primary_site->id()]];
+          unset($sites['ids'][$primary_site->id()]);
+          $sites['ids'] = $element + $sites['ids'];
+        }
+        if (isset($sites['sections'][$primary_site->id()])) {
+          $element = [$primary_site->id() => $sites['sections'][$primary_site->id()]];
+          unset($sites['sections'][$primary_site->id()]);
+          $sites['sections'] = $element + $sites['sections'];
+        }
+      }
+
+      foreach ($sites['ids'] as $site_id) {
+        $site = $site_helper->getSiteById($site_id);
+        if ($site) {
+          $url_options = [
+            'attributes' => ['target' => '_blank'],
+          ];
+
+          $section = NULL;
+          if (!empty($sites['sections'][$site_id])) {
+            $section = $site_helper->getSiteById($sites['sections'][$site_id]);
+            if ($section && $section->id() !== $site_id) {
+              $url_options['query']['section'] = $sites['sections'][$site_id];
+            }
+          }
+
+          $site_url = $site_helper->getSiteBaseUrl($site);
+          $url = !empty($site_url) ? ($site_url . '/share_link/' . $token->getToken() . '/' . $node->id()) : '';
+          $preview_urls[$site_id] = [
+            'name' => !empty($site->getName()) ? $site->getName() : '',
+            'url' => (!empty($url) && !empty($url_options)) ? Url::fromUri($url, $url_options) : '',
+          ];
+
+          if ($section && $section->id() !== $site_id) {
+            $preview_urls[$site_id]['name'] .= ' - ' . $section->getName();
+          }
+        }
+      }
+    }
+
+    // Add the Site Links to token view.
+    if (count($preview_urls)) {
+      $build['frontend_links'] = [
+        '#theme' => 'details',
+        '#title' => t('Click the link/s below to preview this page'),
+        '#attributes' => [
+          'open' => TRUE,
+        ],
+        '#summary_attributes' => [],
+        '#children' => [
+          '#theme' => 'container',
+          '#children' => [
+            '#theme' => 'item_list',
+            '#list_type' => 'ul',
+            '#items' => [],
+            '#wrapper_attributes' => ['class' => 'share-link-token-frontend-links'],
+          ],
+          '#has_parent' => TRUE,
+        ],
+        '#weight' => -100,
+      ];
+      foreach ($preview_urls as $url_data) {
+        if (!empty($url_data['url'])) {
+          $build['frontend_links']['#children']['#children']['#items'][] = [
+            '#markup' => $url_data['name'] . ': ' . Link::fromTextAndUrl($url_data['url']->toString(), $url_data['url'])->toString(),
+          ];
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_tide_card_link_enhancer_undo_transform_alter().
+   *
+   * @see Drupal\tide_landing_page\Plugin\jsonapi\FieldEnhancer\CardLinkEnhancer::doUndoTransform()
+   */
+  #[Hook('tide_card_link_enhancer_undo_transform_alter')]
+  public function tideCardLinkEnhancerUndoTransformAlter(&$data, &$context) {
+    if (empty($data['pid']) || empty($data['url'])) {
+      return;
+    }
+
+    /** @var \Drupal\tide_site\TideSiteHelper $helper */
+    $helper = \Drupal::service('tide_site.helper');
+    /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+    $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+
+    $data['origin_alias'] = $data['alias'];
+    $data['alias'] = $alias_helper->getPathAliasWithoutSitePrefix($data);
+
+    /** @var \Drupal\path_alias\Entity\PathAlias $path_entity */
+    $path_entity = PathAlias::load($data['pid']);
+    if ($path_entity) {
+      $node = $alias_helper->getNodeFromPathEntity($path_entity);
+      if ($node) {
+        // Get the Site ID parameter.
+        $request = \Drupal::request();
+        $site_id = $request->get('site');
+        if (!$site_id) {
+          return;
+        }
+
+        // The URL from Tide API is already relative.
+        $data['origin_url'] = $data['url'];
+        // Check if the link belongs to the current site.
+        if ($helper->isEntityBelongToSite($node, $site_id)) {
+          $site_url = '';
+        }
+        else {
+          $site_url = $helper->getEntityPrimarySiteBaseUrl($node);
+          $data['url'] = $helper->getNodeUrlFromPrimarySite($node);
+        }
+        // Remove site prefix from the  URL.
+        $data['url'] = $alias_helper->getPathAliasWithoutSitePrefix(['alias' => $data['url']], $site_url);
+      }
+    }
+  }
+
+  /**
+   * Implements hook_tide_help().
+   */
+  #[Hook('tide_help')]
+  public function tideHelp(string $route_name, RouteMatchInterface $route_match) {
+    switch ($route_name) {
+      // Help for Menus because they are auto-generated by tide site.
+      case 'entity.menu.collection':
+      case 'entity.menu.add_form':
+        return '<p>' . t('Learn how to create and edit <a href="@sdp-handbook" target="_blank">navigation menus</a>.', ['@sdp-handbook' => 'https://www.singledigitalpresence.vic.gov.au/create-and-edit-menus']) . '</p>';
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK().
+   */
+  #[Hook('preprocess_views_view')]
+  public function preprocessViewsView(&$variables) {
+    $view = $variables['view'];
+    if ($view->id() == 'tide_content_report' || $view->id() === 'media_report') {
+      $variables['#attached']['library'][] = 'tide_site/content_report_csv_limit';
+    }
+  }
+
+  /**
+   * Implements hook_token_info_alter().
+   */
+  #[Hook('token_info_alter')]
+  public function tokenInfoAlter(&$data) {
+    $data['tokens']['url']['path-no-site-prefix'] = [
+      'name' => t('Path without Site Prefix'),
+      'description' => t('The base path component without site prefix.'),
+    ];
+
+    $data['tokens']['url']['fe_url'] = [
+      'name' => t('Front-end URL'),
+      'description' => t("The node's absolute front-end URL built from its primary site's first domain."),
+    ];
+
+    $data['tokens']['node']['publication-parent-prefix'] = [
+      'name' => t('Publication parent with prefix'),
+      'description' => t('The publication parent to use with linkit'),
+    ];
+  }
+
+  /**
+   * Implements hook_tokens().
+   */
+  #[Hook('tokens')]
+  public function tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+    $replacements = [];
+
+    $language_manager = \Drupal::languageManager();
+    $url_options = ['absolute' => TRUE];
+    if (isset($options['langcode'])) {
+      $url_options['language'] = $language_manager->getLanguage($options['langcode']);
+      $langcode = $options['langcode'];
+    }
+    else {
+      $langcode = $language_manager->getCurrentLanguage()->getId();
+    }
+
+    if ($type == 'url' && !empty($data['url'])) {
+      /** @var \Drupal\Core\Url $url */
+      $url = $data['url'];
+      // To retrieve the correct path, modify a copy of the Url object.
+      $path_url = clone $url;
+      $path = '/';
+      // Ensure the URL is routed to avoid throwing an exception.
+      if ($url->isRouted()) {
+        $path .= $path_url->setAbsolute(FALSE)->setOption('fragment', NULL)->getInternalPath();
+      }
+      foreach ($tokens as $name => $original) {
+        switch ($name) {
+          case 'path-no-site-prefix':
+            $value = !($url->getOption('alias')) ? \Drupal::service('path_alias.manager')->getAliasByPath($path, $langcode) : $path;
+            $value = preg_replace("/^\/site\-(\d+)\//", '/', $value, 1);
+            $replacements[$original] = $value;
+            break;
+
+          case 'fe_url':
+            // [node:url] passes the node's canonical Url object. Recover the
+            // node from the route to build its absolute front-end URL using the
+            // primary site's first domain, with the /site-XXXX/ prefix
+            // stripped.
+            if ($url->isRouted() && $url->getRouteName() === 'entity.node.canonical') {
+              $nid = $url->getRouteParameters()['node'] ?? NULL;
+              $node = $nid ? \Drupal::entityTypeManager()->getStorage('node')->load($nid) : NULL;
+              if ($node) {
+                /** @var \Drupal\tide_site\TideSiteHelper $helper */
+                $helper = \Drupal::service('tide_site.helper');
+                /** @var \Drupal\tide_site\AliasStorageHelper $alias_helper */
+                $alias_helper = \Drupal::service('tide_site.alias_storage_helper');
+                $site_url = $helper->getEntityPrimarySiteBaseUrl($node);
+                // No primary site: leave empty instead of emitting /node/123.
+                if ($site_url) {
+                  $fe_url = $helper->getNodeUrlFromPrimarySite($node);
+                  $fe_url = $alias_helper->getPathAliasWithoutSitePrefix(['alias' => $fe_url], $site_url);
+                  $replacements[$original] = $fe_url;
+                  // Invalidate when the node or its domain changes.
+                  $bubbleable_metadata->addCacheableDependency($node);
+                  $primary_site = $helper->getEntityPrimarySite($node);
+                  if ($primary_site) {
+                    $bubbleable_metadata->addCacheableDependency($primary_site);
+                  }
+                }
+              }
+            }
+            break;
+        }
+      }
+    }
+
+    if ($type == 'node' && !empty($data['node'])) {
+      foreach ($tokens as $name => $original) {
+        switch ($name) {
+          case 'publication-parent-prefix':
+            $node = $data['node'];
+            if ($node->getType() == 'publication_page') {
+              if ($node->hasField('field_publication') && !$node->get('field_publication')->isEmpty()) {
+                $text = $node->field_publication->entity->getTitle();
+                $value = "| Parent: " . $text;
+              }
+              $replacements[$original] = $value;
+              break;
+            }
+        }
+      }
+    }
+
+    return $replacements;
+  }
+
+}

@@ -8,3 +8,5 @@ services:
     arguments: ['@current_user']
     tags:
       - { name: access_check }
+  Drupal\tide_landing_page\Hook\TideLandingPageHooks:
+    autowire: true

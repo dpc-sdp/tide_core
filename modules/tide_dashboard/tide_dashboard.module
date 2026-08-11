@@ -5,10 +5,9 @@
  * Tide Dashboard.
  */
 
+use Drupal\tide_dashboard\Hook\TideDashboardHooks;
 use Drupal\Core\Breadcrumb\Breadcrumb;
-use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Url;
 
 /**
  * Implements hook_toolbar_alter().
@@ -17,12 +16,9 @@ use Drupal\Core\Url;
  *
  * @see workbench_toolbar()
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_dashboard_toolbar_alter(&$items) {
-  $items['administration']['#attached']['library'][] = 'tide_dashboard/toolbar.icons';
-  $user = \Drupal::currentUser();
-  if (!$user->hasPermission('access workbench menu')) {
-    unset($items['workbench']);
-  }
+  return \Drupal::service(TideDashboardHooks::class)->toolbarAlter($items);
 }
 
 /**
@@ -38,11 +34,9 @@ function _tide_dashboard_workbench_content_title_callback() {
 /**
  * Implements hook_user_login().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_dashboard_user_login() {
-  $request = \Drupal::service('request_stack')->getCurrentRequest();
-  if (($request->query->has('destination')) === FALSE) {
-    $request->query->set('destination', '/admin/workbench');
-  }
+  return \Drupal::service(TideDashboardHooks::class)->userLogin();
 }
 
 /**
@@ -57,27 +51,7 @@ function tide_dashboard_user_login() {
  *
  * Anonymous users are excluded from this alteration.
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_dashboard_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
-  if (\Drupal::currentUser()->isAnonymous()) {
-    return;
-  }
-
-  $links = $breadcrumb->getLinks();
-
-  if (!empty($links)) {
-    // Check if the first link is the Home link.
-    if ($links[0]->getUrl()->isRouted() && $links[0]->getUrl()->getRouteName() === '<front>') {
-
-      $new_url = Url::fromUserInput('/admin/workbench');
-      $new_link = Link::fromTextAndUrl($links[0]->getText(), $new_url);
-
-      // Swap the first link to workbench.
-      $links[0] = $new_link;
-
-      $reflection = new \ReflectionClass($breadcrumb);
-      $property = $reflection->getProperty('links');
-      $property->setAccessible(TRUE);
-      $property->setValue($breadcrumb, $links);
-    }
-  }
+  return \Drupal::service(TideDashboardHooks::class)->systemBreadcrumbAlter($breadcrumb, $route_match, $context);
 }

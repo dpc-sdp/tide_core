@@ -4,3 +4,5 @@ services:
     arguments: ['@config.factory', '@block_inactive_users.deactivate_users', '@queue']
     tags:
       - { name: drush.command }
+  Drupal\tide_block_inactive_users\Hook\TideBlockInactiveUsersHooks:
+    autowire: true

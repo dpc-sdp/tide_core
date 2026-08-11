@@ -1,0 +1,3 @@
+services:
+  Drupal\tide_user_expire\Hook\TideUserExpireHooks:
+    autowire: true

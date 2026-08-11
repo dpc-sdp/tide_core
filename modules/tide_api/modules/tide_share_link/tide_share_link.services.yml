@@ -29,3 +29,5 @@ services:
       - '@tide_share_link.page_cache.request_policy.disallow_share_link_token_authorization_requests'
     tags:
       - { name: event_subscriber }
+  Drupal\tide_share_link\Hook\TideShareLinkHooks:
+    autowire: true

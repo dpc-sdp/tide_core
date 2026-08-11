@@ -10,6 +10,7 @@ use Drupal\tide_tfa\TideTfaOperation;
 /**
  * Bypass tfa requirement for reset login page.
  */
+#[\Drupal\Core\Hook\Attribute\LegacyRequirementsHook]
 function tide_tfa_requirements_alter(array &$requirements) {
   if (isset($requirements['tfa.route.user.reset.login'])) {
     unset($requirements['tfa.route.user.reset.login']);

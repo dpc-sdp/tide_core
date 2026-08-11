@@ -1,0 +1,886 @@
+<?php
+
+namespace Drupal\tide_core\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
+use Drupal\field\FieldStorageConfigInterface;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\redirect\Entity\Redirect;
+use Drupal\scheduled_transitions\Routing\ScheduledTransitionsRouteProvider;
+use Drupal\tide_core\JsonLdComputedField;
+use Drupal\tide_core\Plugin\CornerGraphicField;
+use Drupal\tide_core\Plugin\schema_metatag\PropertyType\TideBreadcrumbList;
+use Drupal\tide_core\Render\Element\AdminToolbar;
+use Drupal\user\RoleInterface;
+use Drupal\views\ViewExecutable;
+use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Hook implementations for the tide core module.
+ */
+class TideCoreHooks {
+
+  /**
+   * Implements hook_views_data().
+   */
+  #[Hook('views_data')]
+  public function viewsData() {
+    $data = [];
+
+    $data['views']['text_raw'] = [
+      'title' => t('Raw text'),
+      'help' => t('Add raw custom text or markup. This is similar to the custom text field.'),
+      'area' => [
+        'id' => 'text_raw',
+      ],
+    ];
+
+    $data['views']['sorted_roles_views_field'] = [
+      'title' => t('Sorted Roles'),
+      'help' => t('The list of user roles sorted alphabetically.'),
+      'field' => [
+        'id' => 'sorted_roles_views_field',
+      ],
+    ];
+
+    return $data;
+  }
+
+  /**
+   * Implements hook_views_data_alter().
+   *
+   * @see \Drupal\node\NodeViewsData::getViewsData()
+   * @see \Drupal\tide_core\Plugin\views\filter\StatusModerated
+   */
+  #[Hook('views_data_alter')]
+  public function viewsDataAlter(array &$data) {
+    // Add Moderation support to Node 'status_extra' filter.
+    // Content Overview view uses the filter 'Published status or admin user'
+    // without any consideration of Content Moderation. We override this filter
+    // to add an extra check for the 'view any unpublished content' permission
+    // provided by the Content Moderation module.
+    $data['node_field_data']['status_extra']['filter']['id'] = 'node_status_moderated';
+    $data['file_managed']['file_type_filter'] = [
+      'title' => t('Enhanced file MIME type filter'),
+      'filter' => [
+        'title' => t('Enhanced file MIME type filter'),
+        'help' => t('provide a custom file MIME type selection filter'),
+        'field' => 'filemime',
+        'id' => 'tide_enhanced_mime_type_filter',
+      ],
+    ];
+    $data['node_field_data']['author_by_role_filter'] = [
+      'title' => t('Author (by role)'),
+      'filter' => [
+        'title' => t('Author (by role)'),
+        'help' => t('Filter content by author, limited to users with selected roles.'),
+        'field' => 'uid',
+        'id' => 'author_by_role_filter',
+      ],
+    ];
+    // Use sort-aware field handler for field_topic so that table click sorting
+    // delegates to the sort handler (which sorts by taxonomy term name via
+    // relationship) instead of sorting by the raw target_id.
+    if (isset($data['node__field_topic']['field_topic']['field'])) {
+      $data['node__field_topic']['field_topic']['field']['id'] = 'sort_aware_field';
+    }
+  }
+
+  /**
+   * Implements hook_field_views_data_alter().
+   */
+  #[Hook('field_views_data_alter')]
+  public function fieldViewsDataAlter(array &$data, FieldStorageConfigInterface $field_storage) {
+    // The shared media browser supports the optional secure-file media bundle.
+    // Its storage is installed by Tide Core so the view can be installed before
+    // the optional bundle exists. Drupal 11 no longer generates Views data for
+    // field storage without a field instance, so provide the relationship until
+    // tide_media_secure_files installs that instance.
+    if ($field_storage->id() !== 'media.field_secure_file' || !empty($data)) {
+      return;
+    }
+
+    $table = 'media__field_secure_file';
+    $data[$table]['table'] = [
+      'join' => [
+        'media_field_data' => [
+          'table' => $table,
+          'left_field' => 'mid',
+          'field' => 'entity_id',
+          'extra' => [
+            [
+              'field' => 'deleted',
+              'value' => 0,
+              'numeric' => TRUE,
+            ],
+            [
+              'left_field' => 'langcode',
+              'field' => 'langcode',
+            ],
+          ],
+        ],
+      ],
+      'provider' => 'views',
+    ];
+    $data[$table]['field_secure_file_target_id']['relationship'] = [
+      'id' => 'standard',
+      'base' => 'file_managed',
+      'entity type' => 'file',
+      'base field' => 'fid',
+      'label' => t('file from field_secure_file'),
+    ];
+  }
+
+  /**
+   * Implements hook_views_query_substitutions().
+   *
+   * @see node_views_query_substitutions()
+   * @see \Drupal\node\Plugin\views\filter\Status::query()
+   * @see \Drupal\tide_core\Plugin\views\filter\StatusModerated::query()
+   */
+  #[Hook('views_query_substitutions')]
+  public function viewsQuerySubstitutions(ViewExecutable $view) {
+    $account = \Drupal::currentUser();
+    return [
+      '***VIEW_ANY_UNPUBLISHED_NODES***' => intval($account->hasPermission('view any unpublished content')),
+    ];
+  }
+
+  /**
+   * Implements hook_entity_operation().
+   */
+  #[Hook('entity_operation')]
+  public function entityOperation(EntityInterface $entity) {
+    // Add "Archived" operation link to entities.
+    $operations = [];
+    $workflow = Workflow::load('editorial');
+    if ($workflow) {
+      if ($workflow->getTypePlugin()
+        ->appliesToEntityTypeAndBundle($entity->getEntityTypeId(), $entity->bundle())) {
+        if ($entity->access('use ' . $workflow->id() . ' transition archived')) {
+          $operations['archive'] = [
+            'title' => t('Archive'),
+            'weight' => 100,
+            'url' => Url::fromRoute('tide_core.entity.archive_confirm', [
+              'bundle' => $entity->getEntityTypeId(),
+              'entity_type_id' => $entity->id(),
+            ]),
+          ];
+        }
+      }
+    }
+    if ($entity->getEntityType()->hasLinkTemplate(ScheduledTransitionsRouteProvider::LINK_TEMPLATE_ADD)) {
+      $routeName = ScheduledTransitionsRouteProvider::getScheduledTransitionRouteName($entity->getEntityType());
+      $url = Url::fromRoute($routeName, [$entity->getEntityTypeId() => $entity->id()]);
+      $user = \Drupal::currentUser();
+      if (TRUE === $url->access($user)) {
+        $operations['scheduled_transitions'] = [
+          'title' => t('Scheduled updates'),
+          'url' => $url,
+          'weight' => 50,
+        ];
+      }
+    }
+
+    return $operations;
+  }
+
+  /**
+   * Implements hook_form_alter().
+   */
+  #[Hook('form_alter')]
+  public function formAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $form['#attached']['library'][] = 'tide_core/fix-sticky-header';
+    $info = \Drupal::service('entity_type.bundle.info');
+    foreach ($info->getBundleInfo('node') as $bundle => $item) {
+      if ($form_id == 'node_' . $bundle . '_scheduled_transitions_add_form_form') {
+        // In this form, we only keep 'publish' and 'archive' options regardless
+        // of what permissions the user has.
+        if (isset($form['scheduled_transitions']['new_meta']['transition']['#options'])) {
+          foreach ($form['scheduled_transitions']['new_meta']['transition']['#options'] as $key => $option) {
+            if (!in_array($key, ['publish', 'archive'])) {
+              unset($form['scheduled_transitions']['new_meta']['transition']['#options'][$key]);
+            }
+          }
+        }
+        foreach (array_keys($form['actions']) as $action) {
+          if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+            $form['actions'][$action]['#value'] = t('Scheduled updates');
+            $form['actions'][$action]['#submit'][] = '_tide_core_modified_update_adding_message';
+          }
+        }
+      }
+      if ($form_id == 'node_' . $bundle . '_quick_node_clone_form') {
+        if (isset($form['moderation_state'])) {
+          $form['moderation_state']['#group'] = 'footer';
+        }
+      }
+    }
+    if ($form_id === 'menu_edit_form') {
+      if (isset($form_state->getUserInput()['op'])) {
+        if ($form_state->getUserInput()['op'] === 'Save') {
+          $form['actions']['submit']['#submit'][] = '_tide_core_menu_submit_handler';
+        }
+      }
+    }
+    // Re-order the user_form field.
+    if ($form_id === 'user_form') {
+      $form['account']['name']['#weight'] = 2;
+      $form['account']['field_business_name'] = $form['field_business_name'];
+      $form['account']['field_business_name']['#weight'] = 3;
+      unset($form['field_business_name']);
+      $form['account']['field_business_contact_number'] = $form['field_business_contact_number'];
+      $form['account']['field_business_contact_number']['#weight'] = 4;
+      unset($form['field_business_contact_number']);
+      $form['account']['field_notes'] = $form['field_notes'];
+      $form['account']['field_notes']['#weight'] = 5;
+      unset($form['field_notes']);
+      $form['account']['pass']['#weight'] = 6;
+      $form['account']['status']['#weight'] = 7;
+      $form['account']['roles']['#weight'] = 8;
+      if (isset($form['account']['notify'])) {
+        $form['account']['notify']['#weight'] = 9;
+      }
+      if (isset($form['account']['password_policy_status'])) {
+        $form['account']['password_policy_status']['#weight'] = 10;
+      }
+      // Check if the field exists then hide path field.
+      if (isset($form['path'])) {
+        $form['path']['#access'] = FALSE;
+      }
+    }
+    // Update description for og_locale metatag.
+    if (
+      isset($form['field_metatags'])
+      && isset($form['field_metatags']['widget'][0])
+      && isset($form['field_metatags']['widget'][0]['open_graph'])
+      && isset($form['field_metatags']['widget'][0]['open_graph']['og_locale'])
+    ) {
+      $url = Url::fromUri('https://digital-vic.atlassian.net/servicedesk/customer/portal/27/article/2272657746', [
+        'attributes' => [
+          'target' => '_blank',
+        ],
+      ]);
+      $language_code_list_link = Link::fromTextAndUrl(t('full list of language codes'), $url)->toString();
+      $form['field_metatags']['widget'][0]['open_graph']['og_locale']['#description'] = t("This field is used in SDP to set the page's language, display font and text direction. See our @language-code-list.", [
+        '@language-code-list' => $language_code_list_link,
+      ]);
+    }
+    $user = \Drupal::currentUser();
+    if (!$user->hasPermission('use views bulk edit')) {
+      if ($form_id === 'views_form_summary_contents_filters_page_1' && isset($form['header']['node_bulk_form']['action']['#options']['node_edit_action'])) {
+        unset($form['header']['node_bulk_form']['action']['#options']['node_edit_action']);
+      }
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_scheduled_transition_delete_form_alter')]
+  public function formScheduledTransitionDeleteFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $form['#title'] = t('Are you sure you want to delete the Scheduled updates?');
+    foreach (array_keys($form['actions']) as $action) {
+      if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+        $form['actions'][$action]['#submit'][] = '_tide_core_modified_update_delete_message';
+      }
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_user_register_form_alter')]
+  public function formUserRegisterFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    if (isset($form['account']['mail']['#required'])) {
+      $form['account']['mail']['#required'] = TRUE;
+    }
+    $form['account']['name']['#weight'] = 2;
+    $form['account']['field_business_name'] = $form['field_business_name'];
+    $form['account']['field_business_name']['#weight'] = 3;
+    unset($form['field_business_name']);
+    $form['account']['field_business_contact_number'] = $form['field_business_contact_number'];
+    $form['account']['field_business_contact_number']['#weight'] = 4;
+    unset($form['field_business_contact_number']);
+    $form['account']['field_notes'] = $form['field_notes'];
+    $form['account']['field_notes']['#weight'] = 5;
+    unset($form['field_notes']);
+    $form['account']['pass']['#weight'] = 6;
+    $form['account']['status']['#weight'] = 7;
+    $form['account']['roles']['#weight'] = 8;
+    if (isset($form['account']['notify'])) {
+      $form['account']['notify']['#weight'] = 9;
+    }
+    if (isset($form['account']['password_policy_status'])) {
+      $form['account']['password_policy_status']['#weight'] = 10;
+    }
+  }
+
+  /**
+   * Implements hook_menu_links_discovered_alter().
+   */
+  #[Hook('menu_links_discovered_alter')]
+  public function menuLinksDiscoveredAlter(&$links) {
+    if (isset($links['entity.scheduled_transition.collection']['title'])) {
+      $links['entity.scheduled_transition.collection']['title'] = 'Scheduled updates';
+    }
+    // @todo delete after scheduled_updates module fully uninstalled.
+    if (isset($links['entity.scheduled_update.collection'])) {
+      unset($links['entity.scheduled_update.collection']);
+    }
+  }
+
+  /**
+   * Implements hook_menu_local_actions_alter().
+   */
+  #[Hook('menu_local_actions_alter')]
+  public function menuLocalActionsAlter(&$local_actions) {
+    if (isset($local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'])) {
+      $local_actions['scheduled_transitions.actions:node.add_scheduled_transition']['title'] = 'Add Scheduled update';
+    }
+  }
+
+  /**
+   * Implements hook_local_tasks_alter().
+   */
+  #[Hook('local_tasks_alter')]
+  public function localTasksAlter(&$local_tasks) {
+    if (isset($local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'])) {
+      $local_tasks['scheduled_transitions.tasks:node.scheduled_transitions']['title'] = 'Scheduled updates';
+    }
+    // @todo delete after scheduled_updates module fully uninstalled.
+    if (isset($local_tasks['scheduled_update.admin'])) {
+      unset($local_tasks['scheduled_update.admin']);
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK().
+   */
+  #[Hook('preprocess_status_messages')]
+  public function preprocessStatusMessages(&$variables) {
+    if (isset($variables['message_list']['error']) && !empty($variables['message_list']['error'])) {
+      foreach ($variables['message_list']['error'] as &$error_message) {
+        if ($error_message instanceof Markup) {
+          $message = $error_message->__toString();
+          // We want to ensure that the error message to be altered under
+          // node edit context.
+          preg_match('/entity:node\/(\d+)/', $message, $matches);
+          // Check that the error message comes from field_paragraph_link based
+          // on a node context.
+          if (strpos($message, 'Validation error on collapsed paragraph field_paragraph_link') !== FALSE && (isset($matches[1]) && is_numeric($matches[1]))) {
+            $error_message = t('A link in <i>Related links</i> field on this page is broken. Please update or remove the link and retry.');
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_content_moderation_entity_moderation_form_alter')]
+  public function formContentModerationEntityModerationFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    if (isset($form['revision_log'])) {
+      $form['#attached']['library'][] = 'tide_core/content_moderation';
+      $form['#attached']['library'][] = 'tide_core/node_revision_log';
+      $form['revision_log']['#type'] = 'textarea';
+      $form['revision_log'] = _tide_core_revision_log_form_label_text() + $form['revision_log'];
+      $form['#validate'][] = '_tide_core_node_form_log_message_validate';
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_editor_link_dialog_alter')]
+  public function formEditorLinkDialogAlter(&$form, FormStateInterface $form_state, $form_id) {
+    // Alter only the form with ID 'editor_link_dialog'.
+    if ($form_id !== 'editor_link_dialog') {
+      return;
+    }
+    $form['#attached']['library'][] = 'tide_core/editor_autolink';
+    // Updating the default title and description.
+    if (isset($form['attributes']['href'])) {
+      $form['attributes']['href']['#title'] = t('URL, phone number or email address');
+      $form['attributes']['href']['#description'] = t('External links must include https://. Type or paste a phone number or email address and click Enter to add the hyperlink. For more information read our <strong><a href="https://www.singledigitalpresence.vic.gov.au/hyperlinks" target="_blank">guide on hyperlinks</a></strong>.');
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK().
+   */
+  #[Hook('preprocess_page')]
+  public function preprocessPage(&$variables) {
+    $variables['#attached']['library'][] = 'tide_core/ckeditor_stylesheets';
+  }
+
+  /**
+   * Implements hook_editor_js_settings_alter().
+   */
+  #[Hook('editor_js_settings_alter')]
+  public function editorJsSettingsAlter(array &$settings) {
+    foreach (array_keys($settings['editor']['formats']) as $text_format_id) {
+      $settings['editor']['formats'][$text_format_id]['editorSettings']['contentsCss'][] = '/' . \Drupal::service('extension.list.module')->getPath('tide_core') . '/css/ckeditor_overrides.css';
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   *
+   * Move some core fields to Node form Sidebar.
+   */
+  #[Hook('form_node_form_alter')]
+  public function formNodeFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $form['#attached']['library'][] = 'tide_core/claro_layout';
+    $form['#attached']['library'][] = 'tide_core/node_iframe';
+    $form['#attached']['library'][] = 'tide_core/sticky_node_form_sidebar';
+    $form['#attached']['library'][] = 'tide_core/pseudo_required_field';
+    $form['#attached']['library'][] = 'tide_core/select2-placeholder-fix';
+    if (isset($form['field_show_content_rating'])) {
+      $form['#attached']['library'][] = 'tide_core/form_extras';
+      $form['field_show_content_rating_extra_label'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'label',
+        '#value' => t('Show was this page helpful?'),
+        '#attributes' => [
+          'class' => ['form-item__label'],
+        ],
+        '#weight' => $form['field_show_content_rating']['#weight'] - 0.1,
+      ];
+    }
+    // Adding custom states from webform js.
+    // Support patterns in states.
+    if (\Drupal::moduleHandler()->moduleExists('webform')) {
+      $form['#attached']['library'][] = 'webform/webform.states';
+    }
+    $node = $form_state->getFormObject()->getEntity();
+
+    if (isset($form['_header_style'])) {
+      $header_style = Drupal::state()->get($node->id() . '-header_style');
+      $form['_header_style']['_header_style_options']['#value'] = $header_style;
+    }
+
+    $form['#validate'][] = '_tide_core_header_style_validate';
+    // Apply to edit form only, tide_workflow_notification_form_node_form_alter.
+    if ($node->isNew()) {
+      return;
+    }
+    // Add comment log message field.
+    if (isset($form['revision_log']) && $form['revision_log']['#access']) {
+      $form['moderation_state']['comment_log_message'] = _tide_core_revision_log_form_label_text() + [
+        '#type' => 'textarea',
+        '#rows' => 3,
+        '#weight' => 9,
+      ];
+      $form['#validate'][] = '_tide_core_node_edit_form_log_message_validate';
+      $form['#attached']['library'][] = 'tide_core/node_revision_log';
+    }
+
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_delete().
+   */
+  #[Hook('node_delete')]
+  public function nodeDelete(NodeInterface $node) {
+    \Drupal::state()->delete($node->uuid() . '-header_style');
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_revision_overview_form_alter')]
+  public function formRevisionOverviewFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    // Adding headers to unlabelled radio button options.
+    if (isset($form['node_revisions_table'])) {
+      $form['node_revisions_table']['#header']['select_column_one'] = "Compare From";
+      $form['node_revisions_table']['#header']['select_column_two'] = "Compare To";
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_access().
+   */
+  #[Hook('menu_link_content_access')]
+  public function menuLinkContentAccess(EntityInterface $menu_link_item, $operation, AccountInterface $account) {
+    if ($menu_link_item->hasField('link') && !$menu_link_item->link->isEmpty()) {
+      $url = $menu_link_item->getUrlObject();
+      if (!$url->isExternal() && $url->isRouted() && $menu_link_item->isPublished()) {
+        $parameters = $url->getRouteParameters();
+        if (isset($parameters['node'])) {
+          $node = Node::load($parameters['node']);
+          if ($node instanceof NodeInterface) {
+            $menu_link_item->addCacheableDependency($node);
+            if ($account->hasPermission('administer menu')) {
+              return AccessResult::neutral()->addCacheableDependency($menu_link_item);
+            }
+            if (!$node->isPublished()) {
+              return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
+            }
+            if ($node->hasField('moderation_state') && !$node->moderation_state->isEmpty()) {
+              if ($node->moderation_state->value !== 'published') {
+                return AccessResult::forbidden()->addCacheableDependency($menu_link_item);
+              }
+            }
+          }
+          return AccessResult::neutral()->addCacheableDependency($menu_link_item);
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_presave() for redirect entities.
+   */
+  #[Hook('redirect_presave')]
+  public function redirectPresave(Redirect $redirect) {
+    $cids = [];
+    $matches = [];
+    $redirect_node = [];
+
+    if (is_numeric($redirect->id())) {
+      array_push($cids, 'redirect:' . $redirect->id());
+    }
+
+    // Because of the field type the extraction of node id is in this way.
+    $source_alias = \Drupal::service('path_alias.manager')->getPathByAlias($redirect->getSourceUrl());
+    if ($source_alias && preg_match('/node\/(\d+)/', $source_alias, $matches)) {
+      if (isset($matches) && array_key_exists(1, $matches) && is_numeric($matches[1])) {
+        array_push($cids, 'node:' . $matches[1]);
+      }
+    }
+
+    // If internal route.
+    if ($redirect->getRedirectUrl()->isRouted()) {
+      // Get the Redirect node Id.
+      if (!is_bool($redirect->getRedirectUrl())) {
+        $redirect_node = $redirect->getRedirectUrl()->getRouteParameters();
+        if ($redirect_node && array_key_exists('node', $redirect_node)) {
+          if (is_numeric($redirect_node['node'])) {
+            array_push($cids, 'node:' . $redirect_node['node']);
+          }
+        }
+      }
+    }
+    // Invalidate the Cache tags.
+    if (!empty($cids)) {
+      Cache::invalidateTags($cids);
+    }
+  }
+
+  /**
+   * Implements hook_node_access_records().
+   */
+  #[Hook('node_access_records')]
+  public function nodeAccessRecords(NodeInterface $node) {
+    if (!$node->isPublished()) {
+      $grants = [];
+      $grants[] = [
+        'realm' => 'tide_core',
+        'gid' => 1,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'nid' => $node->id(),
+      ];
+
+      return $grants;
+    }
+    return [];
+  }
+
+  /**
+   * Implements hook_node_grants().
+   */
+  #[Hook('node_grants')]
+  public function nodeGrants(AccountInterface $account, $op) {
+    if ($op === 'view'
+      && $account->isAuthenticated()
+      && $account->hasPermission('view any unpublished content')) {
+      $grants = [];
+      $grants['tide_core'][] = 1;
+
+      return $grants;
+    }
+    return [];
+  }
+
+  /**
+   * Implements hook_node_access().
+   */
+  #[Hook('node_access')]
+  public function nodeAccess(NodeInterface $node, $op, AccountInterface $account) {
+    // Only run if the module permission by terms is enabled.
+    if (!$node->isPublished() && $op === 'view') {
+      $access_result = AccessResult::allowedIfHasPermission($account, 'view any unpublished content');
+      $access_result = $access_result->andIf(AccessResult::allowedIf($node->getOwnerId() == $account->id() || $node->getRevisionUserId() == $account->id()));
+
+      return $access_result->addCacheableDependency($node);
+    }
+    return AccessResult::neutral()->addCacheableDependency($node);
+  }
+
+  /**
+   * Implements hook_system_breadcrumb_alter().
+   *
+   * @todo Follow up with the issue.
+   * @see https://www.drupal.org/project/drupal/issues/3220437
+   */
+  #[Hook('system_breadcrumb_alter')]
+  public function systemBreadcrumbAlter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context) {
+    if (!empty($breadcrumb)) {
+      $links = $breadcrumb->getLinks();
+      $route = $route_match->getRouteName();
+      if (isset($links[1]) && !empty($route)) {
+        $link = $links[1]->getUrl()->toString();
+        $routes = [
+          'entity.node.delete_form',
+          'entity.node.version_history',
+          'entity.node.entity_hierarchy_reorder',
+          'entity.node.scheduled_transitions',
+          'entity.share_link_token.node_collection',
+        ];
+        if (in_array($route, $routes) && $link = '/node') {
+          $links[1]->setText('Node');
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_presave().
+   */
+  #[Hook('node_presave')]
+  public function nodePresave(NodeInterface $node) {
+    $node_state = isset($node->get('moderation_state')->getValue()[0]) ? $node->get('moderation_state')->getValue()[0]['value'] : '';
+
+    if ($node_state === 'published') {
+      tide_core_media_autopublish($node);
+      $log = [
+        /*
+         * Term the 'type' => 'node' as 'type' => 'page'
+         * to improve log readability.
+         */
+        'type' => 'page',
+        'operation' => 'published',
+        'description' => t('%type: %title - New page created with workflow state %new_state', [
+          '%type' => $node->getType(),
+          '%title' => $node->getTitle(),
+          '%new_state' => $node_state,
+        ]),
+        'ref_numeric' => $node->id(),
+        'ref_char' => $node->getTitle(),
+      ];
+
+      // Add the log to the "admin_audit_trail" table.
+      if (function_exists('admin_audit_trail_insert')) {
+        admin_audit_trail_insert($log);
+      }
+    }
+  }
+
+  /**
+   * Implements hook_admin_audit_trail_handlers().
+   */
+  #[Hook('admin_audit_trail_handlers')]
+  public function adminAuditTrailHandlers() {
+    // Page event log handler.
+    $handlers = [];
+    $handlers['page'] = [
+      'title' => t('Page'),
+    ];
+    return $handlers;
+  }
+
+  /**
+   * Implements hook_toolbar_alter().
+   */
+  #[Hook('toolbar_alter')]
+  public function toolbarAlter(&$items) {
+    $items['administration']['tray']['toolbar_administration']['#pre_render'] = [
+      [
+        AdminToolbar::class,
+        'preRenderTray',
+      ],
+    ];
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_insert().
+   *
+   * This is necessary because of a circular dependency between the 'site_admin'
+   * role and the 'assign site_admin role' permission.
+   *
+   * @see https://www.drupal.org/project/role_delegation/issues/3354012
+   */
+  #[Hook('user_role_insert')]
+  public function userRoleInsert(RoleInterface $role): void {
+    if ($role->id() === 'site_admin') {
+      $role->grantPermission('assign site_admin role');
+      $role->save();
+    }
+  }
+
+  /**
+   * Implements hook_entity_base_field_info_alter().
+   */
+  #[Hook('entity_base_field_info_alter')]
+  public function entityBaseFieldInfoAlter(&$fields, EntityTypeInterface $entity_type) {
+    if ($entity_type->id() == 'node') {
+      $fields['corner_graphic_field'] = BaseFieldDefinition::create('corner_graphic_computed')
+        ->setLabel(t('Corner graphic'))
+        ->setName('corner_graphic_field')
+        ->setDescription(t('Corner graphic custom field'))
+        ->setComputed(TRUE)
+        ->setClass(CornerGraphicField::class)
+        ->setReadOnly(TRUE)
+        ->setCardinality(1);
+    }
+  }
+
+  /**
+   * Implements hook_cloned_node_alter().
+   */
+  #[Hook('cloned_node_alter')]
+  public function clonedNodeAlter(NodeInterface &$node, NodeInterface $original): void {
+    // Unsets the value of field_published_date on a cloned entity.
+    if ($node->hasField('field_published_date')) {
+      $node->set('field_published_date', NULL);
+    }
+    // Look up the original node's stored header style.
+    $header_style = \Drupal::state()->get($original->uuid() . '-header_style');
+    if ($header_style) {
+      // Store the same header style under the new node's UUID.
+      \Drupal::state()->set($node->uuid() . '-header_style', $header_style);
+    }
+  }
+
+  /**
+   * Implements hook_field_widget_form_alter().
+   */
+  #[Hook('field_widget_complete_form_alter')]
+  public function fieldWidgetCompleteFormAlter(&$field_widget_complete_form, FormStateInterface $form_state, $context) {
+    if ($context['items']->getName() === 'moderation_state' && $field_widget_complete_form['widget'][0]['current']['#markup'] === 'Published') {
+      $field_widget_complete_form['widget'][0]['state']['#default_value'] = 'draft';
+    }
+  }
+
+  /**
+   * Implements hook_menu_local_tasks_alter().
+   */
+  #[Hook('menu_local_tasks_alter')]
+  public function menuLocalTasksAlter(&$data, $route_name, &$ref_root) {
+    // Update "View" to "View profile".
+    if (isset($data['tabs'][0]['entity.user.canonical'])) {
+      $data['tabs'][0]['entity.user.canonical']['#link']['title'] = t('View profile');
+    }
+  }
+
+  /**
+   * Apply select2 to Author and Topic options in the content view.
+   *
+   * Apply select2 to the Author and Topic options in the content view, and
+   * implement custom sorting for the Topic options.
+   */
+  #[Hook('form_views_exposed_form_alter')]
+  public function formViewsExposedFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $filters = [
+      'author_by_role_filter',
+      'field_topic_target_id',
+    ];
+    foreach ($filters as $filter) {
+      if (!empty($form['#id']) && $form['#id'] == 'views-exposed-form-summary-contents-filters-page-1') {
+        if (!empty($form[$filter]['#multiple'])) {
+          $form[$filter]['#type'] = 'select2';
+          $form[$filter]['#select2'] = [
+            'allowClear' => TRUE,
+            'dropdownAutoWidth' => FALSE,
+            'width' => 'resolve',
+            'closeOnSelect' => FALSE,
+            'placeholder' => t('- Any -'),
+          ];
+        }
+      }
+    }
+    // Sort Topic filter options alphabetically by label.
+    if (!empty($form['field_topic_target_id']['#options'])) {
+      asort($form['field_topic_target_id']['#options']);
+    }
+  }
+
+  /**
+   * Implements hook_entity_bundle_field_info().
+   *
+   * Registers a generic, read-only 'json_ld' field on every node bundle.
+   * The field assembles the schema_metatag JSON-LD string for the node and is
+   * empty unless the bundle has schema_metatag tags configured (via metatag
+   * defaults), so it is safe to expose everywhere.
+   */
+  #[Hook('entity_bundle_field_info')]
+  public function entityBundleFieldInfo(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+    $fields = [];
+
+    if ($entity_type->id() === 'node') {
+      $fields['json_ld'] = BaseFieldDefinition::create('string_long')
+        ->setLabel(t('JSON-LD'))
+        ->setDescription(t('Pre-assembled JSON-LD string for this node, ready to be injected into a script[type="application/ld+json"] tag by the headless frontend.'))
+        ->setComputed(TRUE)
+        ->setClass(JsonLdComputedField::class)
+        ->setReadOnly(TRUE);
+    }
+
+    return $fields;
+  }
+
+  /**
+   * Implements hook_metatags_alter().
+   *
+   * The schema BreadcrumbList property type resolves its node through the
+   * tide_core.breadcrumb service because it runs deep inside the metatag
+   * pipeline with no access to the entity being processed. Scope the node here,
+   * inside the pipeline itself, so the trail is correct wherever the pipeline
+   * is triggered: the 'metatag' computed field (whose raw elements the json_ld
+   * computed field reuses), HTML page rendering, or previews.
+   *
+   * @see \Drupal\tide_core\JsonLdComputedField::computeValue()
+   * @see \Drupal\tide_core\Plugin\schema_metatag\PropertyType\TideBreadcrumbList::resolveCurrentNode()
+   */
+  #[Hook('metatags_alter')]
+  public function metatagsAlter(array &$metatags, array &$context) {
+    if (isset($context['entity']) && $context['entity'] instanceof NodeInterface) {
+      \Drupal::service('tide_core.breadcrumb')->setContextNode($context['entity']);
+    }
+  }
+
+  /**
+   * Implements hook_schema_metatag_property_type_plugins_alter().
+   *
+   * Replaces contrib's BreadcrumbList type with the Tide-aware subclass that
+   * sources the trail from the tide_core breadcrumb service (which applies
+   * hook_tide_breadcrumb_alter()) and works under JSON:API.
+   *
+   * @see \Drupal\tide_core\Plugin\schema_metatag\PropertyType\TideBreadcrumbList
+   */
+  #[Hook('schema_metatag_property_type_plugins_alter')]
+  public function schemaMetatagPropertyTypePluginsAlter(array &$definitions) {
+    if (isset($definitions['breadcrumb_list'])) {
+      $definitions['breadcrumb_list']['class'] = TideBreadcrumbList::class;
+      $definitions['breadcrumb_list']['provider'] = 'tide_core';
+    }
+  }
+
+}

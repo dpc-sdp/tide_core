@@ -13,3 +13,5 @@ services:
     arguments: ['@tide_site_restriction.helper']
     tags:
       - { name: access_check, applies_to: _site_access_route_check }
+  Drupal\tide_site_restriction\Hook\TideSiteRestrictionHooks:
+    autowire: true

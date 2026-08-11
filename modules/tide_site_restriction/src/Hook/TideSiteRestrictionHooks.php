@@ -1,0 +1,451 @@
+<?php
+
+namespace Drupal\tide_site_restriction\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\node\Entity\Node;
+use Drupal\user\Entity\Role;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\cache\CachePluginBase;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Hook implementations for the tide site restriction module.
+ */
+class TideSiteRestrictionHooks {
+
+  /**
+   * Implements hook_entity_field_access().
+   */
+  #[Hook('entity_field_access')]
+  public function entityFieldAccess($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, ?FieldItemListInterface $items = NULL) {
+    if ($field_definition->getName() == 'field_user_site' && $operation == 'edit') {
+      return $account->hasPermission('administer site restriction') ? AccessResult::allowed() : AccessResult::forbidden();
+    }
+
+    return AccessResult::neutral();
+  }
+
+  /**
+   * Implements hook_entity_access().
+   */
+  #[Hook('entity_access')]
+  public function entityAccess(EntityInterface $entity, $operation, AccountInterface $account) {
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    if (!in_array($entity->getEntityTypeId(), $site_restriction_helper->getSupportedEntityTypes())) {
+      return AccessResult::neutral()->addCacheableDependency($entity);
+    }
+    if ($account->isAuthenticated() && in_array($operation, ['update', 'delete'])) {
+      $access_result = tide_site_restriction_compute_access($account, $entity, $site_restriction_helper);
+      return $access_result;
+    }
+
+    $moderation_info = Drupal::service('content_moderation.moderation_information');
+    if ($moderation_info->isModeratedEntity($entity)) {
+      if ($account->isAuthenticated() && $operation == 'view' && $entity->moderation_state->value == 'draft') {
+        $access_result = tide_site_restriction_compute_access($account, $entity, $site_restriction_helper);
+        return $access_result;
+      }
+    }
+
+    return AccessResult::neutral()->addCacheableDependency($entity);
+  }
+
+  /**
+   * Implements hook_views_post_render().
+   */
+  #[Hook('views_post_render')]
+  public function viewsPostRender(ViewExecutable $view, &$output, CachePluginBase $cache) {
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    if ($view->getBaseEntityType() && in_array($view->getBaseEntityType()->id(), $site_restriction_helper->getSupportedEntityTypes())) {
+      $output['#cache']['tags'][] = 'site_restriction';
+      if (\Drupal::currentUser()->isAuthenticated()) {
+        $output['#cache']['tags'][] = 'user:' . \Drupal::currentUser()->id();
+      }
+    }
+  }
+
+  /**
+   * Implements hook_views_pre_render().
+   */
+  #[Hook('views_pre_render')]
+  public function viewsPreRender(ViewExecutable $view) {
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    if ($view->getBaseEntityType() && in_array($view->getBaseEntityType()->id(), $site_restriction_helper->getSupportedEntityTypes())) {
+      foreach ($view->result as $row) {
+        if ($row->_entity) {
+          $row->_entity->addCacheTags(['site_restriction']);
+          if (\Drupal::currentUser()->isAuthenticated()) {
+            $row->_entity->addCacheTags(['user:' . \Drupal::currentUser()->id()]);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_presave().
+   */
+  #[Hook('user_presave')]
+  public function userPresave(UserInterface $user) {
+    Cache::invalidateTags(['site_restriction']);
+  }
+
+  /**
+   * Implements hook_views_pre_view().
+   */
+  #[Hook('views_pre_view')]
+  public function viewsPreView(ViewExecutable $view, $display_id, array &$args) {
+    $display_filters = [
+      'summary_contents_filters' => [
+        'page_1' => 'sub_sites_filter',
+      ],
+      'user_admin_people' => [
+        'page_1' => 'field_user_site_target_id_1',
+      ],
+      'media' => [
+        'media_page_list' => 'field_media_site_target_id',
+      ],
+      'tide_site_moderated_content_filters' => [
+        'moderated_content' => 'field_node_site_target_id',
+      ],
+    ];
+
+    $account = \Drupal::currentUser();
+    $view_id = $view->id();
+
+    // Apply site restriction filters for supported views.
+    if (isset($display_filters[$view_id][$display_id])) {
+      $filter = $display_filters[$view_id][$display_id];
+
+      /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+      $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+      $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction($account);
+
+      $filters = $view->display_handler->getOption('filters');
+      if (!empty($filters[$filter])) {
+        $filters[$filter]['expose']['multiple'] = TRUE;
+        $view->display_handler->setOption('filters', $filters);
+
+        if (!$user_can_bypass_restriction) {
+          /** @var \Drupal\user\Entity\User $user */
+          $user = User::load($account->id());
+          $user_sites = $site_restriction_helper->getUserSites($user);
+          $exposed_input = $view->getExposedInput();
+          if (!empty($user_sites) && empty($exposed_input)) {
+            $exposed_input[$filter] = $user_sites;
+            $view->setExposedInput($exposed_input);
+          }
+        }
+      }
+    }
+
+    // Add site restriction field to user list data export view.
+    if ($view_id === 'user_list_data_export') {
+      $site_field = [
+        'label' => t('Site restriction'),
+        'group_rows' => TRUE,
+        'multi_type' => 'separator',
+        'separator' => ', ',
+        'plugin_id' => 'field',
+        'alter' => [],
+      ];
+      $view->addHandler($display_id, 'field', 'user__field_user_site', 'field_user_site', $site_field);
+
+      // Only works when field_user_site is there.
+      // Contextual filter is set.
+      if (in_array('approver_plus', $account->getRoles())) {
+        $user = User::load($account->id());
+
+        $site_values = $user && $user->hasField('field_user_site')
+          ? $user->get('field_user_site')->getValue()
+          : [];
+        $site_ids = array_column($site_values, 'target_id');
+
+        if (!empty($site_ids)) {
+          $args = $site_ids;
+        }
+        else {
+          $args = [-1];
+        }
+      }
+      else {
+        $args = [];
+      }
+    }
+
+    // Add Site field and exposed filter to the supported views.
+    $views = [
+      'media' => [
+        'media_page_list',
+      ],
+      'tide_media_browser' => [
+        'media_browser',
+        'image_browser',
+        'document_browser',
+        'embedded_video_browser',
+      ],
+    ];
+
+    if (isset($views[$view_id]) && in_array($display_id, $views[$view_id])) {
+      // Get user sites.
+      $current_user = \Drupal::currentUser()->id();
+      $user = User::load($current_user);
+      /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+      $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+      $user_sites = $site_restriction_helper->getUserSites($user);
+
+      $site_filter = [
+        'exposed' => TRUE,
+        'expose' => [
+          'operator_id' => 'field_media_site_target_id_op',
+          'label' => t('Site'),
+          'id' => 'media__field_media_site',
+          'use_operator' => FALSE,
+          'operator' => 'field_media_site_target_id_op',
+          'identifier' => 'field_media_site_target_id',
+          'required' => FALSE,
+          'remember' => FALSE,
+          'multiple' => TRUE,
+        ],
+        'group_type' => 'group',
+        'operator' => 'or',
+        'group' => 1,
+        'vid' => 'sites',
+        'type' => 'select',
+        'reduce_duplicates' => TRUE,
+        'limit' => TRUE,
+        'hierarchy' => TRUE,
+        'alter' => [],
+        'value' => $user_sites,
+      ];
+      $view->addHandler($display_id, 'filter', 'media__field_media_site', 'field_media_site_target_id', $site_filter, 'field_media_site_target_id');
+    }
+
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_views_exposed_form_alter')]
+  public function formViewsExposedFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    // Enable Select2 to Site filter of Content Admin view.
+    $form_ids = [
+      'views-exposed-form-media-media-page-list' => 'field_media_site_target_id',
+      'views-exposed-form-summary-contents-filters-page-1' => 'sub_sites_filter',
+      'views-exposed-form-user-admin-people-page-1' => 'field_user_site_target_id_1',
+      'views-exposed-form-tide-site-moderated-content-filters-moderated-content' => 'field_node_site_target_id',
+    ];
+    foreach ($form_ids as $form_id => $filter) {
+      if (!empty($form['#id']) && $form['#id'] == $form_id) {
+        if (!empty($form[$filter]['#multiple'])) {
+          $form[$filter]['#type'] = 'select2';
+          $form[$filter]['#select2'] = [
+            'allowClear' => TRUE,
+            'dropdownAutoWidth' => FALSE,
+            'width' => 'resolve',
+            'closeOnSelect' => FALSE,
+            'placeholder' => t('- Any -'),
+          ];
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_node_access_records().
+   */
+  #[Hook('node_access_records')]
+  public function nodeAccessRecords(Node $node) {
+    $grants = [];
+    if (!$node->isPublished() && $node->hasField('field_node_site')) {
+      $sites_values = $node->get('field_node_site')->getValue();
+      if (empty($sites_values)) {
+        return $grants;
+      }
+      $sites = array_column($sites_values, 'target_id');
+      foreach ($sites as $site) {
+        $grants[] = [
+          'realm' => 'tide_site_restriction',
+          'gid' => $site,
+          'grant_view' => 1,
+          'grant_update' => 0,
+          'grant_delete' => 0,
+          'nid' => $node->id(),
+        ];
+      }
+    }
+    return $grants;
+  }
+
+  /**
+   * Implements hook_node_grants().
+   */
+  #[Hook('node_grants')]
+  public function nodeGrants(AccountInterface $account, $op) {
+    $user = User::load($account->id());
+    if (!$user || !$user->hasField('field_user_site')) {
+      return [];
+    }
+    $user_sites = $user->get('field_user_site')->getValue();
+    if (empty($user_sites)) {
+      return [];
+    }
+    $sites = array_column($user_sites, 'target_id');
+    $grants = [];
+    if ($op == 'view') {
+      foreach ($sites as $site) {
+        $grants['tide_site_restriction'][] = $site;
+      }
+      return $grants;
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_user_form_alter')]
+  public function formUserFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    if (isset($form['field_user_site']) && $form['field_user_site']['#access']) {
+      $roles = Role::loadMultiple();
+      $states = [];
+      foreach ($roles as $role_id => $role) {
+        if ($role->hasPermission('bypass node access') || $role->hasPermission('administer nodes') || $role->hasPermission('bypass site restriction')) {
+          $states[] = [
+            [':input[name="roles[' . $role_id . ']"]' => ['checked' => TRUE]],
+            'or',
+            // We have drupal/role_delegation dependency, so need to check
+            // role_change name.
+            [':input[name="role_change[' . $role_id . ']"]' => ['checked' => TRUE]],
+            'or',
+          ];
+        }
+      }
+      $results = [];
+      if ($states) {
+        foreach ($states as $state) {
+          $results = array_merge($results, $state);
+        }
+        // Removes the last 'or'.
+        if (end($results) == 'or') {
+          array_pop($results);
+        }
+        $form['field_user_site']['widget']['#states'] = [
+          'invisible' => $results,
+        ];
+      }
+      $form['#validate'][] = '_tide_site_restriction_validation';
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK().
+   */
+  #[Hook('preprocess_fieldset')]
+  public function preprocessFieldset(&$variables) {
+    if (isset($variables['element']['#field_name']) && $variables['element']['#field_name'] == 'field_user_site') {
+      // Adds '*' to field_user_site.
+      $variables['legend']['attributes']->addClass('form-required');
+    }
+  }
+
+  /**
+   * After the user reset the password, redirect them to the home page.
+   */
+  #[Hook('form_user_pass_reset_alter')]
+  public function formUserPassResetAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $form['#submit'][] = 'tide_site_restriction_user_login_page';
+  }
+
+  /**
+   * Implements hook_entity_operation_alter().
+   */
+  #[Hook('entity_operation_alter')]
+  public function entityOperationAlter(array &$operations, EntityInterface $entity) {
+    if (isset($operations['quick_clone'])) {
+      /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+      $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+      $user = User::load(\Drupal::currentUser()->id());
+      $user_sites = $site_restriction_helper->getUserSites($user);
+      $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction(\Drupal::currentUser());
+      if (!$user_can_bypass_restriction) {
+        if (!$site_restriction_helper->hasEntitySitesAccess($entity, $user_sites)) {
+          unset($operations['quick_clone']);
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_views_data_alter().
+   */
+  #[Hook('views_data_alter')]
+  public function viewsDataAlter(array &$data) {
+    $data['node_field_data']['sub_sites_filter'] = [
+      'title' => t('Sub-sites'),
+      'filter' => [
+        'title' => t('Sub sites filter'),
+        'help' => t('Provides a custom filter for admin/content view.'),
+        'field' => 'nid',
+        'id' => 'sub_sites_filter',
+      ],
+    ];
+  }
+
+  /**
+   * Implements hook_views_plugins_field_alter().
+   */
+  #[Hook('views_plugins_field_alter')]
+  public function viewsPluginsFieldAlter(array &$plugins) {
+    $plugins['node_bulk_form']['class'] = 'Drupal\\tide_site_restriction\\Plugin\\views\\field\\TideNodeBulkForm';
+  }
+
+  /**
+   * Implements hook_field_widget_single_element_form_alter().
+   */
+  #[Hook('field_widget_single_element_form_alter')]
+  public function fieldWidgetSingleElementFormAlter(&$element, FormStateInterface $form_state, $context) {
+    $field_definition = $context['items']->getFieldDefinition();
+    $user = User::load(\Drupal::currentUser()->id());
+
+    if ($field_definition->getName() !== 'field_user_site' || !$user->hasRole('approver_plus')) {
+      return;
+    }
+
+    // Get allowed site IDs from service.
+    /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
+    $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+    $allowed_site_ids = $site_restriction_helper->getUserSites($user);
+
+    // Add child sites for each allowed site.
+    $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+    foreach ($allowed_site_ids as $tid) {
+      $descendants = $site_restriction_helper->getAllDescendants($tid, $term_storage);
+      $allowed_site_ids = array_merge($allowed_site_ids, $descendants);
+    }
+
+    // Remove duplicates.
+    $allowed_site_ids = array_unique($allowed_site_ids);
+
+    // Filter the options.
+    if (isset($element['#options']) && is_array($element['#options'])) {
+      foreach ($element['#options'] as $key => $label) {
+        if (!in_array($key, $allowed_site_ids)) {
+          $element[$key]['#disabled'] = TRUE;
+        }
+      }
+    }
+  }
+
+}

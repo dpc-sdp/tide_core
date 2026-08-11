@@ -1,0 +1,538 @@
+<?php
+
+namespace Drupal\tide_media\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\file\FileInterface;
+use Drupal\tide_media\Form\VideoEmbedFieldForm;
+use Drupal\views\ViewExecutable;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Hook implementations for the tide media module.
+ */
+class TideMediaHooks {
+
+  /**
+   * Implements hook_media_source_info_alter().
+   */
+  #[Hook('media_source_info_alter')]
+  public function mediaSourceInfoAlter(array &$sources) {
+    if (empty($sources['video_embed_field']['forms']['media_library_add'])) {
+      $sources['video_embed_field']['forms']['media_library_add'] = VideoEmbedFieldForm::class;
+    }
+  }
+
+  /**
+   * Implements hook_views_pre_view().
+   */
+  #[Hook('views_pre_view')]
+  public function viewsPreView(ViewExecutable $view, $display_id, array &$args) {
+    if ($view->id() == 'media') {
+      // Add License type field as a filter to the view.
+      $license_type_filter = [
+        'exposed' => TRUE,
+        'expose' => [
+          'operator_id' => 'field_media_license_type_target_id_op',
+          'label' => t('License Type'),
+          'id' => 'media__field_license_type',
+          'use_operator' => FALSE,
+          'operator' => 'field_media_license_type_target_id_op',
+          'identifier' => 'field_license_type_target_id',
+          'required' => FALSE,
+          'remember' => FALSE,
+          'multiple' => FALSE,
+        ],
+        'group_type' => 'group',
+        'operator' => 'or',
+        'group' => 1,
+        'vid' => 'license_type',
+        'type' => 'select',
+        'reduce_duplicates' => TRUE,
+        'limit' => TRUE,
+        'hierarchy' => TRUE,
+      ];
+      $department_filter = [
+        'exposed' => TRUE,
+        'expose' => [
+          'operator_id' => 'field_media_department_target_id_op',
+          'label' => t('Department/Agency'),
+          'id' => 'field_media_department_target_id',
+          'use_operator' => FALSE,
+          'operator' => 'field_media_department_target_id_op',
+          'identifier' => 'field_media_department_target_id',
+          'required' => FALSE,
+          'remember' => FALSE,
+          'multiple' => FALSE,
+        ],
+        'group_type' => 'group',
+        'operator' => 'or',
+        'group' => 1,
+        'vid' => 'department',
+        'type' => 'select',
+        'reduce_duplicates' => FALSE,
+        'limit' => TRUE,
+        'hierarchy' => FALSE,
+      ];
+      $view->addHandler('media_page_list', 'filter', 'media__field_license_type', 'field_license_type_target_id', $license_type_filter, 'field_license_type_target_id');
+      $view->addHandler('media_page_list', 'filter', 'media__field_media_department', 'field_media_department_target_id', $department_filter, 'field_media_department_target_id');
+    }
+  }
+
+  /**
+   * Implements hook_form_alter().
+   */
+  #[Hook('form_alter')]
+  public function formAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $allowed_entity_types = ["audio", "embedded_video"];
+    if ($form_id == 'entity_embed_dialog' || $form_id == "entity_browser_tide_media_browser_iframe_form") {
+      $entity_browser = $form_state->getValue('entity_browser');
+      if (!empty($entity_browser['entities'])) {
+        /** @var \Drupal\media\Entity\Media $entity */
+        $entity = reset($entity_browser['entities']);
+        // Hide the "Embedded with Transcript" view mode from some media embeds.
+        if ($entity && !in_array($entity->bundle(), $allowed_entity_types)) {
+          unset($form['attributes']['data-entity-embed-display']['#options']['view_mode:media.embedded_with_transcript']);
+        }
+        // Make "Embedded with Transcript" default view mode.
+        if ($entity && in_array($entity->bundle(), $allowed_entity_types)) {
+          $form['attributes']['data-entity-embed-display']['#default_value'] = 'view_mode:media.embedded_with_transcript';
+          // Add accessibility title tag to embedded media.
+          $form['attributes']['title'] = [
+            '#type' => 'hidden',
+            '#value' => $entity->getName(),
+          ];
+        }
+      }
+    }
+
+    // Hide the "Embedded with Caption" view mode from some media embeds.
+    $allowed_entity_types = ["image"];
+    if ($form_id == 'entity_embed_dialog' || $form_id == "entity_browser_tide_media_browser_iframe_form") {
+      $entity_browser = $form_state->getValue('entity_browser');
+      if (!empty($entity_browser['entities'])) {
+        /** @var \Drupal\media\Entity\Media $entity */
+        $entity = reset($entity_browser['entities']);
+        if ($entity && !in_array($entity->bundle(), $allowed_entity_types)) {
+          unset($form['attributes']['data-entity-embed-display']['#options']['view_mode:media.embedded_with_caption']);
+        }
+      }
+    }
+
+    $entity_element = $form_state->get('entity_element');
+    if ($form_id === 'entity_embed_dialog') {
+      // Add back button for medie embed modal in CKEditor.
+      if ($form_state->get('step') == 'select') {
+        $form['entity-embed-dialog-tide-media-browser-home'] = [
+          '#title' => t('<< Previous'),
+          '#type' => 'link',
+          '#url' => Url::fromRoute('<none>'),
+          '#weight' => 0,
+          '#attributes' => [
+            'onclick' => "return false",
+            'id' => ["entity-embed-dialog-tide-media-browser-home"],
+            'style' => "display:none",
+          ],
+        ];
+        $form['#attached']['library'][] = 'tide_media/embed_media_back_button';
+        $form['#attached']['library'][] = 'tide_media/embed_media_back_button_style';
+
+      }
+      // Add check box to show or hide last updated date for embedded media
+      // items.
+      if ($form_state->get('step') == 'embed') {
+        $form['attributes']['data-show-last-updated'] = [
+          '#type' => 'checkbox',
+          '#title' => t('Display last update date'),
+          '#default_value' => !empty($entity_element['data-show-last-updated']) ? $entity_element['data-show-last-updated'] : 0,
+        ];
+      }
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_media_form_alter')]
+  public function formMediaFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $form['#attached']['library'][] = 'tide_media/media_form';
+  }
+
+  /**
+   * Implements template_preprocess_field().
+   */
+  #[Hook('preprocess_field')]
+  public function preprocessField(&$variables) {
+    if ($variables['field_name'] == 'field_media_file') {
+      $element = $variables['element'];
+      if ($element['#entity_type'] == 'media' && $element['#bundle'] == 'document' && $element['#view_mode'] == 'embedded') {
+        foreach ($variables['items'] as $delta => &$item) {
+          /** @var \Drupal\media\Entity\Media $media */
+          $media = $element['#object'];
+          $document_name = $media->get('name')->getString();
+          if ($document_name) {
+            $item['content']['#description'] = $document_name;
+            $element[$delta] = $item;
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements template_preprocess_file_link().
+   */
+  #[Hook('preprocess_file_link')]
+  public function preprocessFileLink(&$variables) {
+    /** @var \Drupal\file\Entity\File $file */
+    $file = $variables['file'];
+
+    $config = \Drupal::config('tide_media.settings');
+    if ($config->get('file_absolute_url')) {
+      $url = \Drupal::service('file_url_generator')->generateAbsoluteString($file->getFileUri());
+      if ($config->get('force_https')) {
+        $url = str_replace('http://', 'https://', $url);
+      }
+    }
+
+    $description = $variables['description'];
+    $file_size = format_size($file->getSize());
+
+    $mime_type = $file->getMimeType();
+    $mime_category = file_icon_class($mime_type);
+    switch ($mime_category) {
+      case 'application-pdf':
+        $file_type = 'PDF';
+        break;
+
+      case 'x-office-document':
+        $file_type = 'Word';
+        break;
+
+      case 'x-office-spreadsheet':
+        $file_type = 'Excel';
+        break;
+
+      case 'x-office-presentation':
+        $file_type = 'PPT';
+        break;
+
+      case 'text':
+        $file_type = 'Text';
+        break;
+
+      default:
+        $file_type = 'Other';
+    }
+    $link_text = new FormattableMarkup('<span class="file--title">@description</span>' .
+      '<span class="file--type">@file_type</span>' .
+      '<span class="file--size">@file_size</span>',
+      [
+        '@description' => $description,
+        '@file_type' => $file_type,
+        '@file_size' => $file_size,
+      ]);
+    $attributes = [];
+    $attributes['attributes'] = [
+      'class' => [
+        $mime_category,
+      ],
+      'aria-label' => [
+        $description . ' File type: ' . $file_type . '. Size: ' . $file_size . '.',
+      ],
+    ];
+
+    if (isset($url) && !empty($url)) {
+      $uri = Url::fromUri($url);
+      $uri->setOptions($attributes);
+      $link_html = Link::fromTextAndUrl($link_text, $uri)->toString();
+      $variables['link'] = $link_html;
+    }
+  }
+
+  /**
+   * Implements hook_entity_base_field_info().
+   *
+   * @see jsonapi_entity_base_field_info()
+   */
+  #[Hook('entity_base_field_info')]
+  public function entityBaseFieldInfo(EntityTypeInterface $entity_type) {
+    $fields = [];
+    if ($entity_type->id() == 'file') {
+      if (\Drupal::config('tide_media.settings')->get('file_absolute_url')) {
+        // Return absolute URL for all files, both in fields and wysiwyg.
+        $fields['url'] = BaseFieldDefinition::create('string')
+          ->setLabel(t('Download URL'))
+          ->setDescription(t('The download URL of the file.'))
+          ->setComputed(TRUE)
+          ->setCustomStorage(TRUE)
+          ->setClass('\Drupal\tide_media\Plugin\Field\FileAbsoluteUrl')
+          ->setDisplayOptions('view', [
+            'label' => 'above',
+            'weight' => -5,
+            'region' => 'hidden',
+          ])
+          ->setDisplayConfigurable('view', TRUE);
+      }
+    }
+    return $fields;
+  }
+
+  /**
+   * Implements hook_entity_base_field_info_alter().
+   *
+   * @see jsonapi_entity_base_field_info()
+   */
+  #[Hook('entity_base_field_info_alter')]
+  public function entityBaseFieldInfoAlter(&$fields, EntityTypeInterface $entity_type) {
+    if ($entity_type->id() == 'file') {
+      if (\Drupal::config('tide_media.settings')->get('file_absolute_url')) {
+        // The field maybe changed by jsonapi, reset it here.
+        $fields['url']->setClass('\Drupal\tide_media\Plugin\Field\FileAbsoluteUrl');
+      }
+    }
+  }
+
+  /**
+   * Implement template_preprocess_image().
+   *
+   * @see template_preprocess_image()
+   */
+  #[Hook('preprocess_image')]
+  public function preprocessImage(&$variables) {
+    // Return the absolute URL for images.
+    if (!empty($variables['uri'])) {
+      $config = \Drupal::config('tide_media.settings');
+      if ($config->get('file_absolute_url')) {
+        $variables['attributes']['src'] = \Drupal::service('file_url_generator')->generateAbsoluteString($variables['uri']);
+        if ($config->get('force_https')) {
+          $variables['attributes']['src'] = str_replace('http://', 'https://', $variables['attributes']['src']);
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_views_pre_render().
+   */
+  #[Hook('views_pre_render')]
+  public function viewsPreRender(ViewExecutable $view) {
+    if (($view->id() === 'tide_media_browser' || $view->id() === 'media') && ($view->current_display === 'media_browser' || $view->current_display === 'document_browser' || $view->current_display === 'media_page_list')) {
+      $view->element['#attached']['library'][] = 'tide_media/media_browser';
+      $view->element['#attached']['library'][] = 'tide_media/embed_media_iframe_form';
+      foreach ($view->result as $value) {
+        if (!empty($value->_relationship_entities['field_media_file_target_id'])) {
+          $file_type = $value->_relationship_entities['field_media_file_target_id'];
+          $file_mime = $file_type->get('filemime')->value;
+          if ($file_mime) {
+            if (strpos($file_mime, 'msword') || $file_mime == 'application/rtf') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'msword');
+            }
+            if (strpos($file_mime, 'wordprocessingml.document')) {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'mswordx');
+            }
+            if (strpos($file_mime, 'pdf')) {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'pdf');
+            }
+            if (strpos($file_mime, 'spreadsheet')) {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'spreadsheet');
+            }
+            if (strpos($file_mime, 'presentation')) {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'presentation');
+            }
+            if ($file_mime == 'text/plain') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'plaintext');
+            }
+            if ($file_mime == 'application/vnd.ms-excel.sheet.macroEnabled.12') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'xlsm');
+            }
+            if ($file_mime == 'text/csv') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'csv');
+            }
+            if ($file_mime == 'application/vnd.ms-powerpoint') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'ppt');
+            }
+            if ($file_mime == 'image/tiff') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'tiff');
+            }
+            if ($file_mime == 'application/zip') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'zip');
+            }
+            if ($file_mime == 'application/postscript') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'eps');
+            }
+            if ($file_mime == 'application/vnd.ms-excel') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'xls');
+            }
+            if ($file_mime == 'application/vnd.openxmlformats-officedocument.wordprocessingml.template') {
+              $value->_relationship_entities['field_media_file_target_id']->set('filemime', 'dotx');
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_entity_type_build().
+   */
+  #[Hook('entity_type_build')]
+  public function entityTypeBuild(array &$entity_types) {
+    $entity_types['media']->setFormClass('delete', 'Drupal\tide_media\Form\TideMediaDeleteForm');
+    $entity_types['media']->setLinkTemplate('delete-form', '/media/{media}/delete');
+  }
+
+  /**
+   * Implements hook_local_tasks_alter().
+   */
+  #[Hook('local_tasks_alter')]
+  public function localTasksAlter(&$local_tasks) {
+    $local_tasks['media.tasks:entity.media.delete_form']['title'] = t('Full File Deletion');
+  }
+
+  /**
+   * Implements hook_entity_operation_alter().
+   */
+  #[Hook('entity_operation_alter')]
+  public function entityOperationAlter(array &$operations, EntityInterface $entity) {
+    if ($entity->getEntityTypeId() == 'media') {
+      if (isset($operations['delete']['title'])) {
+        $operations['delete']['title'] = t('Full File Deletion');
+      }
+    }
+  }
+
+  /**
+   * Implements hook_entity_embed_alter().
+   */
+  #[Hook('entity_embed_alter')]
+  public function entityEmbedAlter(array &$build, EntityInterface $entity, array &$context) {
+    // Add last modified date for media items.
+    if (isset($build['#attributes']['data-show-last-updated'])) {
+      if ($entity->getEntityTypeId() == 'media' && $build['#attributes']['data-show-last-updated'] == 1) {
+        $date = $entity->changed->value;
+        $build['#attributes']['data-last-updated'] = $date;
+      }
+    }
+  }
+
+  /**
+   * Implements template_preprocess_form_element().
+   */
+  #[Hook('preprocess_form_element')]
+  public function preprocessFormElement(&$variables) {
+    $media_transcript_labels = [
+      "edit-field-media-transcript-0-value",
+      "edit-inline-entity-form-field-media-transcript-0-value",
+    ];
+    if (isset($variables['element']['#id']) && in_array($variables['element']['#id'], $media_transcript_labels)) {
+      $variables['label']['#attributes']['class'][] = 'form-required';
+    }
+  }
+
+  /**
+   * Implements hook_entity_bundle_field_info_alter().
+   */
+  #[Hook('entity_bundle_field_info_alter')]
+  public function entityBundleFieldInfoAlter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+    if ($entity_type->id() == 'media' && $bundle == 'embedded_video') {
+      if (!empty($fields['field_media_transcript'])) {
+        $fields['field_media_transcript']->addConstraint('media_field_constraint');
+      }
+    }
+  }
+
+  /**
+   * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+   */
+  #[Hook('field_widget_single_element_paragraphs_form_alter')]
+  public function fieldWidgetSingleElementParagraphsFormAlter(&$element, FormStateInterface $form_state, $context) {
+    /** @var \Drupal\Core\Field\FieldItemListInterface $items */
+    $items = $context['items'];
+    $field_definition = $items->getFieldDefinition();
+    $paragraph_field_name = $field_definition->getName();
+    $widget_state = WidgetBase::getWidgetState($element['#field_parents'], $paragraph_field_name, $form_state);
+    $paragraph = $widget_state['paragraphs'][$element['#delta']]['entity'];
+    $paragraph_type = $paragraph ? $paragraph->bundle() : '';
+
+    // Add custom validation for timelines.
+    if ($paragraph_type == 'timelines') {
+      if (isset($element['subform']['field_timeline'])) {
+        $element['#element_validate'][] = [
+          'Drupal\tide_media\Validate\Timelines',
+          'validate',
+        ];
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_presave() for file entities.
+   */
+  #[Hook('file_presave')]
+  public function filePresave(FileInterface $file) {
+    // Sanitises file names with spaces.
+    $filename_current = $file->getFilename();
+    // Rename filename.
+    $replacement = '-';
+    // Helper to sanitise spaces in filename.
+    $tide_common_services = \Drupal::service('tide_core.common_services');
+    $filename_new = $tide_common_services->sanitiseFilename($filename_current, $replacement);
+    if ($filename_new !== $filename_current) {
+      $uri = $file->getFileUri();
+      $path = pathinfo($uri);
+      /** @var \Drupal\Core\File\FileSystemInterface $file_service */
+      $file_service = \Drupal::service('file_system');
+      $file_service->move($file->getFileUri(), $path['dirname'] . '/' . $filename_new, FileSystemInterface::EXISTS_REPLACE);
+      $file->setFileUri($path['dirname'] . '/' . $filename_new);
+      $file->setFilename($filename_new);
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK().
+   */
+  #[Hook('preprocess_page')]
+  public function preprocessPage(&$variables) {
+    $route_name = \Drupal::routeMatch()->getRouteName();
+    $current_user = \Drupal::currentUser();
+    $roles = $current_user->getRoles();
+
+    if ($route_name === 'entity.user.edit_form' && in_array('secure_file_user', $roles)) {
+      $url = Url::fromRoute('entity.user.canonical', ['user' => $current_user->id()]);
+      $response = new RedirectResponse($url->toString());
+      $response->send();
+    }
+  }
+
+  /**
+   * Implements hook_menu_local_tasks_alter().
+   */
+  #[Hook('menu_local_tasks_alter')]
+  public function menuLocalTasksAlter(&$data, $route_name, RefinableCacheableDependencyInterface &$cacheability) {
+    $current_user = \Drupal::currentUser();
+    $roles = $current_user->getRoles();
+    if (in_array('secure_file_user', $roles, TRUE) && isset($data['tabs'])) {
+      foreach ($data['tabs'] as $key => &$tabs) {
+        if (is_array($tabs)) {
+          foreach ($tabs as $tab_key => $tab) {
+            if ($tab_key === 'entity.user.edit_form') {
+              unset($tabs[$tab_key]);
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

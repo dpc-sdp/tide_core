@@ -25,3 +25,5 @@ services:
       - '@simple_oauth.filesystem_checker'
       - '@config.factory'
       - '@simple_oauth.key.generator'
+  Drupal\tide_oauth\Hook\TideOauthHooks:
+    autowire: true
