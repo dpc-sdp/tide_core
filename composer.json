@@ -70,7 +70,7 @@
         "drupal/token_filter": "^2.0",
         "drupal/twig_field_value": "^2.0",
         "drupal/views_data_export": "^1.10",
-        "drupal/views_menu_children_filter": "^3.0@RC",
+        "drupal/views_menu_children_filter": "^4.0.2",
         "drupal/viewsreference": "^2.0@beta",
         "drupal/workbench": "^1.4",
         "drupal/dynamic_entity_reference": "^3.0",
@@ -430,7 +430,7 @@
                 "Simple XML broken with UTF-16LE - https://www.drupal.org/project/migrate_plus/issues/3051858#comment-15138496": "https://www.drupal.org/files/issues/2023-07-06/3051858-migrate_plus-simplexml_remove_trim-5.patch"
             },
             "drupal/yaml_content": {
-                "Allow Drupal 11 installation": "./patches/drupal11/yaml_content-core-version.patch",
+                "Allow Drupal 11 installation - https://www.drupal.org/project/yaml_content/issues/3435777": "https://www.drupal.org/files/issues/2025-08-04/yaml_content-drupal_11-3435777.patch",
                 "Alter parsed values before nodes created. - https://www.drupal.org/project/yaml_content/issues/3261689#comment-15167530": "https://www.drupal.org/files/issues/2023-07-27/yaml_content-3261689_4.patch",
                 "Warnings when importing menus using module. - https://www.drupal.org/project/yaml_content/issues/3340448": "https://www.drupal.org/files/issues/2023-07-28/warnings-when-importing_3340448_7.patch"
             },
@@ -439,17 +439,17 @@
             },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch",
-                "Use the current endpoint collection route for module configuration": "./patches/drupal11/jira-rest-configure-route.patch"
+                "Use the current endpoint collection route for module configuration -  https://www.drupal.org/project/jira_rest/issues/3615985#comment-16726111": "https://www.drupal.org/files/issues/2026-08-11/jira-rest-configure-route_3615985_2.patch"
             },
             "drupal/webform": {
                 "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-16202432": "https://www.drupal.org/files/issues/2025-07-23/exporting-webform-submission-static-batch-process-3348336-9.patch"
             },
             "drupal/password_policy": {
                 "Add password validation to the user entity as a constraint - https://www.drupal.org/project/password_policy/issues/2941526#comment-14938934": "https://www.drupal.org/files/issues/2023-02-24/password_policy-move-password-validation-to-user-entity-2941526-10.patch",
-                "Use Symfony 7.4 inherited validator context property": "./patches/drupal11/password-policy-symfony-7-context.patch"
+                "Use Symfony 7.4 inherited validator context property - https://www.drupal.org/project/password_policy/issues/3615995#comment-16726151": "https://www.drupal.org/files/issues/2026-08-11/password-policy-symfony-7-context_3615995_2.patch"
             },
             "drupal/tablefield": {
-                "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "./patches/drupal11/tablefield-allowed-data-sources.patch"
+                "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2026-08-11/tablefield-allowed-data-sources_2337743_20.patch"
             },
             "drupal/search_api": {
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
@@ -469,18 +469,14 @@
             },
             "drupal/paragraphs": {
                 "Add default paragraph count setting - https://www.drupal.org/project/paragraphs/issues/3089423#comment-14517270": "https://www.drupal.org/files/issues/2022-05-17/paragraphs-default-quantity-3089423-18.patch",
-                "Nested paragraphs title gets cut off - https://www.drupal.org/project/paragraphs/issues/3246140": "./patches/drupal11/paragraphs-nested-title-cutoff.patch",
-                "Paragraph with long label name gets cut off - https://www.drupal.org/project/paragraphs/issues/3350521": "./patches/drupal11/paragraphs-long-label-cutoff.patch",
+                "Nested and long paragraph titles get cut off - https://www.drupal.org/project/paragraphs/issues/3246140": "https://www.drupal.org/files/issues/2026-08-11/paragraphs-title-cutoff_3246140_32.patch",
                 "Dropbutton RHS highlight covers adjacent text - https://www.drupal.org/project/paragraphs/issues/3350747#comment-14986371": "https://www.drupal.org/files/issues/2023-03-28/paragraph-dropdown-button-obscure-text-2.patch"
             },
             "drupal/site_alert": {
                 "Use HTTP GET to allow caching of AJAX request-3160200/Add ability to dismiss alert-3156557": "https://git.drupalcode.org/project/site_alert/-/merge_requests/3.patch"
             },
             "drupal/views_data_export": {
-                "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296": "./patches/drupal11/views_data_export-query-alter.patch"
-            },
-            "drupal/views_menu_children_filter": {
-                "Match the Drupal 11 container factory plugin signature": "./patches/drupal11/views-menu-children-filter-plugin-create.patch"
+                "Batch mode does not allow other modules to alter query - https://www.drupal.org/project/views_data_export/issues/3173296": "https://www.drupal.org/files/issues/2026-08-07/3173296-48.patch"
             },
             "drupal/jsonapi_extras": {
                 "Make max value of page[limit] configurable per entity/bundle - https://www.drupal.org/project/jsonapi_extras/issues/2884292#comment-14794882": "https://www.drupal.org/files/issues/2022-11-21/max_page_limit_configuration-2884292-33.patch"
