@@ -18,10 +18,3 @@ function tide_site_restriction_install() {
   TideSiteRestrictionOperation::updateHelpText();
 
 }
-
-/**
- * Update the help text on all field_node_site instances.
- */
-function tide_site_restriction_update_10001() {
-  TideSiteRestrictionOperation::updateHelpText();
-}

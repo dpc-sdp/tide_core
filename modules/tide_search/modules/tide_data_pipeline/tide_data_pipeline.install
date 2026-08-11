@@ -5,106 +5,13 @@
  * Install file.
  */
 
-use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\user\Entity\Role;
-
-/**
- * Imports columns for private datasets.
- */
-function tide_data_pipeline_update_10001() {
-  $entity_definition_update_manager = \Drupal::entityDefinitionUpdateManager();
-  // Handling CSV file fields.
-  $storage_definition_csv = BaseFieldDefinition::create('file')
-    ->setLabel('CSV Private_File')
-    ->setDescription('Csv file update to private location.')
-    ->setSetting('file_extensions', 'csv')
-    ->setSetting('uri_scheme', 'private')
-    ->setRequired(FALSE)
-    ->setDisplayOptions('form', [
-      'type' => 'file_generic',
-    ]);
-  // Install the new field.
-  $entity_definition_update_manager->installFieldStorageDefinition('csv_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_csv);
-
-  // Handling Json file fields.
-  $storage_definition_json = BaseFieldDefinition::create('file')
-    ->setLabel('JSON Private_File')
-    ->setDescription('Json file update to private location.')
-    ->setSetting('file_extensions', 'json')
-    ->setSetting('uri_scheme', 'private')
-    ->setRequired(FALSE)
-    ->setDisplayOptions('form', [
-      'type' => 'file_generic',
-    ]);
-  // Install the new field.
-  $entity_definition_update_manager->installFieldStorageDefinition('json_private_file', 'data_pipelines', 'data_pipelines', $storage_definition_json);
-}
-
-/**
- * Grants data_importer role permissions to data_pipelines.
- */
-function tide_data_pipeline_update_10002() {
-  $role = Role::load('data_importer');
-  if ($role) {
-    $role->grantPermission('data_pipelines create')->grantPermission('data_pipelines edit')->grantPermission('data_pipelines list');
-    $role->save();
-  }
-  else {
-    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_pipeline') . '/config/optional'];
-    $config_read = _tide_read_config('user.role.data_importer', $config_location, TRUE);
-    $storage = \Drupal::entityTypeManager()->getStorage('user_role');
-    $id = $storage->getIDFromConfigName('user.role.data_importer', $storage->getEntityType()->getConfigPrefix());
-    if ($storage->load($id) == NULL) {
-      $config_entity = $storage->createFromStorageRecord($config_read);
-      $config_entity->save();
-    }
-  }
-}
 
 /**
  * Implements hook_install().
  */
 function tide_data_pipeline_install($is_syncing) {
-  _tide_data_pipeline_install_csv_template_file();
-}
-
-/**
- * Imports Self service map configs.
- */
-function tide_data_pipeline_update_10003() {
-  $configs = [
-    'paragraphs.paragraphs_type.self_service_map' => 'paragraphs_type',
-    'field.storage.paragraph.field_display_title' => 'field_storage_config',
-    'field.storage.paragraph.field_select_dataset' => 'field_storage_config',
-    'field.field.paragraph.self_service_map.field_display_title' => 'field_config',
-    'field.field.paragraph.self_service_map.field_paragraph_title' => 'field_config',
-    'field.field.paragraph.self_service_map.field_select_dataset' => 'field_config',
-    'core.entity_form_display.paragraph.self_service_map.default' => 'entity_form_display',
-    'core.entity_view_display.paragraph.self_service_map.default' => 'entity_view_display',
-    'views.view.filter_dataset' => 'view',
-  ];
-  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  foreach ($configs as $config_name => $config_type) {
-    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_pipeline') . '/config/install'];
-    $config_read = _tide_read_config($config_name, $config_location, TRUE);
-    $storage = \Drupal::entityTypeManager()->getStorage($config_type);
-    $id = $storage->getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
-    if ($storage->load($id) === NULL) {
-      $config_entity = $storage->createFromStorageRecord($config_read);
-      $config_entity->save();
-    }
-  }
-
-}
-
-/**
- * Installs the CSV template file.
- */
-function tide_data_pipeline_update_10004() {
   _tide_data_pipeline_install_csv_template_file();
 }
 
@@ -120,36 +27,4 @@ function _tide_data_pipeline_install_csv_template_file() {
   $csv_source = $module_path . '/data/Generic_dataset_template.csv';
   \Drupal::service('file_system')
     ->copy($csv_source, $file_directory . '/Generic_dataset_template.csv', FileExists::Replace);
-}
-
-/**
- * Adds self_service_map component to landing page.
- */
-function tide_data_pipeline_update_10005() {
-  $new_component = 'self_service_map';
-  $field_config = FieldConfig::loadByName('node', 'landing_page', 'field_landing_page_component');
-  if ($field_config) {
-    $handler_settings = $field_config->getSetting('handler_settings');
-    if (isset($handler_settings['target_bundles'])) {
-      if (!array_key_exists($new_component, $handler_settings['target_bundles'])) {
-        $handler_settings['target_bundles'][$new_component] = $new_component;
-        $field_config->setSetting('handler_settings', $handler_settings);
-        $field_config->save();
-      }
-    }
-  }
-}
-
-/**
- * Overwrite `self_service_map` json response through JSON:API extra.
- */
-function tide_data_pipeline_update_10006() {
-  \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_data_pipeline') . '/config/install'];
-  $config_read = _tide_read_config('jsonapi_extras.jsonapi_resource_config.paragraph--self_service_map', $config_location, TRUE);
-  $storage = \Drupal::entityTypeManager()->getStorage('jsonapi_resource_config');
-  if ($storage->load('paragraph--self_service_map') === NULL) {
-    $config_entity = $storage->createFromStorageRecord($config_read);
-    $config_entity->save();
-  }
 }
