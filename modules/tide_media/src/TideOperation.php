@@ -11,25 +11,6 @@ use Drupal\user\Entity\Role;
 class TideOperation {
 
   /**
-   * Helper to install a module.
-   *
-   * @param string $module
-   *   Module name.
-   *
-   * @throws \Exception
-   *   When module already installed.
-   */
-  public static function tideMediaInstallModule($module) {
-    /** @var \Drupal\Core\Extension\ModuleHandler $moduleHandler */
-    $moduleExists = \Drupal::service('module_handler')->moduleExists($module);
-    // Check if module is both installed and enabled.
-    if (!$moduleExists) {
-      // If not, install the queue_mail module.
-      \Drupal::service('module_installer')->install([$module]);
-    }
-  }
-
-  /**
    * Enables standalone media URL for video transcripts.
    */
   public static function enableStandaloneMedia() {
@@ -239,13 +220,6 @@ class TideOperation {
         user_role_revoke_permissions($role_object->id(), $permissions);
       }
     }
-  }
-
-  /**
-   * Disable the media library grid view.
-   */
-  public static function disableMediaLibraryGridView() {
-    _tide_media_disable_grid_view();
   }
 
 }

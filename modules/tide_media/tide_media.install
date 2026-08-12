@@ -6,7 +6,6 @@
  */
 
 use Drupal\tide_media\TideOperation;
-use Drupal\views\Entity\View;
 
 /**
  * Implements hook_install().
@@ -18,14 +17,4 @@ function tide_media_install() {
   TideOperation::createLicenseTypeTerms();
   TideOperation::addMediaTypePermissions();
 
-}
-
-/**
- * Disable the grid view for media_library.
- */
-function _tide_media_disable_grid_view() {
-  $view = View::load('media_library');
-  $display = &$view->getDisplay('page');
-  $display['display_options']['enabled'] = FALSE;
-  $view->save();
 }

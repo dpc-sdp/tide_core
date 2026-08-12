@@ -61,25 +61,6 @@ function tide_event_search_api_index_items_alter(IndexInterface $index, array &$
 }
 
 /**
- * Converts timestamp to RFC-3339 format.
- *
- * @param int $ts
- *   Timestamp.
- *
- * @return string
- *   Formatted date.
- */
-function _tide_event_get_formatted_date($ts) {
-  $config = \Drupal::config('system.date');
-  $timezone = new DateTimeZone($config->get('timezone.default'));
-  $date = new \Datetime();
-  $date->setTimezone($timezone);
-  $date = $date->setTimestamp($ts);
-
-  return $date->format('Y-m-d\TH:i:sP');
-}
-
-/**
  * Implements hook_config_ignore_settings_alter().
  */
 #[\Drupal\Core\Hook\Attribute\LegacyHook]

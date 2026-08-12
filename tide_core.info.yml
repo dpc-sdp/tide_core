@@ -10,7 +10,6 @@ dependencies:
   - ckeditor5_embedded_content:ckeditor5_embedded_content
   - clamav:clamav
   - config_split:config_split
-  - config_update:config_update
   - config_ignore:config_ignore
   - diff:diff
   - drupal:block

@@ -5,7 +5,6 @@
  * This file supports other modules in their hook_update_N.
  */
 
-use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\taxonomy\Entity\Term;
 
@@ -46,31 +45,5 @@ function _tide_core_field_content_category_default_value(string $bundle, $term_n
     /** @var \Drupal\field\Entity\FieldConfig $config */
     $config = FieldConfig::loadByName('node', $bundle, 'field_content_category');
     $config->set('default_value', $default_values)->save();
-  }
-}
-
-/**
- * Set form display for field_content_category field.
- */
-function _tide_core_content_category_form_display(string $bundle) {
-  $entity_form_display = EntityFormDisplay::load('node.' . $bundle . '.default');
-  $detail = $entity_form_display->getComponent('field_tags');
-  $weight = $detail['weight'];
-  $content = [
-    "type" => "term_reference_tree",
-    "weight" => $weight + 1,
-    "region" => "content",
-    "settings" => [
-      "start_minimized" => TRUE,
-      "leaves_only" => TRUE,
-      "select_parents" => FALSE,
-      "cascading_selection" => 0,
-      "max_depth" => 0,
-    ],
-    "third_party_settings" => [],
-  ];
-  $field_content_category_component = $entity_form_display->getComponent('field_content_category');
-  if ($field_content_category_component === NULL) {
-    $entity_form_display->setComponent('field_content_category', $content)->save();
   }
 }

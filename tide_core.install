@@ -57,9 +57,6 @@ function tide_core_install() {
   // Enable Tide TFA.
   $tideCoreOperation->enabledTideTfa();
 
-  // Enables paragraphs_library.
-  $tideCoreOperation->alterParagraphsLibrary();
-
   // Assign permissions for CKEditor template usage.
   $tideCoreOperation->assignCkeditorTemplatesPermission();
 

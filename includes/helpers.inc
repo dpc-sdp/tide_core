@@ -58,39 +58,6 @@ function _tide_read_config($id, array $locations = [], $prioritise_sync = TRUE) 
 }
 
 /**
- * Helper to ensure that specified configuration is present.
- *
- * Used in install and update hooks to automatically install required
- * configuration from active configuration or, if does not exist, from provided
- * locations (usually, 'config/install' in module's directory).
- *
- * Helpful to avoid cases when configuration import may remove and add back
- * entities, because install/update hook does not use the same config items
- * as already exported.
- *
- * @param string $id
- *   Configuration id.
- * @param array $locations
- *   Array of paths to lookup configuration files.
- */
-function _tide_ensure_config($id, array $locations = []) {
-  $config_data = _tide_read_config($id, $locations);
-  \Drupal::service('config.storage')->write($id, $config_data);
-}
-
-/**
- * Helper to reload default configuration provided by a module.
- *
- * @param string $module
- *   Module name.
- */
-function _tide_reload_default_config($module) {
-  /** @var \Drupal\Core\Config\ConfigInstaller $config_installer */
-  $config_installer = \Drupal::service('config.installer');
-  $config_installer->installDefaultConfig('module', $module);
-}
-
-/**
  * Retrieve content of a config file in config/sync directory.
  *
  * @param string $config_name
