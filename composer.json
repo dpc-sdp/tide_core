@@ -419,6 +419,9 @@
             "drupal/ckeditor5_embedded_content": {
                 "Allow Drupal 11 installation": "https://git.drupalcode.org/project/ckeditor5_embedded_content/-/merge_requests/7/diffs.patch"
             },
+            "drupal/ckeditor_templates": {
+                "migrate code to text format - https://www.drupal.org/project/ckeditor_templates/issues/3579904#comment-16735591": "https://www.drupal.org/files/issues/2026-08-17/ckeditor_templates-3579904_3.patch"
+            },
             "drupal/user_created_by_field": {
                 "Allow Drupal 11 installation": "https://www.drupal.org/files/issues/2024-03-25/user_created_by_field.1.1.3.rector.patch"
             },
@@ -495,6 +498,9 @@
             },
             "drupal/select2": {
                 "remove Drag to re-order entity_type description": "https://www.drupal.org/files/issues/2023-09-08/select2-remove-drag-to-reorder-description-3178287-11.patch"
+            },
+            "drupal/m4032404": {
+        "Rebuild routes before saving roles during database updates": "https://www.drupal.org/files/issues/2026-08-17/m4032404_3617515_2.patch"
             },
             "drupal/redirect": {
                 "Latest version of Redirect module failed to run updates. - https://www.drupal.org/project/redirect/issues/3543872#comment-16363797": "https://www.drupal.org/files/issues/2025-11-28/redirect-3543872-15.patch"
