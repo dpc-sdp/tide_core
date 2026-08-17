@@ -5,7 +5,7 @@ Feature: Media browser
 
   @api @javascript @skipped
   Scenario: Media Browser is available.
-    Given I am logged in as a user with the "create test content, access media overview, access tide_media_browser entity browser pages, access tide_media_browser_iframe entity browser pages, use text format rich_text" permission
+    Given I am logged in as a user with the "create test content, access media overview, access tide_media_browser entity browser pages, access tide_media_browser_iframe entity browser pages, use text format rich_text, use default embedded content button" permission
     When I visit "/node/add/test"
     And I save screenshot
 
@@ -18,7 +18,7 @@ Feature: Media browser
 
   @api @javascript
   Scenario: Media Browser allows embed with custom data attribute
-    Given I am logged in as a user with the "create test content, access media overview, access tide_media_browser entity browser pages, access tide_media_browser_iframe entity browser pages, use text format rich_text" permission
+    Given I am logged in as a user with the "create test content, access media overview, access tide_media_browser entity browser pages, access tide_media_browser_iframe entity browser pages, use text format rich_text, use default embedded content button" permission
     And media document entity:
       | name          | mid    |
       | Demo Document | 888666 |

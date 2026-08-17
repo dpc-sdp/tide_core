@@ -16,7 +16,7 @@ settings:
       - style
       - superscript
       - Callout
-      - embeddedContent
+      - embeddedContent__default
       - tide_media
       - ckeditorTemplates
       - subscript
