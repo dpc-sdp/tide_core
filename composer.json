@@ -508,6 +508,9 @@
             "drupal/consumers": {
                 "Entity update still required after update to 1.23": "https://www.drupal.org/files/issues/2026-01-27/drupal-consumers-3569150_07.patch"
             },
+            "drupal/prlp": {
+                "Rebuild routes before saving roles during database updates": "https://www.drupal.org/files/issues/2026-08-17/prlp_3617517_3.patch"
+            },
             "drupal/views_bulk_edit": {
                 "Fix Required fields to really not be required - https://www.drupal.org/project/views_bulk_edit/issues/3024419#comment-16363763": "https://www.drupal.org/files/issues/2025-11-28/3024419-72.patch"
             },
