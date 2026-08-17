@@ -49,7 +49,7 @@ class TideSiteRestrictionHooks {
       return $access_result;
     }
 
-    $moderation_info = Drupal::service('content_moderation.moderation_information');
+    $moderation_info = \Drupal::service('content_moderation.moderation_information');
     if ($moderation_info->isModeratedEntity($entity)) {
       if ($account->isAuthenticated() && $operation == 'view' && $entity->moderation_state->value == 'draft') {
         $access_result = tide_site_restriction_compute_access($account, $entity, $site_restriction_helper);

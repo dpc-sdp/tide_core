@@ -70,7 +70,7 @@ class TideUserExpireHooks {
       ];
       $message['from'] = $config->get('tide_user_expire_from_email');
       $message['subject'] = $config->get('tide_user_expire_email_subject');
-      $token = Drupal::token();
+      $token = \Drupal::token();
       $body = $token->replace($config->get('tide_user_expire_email_content'), $token_data);
 
       unset($message['body']);
