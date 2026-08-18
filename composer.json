@@ -91,7 +91,7 @@
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
-        "drupal/yaml_content": "^1.0@alpha",
+        "drupal/yaml_content": "dev-3435777-D11-only as 1.0.0-alpha9",
         "drupal/ckeditor5_embedded_content": "^2.0",
         "respect/validation": "2.3.1",
         "giggsey/libphonenumber-for-php": "^8.13",
@@ -162,18 +162,6 @@
                     "require": {
                         "drupal/core": "^10 || ^11"
                     }
-                },
-                {
-                    "name": "drupal/yaml_content",
-                    "version": "1.0.0-alpha9",
-                    "type": "drupal-module",
-                    "dist": {
-                        "type": "zip",
-                        "url": "https://ftp.drupal.org/files/projects/yaml_content-8.x-1.0-alpha9.zip"
-                    },
-                    "require": {
-                        "drupal/core": "^10 || ^11"
-                    }
                 }
             ]
         },
@@ -181,6 +169,11 @@
             "type": "composer",
             "url": "https://packages.drupal.org/8",
             "exclude": ["drupal/token_conditions"]
+        },
+        "drupal/yaml_content": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://git.drupalcode.org/issue/yaml_content-3435777.git"
         },
         "choices": {
             "_webform": true,
@@ -430,11 +423,6 @@
             },
             "drupal/migrate_plus": {
                 "Simple XML broken with UTF-16LE - https://www.drupal.org/project/migrate_plus/issues/3051858#comment-15138496": "https://www.drupal.org/files/issues/2023-07-06/3051858-migrate_plus-simplexml_remove_trim-5.patch"
-            },
-            "drupal/yaml_content": {
-                "Allow Drupal 11 installation - https://www.drupal.org/project/yaml_content/issues/3435777": "https://www.drupal.org/files/issues/2025-08-04/yaml_content-drupal_11-3435777.patch",
-                "Alter parsed values before nodes created. - https://www.drupal.org/project/yaml_content/issues/3261689#comment-15167530": "https://www.drupal.org/files/issues/2023-07-27/yaml_content-3261689_4.patch",
-                "Warnings when importing menus using module. - https://www.drupal.org/project/yaml_content/issues/3340448": "https://www.drupal.org/files/issues/2023-07-28/warnings-when-importing_3340448_7.patch"
             },
             "drupal/token": {
                 "Summary token not fully handled in fields - https://www.drupal.org/project/token/issues/2924873#comment-15704936": "https://www.drupal.org/files/issues/2024-07-30/tokens_body_with_summary-2924873-18.patch"
