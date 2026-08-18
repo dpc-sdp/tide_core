@@ -150,18 +150,6 @@
                     "require": {
                         "drupal/core": "^10 || ^11"
                     }
-                },
-                {
-                    "name": "drupal/user_created_by_field",
-                    "version": "1.1.3",
-                    "type": "drupal-module",
-                    "dist": {
-                        "type": "zip",
-                        "url": "https://ftp.drupal.org/files/projects/user_created_by_field-1.1.3.zip"
-                    },
-                    "require": {
-                        "drupal/core": "^10 || ^11"
-                    }
                 }
             ]
         },
@@ -174,6 +162,11 @@
             "type": "vcs",
             "no-api": true,
             "url": "https://git.drupalcode.org/issue/yaml_content-3435777.git"
+        },
+        "drupal/user_created_by_field": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://git.drupalcode.org/issue/user_created_by_field-3617759.git"
         },
         "choices": {
             "_webform": true,
@@ -414,9 +407,6 @@
             },
             "drupal/ckeditor_templates": {
                 "migrate code to text format - https://www.drupal.org/project/ckeditor_templates/issues/3579904#comment-16735591": "https://www.drupal.org/files/issues/2026-08-17/ckeditor_templates-3579904_3.patch"
-            },
-            "drupal/user_created_by_field": {
-                "Allow Drupal 11 installation": "https://www.drupal.org/files/issues/2024-03-25/user_created_by_field.1.1.3.rector.patch"
             },
             "drupal/entity_hierarchy": {
                 "Use a table-independent CTE requirement check": "https://git.drupalcode.org/project/entity_hierarchy/-/merge_requests/77/diffs.patch"
