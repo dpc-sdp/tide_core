@@ -92,7 +92,7 @@
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
         "drupal/yaml_content": "dev-3435777-D11-only as 1.0.0-alpha9",
-        "drupal/ckeditor5_embedded_content": "^2.0",
+        "drupal/ckeditor5_embedded_content": "dev-3567622-upgrade-for-d11 as 2.0.2",
         "respect/validation": "2.3.1",
         "giggsey/libphonenumber-for-php": "^8.13",
         "drupal/site_alert": "^1.3",
@@ -136,23 +136,6 @@
         "drupal/view_password": "^6.0"
     },
     "repositories": {
-        "drupal11-compatibility-overrides": {
-            "type": "package",
-            "package": [
-                {
-                    "name": "drupal/ckeditor5_embedded_content",
-                    "version": "2.0.2",
-                    "type": "drupal-module",
-                    "dist": {
-                        "type": "zip",
-                        "url": "https://ftp.drupal.org/files/projects/ckeditor5_embedded_content-2.0.2.zip"
-                    },
-                    "require": {
-                        "drupal/core": "^10 || ^11"
-                    }
-                }
-            ]
-        },
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
@@ -162,6 +145,11 @@
             "type": "vcs",
             "no-api": true,
             "url": "https://git.drupalcode.org/issue/yaml_content-3435777.git"
+        },
+        "drupal/ckeditor5_embedded_content": {
+            "type": "vcs",
+            "no-api": true,
+            "url": "https://git.drupalcode.org/issue/ckeditor5_embedded_content-3567622.git"
         },
         "drupal/user_created_by_field": {
             "type": "vcs",
@@ -401,9 +389,6 @@
                 "Add filter by input field to Menu UI - https://www.drupal.org/project/drupal/issues/3170906#comment-16107432": "https://www.drupal.org/files/issues/2025-05-14/menu-filter.patch",
                 "Issue with HTML `&nbsp;` not being correctly filtered out from URLs - https://www.drupal.org/project/drupal/issues/3445910#comment-15586313": "https://www.drupal.org/files/issues/2024-08-06/drupal_core_non-breaking_space_issue_3445910_27_0.patch",
                 "Menu content is not accessible via jsonapi - https://www.drupal.org/node/2915792": "https://www.drupal.org/files/issues/menu_link_content-view-permissions-2915792.patch"
-            },
-            "drupal/ckeditor5_embedded_content": {
-                "Allow Drupal 11 installation": "https://git.drupalcode.org/project/ckeditor5_embedded_content/-/merge_requests/7/diffs.patch"
             },
             "drupal/ckeditor_templates": {
                 "migrate code to text format - https://www.drupal.org/project/ckeditor_templates/issues/3579904#comment-16735591": "https://www.drupal.org/files/issues/2026-08-17/ckeditor_templates-3579904_3.patch"
