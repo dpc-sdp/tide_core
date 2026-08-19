@@ -208,7 +208,7 @@ class TideMediaHooks {
       }
     }
 
-    $description = $variables['description'];
+    $description = empty($variables['description']) ? $file->getFilename() : $variables['description'];
     $size = $file->getSize();
     $file_size = $size !== NULL ? ByteSizeMarkup::create($size) : '';
 

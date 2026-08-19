@@ -11,6 +11,7 @@ use Drupal\file\FileInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_media\Hook\TideMediaHooks;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -23,7 +24,8 @@ class TideMediaHooksTest extends UnitTestCase {
   /**
    * Tests preprocessing an absolute file link with Drupal 11 utilities.
    */
-  public function testPreprocessFileLink(): void {
+  #[DataProvider('fileLinkDescriptionProvider')]
+  public function testPreprocessFileLink(?string $description, string $expected_description): void {
     $file_url_generator = $this->createMock(FileUrlGeneratorInterface::class);
     $file_url_generator->expects($this->once())
       ->method('generateAbsoluteString')
@@ -33,15 +35,15 @@ class TideMediaHooksTest extends UnitTestCase {
     $link_generator = $this->createMock(LinkGeneratorInterface::class);
     $link_generator->expects($this->once())
       ->method('generate')
-      ->willReturnCallback(function ($text, Url $url): GeneratedLink {
+      ->willReturnCallback(function ($text, Url $url) use ($expected_description): GeneratedLink {
         $this->assertSame(
-          '<span class="file--title">Annual report</span><span class="file--type">PDF</span><span class="file--size">1 KB</span>',
+          '<span class="file--title">' . $expected_description . '</span><span class="file--type">PDF</span><span class="file--size">1 KB</span>',
           (string) $text,
         );
         $this->assertSame('https://example.com/annual-report.pdf', $url->getUri());
         $this->assertSame([
           'class' => ['application-pdf'],
-          'aria-label' => ['Annual report File type: PDF. Size: 1 KB.'],
+          'aria-label' => [$expected_description . ' File type: PDF. Size: 1 KB.'],
         ], $url->getOption('attributes'));
 
         return (new GeneratedLink())->setGeneratedLink('<a>Annual report</a>');
@@ -63,6 +65,8 @@ class TideMediaHooksTest extends UnitTestCase {
     $file->expects($this->once())
       ->method('getFileUri')
       ->willReturn('public://annual-report.pdf');
+    $file->method('getFilename')
+      ->willReturn('annual-report.pdf');
     $file->expects($this->once())
       ->method('getSize')
       ->willReturn(1024);
@@ -72,11 +76,22 @@ class TideMediaHooksTest extends UnitTestCase {
 
     $variables = [
       'file' => $file,
-      'description' => 'Annual report',
+      'description' => $description,
     ];
     (new TideMediaHooks())->preprocessFileLink($variables);
 
     $this->assertSame('<a>Annual report</a>', (string) $variables['link']);
+  }
+
+  /**
+   * Provides file link descriptions and their expected display text.
+   */
+  public static function fileLinkDescriptionProvider(): array {
+    return [
+      'description' => ['Annual report', 'Annual report'],
+      'null description' => [NULL, 'annual-report.pdf'],
+      'empty description' => ['', 'annual-report.pdf'],
+    ];
   }
 
 }
