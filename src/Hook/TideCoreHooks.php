@@ -6,6 +6,7 @@ use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -163,7 +164,7 @@ class TideCoreHooks {
    * Implements hook_entity_operation().
    */
   #[Hook('entity_operation')]
-  public function entityOperation(EntityInterface $entity) {
+  public function entityOperation(EntityInterface $entity, ?CacheableMetadata $cacheability = NULL): array {
     // Add "Archived" operation link to entities.
     $operations = [];
     $workflow = Workflow::load('editorial');
@@ -470,7 +471,7 @@ class TideCoreHooks {
     $node = $form_state->getFormObject()->getEntity();
 
     if (isset($form['_header_style'])) {
-      $header_style = Drupal::state()->get($node->id() . '-header_style');
+      $header_style = \Drupal::state()->get($node->id() . '-header_style');
       $form['_header_style']['_header_style_options']['#value'] = $header_style;
     }
 

@@ -336,7 +336,7 @@ class TideSiteHooks {
         }
       }
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       tide_core_log_exception('tide_site', $exception);
     }
   }

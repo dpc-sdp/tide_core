@@ -9,6 +9,7 @@ use Drupal\tide_core\Hook\TideCoreHooks;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Breadcrumb\Breadcrumb;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -75,8 +76,8 @@ function tide_core_views_query_substitutions(ViewExecutable $view) {
  * Implements hook_entity_operation().
  */
 #[\Drupal\Core\Hook\Attribute\LegacyHook]
-function tide_core_entity_operation(EntityInterface $entity) {
-  return \Drupal::service(TideCoreHooks::class)->entityOperation($entity);
+function tide_core_entity_operation(EntityInterface $entity, ?CacheableMetadata $cacheability = NULL): array {
+  return \Drupal::service(TideCoreHooks::class)->entityOperation($entity, $cacheability);
 }
 
 /**

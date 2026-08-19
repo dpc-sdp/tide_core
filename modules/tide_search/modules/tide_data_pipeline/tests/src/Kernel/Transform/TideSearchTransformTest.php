@@ -6,7 +6,7 @@ namespace Drupal\Tests\tide_data_pipeline\Kernel\Transform;
 
 use Drupal\data_pipelines\Entity\Dataset;
 use Drupal\Tests\data_pipelines\Kernel\Transform\TransformTest;
-use Drupal\tide_data_pipeline\Transform\MultiValueProcessor;
+use Drupal\tide_data_pipeline\Plugin\DatasetTransform\MultiValueProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 

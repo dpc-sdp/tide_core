@@ -243,7 +243,7 @@ class PreviewLinksBlock extends BlockBase implements ContainerFactoryPluginInter
       try {
         $node = $this->routeMatch->getParameter('node_revision');
       }
-      catch (Exception $exception) {
+      catch (\Exception $exception) {
         tide_core_log_exception('tide_site_preview', $exception);
         $node = NULL;
       }

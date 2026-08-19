@@ -6,6 +6,7 @@
  */
 
 use Drupal\tide_media\Hook\TideMediaHooks;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -119,8 +120,8 @@ function tide_media_local_tasks_alter(&$local_tasks) {
  * Implements hook_entity_operation_alter().
  */
 #[\Drupal\Core\Hook\Attribute\LegacyHook]
-function tide_media_entity_operation_alter(array &$operations, EntityInterface $entity) {
-  return \Drupal::service(TideMediaHooks::class)->entityOperationAlter($operations, $entity);
+function tide_media_entity_operation_alter(array &$operations, EntityInterface $entity, ?CacheableMetadata $cacheability = NULL) {
+  return \Drupal::service(TideMediaHooks::class)->entityOperationAlter($operations, $entity, $cacheability);
 }
 
 /**

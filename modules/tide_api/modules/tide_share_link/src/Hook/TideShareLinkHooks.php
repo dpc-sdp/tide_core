@@ -158,7 +158,7 @@ class TideShareLinkHooks {
       $storage = \Drupal::entityTypeManager()->getStorage('share_link_token');
       $storage->deleteBySharedNodeId($entity->id());
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       tide_core_log_exception('tide_share_link', $exception);
     }
   }
@@ -176,7 +176,7 @@ class TideShareLinkHooks {
       $storage = \Drupal::entityTypeManager()->getStorage('share_link_token');
       $storage->deleteBySharedNodeRevisionId($entity->getLoadedRevisionId());
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       tide_core_log_exception('tide_share_link', $exception);
     }
   }

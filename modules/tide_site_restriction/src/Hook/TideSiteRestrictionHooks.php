@@ -5,6 +5,7 @@ namespace Drupal\tide_site_restriction\Hook;
 use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -372,7 +373,7 @@ class TideSiteRestrictionHooks {
    * Implements hook_entity_operation_alter().
    */
   #[Hook('entity_operation_alter')]
-  public function entityOperationAlter(array &$operations, EntityInterface $entity) {
+  public function entityOperationAlter(array &$operations, EntityInterface $entity, ?CacheableMetadata $cacheability = NULL) {
     if (isset($operations['quick_clone'])) {
       /** @var \Drupal\tide_site_restriction\Helper $site_restriction_helper */
       $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');

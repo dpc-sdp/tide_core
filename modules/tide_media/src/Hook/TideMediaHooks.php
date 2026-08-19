@@ -4,6 +4,7 @@ namespace Drupal\tide_media\Hook;
 
 use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -12,8 +13,10 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\Core\Url;
 use Drupal\file\FileInterface;
+use Drupal\file\IconMimeTypes;
 use Drupal\tide_media\Form\VideoEmbedFieldForm;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -206,10 +209,11 @@ class TideMediaHooks {
     }
 
     $description = $variables['description'];
-    $file_size = format_size($file->getSize());
+    $size = $file->getSize();
+    $file_size = $size !== NULL ? ByteSizeMarkup::create($size) : '';
 
     $mime_type = $file->getMimeType();
-    $mime_category = file_icon_class($mime_type);
+    $mime_category = IconMimeTypes::getIconClass($mime_type);
     switch ($mime_category) {
       case 'application-pdf':
         $file_type = 'PDF';
@@ -404,7 +408,7 @@ class TideMediaHooks {
    * Implements hook_entity_operation_alter().
    */
   #[Hook('entity_operation_alter')]
-  public function entityOperationAlter(array &$operations, EntityInterface $entity) {
+  public function entityOperationAlter(array &$operations, EntityInterface $entity, ?CacheableMetadata $cacheability = NULL) {
     if ($entity->getEntityTypeId() == 'media') {
       if (isset($operations['delete']['title'])) {
         $operations['delete']['title'] = t('Full File Deletion');

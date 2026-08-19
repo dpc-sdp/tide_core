@@ -366,7 +366,7 @@ class TideWebformHooks {
     if ($errors) {
       foreach ($elements as $key => $element) {
         if (isset($errors[$key]) && !empty($errors[$key])) {
-          throw new Exception($errors[$key]);
+          throw new \Exception($errors[$key]);
         }
       }
     }

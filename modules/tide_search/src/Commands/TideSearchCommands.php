@@ -2,6 +2,8 @@
 
 namespace Drupal\tide_search\Commands;
 
+use Drupal\search_api\ConsoleException;
+use Drupal\search_api\SearchApiException;
 use Drupal\search_api\Utility\CommandHelper;
 use Drush\Commands\DrushCommands;
 
