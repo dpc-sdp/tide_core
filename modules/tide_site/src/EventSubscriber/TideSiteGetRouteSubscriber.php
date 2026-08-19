@@ -148,6 +148,7 @@ class TideSiteGetRouteSubscriber implements EventSubscriberInterface {
             // Now we have the homepage entity, override response data.
             if ($entity) {
               // Override response data with site homepage.
+              $response['data']['id'] = $entity->uuid();
               $this->apiHelper->setJsonResponseDataAttributesFromEntity($response, $entity, $event->getCacheableMetadata());
             }
           }

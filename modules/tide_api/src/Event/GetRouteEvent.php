@@ -143,13 +143,6 @@ class GetRouteEvent extends Event {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function isPropagationStopped(): bool {
-    return !$this->isOk() || parent::isPropagationStopped();
-  }
-
-  /**
    * Returns the current Entity.
    *
    * @return \Drupal\Core\Entity\EntityInterface
