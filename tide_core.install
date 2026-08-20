@@ -64,3 +64,43 @@ function tide_core_install() {
   // node metatag default.
   $tideCoreOperation->enableJsonLdSchemaDefaults();
 }
+
+/**
+ * Add CDN sources required by JavaScript components to the SecKit CSP.
+ */
+function tide_core_update_11002() {
+  $config = \Drupal::configFactory()->getEditable('seckit.settings');
+  if ($config->isNew()) {
+    return;
+  }
+
+  $sources = [
+    'seckit_xss.csp.script-src' => [
+      'cdnjs.cloudflare.com',
+      'unpkg.com',
+    ],
+    'seckit_xss.csp.style-src' => [
+      'cdnjs.cloudflare.com',
+      'unpkg.com',
+    ],
+    'seckit_xss.csp.img-src' => [
+      'cdn.jsdelivr.net',
+    ],
+  ];
+
+  $changed = FALSE;
+  foreach ($sources as $key => $required_sources) {
+    $current_sources = preg_split('/\s+/', trim((string) $config->get($key)), -1, PREG_SPLIT_NO_EMPTY);
+    foreach ($required_sources as $required_source) {
+      if (!in_array($required_source, $current_sources, TRUE)) {
+        $current_sources[] = $required_source;
+        $changed = TRUE;
+      }
+    }
+    $config->set($key, implode(' ', $current_sources));
+  }
+
+  if ($changed) {
+    $config->save(TRUE);
+  }
+}
