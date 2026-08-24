@@ -81,6 +81,14 @@ function tide_core_entity_operation(EntityInterface $entity, ?CacheableMetadata 
 }
 
 /**
+ * Implements hook_entity_operation_alter().
+ */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
+function tide_core_entity_operation_alter(array &$operations, EntityInterface $entity, ?CacheableMetadata $cacheability = NULL): void {
+  \Drupal::service(TideCoreHooks::class)->entityOperationAlter($operations, $entity, $cacheability);
+}
+
+/**
  * Implements hook_form_alter().
  */
 #[\Drupal\Core\Hook\Attribute\LegacyHook]

@@ -200,6 +200,18 @@ class TideCoreHooks {
   }
 
   /**
+   * Implements hook_entity_operation_alter().
+   */
+  #[Hook('entity_operation_alter')]
+  public function entityOperationAlter(
+    array &$operations,
+    EntityInterface $entity,
+    ?CacheableMetadata $cacheability = NULL,
+  ): void {
+    unset($operations['view']);
+  }
+
+  /**
    * Implements hook_form_alter().
    */
   #[Hook('form_alter')]
