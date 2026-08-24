@@ -174,9 +174,6 @@
             }
         },
         "patches": {
-            "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16412890": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
-            },
             "drupal/core": {
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650": "https://www.drupal.org/files/issues/2026-07-16/xss-refactor-filter-attributes-11.3.x-3109650-93.patch",
                 "Paragraphs fields cause overflow of content forms in Claro - https://www.drupal.org/project/drupal/issues/3145188": "https://www.drupal.org/files/issues/2023-01-25/3145188-37_0.patch",
