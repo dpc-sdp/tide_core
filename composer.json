@@ -18,6 +18,7 @@
         "drupal/core": "11.4.x",
         "drupal/core-recommended": "11.4.x",
         "drupal/monitoring": "^1.13",
+        "drupal/ckeditor_iframe": "^3.1",
         "drupal/ckeditor_templates": "^2.0",
         "drupal/ctools": "^4.1",
         "drupal/js_cookie": "^1.0",

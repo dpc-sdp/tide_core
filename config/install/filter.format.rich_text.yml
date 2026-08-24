@@ -2,8 +2,8 @@ langcode: en
 status: true
 dependencies:
   module:
-    - embedded_content
     - editor
+    - embedded_content
     - entity_embed
     - linkit
     - token_filter
@@ -11,29 +11,17 @@ name: 'Rich Text'
 format: rich_text
 weight: -10
 filters:
-  filter_align:
-    id: filter_align
-    provider: filter
-    status: true
-    weight: -50
-    settings: {  }
-  filter_caption:
-    id: filter_caption
-    provider: filter
-    status: true
-    weight: -49
-    settings: {  }
-  filter_htmlcorrector:
-    id: filter_htmlcorrector
-    provider: filter
-    status: true
-    weight: -44
-    settings: {  }
   editor_file_reference:
     id: editor_file_reference
     provider: editor
     status: true
     weight: -43
+    settings: {  }
+  embedded_content:
+    id: embedded_content
+    provider: embedded_content
+    status: true
+    weight: 100
     settings: {  }
   entity_embed:
     id: entity_embed
@@ -41,21 +29,33 @@ filters:
     status: true
     weight: -48
     settings: {  }
-  filter_html:
-    id: filter_html
+  filter_align:
+    id: filter_align
     provider: filter
     status: true
-    weight: -49
-    settings:
-      allowed_html: '<embedded-content data-plugin-config data-plugin-id> <a title class id target rel data-entity-type data-entity-uuid data-entity-substitution hreflang href> <div class> <p class="wysiwyg-callout quotation__quote text-align-left text-align-center text-align-right text-align-justify"> <br> <h2 id class="text-align-left text-align-center text-align-right text-align-justify"> <h3 id class="text-align-left text-align-center text-align-right text-align-justify"> <h4 id class="text-align-left text-align-center text-align-right text-align-justify"> <h5 id class="text-align-left text-align-center text-align-right text-align-justify"> <ol class type reversed start> <ul class type> <cite> <dl> <dt> <dd> <footer> <span class> <img src alt data-entity-type data-entity-uuid data-align data-caption> <iframe frameborder height scrolling src width title allowfullscreen> <drupal-entity data-caption data-align data-entity-uuid data-entity-embed-display data-entity-embed-display-settings data-show-last-updated title alt data-embed-button="node tide_media" data-entity-type="node media"> <blockquote cite class> <th align class rowspan colspan> <td align class rowspan colspan> <strong> <em> <code class="language-*"> <pre class="text-align-left text-align-center text-align-right text-align-justify"> <s> <sub> <sup> <li> <hr> <table> <tr> <thead> <tbody> <tfoot> <caption> <colgroup> <col> <col style> <figure class> <figcaption>'
-      filter_html_help: true
-      filter_html_nofollow: false
+    weight: -50
+    settings: {  }
   filter_autop:
     id: filter_autop
     provider: filter
     status: false
     weight: -40
     settings: {  }
+  filter_caption:
+    id: filter_caption
+    provider: filter
+    status: true
+    weight: -49
+    settings: {  }
+  filter_html:
+    id: filter_html
+    provider: filter
+    status: true
+    weight: -49
+    settings:
+      allowed_html: '<br> <p class="wysiwyg-callout quotation__quote text-align-left text-align-right"> <h2 id class="text-align-left text-align-right"> <h3 id class="text-align-left text-align-right"> <h4 id class="text-align-left text-align-right"> <h5 id class="text-align-left text-align-right"> <ol class="wysiwyg-callout" type reversed start> <ul class="wysiwyg-callout" type> <cite> <dl> <dt> <dd> <footer> <span> <img src alt data-entity-type data-entity-uuid data-align data-caption> <div class="quotation button button--secondary callout-wrapper text-align-left text-align-right"> <drupal-entity data-entity-type data-embed-button data-show-last-updated alt title data-align data-caption data-entity-embed-display data-entity-embed-display-settings data-view-mode data-entity-uuid data-langcode> <a hreflang target href title class id rel data-entity-type data-entity-uuid data-entity-substitution> <blockquote cite> <strong> <em> <code class="language-*"> <pre class="text-align-left text-align-right"> <s> <sub> <sup> <li> <hr> <table> <tr> <td rowspan colspan> <th rowspan colspan> <thead> <tbody> <tfoot> <caption> <iframe src height width name tabindex title allowfullscreen> <colgroup> <col> <embedded-content data-plugin-config data-plugin-id data-button-id> <embedded-content-inline data-plugin-config data-plugin-id data-button-id>'
+      filter_html_help: true
+      filter_html_nofollow: false
   filter_html_escape:
     id: filter_html_escape
     provider: filter
@@ -68,6 +68,18 @@ filters:
     status: false
     weight: -39
     settings: {  }
+  filter_htmlcorrector:
+    id: filter_htmlcorrector
+    provider: filter
+    status: true
+    weight: -44
+    settings: {  }
+  filter_image_lazy_load:
+    id: filter_image_lazy_load
+    provider: filter
+    status: true
+    weight: -42
+    settings: {  }
   filter_url:
     id: filter_url
     provider: filter
@@ -75,14 +87,6 @@ filters:
     weight: -42
     settings:
       filter_url_length: 72
-  token_filter:
-    id: token_filter
-    provider: token_filter
-    status: true
-    weight: -45
-    settings:
-      replace_empty: '0'
-
   linkit:
     id: linkit
     provider: linkit
@@ -90,9 +94,11 @@ filters:
     weight: -48
     settings:
       title: true
-  embedded_content:
-    id: embedded_content
-    provider: embedded_content
+      media_substitution: metadata
+  token_filter:
+    id: token_filter
+    provider: token_filter
     status: true
-    weight: 100
-    settings: {  }
+    weight: -45
+    settings:
+      replace_empty: false
