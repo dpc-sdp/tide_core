@@ -107,8 +107,8 @@ class EnvKeyGenerator {
     $this->fileSystem->prepareDirectory($private, FileSystemInterface::CREATE_DIRECTORY);
 
     $key_files = [
-      static::FILE_PRIVATE_KEY => $this->privateKey,
-      static::FILE_PUBLIC_KEY => $this->publicKey,
+      static::FILE_PRIVATE_KEY => getenv(static::ENV_PRIVATE_KEY),
+      static::FILE_PUBLIC_KEY => getenv(static::ENV_PUBLIC_KEY),
     ];
     foreach ($key_files as $key_uri => $key_content) {
       if (@file_exists($key_uri)) {
