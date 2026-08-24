@@ -140,6 +140,8 @@ settings:
         - tabindex
         - title
         - allowfullscreen
+        - loading
+        - referrerpolicy
     ckeditor_templates_plugin:
       replace_content: false
     editor_advanced_link_link:
