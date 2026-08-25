@@ -82,7 +82,7 @@
         "drupal/inline_entity_form": "^1.0@RC",
         "drupal/private_files_download_permission": "^3.1",
         "drupal/jquery_ui_touch_punch": "^1.1",
-        "drupal/admin_audit_trail": "^1.0",
+        "drupal/admin_audit_trail": "^1.11",
         "drupal/block_inactive_users": "^2.1",
         "drupal/user_expire": "^2.1",
         "drupal/field_permissions": "^1.2",
@@ -356,9 +356,6 @@
     },
     "extra": {
         "patches": {
-            "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16412890": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
-            },
             "drupal/core": {
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16166063": "https://www.drupal.org/files/issues/2026-07-25/core-xss-refactor_filter_attributes-3109650-90--reroll-10.6.14.patch",
                 "PathBasedBreadcrumbBuilder needs to be able to exclude pointless paths - https://www.drupal.org/project/drupal/issues/3344200": "https://www.drupal.org/files/issues/2024-06-26/3344200-17.patch",
