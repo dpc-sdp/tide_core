@@ -38,6 +38,11 @@ class TideTfaHooks {
     }
   }
 
+  #[Hook('requirements_alter')]
+  public function requirementsAlter(array &$requirements): void {
+    unset($requirements['tfa.route.user.reset.login']);
+  }
+
   /**
    * Implements hook_menu_local_tasks_alter().
    */
