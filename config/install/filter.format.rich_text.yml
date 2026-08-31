@@ -6,11 +6,18 @@ dependencies:
     - embedded_content
     - entity_embed
     - linkit
+    - tide_ckeditor
     - token_filter
 name: 'Rich Text'
 format: rich_text
 weight: -10
 filters:
+  tide_ckeditor_iframe_permissions:
+    id: tide_ckeditor_iframe_permissions
+    provider: tide_ckeditor
+    status: true
+    weight: 101
+    settings: {  }
   editor_file_reference:
     id: editor_file_reference
     provider: editor

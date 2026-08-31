@@ -104,3 +104,10 @@ function tide_core_update_11002() {
     $config->save(TRUE);
   }
 }
+
+/**
+ * Ensure the JSON-LD schema modules and defaults are installed.
+ */
+function tide_core_update_11003() {
+  (new TideCoreOperation())->enableJsonLdSchemaDefaults();
+}
