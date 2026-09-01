@@ -22,5 +22,35 @@ function tide_landing_page_install() {
   TideLandingPageOperation::addWebformComponent();
   TideLandingPageOperation::assignNecessaryPermissions();
   TideLandingPageOperation::addFieldsToSearchApi();
+}
 
+/**
+ * Grant CKEditor template access to Landing Page authors.
+ */
+function tide_landing_page_update_11001() {
+  $landing_page_permissions = [
+    'create landing_page content',
+    'edit any landing_page content',
+    'edit own landing_page content',
+  ];
+
+  $roles = \Drupal::entityTypeManager()
+    ->getStorage('user_role')
+    ->loadMultiple();
+
+  foreach ($roles as $role) {
+    if (!$role instanceof \Drupal\user\RoleInterface) {
+      continue;
+    }
+
+    $permissions = $role->getPermissions();
+    if (in_array('insert ckeditor templates', $permissions, TRUE)) {
+      continue;
+    }
+
+    if (array_intersect($landing_page_permissions, $permissions)) {
+      $role->grantPermission('insert ckeditor templates');
+      $role->save();
+    }
+  }
 }
