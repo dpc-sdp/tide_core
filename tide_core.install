@@ -5,6 +5,7 @@
  * Installation functions for Tide Core.
  */
 
+use Drupal\filter\FilterFormatInterface;
 use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
@@ -110,4 +111,27 @@ function tide_core_update_11002() {
  */
 function tide_core_update_11003() {
   (new TideCoreOperation())->enableJsonLdSchemaDefaults();
+}
+
+/**
+ * Run HTML filtering before caption processing in Rich Text.
+ */
+function tide_core_update_11004() {
+  $format = \Drupal::entityTypeManager()
+    ->getStorage('filter_format')
+    ->load('rich_text');
+  if (!$format instanceof FilterFormatInterface) {
+    return;
+  }
+
+  $filters = $format->toArray()['filters'] ?? [];
+  if (!isset($filters['filter_html'])) {
+    return;
+  }
+
+  $configuration = $filters['filter_html'];
+  $configuration['weight'] = -51;
+  $format
+    ->setFilterConfig('filter_html', $configuration)
+    ->save();
 }
