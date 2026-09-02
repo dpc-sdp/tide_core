@@ -68,13 +68,21 @@ class IncludeResolver extends JsonapiIncludeResolver {
           $includes = IncludedData::merge($includes, new IncludedData([$exception]));
           continue;
         }
-        $target_type = $field_list->getFieldDefinition()->getFieldStorageDefinition()->getSetting('target_type');
-        assert(!empty($target_type));
         foreach ($field_list as $field_item) {
-          assert($field_item instanceof EntityReferenceItem);
+          // JSON:API includes are relationships. Ignore scalar attributes that
+          // were supplied as include paths instead of treating them as entity
+          // references with an empty target type.
+          if (!$field_item instanceof EntityReferenceItem) {
+            continue;
+          }
+
           // Include the target_revision_id in the references of paragraphs.
           $target_type = $field_item->getDataDefinition()->getSetting('target_type');
-          if ($field_item instanceof EntityReferenceRevisionsItem && $target_type == 'paragraph') {
+          if (!is_string($target_type) || $target_type === '' || !$this->entityTypeManager->hasDefinition($target_type)) {
+            continue;
+          }
+
+          if ($field_item instanceof EntityReferenceRevisionsItem && $target_type === 'paragraph') {
             $references[$target_type][$field_item->get($field_item::mainPropertyName())->getValue()] = $field_item->get('target_revision_id')->getValue();
           }
           else {
