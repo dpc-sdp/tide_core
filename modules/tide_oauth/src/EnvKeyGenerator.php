@@ -97,7 +97,7 @@ class EnvKeyGenerator {
   }
 
   /**
-   * Generate the OAuth key pairs from files referenced by environment variables.
+   * Generate OAuth key pairs from files referenced by environment variables.
    *
    * @return bool
    *   TRUE if the keys are generated.
