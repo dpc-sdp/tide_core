@@ -135,3 +135,26 @@ function tide_core_update_11004() {
     ->setFilterConfig('filter_html', $configuration)
     ->save();
 }
+
+/**
+ * Enable the iframe permissions filter for existing text formats.
+ */
+function tide_core_update_11005() {
+  $configuration = [
+    'id' => 'tide_ckeditor_iframe_permissions',
+    'provider' => 'tide_core',
+    'status' => TRUE,
+    'weight' => 101,
+    'settings' => [],
+  ];
+
+  $storage = \Drupal::entityTypeManager()->getStorage('filter_format');
+  foreach (['rich_text', 'admin_text', 'summary_text'] as $format_id) {
+    $format = $storage->load($format_id);
+    if ($format instanceof FilterFormatInterface) {
+      $format
+        ->setFilterConfig('tide_ckeditor_iframe_permissions', $configuration)
+        ->save();
+    }
+  }
+}

@@ -5,7 +5,7 @@ dependencies:
     - editor
     - entity_embed
     - linkit
-    - tide_ckeditor
+    - tide_core
     - token_filter
 name: 'Summary Text'
 format: summary_text
@@ -13,7 +13,7 @@ weight: -10
 filters:
   tide_ckeditor_iframe_permissions:
     id: tide_ckeditor_iframe_permissions
-    provider: tide_ckeditor
+    provider: tide_core
     status: true
     weight: 101
     settings: {  }

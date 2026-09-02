@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\tide_ckeditor\Plugin\Filter;
+namespace Drupal\tide_core\Plugin\Filter;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
