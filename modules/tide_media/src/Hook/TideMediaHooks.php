@@ -199,6 +199,15 @@ class TideMediaHooks {
   public function preprocessFileLink(&$variables) {
     /** @var \Drupal\file\Entity\File $file */
     $file = $variables['file'];
+    $mime_type = $file->getMimeType();
+
+    // Preserve the administration theme's image link markup. Managed image
+    // widgets already include a formatted file size.
+    if (\Drupal::hasService('router.admin_context')
+      && \Drupal::service('router.admin_context')->isAdminRoute()
+      && str_starts_with($mime_type, 'image/')) {
+      return;
+    }
 
     $config = \Drupal::config('tide_media.settings');
     if ($config->get('file_absolute_url')) {
@@ -212,7 +221,6 @@ class TideMediaHooks {
     $size = $file->getSize();
     $file_size = $size !== NULL ? ByteSizeMarkup::create($size) : '';
 
-    $mime_type = $file->getMimeType();
     $mime_category = IconMimeTypes::getIconClass($mime_type);
     switch ($mime_category) {
       case 'application-pdf':

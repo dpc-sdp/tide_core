@@ -28,6 +28,11 @@ function tide_landing_page_install() {
  * Grant CKEditor template access to Landing Page authors.
  */
 function tide_landing_page_update_11001() {
+  // Role dependency calculation builds URLs for filter format permissions.
+  // Ensure the router cache reflects the current core routes before roles are
+  // saved during a major-version database update.
+  \Drupal::service('router.builder')->rebuild();
+
   $landing_page_permissions = [
     'create landing_page content',
     'edit any landing_page content',
