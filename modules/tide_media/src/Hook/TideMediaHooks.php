@@ -254,6 +254,13 @@ class TideMediaHooks {
         '@file_type' => $file_type,
         '@file_size' => $file_size,
       ]);
+
+    // Core administration themes render the file size separately.
+    if (\Drupal::hasService('router.admin_context')
+      && \Drupal::service('router.admin_context')->isAdminRoute()) {
+      $link_text = $description;
+    }
+
     $attributes = [];
     $attributes['attributes'] = [
       'class' => [
