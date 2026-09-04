@@ -38,7 +38,7 @@
         "drupal/m4032404": "^1.0-alpha4",
         "drupal/maxlength": "^2.1",
         "drupal/entity_hierarchy": "4.x",
-        "drupal/elasticsearch_connector": "7.0.0-alpha7",
+        "drupal/elasticsearch_connector": "^7.0",
         "drupal/search_api": "^1.36",
         "drupal/data_pipelines": "^2.2",
         "drupal/data_pipelines_elasticsearch-data_pipelines_elasticsearch": "^1.0",
@@ -356,9 +356,6 @@
     },
     "extra": {
         "patches": {
-            "drupal/admin_audit_trail": {
-                "Add an option to allow logging in CLI - https://www.drupal.org/project/admin_audit_trail/issues/3263615#comment-16412890": "https://www.drupal.org/files/issues/2026-01-15/3263615-admin_audit_trail-option-for-cli-10.patch"
-            },
             "drupal/core": {
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650#comment-16166063": "https://www.drupal.org/files/issues/2026-07-25/core-xss-refactor_filter_attributes-3109650-90--reroll-10.6.14.patch",
                 "PathBasedBreadcrumbBuilder needs to be able to exclude pointless paths - https://www.drupal.org/project/drupal/issues/3344200": "https://www.drupal.org/files/issues/2024-06-26/3344200-17.patch",
@@ -471,10 +468,25 @@
             }
           },
         "installer-paths": {
-            "docroot/libraries/{$name}": [
+            "web/core": [
+                "type:drupal-core"
+            ],
+            "web/libraries/{$name}": [
                 "type:drupal-library",
                 "type:bower-asset",
                 "type:npm-asset"
+            ],
+            "web/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "web/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "web/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/{$name}": [
+                "type:drupal-drush"
             ]
         },
         "installer-types": ["bower-asset", "npm-asset"]
@@ -482,10 +494,49 @@
     "config": {
         "allow-plugins": {
             "composer/installers": true,
-            "oomphinc/composer-installers-extender": true
+            "oomphinc/composer-installers-extender": true,
+            "php-http/discovery": true,
+            "cweagans/composer-patches": true,
+            "drupal/core-composer-scaffold": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true,
+            "tbachert/spi": true
         },
         "audit": {
           "block-insecure": false
       }
+    },
+    "require-dev": {
+        "behat/behat": "~3.5",
+        "behat/mink": "^1.11",
+        "behat/mink-browserkit-driver": "^2.2",
+        "behat/mink-selenium2-driver": "^1.4",
+        "squizlabs/php_codesniffer": "3.7.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+        "doctrine/persistence": "^3.3",
+        "drupal/coder": "^8.3.10",
+        "drupal/drupal-extension": "^5.0.0rc1",
+        "drevops/behat-screenshot": "^1.0",
+        "drevops/behat-steps": "^1.2.0",
+        "drush/drush": "^13",
+        "phpcompatibility/php-compatibility": "^9.1",
+        "imbo/behat-api-extension": "^6.0",
+        "symfony/filesystem": "^6.2",
+        "php-http/curl-client": "*",
+        "phpunit/phpunit": "^8.5.14 || ^9",
+        "phpspec/prophecy-phpunit": "^2",
+        "weitzman/drupal-test-traits": "^1.5",
+        "php-http/message": "~1.13",
+        "php-http/message-factory": "^1.1",
+        "guzzlehttp/psr7": "~2.8.0",
+        "drupal/test_helpers": "^1.2"
+    },
+    "provide": {
+        "drupal/ckeditor": "*"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tide\\Tests\\Context\\": "tests/behat/bootstrap/"
+        }
     }
 }
