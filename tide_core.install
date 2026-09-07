@@ -73,9 +73,6 @@ function tide_core_install() {
   // Enable the JSON-LD engine schema defaults (WebPage + BreadcrumbList) on the
   // node metatag default.
   $tideCoreOperation->enableJsonLdSchemaDefaults();
-
-  // Ignore taxonomy vocabulary configuration during configuration imports.
-  $tideCoreOperation->ignoreTaxonomyVocabularyConfig();
 }
 
 /**
@@ -1719,12 +1716,4 @@ function tide_core_update_10047() {
       }
     }
   }
-}
-
-/**
- * Ignore taxonomy vocabulary configuration during configuration imports.
- */
-function tide_core_update_10048() {
-  $tideCoreOperation = new TideCoreOperation();
-  $tideCoreOperation->ignoreTaxonomyVocabularyConfig();
 }

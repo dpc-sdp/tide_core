@@ -345,21 +345,4 @@ class TideCoreOperation {
     $defaults->save();
   }
 
-  /**
-   * Ignores taxonomy vocabulary configuration during configuration imports.
-   */
-  public function ignoreTaxonomyVocabularyConfig() {
-    $config = \Drupal::configFactory()->getEditable('config_ignore.settings');
-    $ignored_config_entities = (array) $config->get('ignored_config_entities');
-
-    if (!in_array('taxonomy.vocabulary.*', $ignored_config_entities, TRUE)) {
-      $ignored_config_entities[] = 'taxonomy.vocabulary.*';
-      $config
-        ->set('ignored_config_entities', $ignored_config_entities)
-        ->save();
-    }
-
-    \Drupal::service('plugin.manager.config_filter')->clearCachedDefinitions();
-  }
-
 }
