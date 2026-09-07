@@ -2,8 +2,8 @@
 
 namespace Drupal\tide_tfa\Hook;
 
-use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\user\UserInterface;
 
 /**
@@ -37,7 +37,7 @@ class TideTfaHooks {
       }
     }
   }
-  
+
   /**
    * Implements hook_requirements_alter().
    */
