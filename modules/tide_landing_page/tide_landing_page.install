@@ -6,6 +6,7 @@
  */
 
 use Drupal\tide_landing_page\TideLandingPageOperation;
+use Drupal\user\RoleInterface;
 
 /**
  * Implements hook_install().
@@ -44,7 +45,7 @@ function tide_landing_page_update_11001() {
     ->loadMultiple();
 
   foreach ($roles as $role) {
-    if (!$role instanceof \Drupal\user\RoleInterface) {
+    if (!$role instanceof RoleInterface) {
       continue;
     }
 
