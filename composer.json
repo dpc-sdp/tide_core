@@ -190,6 +190,9 @@
             "drupal/entity_hierarchy": {
                 "Use a table-independent CTE requirement check": "https://git.drupalcode.org/project/entity_hierarchy/-/merge_requests/77/diffs.patch"
             },
+            "drupal/ckeditor_iframe": {
+                "Add loading and referrer policy controls": "https://gist.githubusercontent.com/vincent-gao/bce203c942203e7891e483fabbca84b9/raw/c17ab599fe699e90cbc2215786d9caa5a446773e/gistfile1.txt"
+            },
             "drupal/migrate_plus": {
                 "Simple XML broken with UTF-16LE - https://www.drupal.org/project/migrate_plus/issues/3051858#comment-15138496": "https://www.drupal.org/files/issues/2023-07-06/3051858-migrate_plus-simplexml_remove_trim-5.patch"
             },
