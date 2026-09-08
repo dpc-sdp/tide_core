@@ -31,8 +31,8 @@ function tide_site_restriction_update_10001() {
  * Update site fields widget for search_listing.
  */
 function tide_site_restriction_update_10002() {
-  if (!\Drupal::moduleHandler()->moduleExists('tide_search_listing')) {
-    return t('tide_search_listing module is not enabled. Skipping update.');
+  if (!\Drupal::moduleHandler()->moduleExists('tide_search')) {
+    return t('tide_search module is not enabled. Skipping update.');
   }
 
   $form_display = EntityFormDisplay::load('node.tide_search_listing.default');
