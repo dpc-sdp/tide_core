@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\tide_ckeditor\Unit\Plugin\Filter;
+namespace Drupal\Tests\tide_core\Unit\Plugin\Filter;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Tests\UnitTestCase;
-use Drupal\tide_ckeditor\Plugin\Filter\FilterIframePermissions;
+use Drupal\tide_core\Plugin\Filter\FilterIframePermissions;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\Group;
  * Tests the iframe permissions text filter.
  */
 #[CoversClass(FilterIframePermissions::class)]
-#[Group('tide_ckeditor')]
+#[Group('tide_core')]
 final class FilterIframePermissionsTest extends UnitTestCase {
 
   /**
@@ -44,7 +44,7 @@ final class FilterIframePermissionsTest extends UnitTestCase {
         'weight' => 101,
       ],
       'tide_ckeditor_iframe_permissions',
-      ['provider' => 'tide_ckeditor'],
+      ['provider' => 'tide_core'],
     );
   }
 
