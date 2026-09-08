@@ -476,6 +476,7 @@ function tide_landing_page_update_10114() {
 
 /**
  * Hero image field spelling correction.
+ *
  * Update the description for the media gallery field.
  */
 function tide_landing_page_update_10115() {
