@@ -38,9 +38,12 @@ function tide_site_restriction_update_10002() {
   $form_display = EntityFormDisplay::load('node.tide_search_listing.default');
 
   if ($form_display) {
+    $primary_site_comp = $form_display->getComponent('field_node_primary_site');
+    $site_comp = $form_display->getComponent('field_node_site');
+
     $form_display->setComponent('field_node_primary_site', [
       'type' => 'tide_site_restriction_field_widget',
-      'weight' => 30,
+      'weight' => $primary_site_comp['weight'] ?? 30,,
       'region' => 'content',
       'settings' => [
         'enable_site_coupling' => FALSE,
@@ -50,7 +53,7 @@ function tide_site_restriction_update_10002() {
 
     $form_display->setComponent('field_node_site', [
       'type' => 'tide_site_restriction_field_widget',
-      'weight' => 40,
+      'weight' => $site_comp['weight'] ?? 40,
       'region' => 'content',
       'settings' => [
         'enable_site_coupling' => FALSE,
