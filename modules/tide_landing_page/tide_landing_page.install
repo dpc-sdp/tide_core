@@ -473,3 +473,15 @@ function tide_landing_page_update_10114() {
       ->save();
   }
 }
+
+/**
+ * Hero image field spelling correction.
+ */
+function tide_landing_page_update_10115() {
+  $field_config = FieldConfig::load('node.landing_page.field_show_hero_image_caption');
+
+  if ($field_config) {
+    $field_config->setLabel('Show Full-width background image caption.');
+    $field_config->save();
+  }
+}
