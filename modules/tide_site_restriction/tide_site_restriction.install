@@ -5,7 +5,7 @@
  * Install file.
  */
 
-use Drupal\core\entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\tide_site_restriction\TideSiteRestrictionOperation;
 
 /**
@@ -43,7 +43,7 @@ function tide_site_restriction_update_10002() {
 
     $form_display->setComponent('field_node_primary_site', [
       'type' => 'tide_site_restriction_field_widget',
-      'weight' => $primary_site_comp['weight'] ?? 30,,
+      'weight' => $primary_site_comp['weight'] ?? 30,
       'region' => 'content',
       'settings' => [
         'enable_site_coupling' => FALSE,
