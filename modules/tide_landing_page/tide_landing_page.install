@@ -473,3 +473,23 @@ function tide_landing_page_update_10114() {
       ->save();
   }
 }
+
+/**
+ * Hero image field spelling correction.
+ *
+ * Update the description for the media gallery field.
+ */
+function tide_landing_page_update_10115() {
+  $hero_caption_field = FieldConfig::load('node.landing_page.field_show_hero_image_caption');
+  if ($hero_caption_field) {
+    $hero_caption_field->setLabel('Show Full-width background image caption.');
+    $hero_caption_field->save();
+  }
+
+  $media_gallery_field = FieldConfig::load('paragraph.media_gallery.field_paragraph_media_gallery');
+  if ($media_gallery_field) {
+    $description = 'New galleries can be created <a href="/admin/structure/block/block-content" target="_blank">here</a><br>Find out <a href="https://digital-vic.atlassian.net/servicedesk/customer/portal/23/article/2305426329" target="_blank">how to create an image gallery</a>';
+    $media_gallery_field->setDescription($description);
+    $media_gallery_field->save();
+  }
+}
