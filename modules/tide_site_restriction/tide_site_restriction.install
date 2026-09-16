@@ -5,6 +5,7 @@
  * Install file.
  */
 
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\tide_site_restriction\TideSiteRestrictionOperation;
 
 /**
@@ -24,4 +25,42 @@ function tide_site_restriction_install() {
  */
 function tide_site_restriction_update_10001() {
   TideSiteRestrictionOperation::updateHelpText();
+}
+
+/**
+ * Update site fields widget for search_listing.
+ */
+function tide_site_restriction_update_10002() {
+  if (!\Drupal::moduleHandler()->moduleExists('tide_search')) {
+    return t('tide_search module is not enabled. Skipping update.');
+  }
+
+  $form_display = EntityFormDisplay::load('node.tide_search_listing.default');
+
+  if ($form_display) {
+    $primary_site_comp = $form_display->getComponent('field_node_primary_site');
+    $site_comp = $form_display->getComponent('field_node_site');
+
+    $form_display->setComponent('field_node_primary_site', [
+      'type' => 'tide_site_restriction_field_widget',
+      'weight' => $primary_site_comp['weight'] ?? 30,
+      'region' => 'content',
+      'settings' => [
+        'enable_site_coupling' => FALSE,
+      ],
+      'third_party_settings' => [],
+    ]);
+
+    $form_display->setComponent('field_node_site', [
+      'type' => 'tide_site_restriction_field_widget',
+      'weight' => $site_comp['weight'] ?? 40,
+      'region' => 'content',
+      'settings' => [
+        'enable_site_coupling' => FALSE,
+      ],
+      'third_party_settings' => [],
+    ]);
+
+    $form_display->save();
+  }
 }
