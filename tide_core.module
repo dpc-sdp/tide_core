@@ -1021,3 +1021,12 @@ function tide_core_schema_metatag_property_type_plugins_alter(array &$definition
     $definitions['breadcrumb_list']['provider'] = 'tide_core';
   }
 }
+
+/**
+ * Implements hook_config_ignore_settings_alter().
+ */
+function tide_core_config_ignore_settings_alter(array &$ignored) {
+  if (!in_array('taxonomy.vocabulary.*', $ignored, TRUE)) {
+    $ignored[] = 'taxonomy.vocabulary.*';
+  }
+}
