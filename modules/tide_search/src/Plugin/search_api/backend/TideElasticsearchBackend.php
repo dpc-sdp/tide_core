@@ -88,7 +88,7 @@ class TideElasticsearchBackend extends SearchApiElasticsearchBackend {
         return [];
       }
 
-      $response = $this->client->bulk($params);
+      $response = $this->getElasticClient()->bulk($params);
 
       if (isset($response['items']) && is_array($response['items'])) {
         foreach ($response['items'] as $item_response) {

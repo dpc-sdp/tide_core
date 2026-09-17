@@ -1,0 +1,19 @@
+uuid: 6d903518-bf29-4862-b54d-472d2f47eed4
+langcode: en
+status: true
+dependencies:
+  module:
+    - json_field
+    - taxonomy
+id: taxonomy_term.field_content_security_policy
+field_name: field_content_security_policy
+entity_type: taxonomy_term
+type: json_native
+settings: {  }
+module: json_field
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

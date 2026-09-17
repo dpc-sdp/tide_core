@@ -76,6 +76,29 @@ JS;
   }
 
   /**
+   * Wait for a dialog title to appear.
+   *
+   * @Then /^I wait for the dialog title "([^"]*)" to appear$/
+   */
+  public function waitForDialogTitle(string $title) {
+    $encoded_title = json_encode($title, JSON_THROW_ON_ERROR);
+    $condition = <<<JS
+      (function() {
+        return Array.from(document.querySelectorAll('[role="dialog"] .ui-dialog-title'))
+          .some(function (element) {
+            return element.textContent.trim() === $encoded_title;
+          });
+      }());
+JS;
+    $timeout = $this->getMinkParameter('ajax_timeout');
+    $result = $this->getSession()->wait($timeout * 1000, $condition);
+
+    if (!$result) {
+      throw new \RuntimeException(sprintf('Dialog title "%s" did not appear.', $title));
+    }
+  }
+
+  /**
    * @When I scroll :selector into view
    * @When I scroll selector :selector into view
    *

@@ -2,8 +2,8 @@ langcode: en
 status: '1'
 dependencies: {  }
 cluster_id: elasticsearch_bay
-name: 'ElasticSearch on Bay'
-url: 'http://elasticsearch:9200'
+name: 'OpenSearch on Bay'
+url: 'http://opensearch:9200'
 options:
   multiple_nodes_connection: false
   use_authentication: 0

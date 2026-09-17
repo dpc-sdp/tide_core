@@ -17,6 +17,7 @@ dependencies:
     - field.field.taxonomy_term.sites.field_site_footer_text
     - field.field.taxonomy_term.sites.field_site_homepage
     - field.field.taxonomy_term.sites.field_site_logo
+    - field.field.taxonomy_term.sites.field_content_security_policy
     - field.field.taxonomy_term.sites.field_site_main_menu
     - field.field.taxonomy_term.sites.field_site_og_image
     - field.field.taxonomy_term.sites.field_site_show_exit_site
@@ -24,12 +25,14 @@ dependencies:
     - field.field.taxonomy_term.sites.field_site_social_links
     - field.field.taxonomy_term.sites.field_site_twitter_image
     - field.field.taxonomy_term.sites.field_title_of_table_of_contents
+    - field.field.taxonomy_term.sites.field_web_feature_perm_policy
     - taxonomy.vocabulary.sites
   module:
     - entity_reference_revisions
     - file
     - link
     - text
+    - json_field
 id: taxonomy_term.sites.default
 targetEntityType: taxonomy_term
 bundle: sites
@@ -40,14 +43,14 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 9
+    weight: 11
     region: content
   field_notes:
     type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 19
+    weight: 21
     region: content
   field_print_friendly_logo:
     type: file_default
@@ -62,7 +65,7 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 12
+    weight: 14
     region: content
   field_short_name:
     type: string
@@ -70,14 +73,14 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 18
+    weight: 20
     region: content
   field_show_exit_site_specific:
     type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 11
+    weight: 13
     region: content
   field_show_table_of_contents:
     type: boolean
@@ -87,7 +90,7 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 15
+    weight: 17
     region: content
   field_site_app_icon:
     type: image
@@ -102,7 +105,7 @@ content:
         height: null
       svg_render_as_image: true
     third_party_settings: {  }
-    weight: 17
+    weight: 19
     region: content
   field_site_domains:
     type: basic_string
@@ -118,7 +121,7 @@ content:
       view_mode: default
       link: ''
     third_party_settings: {  }
-    weight: 7
+    weight: 9
     region: content
   field_site_footer_menu:
     type: entity_reference_label
@@ -126,14 +129,14 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 5
+    weight: 7
     region: content
   field_site_footer_text:
     type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 6
+    weight: 8
     region: content
   field_site_homepage:
     type: entity_reference_label
@@ -141,7 +144,7 @@ content:
     settings:
       link: true
     third_party_settings: {  }
-    weight: 8
+    weight: 10
     region: content
   field_site_logo:
     type: image
@@ -156,13 +159,21 @@ content:
     third_party_settings: {  }
     weight: 1
     region: content
+  field_web_feature_perm_policy:
+    type: json
+    label: above
+    settings:
+      attach_library: true
+    third_party_settings: {  }
+    weight: 5
+    region: content
   field_site_main_menu:
     type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    weight: 4
+    weight: 6
     region: content
   field_site_og_image:
     type: entity_reference_entity_view
@@ -171,7 +182,7 @@ content:
       view_mode: default
       link: false
     third_party_settings: {  }
-    weight: 11
+    weight: 13
     region: content
   field_site_show_exit_site:
     type: boolean
@@ -181,7 +192,7 @@ content:
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    weight: 10
+    weight: 12
     region: content
   field_site_slogan:
     type: text_default
@@ -200,7 +211,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 14
+    weight: 16
     region: content
   field_site_twitter_image:
     type: entity_reference_label
@@ -208,7 +219,15 @@ content:
     settings:
       link: false
     third_party_settings: {  }
-    weight: 13
+    weight: 15
+    region: content
+  field_content_security_policy:
+    type: json
+    label: above
+    settings:
+      attach_library: true
+    third_party_settings: {  }
+    weight: 4
     region: content
   field_title_of_table_of_contents:
     type: string
@@ -216,7 +235,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 16
+    weight: 18
     region: content
 hidden:
   description: true

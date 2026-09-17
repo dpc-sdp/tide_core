@@ -185,7 +185,7 @@ function tide_site_update_10005() {
   $view = View::load('tide_content_report');
   if (!$view) {
     \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/install'];
+    $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/optional'];
     $config_read = _tide_read_config('views.view.tide_content_report', $config_location, TRUE);
     $storage = \Drupal::entityTypeManager()->getStorage('view');
     $id = $storage->getIDFromConfigName('views.view.tide_content_report', $storage->getEntityType()->getConfigPrefix());
@@ -228,7 +228,7 @@ function tide_site_update_10006() {
   }
 
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/optional'];
   $view_config = _tide_read_config('views.view.tide_content_report', $config_location, FALSE);
   if (empty($view_config['display']['default']['display_options']['fields']['view_node'])) {
     return;
@@ -243,7 +243,7 @@ function tide_site_update_10006() {
  */
 function tide_site_update_10007() {
   \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
-  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/install'];
+  $config_location = [\Drupal::service('extension.list.module')->getPath('tide_site') . '/config/optional'];
   $config_read = _tide_read_config('views.view.media_report', $config_location, TRUE);
 
   $has_secure_file = (bool) \Drupal::entityTypeManager()

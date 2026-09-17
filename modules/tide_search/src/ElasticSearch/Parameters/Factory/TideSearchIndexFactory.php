@@ -5,7 +5,6 @@ namespace Drupal\tide_search\ElasticSearch\Parameters\Factory;
 use Drupal\elasticsearch_connector\ElasticSearch\Parameters\Factory\IndexFactory;
 use Drupal\elasticsearch_connector\Entity\Cluster;
 use Drupal\elasticsearch_connector\Event\PrepareIndexEvent;
-use Drupal\search_api\Entity\Server;
 use Drupal\search_api\IndexInterface;
 
 /**
@@ -136,7 +135,8 @@ class TideSearchIndexFactory extends IndexFactory {
     // This convoluted path to the host domain is due to
     // https://www.drupal.org/project/search_api/issues/2976339 not populating
     // `search_api.server.server_id` config with the correct values.
-    $cluster_id = Server::load($index->getServerId())->getBackend()->getCluster();
+    $backend = $index->getServerInstance()->getBackend();
+    $cluster_id = $backend->getClusterId();
     $host = parse_url(Cluster::load($cluster_id)->url, PHP_URL_HOST);
     $hash = strstr($host, '.', TRUE);
 

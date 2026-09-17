@@ -1,0 +1,10 @@
+services:
+  tide_external_site_link.route_subscriber:
+    class: Drupal\tide_external_site_link\Routing\ShareLinkRouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  tide_external_site_link.share_link_access_check:
+    class: Drupal\tide_external_site_link\Access\ShareLinkAccessCheck
+    tags:
+      - { name: access_check, applies_to: _share_link_access_check_for_external_site_link }

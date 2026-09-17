@@ -29,6 +29,7 @@ class FeatureContext extends DrupalContext {
   use PathTrait;
   use ResponseTrait;
   use TaxonomyTrait;
+  use TideBreadcrumbTrait;
   use TideCommonTrait;
   use TideExtensionsTrait;
   use TideEntityTrait;
