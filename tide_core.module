@@ -595,3 +595,12 @@ function tide_core_metatags_alter(array &$metatags, array &$context) {
 function tide_core_schema_metatag_property_type_plugins_alter(array &$definitions) {
   return \Drupal::service(TideCoreHooks::class)->schemaMetatagPropertyTypePluginsAlter($definitions);
 }
+
+/**
+ * Implements hook_config_ignore_settings_alter().
+ */
+function tide_core_config_ignore_settings_alter(array &$ignored) {
+  if (!in_array('taxonomy.vocabulary.*', $ignored, TRUE)) {
+    $ignored[] = 'taxonomy.vocabulary.*';
+  }
+}

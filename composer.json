@@ -317,9 +317,11 @@
             "tbachert/spi": true,
             "symfony/runtime": true
         },
-        "audit": {
-          "block-insecure": false
-      }
+        "policy": {
+            "advisories": {
+                "block": false
+            }
+        }
     },
     "require-dev": {
         "behat/behat": "~3.5",

@@ -8,7 +8,10 @@ use Drupal\simple_oauth\Service\Filesystem\FileSystemChecker;
 use Drupal\simple_oauth\Service\KeyGeneratorService;
 
 /**
- * Class EnvKeyGenerator generates the environment key.
+ * Generates OAuth key pairs from files referenced by environment variables.
+ *
+ * The environment variables TIDE_OAUTH_PRIVATE_KEY and TIDE_OAUTH_PUBLIC_KEY
+ * must contain the file system paths to the respective PEM key files.
  *
  * @package Drupal\tide_oauth
  */
@@ -48,18 +51,18 @@ class EnvKeyGenerator {
   protected $keyGenerator;
 
   /**
-   * Private key.
+   * Path to the private key file, sourced from the environment variable.
    *
    * @var string
    */
-  protected $privateKey;
+  protected $privateKeyPath;
 
   /**
-   * Public key.
+   * Path to the public key file, sourced from the environment variable.
    *
    * @var string
    */
-  protected $publicKey;
+  protected $publicKeyPath;
 
   /**
    * EnvKeyGenerator constructor.
@@ -78,22 +81,23 @@ class EnvKeyGenerator {
     $this->fileSystemChecker = $fs_checker;
     $this->configFactory = $config_factory;
     $this->keyGenerator = $key_generator;
-    $this->privateKey = getenv(static::ENV_PRIVATE_KEY);
-    $this->publicKey = getenv(static::ENV_PUBLIC_KEY);
+    $this->privateKeyPath = getenv(static::ENV_PRIVATE_KEY) ?: NULL;
+    $this->publicKeyPath = getenv(static::ENV_PUBLIC_KEY) ?: NULL;
   }
 
   /**
-   * Check if the keys are set in environment variables.
+   * Check if the key file paths are set in environment variables and readable.
    *
    * @return bool
-   *   TRUE if the Environment variables are set.
+   *   TRUE if both environment variables point to readable key files.
    */
   public function hasEnvKeys() : bool {
-    return !empty($this->privateKey) && !empty($this->publicKey);
+    return !empty($this->privateKeyPath) && is_readable($this->privateKeyPath)
+      && !empty($this->publicKeyPath) && is_readable($this->publicKeyPath);
   }
 
   /**
-   * Generate the OAuth key pairs with Environment variables.
+   * Generate OAuth key pairs from files referenced by environment variables.
    *
    * @return bool
    *   TRUE if the keys are generated.
@@ -107,8 +111,8 @@ class EnvKeyGenerator {
     $this->fileSystem->prepareDirectory($private, FileSystemInterface::CREATE_DIRECTORY);
 
     $key_files = [
-      static::FILE_PRIVATE_KEY => $this->privateKey,
-      static::FILE_PUBLIC_KEY => $this->publicKey,
+      static::FILE_PRIVATE_KEY => file_get_contents($this->privateKeyPath),
+      static::FILE_PUBLIC_KEY => file_get_contents($this->publicKeyPath),
     ];
     foreach ($key_files as $key_uri => $key_content) {
       if (@file_exists($key_uri)) {
