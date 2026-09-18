@@ -5,14 +5,15 @@ namespace Drupal\Tests\tide_data_pipeline\Unit\EventSubscriber;
 use Drupal\jsonapi\ResourceType\ResourceTypeBuildEvent;
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_data_pipeline\EventSubscriber\JsonApiResourceTypeSubscriber;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests the Data Pipeline JSON:API resource type subscriber.
- *
- * @coversDefaultClass \Drupal\tide_data_pipeline\EventSubscriber\JsonApiResourceTypeSubscriber
- *
- * @group tide_data_pipeline
  */
+#[CoversClass(JsonApiResourceTypeSubscriber::class)]
+#[Group('tide_data_pipeline')]
 class JsonApiResourceTypeSubscriberTest extends UnitTestCase {
 
   /**
@@ -22,11 +23,8 @@ class JsonApiResourceTypeSubscriberTest extends UnitTestCase {
    *   The JSON:API resource type name.
    * @param bool $should_be_disabled
    *   Whether the resource type should be disabled.
-   *
-   * @dataProvider resourceTypeProvider
-   *
-   * @covers ::disableInvalidResourceTypes
    */
+  #[DataProvider('resourceTypeProvider')]
   public function testDisableInvalidResourceTypes(string $resource_type_name, bool $should_be_disabled): void {
     $event = $this->createMock(ResourceTypeBuildEvent::class);
     $event->expects($this->once())

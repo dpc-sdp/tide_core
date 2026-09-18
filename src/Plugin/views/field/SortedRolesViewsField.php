@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_core\Plugin\views\field;
 
+use Drupal\user\Entity\Role;
 use Drupal\user\Plugin\views\field\Roles;
 
 /**
@@ -28,8 +29,8 @@ class SortedRolesViewsField extends Roles {
     }
 
     if ($uids) {
-      $roles = user_roles();
-      asort($roles);
+      $roles = Role::loadMultiple();
+      uasort($roles, static fn ($first, $second) => strnatcasecmp($first->label(), $second->label()));
       $result = $this->database->query(
         'SELECT [u].[entity_id] AS [uid], [u].[roles_target_id] AS [rid]
          FROM {user__roles} [u]

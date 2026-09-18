@@ -71,7 +71,7 @@ class WebformPrivacyStatement extends Checkbox {
   /**
    * {@inheritdoc}
    */
-  public function prepare(array &$element, WebformSubmissionInterface $webform_submission = NULL) {
+  public function prepare(array &$element, ?WebformSubmissionInterface $webform_submission = NULL) {
     parent::prepare($element, $webform_submission);
 
     if (isset($element['#privacy_statement_content'])) {

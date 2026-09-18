@@ -5,20 +5,23 @@
  * Contains tide_jira.module.
  */
 
+use Drupal\tide_jira\Hook\TideJiraHooks;
 use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_ENTITY_TYPE_insert().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_jira_node_insert(NodeInterface $node) {
-  tide_jira_handle_save($node);
+  return \Drupal::service(TideJiraHooks::class)->nodeInsert($node);
 }
 
 /**
  * Implements hook_ENTITY_TYPE_update().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_jira_node_update(NodeInterface $node) {
-  tide_jira_handle_save($node);
+  return \Drupal::service(TideJiraHooks::class)->nodeUpdate($node);
 }
 
 /**

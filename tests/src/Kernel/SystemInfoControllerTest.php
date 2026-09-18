@@ -6,12 +6,12 @@ use Drupal\KernelTests\KernelTestBase;
 use Drupal\test_helpers\TestHelpers;
 use Drupal\tide_core\Controller\SystemInfoController;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests the SystemInfoController.
- *
- * @group tide_core
  */
+#[Group('tide_core')]
 class SystemInfoControllerTest extends KernelTestBase {
 
   /**
@@ -19,7 +19,7 @@ class SystemInfoControllerTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['system', 'user', 'field', 'test_helpers', 'monitoring', 'tide_core'];
+  protected static $modules = ['system', 'user', 'field', 'config_update', 'test_helpers', 'monitoring', 'tide_core'];
 
   /**
    * The SystemInfoController instance.

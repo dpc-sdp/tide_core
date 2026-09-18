@@ -21,7 +21,7 @@ class DisallowXSimpleOauthRequests extends DisallowSimpleOauthRequests {
   /**
    * {@inheritdoc}
    */
-  public function isOauth2Request(Request $request) {
+  public function isOauth2Request(Request $request): bool {
     $is_oauth2_requests = parent::isOauth2Request($request);
     if ($is_oauth2_requests) {
       return TRUE;
@@ -29,13 +29,13 @@ class DisallowXSimpleOauthRequests extends DisallowSimpleOauthRequests {
 
     // Both JWT and Simple OAuth expects the same 'Authorization: Bearer TOKEN'
     // header so we accept the extra 'Authorization: OAuth2 TOKEN'.
-    $auth_header = trim($request->headers->get('Authorization', '', TRUE));
+    $auth_header = trim($request->headers->get('Authorization') ?? '');
     if ((strpos($auth_header, 'OAuth2 ') !== FALSE) || ($auth_header === 'OAuth2')) {
       return TRUE;
     }
     // Also accept 'X-OAuth2-Authorization: Bearer TOKEN'
     // and 'X-OAuth2-Authorization: OAuth2 TOKEN' headers.
-    $x_auth_header = trim($request->headers->get('X-OAuth2-Authorization', '', TRUE));
+    $x_auth_header = trim($request->headers->get('X-OAuth2-Authorization') ?? '');
     return (strpos($x_auth_header, 'Bearer ') !== FALSE) || ($x_auth_header === 'Bearer')
       || (strpos($x_auth_header, 'OAuth2 ') !== FALSE) || ($x_auth_header === 'OAuth2');
   }

@@ -46,15 +46,8 @@ class TideTfaUserController extends TfaUserControllerBase {
       return parent::doResetPassLogin($uid, $timestamp, $hash, $request);
     }
 
-    // Create an instance of PrlpController.
-    $prlp_controller = new PrlpController(
-      \Drupal::service('date.formatter'),
-      \Drupal::entityTypeManager()->getStorage('user'),
-      \Drupal::service('user.data'),
-      \Drupal::service('logger.factory')->get('prlp'),
-      \Drupal::service('flood'),
-      \Drupal::service('event_dispatcher')
-    );
+    // Create an instance with PRLP's current autowired dependencies.
+    $prlp_controller = PrlpController::create(\Drupal::getContainer());
 
     /** @var \Drupal\user\UserInterface $user */
     $user = $this->userStorage->load($uid);

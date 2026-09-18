@@ -22,7 +22,7 @@ class DeleteActionForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, int $fid = NULL, string $redirect_info = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ?int $fid = NULL, ?string $redirect_info = NULL) {
     $file = File::load($fid);
     $referenced = file_get_file_references($file, NULL, EntityStorageInterface::FIELD_LOAD_REVISION, '');
     $media = NULL;
@@ -74,13 +74,13 @@ class DeleteActionForm extends FormBase {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_media', $exception);
+      tide_core_log_exception('tide_media', $exception);
     }
     try {
       $form_state->setRedirect($form_state->get('redirect_route'), [$form_state->get('redirect_route_entity_type_id') => $form_state->get('redirect_entity_id')]);
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_media', $exception);
+      tide_core_log_exception('tide_media', $exception);
     }
   }
 

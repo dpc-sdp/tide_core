@@ -178,7 +178,7 @@ class TideSearchIndexFactory extends IndexFactory {
         unset($property['boost']);
       }
       $filtered[$property_key] = $property;
-    };
+    }
     $mapping['body']['properties'] = $filtered;
 
     return $mapping;

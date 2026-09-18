@@ -1,0 +1,9 @@
+'add scheduled transitions node external_site_link':
+  title: 'Add scheduled transitions for node external site link'
+  description: 'Allows users to add scheduled transitions for external site links.'
+'reschedule scheduled transitions node external_site_link':
+  title: 'Reschedule scheduled transitions for node external site link'
+  description: 'Allows users to reschedule scheduled transitions for external site links.'
+'view scheduled transitions node external_site_link':
+  title: 'View scheduled transitions for node external site link'
+  description: 'Allows users to view scheduled transitions for external site links.'

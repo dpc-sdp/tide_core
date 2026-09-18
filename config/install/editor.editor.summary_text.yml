@@ -56,8 +56,11 @@ settings:
         - '<h4 id>'
         - '<h5 id>'
     ckeditor5_list:
-      reversed: false
-      startIndex: true
+      properties:
+        reversed: false
+        startIndex: true
+        styles: false
+      multiBlock: false
     ckeditor5_alignment:
       enabled_alignments:
         - left

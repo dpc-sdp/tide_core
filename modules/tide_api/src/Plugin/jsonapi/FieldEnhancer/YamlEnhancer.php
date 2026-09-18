@@ -2,8 +2,8 @@
 
 namespace Drupal\tide_api\Plugin\jsonapi\FieldEnhancer;
 
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Serialization\Yaml;
 use Drupal\jsonapi_extras\Plugin\ResourceFieldEnhancerBase;
 use Drupal\tide_api\Plugin\jsonapi\TokenReplacementTrait;
 use Shaper\Util\Context;
@@ -94,7 +94,7 @@ class YamlEnhancer extends ResourceFieldEnhancerBase {
           }
         }
         catch (\Exception $e) {
-          watchdog_exception('YamlEnhancer_processText', $e);
+          tide_core_log_exception('YamlEnhancer_processText', $e);
         }
       }
       $result = Html::serialize($dom);

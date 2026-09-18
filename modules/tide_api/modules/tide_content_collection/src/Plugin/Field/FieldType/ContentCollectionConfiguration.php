@@ -41,7 +41,7 @@ class ContentCollectionConfiguration extends StringLongItem {
   /**
    * {@inheritdoc}
    */
-  public function __construct(DataDefinitionInterface $definition, $name = NULL, TypedDataInterface $parent = NULL) {
+  public function __construct(DataDefinitionInterface $definition, $name = NULL, ?TypedDataInterface $parent = NULL) {
     parent::__construct($definition, $name, $parent);
     $this->indexHelper = static::getContainer()->get('tide_content_collection.search_api.index_helper');
     $this->moduleHandler = static::getContainer()->get('module_handler');

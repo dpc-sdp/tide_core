@@ -56,7 +56,7 @@ class TideEntityUrlGenerator extends EntityUrlGenerator {
     $url_generator_manager,
     $memory_cache,
     TideSiteHelper $siteHelper,
-    AliasStorageHelper $aliasStorageHelper
+    AliasStorageHelper $aliasStorageHelper,
   ) {
     parent::__construct(
       $configuration,
@@ -83,7 +83,8 @@ class TideEntityUrlGenerator extends EntityUrlGenerator {
     ContainerInterface $container,
     array $configuration,
     $plugin_id,
-    $plugin_definition): SimpleSitemapPluginBase {
+    $plugin_definition,
+  ): SimpleSitemapPluginBase {
     return new static(
       $configuration,
       $plugin_id,

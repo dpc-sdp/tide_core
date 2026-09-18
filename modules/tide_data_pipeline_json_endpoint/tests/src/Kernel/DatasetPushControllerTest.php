@@ -12,6 +12,8 @@ use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\tide_data_pipeline_json_endpoint\Controller\DatasetPushController;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -20,11 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
  * These tests call the controller method directly, bypassing the routing layer.
  * OAuth bearer token authentication and the _permission access check are
  * enforced by the routing system and should be covered by functional tests.
- *
- * @group tide_data_pipeline_json_endpoint
- *
- * @covers \Drupal\tide_data_pipeline_json_endpoint\Controller\DatasetPushController
  */
+#[CoversClass(DatasetPushController::class)]
+#[Group('tide_data_pipeline_json_endpoint')]
 class DatasetPushControllerTest extends KernelTestBase {
 
   use UserCreationTrait;
@@ -53,11 +53,18 @@ class DatasetPushControllerTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
-    parent::setUp();
+  protected function setUpFilesystem() {
+    parent::setUpFilesystem();
     $this->privatePath = $this->siteDirectory . '/private';
     mkdir($this->privatePath, 0777, TRUE);
     $this->setSetting('file_private_path', $this->privatePath);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
     $this->installEntitySchema('user');
     $this->installEntitySchema('file');
     $this->installEntitySchema('data_pipelines');

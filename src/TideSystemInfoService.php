@@ -85,7 +85,7 @@ class TideSystemInfoService {
     EntityFieldManagerInterface $entity_field_manager,
     LoggerChannelFactoryInterface $logger,
     FileSystemInterface $file_system,
-    SensorRunner $sensor_runner
+    SensorRunner $sensor_runner,
   ) {
     $this->cacheBackend = $cache_backend;
     $this->state = $state;

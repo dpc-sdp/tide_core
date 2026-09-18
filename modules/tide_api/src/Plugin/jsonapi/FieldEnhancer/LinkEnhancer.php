@@ -97,7 +97,7 @@ class LinkEnhancer extends UuidLinkEnhancer {
             $data['url'] = $entity->toUrl('canonical')->toString();
           }
           catch (\Exception $exception) {
-            watchdog_exception('tide_api', $exception);
+            tide_core_log_exception('tide_api', $exception);
             $data['url'] = '/' . $entity_type . '/' . $entity_id;
           }
         }
@@ -130,7 +130,7 @@ class LinkEnhancer extends UuidLinkEnhancer {
                 $data['url'] = $entity->toUrl('canonical')->toString() . $anchor;
               }
               catch (\Exception $exception) {
-                watchdog_exception('tide_api', $exception);
+                tide_core_log_exception('tide_api', $exception);
                 $data['url'] = '/' . $entity_type . '/' . $entity_id;
               }
             }

@@ -54,7 +54,7 @@ class TideCustomUrlGenerator extends CustomUrlGenerator {
     $custom_links,
     $path_validator,
     TideSiteHelper $siteHelper,
-    AliasStorageHelper $aliasStorageHelper
+    AliasStorageHelper $aliasStorageHelper,
   ) {
     parent::__construct(
       $configuration,
@@ -79,7 +79,8 @@ class TideCustomUrlGenerator extends CustomUrlGenerator {
     ContainerInterface $container,
     array $configuration,
     $plugin_id,
-    $plugin_definition): SimpleSitemapPluginBase {
+    $plugin_definition,
+  ): SimpleSitemapPluginBase {
     return new static(
       $configuration,
       $plugin_id,

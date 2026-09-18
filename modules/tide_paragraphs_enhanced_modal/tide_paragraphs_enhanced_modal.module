@@ -5,26 +5,22 @@
  * Module file.
  */
 
-use Drupal\Core\Render\Element;
-use Drupal\paragraphs\Entity\ParagraphsType;
+use Drupal\tide_paragraphs_enhanced_modal\Hook\TideParagraphsEnhancedModalHooks;
 
 /**
  * Implements hook_theme_suggestions_HOOK().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_paragraphs_enhanced_modal_theme_suggestions_paragraphs_add_dialog(array $variables) {
-  return ['paragraphs_add_dialog__enhanced'];
+  return \Drupal::service(TideParagraphsEnhancedModalHooks::class)->themeSuggestionsParagraphsAddDialog($variables);
 }
 
 /**
  * Implements hook_theme().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_paragraphs_enhanced_modal_theme($existing, $type, $theme, $path) {
-  return [
-    'paragraphs_add_dialog__enhanced' => [
-      'template' => 'paragraphs-add-dialog--enhanced',
-      'base hook' => 'paragraphs_add_dialog',
-    ],
-  ];
+  return \Drupal::service(TideParagraphsEnhancedModalHooks::class)->theme($existing, $type, $theme, $path);
 }
 
 /**
@@ -32,23 +28,7 @@ function tide_paragraphs_enhanced_modal_theme($existing, $type, $theme, $path) {
  *
  * @see template_preprocess_paragraphs_add_dialog()
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_paragraphs_enhanced_modal_preprocess_paragraphs_add_dialog(&$variables) {
-  if (isset($variables['buttons'])) {
-    $variables['button_enhancements'] = [];
-    $placeholder_icon_path = \Drupal::service('extension.list.module')->getPath('tide_paragraphs_enhanced_modal') . '/icons/placeholder.svg';
-    $placeholder_icon_url = \Drupal::service('file_url_generator')->generateAbsoluteString($placeholder_icon_path);
-    foreach (Element::children($variables['buttons']) as $key) {
-      $bundle_machine_name = $variables['buttons'][$key]['#bundle_machine_name'];
-      /** @var \Drupal\paragraphs\Entity\ParagraphsType $paragraph_type */
-      $paragraph_type = ParagraphsType::load($bundle_machine_name);
-      if ($paragraph_type) {
-        $variables['button_enhancements'][$key] = [
-          'description' => $paragraph_type->getDescription(),
-          'icon_url' => $paragraph_type->getIconUrl() ?: $placeholder_icon_url,
-          'icon' => $paragraph_type->getIconFile(),
-        ];
-      }
-    }
-    $variables['#attached']['library'][] = 'tide_paragraphs_enhanced_modal/paragraphs.enhanced_modal';
-  }
+  return \Drupal::service(TideParagraphsEnhancedModalHooks::class)->preprocessParagraphsAddDialog($variables);
 }

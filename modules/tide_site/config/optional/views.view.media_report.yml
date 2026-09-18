@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.media.field_secure_file
     - field.storage.media.field_license_type
     - field.storage.media.field_media_department
     - field.storage.media.field_media_site

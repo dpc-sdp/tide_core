@@ -64,7 +64,7 @@ class GetRouteEvent extends Event {
    * @param \Drupal\Core\Cache\CacheableMetadata $cacheable_metadata
    *   The cache metadata.
    */
-  public function __construct(Request $request, array $json_response, EntityInterface $entity = NULL, $code = Response::HTTP_OK, CacheableMetadata $cacheable_metadata = NULL) {
+  public function __construct(Request $request, array $json_response, ?EntityInterface $entity = NULL, $code = Response::HTTP_OK, ?CacheableMetadata $cacheable_metadata = NULL) {
     $this->request = $request;
     $this->setJsonResponse($json_response);
     $this->entity = $entity;
@@ -140,13 +140,6 @@ class GetRouteEvent extends Event {
    */
   public function isBadRequest() {
     return $this->code == Response::HTTP_BAD_REQUEST;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isPropagationStopped(): bool {
-    return !$this->isOk() || parent::isPropagationStopped();
   }
 
   /**

@@ -56,31 +56,31 @@ export default class CalloutEditing extends Plugin {
     });
     const viewDocument = this.editor.editing.view.document;
     const selection = editor.model.document.selection;
-    const callOutCommand = editor.commands.get('callOut');
+    const callOutCommand = editor.commands.get('CalloutCommand');
     this.listenTo(viewDocument, 'enter', (evt, data) => {
       if (!selection.isCollapsed || !callOutCommand.value) {
         return;
       }
       const positionParent = selection.getLastPosition().parent;
       if (positionParent.isEmpty) {
-        editor.execute('callOut');
+        editor.execute('CalloutCommand');
         editor.editing.view.scrollToTheSelection();
         data.preventDefault();
         evt.stop();
       }
-    }, { context: 'callout' });
+    }, { context: 'div' });
     this.listenTo(viewDocument, 'delete', (evt, data) => {
       if (data.direction != 'backward' || !selection.isCollapsed || !callOutCommand.value) {
         return;
       }
       const positionParent = selection.getLastPosition().parent;
       if (positionParent.isEmpty && !positionParent.previousSibling) {
-        editor.execute('callOut');
+        editor.execute('CalloutCommand');
         editor.editing.view.scrollToTheSelection();
         data.preventDefault();
         evt.stop();
       }
-    }, { context: 'callout' });
+    }, { context: 'div' });
   }
 
 }

@@ -8,7 +8,7 @@ use Drupal\Core\Field\EntityReferenceFieldItemList;
 use Drupal\Core\TypedData\ComputedItemListTrait;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
-use Drupal\entity_hierarchy\Storage\NestedSetStorage;
+use Drupal\entity_hierarchy\Storage\QueryBuilder;
 
 /**
  * Class Base for navigation.
@@ -19,25 +19,11 @@ abstract class Base extends EntityReferenceFieldItemList {
   const PUBLICATION_FIELD_NAME = 'field_publication';
 
   /**
-   * The NestedSetStorageFactory service.
+   * The hierarchy query builder factory.
    *
-   * @var \Drupal\entity_hierarchy\Storage\NestedSetStorageFactory
+   * @var \Drupal\entity_hierarchy\Storage\QueryBuilderFactory
    */
-  protected $nestedSetStorageFactory;
-
-  /**
-   * The NestedSetNodeKeyFactory service.
-   *
-   * @var \Drupal\entity_hierarchy\Storage\NestedSetNodeKeyFactory
-   */
-  protected $nestedSetNodeKeyFactory;
-
-  /**
-   * The EntityTreeNodeMapperInterface service.
-   *
-   * @var \Drupal\entity_hierarchy\Storage\EntityTreeNodeMapperInterface
-   */
-  protected $entityTreeNodeMapper;
+  protected $queryBuilderFactory;
 
   /**
    * Returns the currently active global container.
@@ -54,13 +40,11 @@ abstract class Base extends EntityReferenceFieldItemList {
   /**
    * {@inheritdoc}
    */
-  public function __construct(DataDefinitionInterface $definition, $name = NULL, TypedDataInterface $parent = NULL) {
+  public function __construct(DataDefinitionInterface $definition, $name = NULL, ?TypedDataInterface $parent = NULL) {
     parent::__construct($definition, $name, $parent);
 
     $container = static::getContainer();
-    $this->nestedSetStorageFactory = $container->get('entity_hierarchy.nested_set_storage_factory');
-    $this->nestedSetNodeKeyFactory = $container->get('entity_hierarchy.nested_set_node_factory');
-    $this->entityTreeNodeMapper = $container->get('entity_hierarchy.entity_tree_node_mapper');
+    $this->queryBuilderFactory = $container->get('entity_hierarchy.query_builder_factory');
   }
 
   /**
@@ -69,14 +53,14 @@ abstract class Base extends EntityReferenceFieldItemList {
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity.
    *
-   * @return \Drupal\entity_hierarchy\Storage\NestedSetStorage
+   * @return \Drupal\entity_hierarchy\Storage\QueryBuilder
    *   The storage.
    */
-  protected function getStorage(ContentEntityInterface $entity = NULL) {
+  protected function getStorage(?ContentEntityInterface $entity = NULL) {
     if (!$entity) {
       $entity = $this->getEntity();
     }
-    return $this->nestedSetStorageFactory->get(static::PUBLICATION_FIELD_NAME, $entity->getEntityTypeId());
+    return $this->queryBuilderFactory->get(static::PUBLICATION_FIELD_NAME, $entity->getEntityTypeId());
   }
 
   /**
@@ -88,10 +72,12 @@ abstract class Base extends EntityReferenceFieldItemList {
    * @return bool
    *   TRUE if valid.
    */
-  protected function validateEntityType(array $allowed_bundles = [
-    'publication',
-    'publication_page',
-  ]) {
+  protected function validateEntityType(
+    array $allowed_bundles = [
+      'publication',
+      'publication_page',
+    ],
+  ) {
     $entity = $this->getEntity();
     return ($entity->getEntityTypeId() == 'node') && in_array($entity->bundle(), $allowed_bundles) && !$entity->isNew();
   }
@@ -110,23 +96,14 @@ abstract class Base extends EntityReferenceFieldItemList {
     if ($entity->isNew()) {
       return NULL;
     }
-    /** @var \PNX\NestedSet\NestedSetInterface $storage */
     $storage = $this->getStorage();
-    /** @var \PNX\NestedSet\NodeKey $entity_nodekey */
-    $entity_nodekey = $this->nestedSetNodeKeyFactory->fromEntity($entity);
-    if ($entity_nodekey) {
-      /** @var \PNX\NestedSet\Node $root_node */
-      $root_node = $storage->findRoot($entity_nodekey);
-      if ($root_node) {
-        $root_entities = $this->entityTreeNodeMapper->loadAndAccessCheckEntitysForTreeNodes($entity->getEntityTypeId(), [$root_node], $cache);
-        if ($root_entities->contains($root_node)) {
-          /** @var \Drupal\Core\Entity\ContentEntityInterface $root_entity */
-          $root_entity = $root_entities->offsetGet($root_node);
-          if ($root_entity->isDefaultRevision()) {
-            $cache->addCacheableDependency($root_entity);
-            return $root_entity;
-          }
-        }
+    $root_record = $storage->findRoot($entity);
+    if ($root_record && ($root_entity = $root_record->getEntity())) {
+      $access = $root_entity->access('view', NULL, TRUE);
+      $cache->addCacheableDependency($access);
+      if ($access->isAllowed() && $root_entity->isDefaultRevision()) {
+        $cache->addCacheableDependency($root_entity);
+        return $root_entity;
       }
     }
 
@@ -168,7 +145,7 @@ abstract class Base extends EntityReferenceFieldItemList {
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity.
-   * @param \Drupal\entity_hierarchy\Storage\NestedSetStorage $storage
+   * @param \Drupal\entity_hierarchy\Storage\QueryBuilder $storage
    *   The storage.
    * @param \Drupal\Core\Cache\CacheableMetadata $cache
    *   The cache object.
@@ -177,7 +154,7 @@ abstract class Base extends EntityReferenceFieldItemList {
    * @param array $hierarchy
    *   The flatten hierarchy.
    */
-  private function buildFlattenHierarchyRecursive(ContentEntityInterface $entity, NestedSetStorage $storage, CacheableMetadata $cache, $weight, array &$hierarchy) {
+  private function buildFlattenHierarchyRecursive(ContentEntityInterface $entity, QueryBuilder $storage, CacheableMetadata $cache, $weight, array &$hierarchy) {
     $hierarchy[] = [
       'entity_id' => $entity->id(),
       'revision_id' => $entity->getRevisionId(),
@@ -186,23 +163,19 @@ abstract class Base extends EntityReferenceFieldItemList {
       'weight' => $weight,
     ];
 
-    /** @var \PNX\NestedSet\NestedSetInterface $storage */
-    /** @var \PNX\NestedSet\Node[] $children */
-    $children = $storage->findChildren($this->nestedSetNodeKeyFactory->fromEntity($entity));
-    $child_entities = $this->entityTreeNodeMapper->loadAndAccessCheckEntitysForTreeNodes('node', $children, $cache);
-    foreach ($children as $child_weight => $nested_node) {
-      if (!$child_entities->contains($nested_node)) {
-        // Doesn't exist or is access hidden.
+    foreach ($storage->findChildren($entity) as $record) {
+      $child_entity = $record->getEntity();
+      if (!$child_entity) {
         continue;
       }
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $child_entity */
-      $child_entity = $child_entities->offsetGet($nested_node);
-      if (!$child_entity->isDefaultRevision()) {
+      $access = $child_entity->access('view', NULL, TRUE);
+      $cache->addCacheableDependency($access);
+      if (!$access->isAllowed() || !$child_entity->isDefaultRevision()) {
         continue;
       }
 
       $cache->addCacheableDependency($child_entity);
-      $this->buildFlattenHierarchyRecursive($child_entity, $storage, $cache, $child_weight, $hierarchy);
+      $this->buildFlattenHierarchyRecursive($child_entity, $storage, $cache, $record->getWeight(), $hierarchy);
     }
   }
 

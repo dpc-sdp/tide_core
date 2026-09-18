@@ -1,0 +1,186 @@
+<?php
+
+namespace Drupal\tide_edit_protection\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\user\Entity\User;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Hook implementations for the tide edit protection module.
+ */
+class TideEditProtectionHooks {
+
+  /**
+   * Implements hook_help().
+   */
+  #[Hook('help')]
+  public function help($route_name, RouteMatchInterface $route_match) {
+    switch ($route_name) {
+      case 'help.page.tide_edit_protection':
+        $output = '';
+        $output .= '<h3>' . t('About') . '</h3>';
+        $output .= '<p>' . t('Protects unsaved changes.') . '</p>';
+        return $output;
+
+      default:
+    }
+  }
+
+  /**
+   * Implements hook_form_alter().
+   */
+  #[Hook('form_alter')]
+  public function formAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $include = FALSE;
+    $config = \Drupal::config('tide_edit_protection.form');
+
+    // Check entity form conditions.
+    $entity_method = $config->get('entity_method');
+    if (!empty($entity_method)) {
+      $formObject = $form_state->getFormObject();
+      if (method_exists($formObject, 'getEntity')) {
+        $entity = $formObject->getEntity();
+        $entity_type = $entity->getEntityTypeId();
+        $entity_bundle = $entity_type . '__' . $entity->bundle();
+        if ('all' === $entity_method) {
+          $include = TRUE;
+        }
+        elseif ('entity_type' === $entity_method) {
+          $entity_types = $config->get('entity_types');
+          if (in_array($entity_type, $entity_types)) {
+            $include = TRUE;
+          }
+        }
+        elseif ('entity_bundle' === $entity_method) {
+          $entity_bundles = $config->get('entity_bundles');
+          if (in_array($entity_bundle, $entity_bundles)) {
+            $include = TRUE;
+          }
+        }
+      }
+    }
+
+    // Check other forms by form_id, support Regex.
+    if ($include === FALSE) {
+      $alert_form_ids = $config->get('alert_form_ids');
+      if (!empty($alert_form_ids)) {
+        $alert_form_ids = explode("\n", $alert_form_ids);
+        foreach ($alert_form_ids as $alert_form_id) {
+          if (preg_match('/^[a-zA-Z_-]$/', $alert_form_id)) {
+            if ($alert_form_id === $form_id) {
+              $include = TRUE;
+              break;
+            }
+          }
+          else {
+            if (preg_match('/' . $alert_form_id . '/i', $form_id)) {
+              $include = TRUE;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if ($include === TRUE) {
+      $cleaned_id = Html::getId($form_id);
+      $form['#attached']['library'][] = 'tide_edit_protection/form_edit_protection';
+      $form['#attached']['drupalSettings']['tide_edit_protection']['forms'][$cleaned_id] = $cleaned_id;
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_views_exposed_form_alter')]
+  public function formViewsExposedFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    if (\Drupal::moduleHandler()->moduleExists('tide_site_restriction')) {
+      if (!empty($form['#id']) && $form['#id'] == 'views-exposed-form-tide-locked-content-page-1') {
+        if (!empty($form['uid_current'])) {
+          $form['uid_current']['#disabled'] = TRUE;
+          if (\Drupal::currentUser()->hasPermission('admin lock content view') || \Drupal::service('tide_site_restriction.helper')->canBypassRestriction(\Drupal::currentUser())) {
+            $form['uid_current']['#disabled'] = FALSE;
+          }
+        }
+      }
+      if (!empty($form['#id']) && $form['#id'] === 'views-exposed-form-tide-locked-content-page-1') {
+        if (!empty($form['field_node_site_target_id']['#multiple'])) {
+          $form['field_node_site_target_id']['#type'] = 'select2';
+          $form['field_node_site_target_id']['#select2'] = [
+            'allowClear' => TRUE,
+            'dropdownAutoWidth' => FALSE,
+            'width' => 'resolve',
+            'closeOnSelect' => FALSE,
+            'placeholder' => t('- Any -'),
+          ];
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_views_pre_view().
+   */
+  #[Hook('views_pre_view')]
+  public function viewsPreView(ViewExecutable $view, $display_id, array &$args) {
+    if (\Drupal::moduleHandler()->moduleExists('tide_site_restriction')) {
+      if ($view->id() == 'tide_locked_content' && $display_id == 'page_1') {
+        $site_restriction_helper = \Drupal::service('tide_site_restriction.helper');
+        $user_can_bypass_restriction = $site_restriction_helper->canBypassRestriction(\Drupal::currentUser());
+        $filters = $view->display_handler->getOption('filters');
+        if (!$user_can_bypass_restriction) {
+          if (!empty($filters['uid_current'])) {
+            $filters['uid_current']['value'] = 1;
+            $filters['uid_current']['expose']['required'] = TRUE;
+            $view->display_handler->setOption('filters', $filters);
+          }
+        }
+        if (!empty($filters['field_node_site_target_id'])) {
+          $filters['field_node_site_target_id']['expose']['multiple'] = TRUE;
+          $view->display_handler->setOption('filters', $filters);
+          if (!$user_can_bypass_restriction) {
+            $user = User::load(\Drupal::currentUser()->id());
+            $user_sites = $site_restriction_helper->getUserSites($user);
+            $exposed_input = $view->getExposedInput();
+            if (!empty($user_sites) && empty($exposed_input)) {
+              $exposed_input['field_node_site_target_id'] = $user_sites;
+              $view->setExposedInput($exposed_input);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_HOOK().
+   */
+  #[Hook('preprocess_status_messages')]
+  public function preprocessStatusMessages(&$variables) {
+    if ($variables && isset($variables['message_list']) && isset($variables['message_list']['status'])) {
+      foreach ($variables['message_list']['status'] as $key => $message) {
+        if (strpos((string) $message, 'This content is now locked by you against simultaneous editing') !== FALSE) {
+          $variables['message_list']['status'][$key] = t('This content is locked against simultaneous editing. It will remain locked if you navigate away from this page without saving or unlocking it.');
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_entity_predelete().
+   *
+   * @todo Follows up
+   *   https://www.drupal.org/project/content_lock/issues/2951652#comment-12829088
+   */
+  #[Hook('entity_predelete')]
+  public function entityPredelete(EntityInterface $entity) {
+    \Drupal::service('content_lock')
+      ->release($entity);
+  }
+
+}

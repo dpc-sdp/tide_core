@@ -1,0 +1,83 @@
+diff --git a/core/lib/Drupal/Component/Utility/Xss.php b/core/lib/Drupal/Component/Utility/Xss.php
+--- a/core/lib/Drupal/Component/Utility/Xss.php
++++ b/core/lib/Drupal/Component/Utility/Xss.php
+@@ -284,7 +284,23 @@ protected static function attributes($attributes) {
+     $attribute_name = '';
+     $skip = FALSE;
+     $skip_protocol_filtering = FALSE;
+ 
++    // Allow other modules to alter how attribute filtering is handled.
++    $attribute_data = [
++      'attributes' => $attributes,
++      'skip_protocol_filtering' => [
++        'title',
++        'alt',
++        'rel',
++        'property',
++        'class',
++        'datetime',
++      ],
++      'strip_attribute_names' => ['style', 'srcdoc'],
++      'max_attribute_length' => 96,
++    ];
++    \Drupal::moduleHandler()->alter('xss_attributes', $attribute_data);
++
+     while (strlen($attributes) != 0) {
+       // Was the last operation successful?
+       $working = 0;
+@@ -295,14 +311,14 @@ protected static function attributes($attributes) {
+           if (preg_match('/^([-a-zA-Z][-a-zA-Z0-9]*)/', $attributes, $match)) {
+             $attribute_name = strtolower($match[1]);
+             $skip = (
+-              in_array($attribute_name, ['style', 'srcdoc']) ||
++              in_array($attribute_name, $attribute_data['strip_attribute_names']) ||
+               str_starts_with($attribute_name, 'on') ||
+               str_starts_with($attribute_name, 'data-hx') ||
+               str_starts_with($attribute_name, 'hx') ||
+               str_starts_with($attribute_name, '-') ||
+               // Ignore long attributes to avoid unnecessary processing
+               // overhead.
+-              strlen($attribute_name) > 96
++              strlen($attribute_name) > $attribute_data['max_attribute_length']
+             );
+ 
+             // Values for attributes of type URI should be filtered for
+@@ -313,14 +329,8 @@ protected static function attributes($attributes) {
+             // such attributes.
+             // @see \Drupal\Component\Utility\UrlHelper::filterBadProtocol()
+             // @see https://www.w3.org/TR/html4/index/attributes.html
+-            $skip_protocol_filtering = str_starts_with($attribute_name, 'data-') || in_array($attribute_name, [
+-              'title',
+-              'alt',
+-              'rel',
+-              'property',
+-              'class',
+-              'datetime',
+-            ]);
++            $skip_protocol_filtering = str_starts_with($attribute_name, 'data-') ||
++              in_array($attribute_name, $attribute_data['skip_protocol_filtering']);
+ 
+             $working = $mode = 1;
+             $attributes = preg_replace('/^[-a-zA-Z][-a-zA-Z0-9]*/', '', $attributes);
+@@ -356,6 +366,10 @@ protected static function attributes($attributes) {
+             $value = $skip_protocol_filtering ? $match[1] : UrlHelper::filterBadProtocol($match[1]);
+ 
+             if (!$skip) {
++              if (!empty($attribute_data['value_filter_function'])
++                && is_callable($attribute_data['value_filter_function'])) {
++                $value = $attribute_data['value_filter_function']($attribute_name, $value);
++              }
+               $attributes_array[] = "$attribute_name=\"$value\"";
+             }
+             $attributes = preg_replace('/^"[^"]*"(\s+|$)/', '', $attributes);
+@@ -366,6 +380,10 @@ protected static function attributes($attributes) {
+             $value = $skip_protocol_filtering ? $match[1] : UrlHelper::filterBadProtocol($match[1]);
+ 
+             if (!$skip) {
++              if (!empty($attribute_data['value_filter_function'])
++                && is_callable($attribute_data['value_filter_function'])) {
++                $value = $attribute_data['value_filter_function']($attribute_name, $value);
++              }
+               $attributes_array[] = "$attribute_name='$value'";
+             }
+             $attributes = preg_replace("/^'[^']*'(\s+|$)/", '', $attributes);

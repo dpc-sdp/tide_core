@@ -29,9 +29,7 @@ class TidePublicationServiceProvider extends ServiceProviderBase {
           ->setArguments($entity_resource->getArguments())
           ->addMethodCall('setContainer', [new Reference('service_container')])
           ->addMethodCall('setDependencies', [
-            new Reference('entity_hierarchy.nested_set_storage_factory'),
-            new Reference('entity_hierarchy.nested_set_node_factory'),
-            new Reference('entity_hierarchy.entity_tree_node_mapper'),
+            new Reference('entity_hierarchy.query_builder_factory'),
             new Reference('module_handler'),
             new Reference('cache.data'),
           ]);

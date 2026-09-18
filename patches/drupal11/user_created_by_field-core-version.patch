@@ -1,0 +1,12 @@
+diff --git a/user_created_by_field.info.yml b/user_created_by_field.info.yml
+--- a/user_created_by_field.info.yml
++++ b/user_created_by_field.info.yml
+@@ -1,7 +1,7 @@
+ name: 'User Created By Field'
+ type: module
+ description: 'Adds a field to User showing who created the user and creates permissions around that field.'
+-core_version_requirement: ^8 || ^9 || ^10
++core_version_requirement: ^8 || ^9 || ^10 || ^11
+ package: 'User Management'
+ dependencies:
+   - drupal:user

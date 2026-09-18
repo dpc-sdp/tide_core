@@ -5,19 +5,12 @@
  * Provides views data.
  */
 
+use Drupal\tide_dashboard\Hook\TideDashboardHooks;
+
 /**
  * Implements hook_views_data().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_dashboard_views_data() {
-  $data = [];
-
-  $data['views']['views_tide_dashboard_admin_content_search_form'] = [
-    'title' => t('Admin Content Search form'),
-    'help' => t('Insert the Admin Content Search form inside an area.'),
-    'area' => [
-      'id' => 'views_tide_dashboard_admin_content_search_form',
-    ],
-  ];
-
-  return $data;
+  return \Drupal::service(TideDashboardHooks::class)->viewsData();
 }

@@ -149,6 +149,9 @@ class TidePublicationOperation {
       ->getStorage('search_api_index');
     /** @var \Drupal\search_api\IndexInterface $index */
     $index = $index_storage->load('node');
+    if (!$index) {
+      return;
+    }
 
     // Index the Authors field.
     if (!$index->getField('field_publication_authors')) {

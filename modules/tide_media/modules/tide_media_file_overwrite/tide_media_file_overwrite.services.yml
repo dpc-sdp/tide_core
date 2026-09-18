@@ -1,0 +1,3 @@
+services:
+  Drupal\tide_media_file_overwrite\Hook\TideMediaFileOverwriteHooks:
+    autowire: true

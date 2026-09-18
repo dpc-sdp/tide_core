@@ -100,7 +100,12 @@ class JsonEndpointSource extends PluginBase implements DatasetSourceInterface, C
 
       $json_path = self::getFieldValue($dataset, 'json_endpoint_path_to_data');
       if (!empty($json_path)) {
-        $json = $this->createJsonPath($json)->find($json_path)->getData();
+        $matches = $this->createJsonPath($json)->find($json_path)->getData();
+        // JSONPath wraps a directly selected object or list in a result list.
+        // Unwrap that single match so its records are processed individually.
+        $json = count($matches) === 1 && is_array(reset($matches))
+          ? reset($matches)
+          : $matches;
       }
 
       if (is_array($json) && array_values($json) === $json) {

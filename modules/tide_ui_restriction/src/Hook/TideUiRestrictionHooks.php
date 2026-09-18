@@ -1,0 +1,157 @@
+<?php
+
+namespace Drupal\tide_ui_restriction\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+
+/**
+ * Hook implementations for the tide ui restriction module.
+ */
+class TideUiRestrictionHooks {
+
+  /**
+   * Implements hook_menu_links_discovered_alter().
+   */
+  #[Hook('menu_links_discovered_alter')]
+  public function menuLinksDiscoveredAlter(&$links) {
+    if (isset($links['system.modules_list'])) {
+      unset($links['system.modules_list']);
+    }
+
+    if (isset($links['entity.user.collection'])) {
+      if (\Drupal::moduleHandler()->moduleExists('admin_audit_trail')) {
+        $links['tide_ui_restriction.admin_audit_trail.report_form'] = [
+          'title' => t('Admin audit trail'),
+          'description' => t('Get report about cud operation performed by the user on the website.'),
+          'provider' => 'tide_ui_restriction',
+          'route_name' => 'admin_audit_trail.report_form',
+          'menu_name' => 'admin',
+          'parent' => 'entity.user.collection',
+          'weight' => 100,
+        ];
+      }
+      if (\Drupal::moduleHandler()->moduleExists('event_log_track')) {
+        $links['tide_ui_restriction.event_log_track.report_form'] = [
+          'title' => t('Events Log Track'),
+          'description' => t('Get report about cud operation performed by the user on the website.'),
+          'provider' => 'tide_ui_restriction',
+          'route_name' => 'event_log_track.report_form',
+          'menu_name' => 'admin',
+          'parent' => 'entity.user.collection',
+          'weight' => 101,
+        ];
+      }
+    }
+  }
+
+  /**
+   * Implements hook_local_tasks_alter().
+   */
+  #[Hook('local_tasks_alter')]
+  public function localTasksAlter(&$local_tasks) {
+    if (isset($local_tasks['system.modules_uninstall'])) {
+      unset($local_tasks['system.modules_uninstall']);
+    }
+  }
+
+  /**
+   * Implements hook_admin_config_access_check_exclude().
+   */
+  #[Hook('admin_config_access_check_exclude')]
+  public function adminConfigAccessCheckExclude($path) : bool {
+    // Exclude URL Aliases and Redirects from _admin_config_access_check.
+    $paths = [
+      '/admin/config/search',
+      '/admin/config/search/path',
+      '/admin/config/search/redirect',
+      '/admin/config/content/ckeditor-templates/template-selector/{editor}',
+    ];
+    if (in_array($path, $paths, TRUE)) {
+      return TRUE;
+    }
+
+    $prefixes = [
+      '/admin/config/search/path/',
+      '/admin/config/search/redirect/',
+    ];
+    foreach ($prefixes as $prefix) {
+      if (strpos($path, $prefix) === 0) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  #[Hook('form_user_form_alter')]
+  public function formUserFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $current_user = \Drupal::currentUser();
+    if (!$current_user->hasRole('approver_plus')) {
+      return;
+    }
+
+    // Show in the edit form but not editable.
+    if (isset($form['field_department_agency'])) {
+      $form['field_department_agency']['#disabled'] = TRUE;
+      $form['field_department_agency']['#attributes']['class'][] = 'readonly-field';
+    }
+
+    // Hide higher roles.
+    if (isset($form['account']['roles']) && is_array($form['account']['roles']['#options'])) {
+      unset($form['account']['roles']['#options']['administrator']);
+      unset($form['account']['roles']['#options']['site_admin']);
+    }
+
+    // Check if user is editing their own profile.
+    // User can not change their own role and assign sites.
+    $user_being_edited = $form_state->getFormObject()->getEntity();
+    if ($current_user->id() == $user_being_edited->id()) {
+      if (isset($form['account']['roles'])) {
+        $form['account']['roles']['#access'] = FALSE;
+      }
+      if (isset($form['field_user_site'])) {
+        $form['field_user_site']['#access'] = FALSE;
+      }
+    }
+  }
+
+  /**
+   * Implements hook_entity_access().
+   *
+   * Approver plus should not be able to edit higher roles.
+   * Approver plus should not be able to cancel any account.
+   */
+  #[Hook('entity_access')]
+  public function entityAccess(EntityInterface $entity, $operation, AccountInterface $account) {
+    if ($entity->getEntityTypeId() === 'user') {
+      // Block deletion by approver_plus.
+      if ($operation === 'delete' && in_array('approver_plus', $account->getRoles())) {
+        return AccessResult::forbidden();
+      }
+
+      // Block editing higher-role users by approver_plus.
+      if ($operation === 'update' && in_array('approver_plus', $account->getRoles())) {
+        $target_user_roles = $entity->get('roles')->getValue();
+        $target_roles = array_column($target_user_roles, 'target_id');
+
+        // Define the roles considered higher.
+        $restricted_roles = ['administrator', 'site_admin'];
+
+        foreach ($restricted_roles as $restricted_role) {
+          if (in_array($restricted_role, $target_roles)) {
+            return AccessResult::forbidden();
+          }
+        }
+      }
+    }
+    return AccessResult::neutral();
+  }
+
+}

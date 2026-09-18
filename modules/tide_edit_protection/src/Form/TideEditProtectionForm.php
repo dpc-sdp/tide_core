@@ -3,6 +3,7 @@
 namespace Drupal\tide_edit_protection\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfo;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\ConfigFormBase;
@@ -45,8 +46,8 @@ class TideEditProtectionForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManager $entityManager, EntityTypeBundleInfo $bundleInfo) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typed_config_manager, EntityTypeManager $entityManager, EntityTypeBundleInfo $bundleInfo) {
+    parent::__construct($config_factory, $typed_config_manager);
     $this->entityTypeManger = $entityManager;
     $this->entityTypeBundle = $bundleInfo;
   }
@@ -55,7 +56,7 @@ class TideEditProtectionForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('config.factory'), $container->get('entity_type.manager'), $container->get('entity_type.bundle.info'));
+    return new static($container->get('config.factory'), $container->get('config.typed'), $container->get('entity_type.manager'), $container->get('entity_type.bundle.info'));
   }
 
   /**

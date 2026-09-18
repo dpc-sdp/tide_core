@@ -7,7 +7,7 @@ use Drupal\jsonapi\Controller\EntityResource;
 use Drupal\jsonapi\ResourceType\ResourceType;
 use Drupal\node\NodeInterface;
 use Drupal\tide_share_link\Entity\ShareLinkTokenInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Drupal\tide_core\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

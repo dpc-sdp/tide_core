@@ -25,7 +25,7 @@ class ContentCollectionConfigurationProcessed extends TypedData {
   /**
    * {@inheritdoc}
    */
-  public function __construct(DataDefinitionInterface $definition, $name = NULL, TypedDataInterface $parent = NULL) {
+  public function __construct(DataDefinitionInterface $definition, $name = NULL, ?TypedDataInterface $parent = NULL) {
     parent::__construct($definition, $name, $parent);
     if (!$definition->getSetting('text source')) {
       throw new \InvalidArgumentException("The definition's 'text source' key has to specify the name of the text property holding the YAML configuration.");
