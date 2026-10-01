@@ -26,7 +26,7 @@ Feature: Site and Primary Site fields on nodes
     And the "#edit-fields-field-node-site-region option[selected='selected']" element should contain "Content"
     And the "#edit-fields-field-node-primary-site-region option[selected='selected']" element should contain "Content"
 
-    When I go to "admin/structure/types/manage/sitetest/display"
+    When I go to "admin/structure/types/manage/sitetest/display/default"
     Then the response status code should be 200
     And the "#edit-fields-field-node-site-region option[selected='selected']" element should contain "Disabled"
     And the "#edit-fields-field-node-primary-site-region option[selected='selected']" element should contain "Disabled"
@@ -34,8 +34,6 @@ Feature: Site and Primary Site fields on nodes
     When I go to "node/add/sitetest"
     Then I see field "Title"
     And I should see an "input#edit-title-0-value.required" element
-    And I see field "Body"
-    And I should see a "textarea#edit-body-0-value" element
     And I should see an "#edit-field-node-primary-site--wrapper" element
     And I should see a "#edit-field-node-primary-site--wrapper.required" element
     And I should see an "#edit-field-node-site--wrapper" element

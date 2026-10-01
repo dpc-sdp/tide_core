@@ -18,7 +18,7 @@ use Drupal\yaml_content\ContentLoader\ContentLoaderInterface;
  * @param \Drupal\yaml_content\ContentLoader\ContentLoaderInterface $content_loader
  *   The YAML Content Loader service.
  */
-function hook_tide_demo_content_entity_imported(EntityInterface $entity, array $content_data, ContentLoaderInterface $content_loader = NULL) {
+function hook_tide_demo_content_entity_imported(EntityInterface $entity, array $content_data, ?ContentLoaderInterface $content_loader = NULL) {
   \Drupal::messenger()->addMessage(t('The demo @entity_type %label has been imported', [
     '@entity_type' => $entity->getEntityTypeId(),
     '%label' => $entity->label(),

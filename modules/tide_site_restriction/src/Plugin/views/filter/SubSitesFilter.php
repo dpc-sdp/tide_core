@@ -55,7 +55,7 @@ class SubSitesFilter extends ManyToOne {
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, TermStorageInterface $term_storage, AccountInterface $current_user = NULL) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, TermStorageInterface $term_storage, ?AccountInterface $current_user = NULL) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->termStorage = $term_storage;
     $current_user = \Drupal::service('current_user');
@@ -78,7 +78,7 @@ class SubSitesFilter extends ManyToOne {
   /**
    * {@inheritdoc}
    */
-  public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
+  public function init(ViewExecutable $view, DisplayPluginBase $display, ?array &$options = NULL) {
     parent::init($view, $display, $options);
     $this->valueTitle = t('Filter by sites');
     $this->definition['options callback'] = [$this, 'generateOptions'];

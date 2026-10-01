@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\path_alias\PathAliasInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Drupal\tide_core\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Class alias storage helper.
@@ -81,7 +81,7 @@ class AliasStorageHelper {
         }
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_site', $exception);
+        tide_core_log_exception('tide_site', $exception);
       }
     }
 
@@ -118,7 +118,7 @@ class AliasStorageHelper {
    * @return string[]
    *   The list of aliases, keyed by site ID.
    */
-  public function getAllSiteAliases(PathAliasInterface $path, NodeInterface $node = NULL) {
+  public function getAllSiteAliases(PathAliasInterface $path, ?NodeInterface $node = NULL) {
     $aliases = [];
     if (!$node) {
       $node = $this->getNodeFromPathEntity($path);
@@ -148,7 +148,7 @@ class AliasStorageHelper {
    * @param int[] $site_ids
    *   The list of site to create alias (optional).
    */
-  public function createSiteAliases(PathAliasInterface $path, NodeInterface $node = NULL, array $site_ids = []) {
+  public function createSiteAliases(PathAliasInterface $path, ?NodeInterface $node = NULL, array $site_ids = []) {
     if (!$node) {
       $node = $this->getNodeFromPathEntity($path);
     }
@@ -189,7 +189,7 @@ class AliasStorageHelper {
           }
         }
         catch (\Exception $exception) {
-          watchdog_exception('tide_site', $exception);
+          tide_core_log_exception('tide_site', $exception);
         }
       }
     }
@@ -235,7 +235,7 @@ class AliasStorageHelper {
           }
         }
         catch (\Exception $exception) {
-          watchdog_exception('tide_site', $exception);
+          tide_core_log_exception('tide_site', $exception);
         }
       }
     }

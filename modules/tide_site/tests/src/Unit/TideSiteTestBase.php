@@ -7,7 +7,7 @@ use Drupal\Tests\UnitTestCase;
 /**
  * Abstract test class or all tide_site unit tests.
  */
-abstract class TideSiteTest extends UnitTestCase {
+abstract class TideSiteTestBase extends UnitTestCase {
 
   /**
    * Helper to prepare term and specified parents.
@@ -56,10 +56,10 @@ abstract class TideSiteTest extends UnitTestCase {
   }
 
   /**
-   * Helper to prepare class or trait mock.
+   * Helper to prepare a class mock.
    *
    * @param string $class
-   *   Class or trait name to generate the mock.
+   *   Class name to generate the mock.
    * @param array $methodsMap
    *   Optional array of methods and values, keyed by method name. Array
    *   elements can be return values, callbacks created with
@@ -74,26 +74,15 @@ abstract class TideSiteTest extends UnitTestCase {
   protected function prepareMock($class, array $methodsMap = [], array $args = []) {
     $methods = array_keys($methodsMap);
 
-    $reflectionClass = new \ReflectionClass($class);
-
-    if ($reflectionClass->isAbstract()) {
-      $mock = $this->getMockForAbstractClass($class, $args, '', !empty($args), TRUE, TRUE, $methods);
-    }
-    elseif ($reflectionClass->isTrait()) {
-      $mock = $this->getMockForTrait($class, [], '', TRUE, TRUE, TRUE, array_keys($methodsMap));
+    $mock_builder = $this->getMockBuilder($class);
+    if (!empty($args)) {
+      $mock_builder->enableOriginalConstructor()
+        ->setConstructorArgs($args);
     }
     else {
-      $mockBuilder = $this->getMockBuilder($class);
-      if (!empty($args)) {
-        $mockBuilder = $mockBuilder->enableOriginalConstructor()
-          ->setConstructorArgs($args);
-      }
-      else {
-        $mockBuilder = $mockBuilder->disableOriginalConstructor();
-      }
-      $mock = $mockBuilder->setMethods($methods)
-        ->getMock();
+      $mock_builder->disableOriginalConstructor();
     }
+    $mock = $mock_builder->onlyMethods($methods)->getMock();
 
     foreach ($methodsMap as $method => $value) {
       // Handle callback values differently.

@@ -5,3 +5,5 @@ services:
       - '@menu.link_tree'
       - '@entity_type.manager'
       - '@database'
+  Drupal\tide_breadcrumbs\Hook\TideBreadcrumbsHooks:
+    autowire: true

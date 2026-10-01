@@ -1,0 +1,30 @@
+diff --git a/entity_hierarchy.install b/entity_hierarchy.install
+index c3938b9..d071511 100644
+--- a/entity_hierarchy.install
++++ b/entity_hierarchy.install
+@@ -20,18 +20,15 @@ function entity_hierarchy_requirements(string $phase): array {
+   ]);
+   try {
+-    // We can query the session table here as it is created by system module.
+-    // @see system_schema()
+     $query = <<<QUERY
+-WITH RECURSIVE session_loop AS (
+-    SELECT uid
+-    FROM {sessions}
++WITH RECURSIVE cte_test(value) AS (
++    SELECT 1
+     UNION ALL
+-    SELECT uid
+-    from session_loop
+-    WHERE session_loop.uid < 0
++    SELECT value + 1
++    FROM cte_test
++    WHERE value < 1
+ )
+-SELECT uid
+-from session_loop;
++SELECT value
++FROM cte_test;
+ QUERY;
+     \Drupal::database()->query($query)->execute();
+   }

@@ -5,6 +5,7 @@
  * Data Driven Component module functionality.
  */
 
+use Drupal\tide_data_driven_component\Hook\TideDataDrivenComponentHooks;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\field\Entity\FieldConfig;
@@ -25,7 +26,7 @@ use Drupal\field\Entity\FieldStorageConfig;
  *
  * @see options_allowed_values()
  */
-function tide_data_driven_component_items_list(FieldStorageConfig $definition, ContentEntityInterface $entity = NULL, $cacheable) {
+function tide_data_driven_component_items_list(FieldStorageConfig $definition, ?ContentEntityInterface $entity = NULL, &$cacheable = TRUE) {
   $options = [
     'myvic_vicfreewifi' => 'Vic Free Wifi Map',
     'myvic_family_violence_women_programs' => 'Prevention of Family Violence Against Women Programs Map',
@@ -47,12 +48,9 @@ function tide_data_driven_component_items_list(FieldStorageConfig $definition, C
 /**
  * Implements hook_entity_bundle_field_info_alter().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_data_driven_component_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
-  if ($entity_type->id() == 'taxonomy_term' && $bundle == 'data_driven_component') {
-    if (!empty($fields['field_machine_name'])) {
-      $fields['field_machine_name']->addConstraint('TideMachineNameField');
-    }
-  }
+  return \Drupal::service(TideDataDrivenComponentHooks::class)->entityBundleFieldInfoAlter($fields, $entity_type, $bundle);
 }
 
 /**
@@ -70,7 +68,7 @@ function tide_data_driven_component_entity_bundle_field_info_alter(&$fields, Ent
  */
 function tide_data_driven_component_default_value(
   ContentEntityInterface $entity,
-  FieldConfig $config
+  FieldConfig $config,
 ) {
   $default = 'myvic_vicfreewifi';
 

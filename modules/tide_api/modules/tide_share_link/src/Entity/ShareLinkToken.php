@@ -307,7 +307,7 @@ class ShareLinkToken extends ContentEntityBase implements ShareLinkTokenInterfac
   /**
    * {@inheritdoc}
    */
-  public function isSharedNode(NodeInterface $node = NULL, $compare_revision_id = TRUE) : bool {
+  public function isSharedNode(?NodeInterface $node = NULL, $compare_revision_id = TRUE) : bool {
     $shared_node = $this->getSharedNode();
     if (!$shared_node) {
       return FALSE;

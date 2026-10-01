@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_external_site_link;
 
+use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
@@ -130,6 +131,9 @@ class TideExternalSiteLinkOperation {
 
     $index_storage = \Drupal::entityTypeManager()->getStorage('search_api_index');
     $index = $index_storage->load('node');
+    if (!$index) {
+      return;
+    }
 
     // Index the keywords field.
     $keywords_field = new Field($index, 'field_content_keywords');
@@ -137,9 +141,23 @@ class TideExternalSiteLinkOperation {
     $keywords_field->setPropertyPath('field_content_keywords');
     $keywords_field->setDatasourceId('entity:node');
     $keywords_field->setLabel('Content keywords');
-    $index->addField($keywords_field);
+    self::addFieldIfMissing($index, $keywords_field);
 
     $index->save();
+  }
+
+  /**
+   * Adds a field unless it already exists on the index.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index.
+   * @param \Drupal\search_api\Item\Field $field
+   *   The field to add.
+   */
+  private static function addFieldIfMissing(IndexInterface $index, Field $field): void {
+    if (!$index->getField($field->getFieldIdentifier())) {
+      $index->addField($field);
+    }
   }
 
   /**

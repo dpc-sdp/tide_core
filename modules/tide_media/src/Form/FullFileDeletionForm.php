@@ -60,7 +60,7 @@ abstract class FullFileDeletionForm extends ContentEntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, FileSystemInterface $fileSystem, DateFormatterInterface $dateFormatter, EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, FileSystemInterface $fileSystem, DateFormatterInterface $dateFormatter, EntityRepositoryInterface $entity_repository, ?EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, ?TimeInterface $time = NULL) {
     $this->fileStorage = $entityTypeManager->getStorage('file');
     $this->mediaStorage = $entityTypeManager->getStorage('media');
     $this->fileSystem = $fileSystem;
@@ -105,7 +105,7 @@ abstract class FullFileDeletionForm extends ContentEntityConfirmFormBase {
     // Escapes special characters.
     $original_file_name = preg_replace('/([^A-Za-z0-9\s])/', '\\\\$1', $original_file_name);
     // Search the directory.
-    $scanned_results = $this->fileSystem->scanDirectory($parsed['scheme'] . '://' . $parsed['host'], '/^' . $original_file_name . '(_\d+)?\\' . '.' . $file_extension . '/');
+    $scanned_results = $this->fileSystem->scanDirectory($parsed['scheme'] . '://' . $parsed['host'], '/^' . $original_file_name . '(_\d+)?\.' . $file_extension . '/');
     $parent['description']['#markup'] = t('Clicking the button will delete the file entirely from the system');
     $revision_ids = $this->mediaStorage->getQuery()
       ->allRevisions()
@@ -266,7 +266,7 @@ abstract class FullFileDeletionForm extends ContentEntityConfirmFormBase {
         $this->fileStorage->delete($files);
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_media', $exception);
+        tide_core_log_exception('tide_media', $exception);
       }
     }
     if ($media_ids) {
@@ -275,7 +275,7 @@ abstract class FullFileDeletionForm extends ContentEntityConfirmFormBase {
         $this->mediaStorage->delete($media);
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_media', $exception);
+        tide_core_log_exception('tide_media', $exception);
       }
     }
     $this->entity->delete();

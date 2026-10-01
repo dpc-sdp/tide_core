@@ -45,7 +45,7 @@ class ShareLinkTokenStorage extends SqlContentEntityStorage implements ShareLink
         $token->delete();
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_share_link', $exception);
+        tide_core_log_exception('tide_share_link', $exception);
       }
     }
   }
