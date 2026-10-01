@@ -90,7 +90,7 @@
         "drupal/field_permissions": "^1.2",
         "lesstif/php-jira-rest-client": "2.6.0",
         "drupal/jira_rest": "^4.0@beta",
-        "drupal/yaml_content": "dev-3435777-D11-only as 1.0.0-alpha9",
+        "drupal/yaml_content": "3.0.x-dev",
         "drupal/ckeditor5_embedded_content": "dev-3567622-upgrade-for-d11 as 2.0.2",
         "respect/validation": "2.3.1",
         "giggsey/libphonenumber-for-php": "^8.13",
@@ -133,12 +133,7 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8",
-            "exclude": ["drupal/token_conditions", "drupal/yaml_content", "drupal/ckeditor5_embedded_content", "drupal/user_created_by_field"]
-        },
-        "drupal/yaml_content": {
-            "type": "vcs",
-            "no-api": true,
-            "url": "https://git.drupalcode.org/issue/yaml_content-3435777.git"
+            "exclude": ["drupal/token_conditions", "drupal/ckeditor5_embedded_content", "drupal/user_created_by_field"]
         },
         "drupal/ckeditor5_embedded_content": {
             "type": "vcs",
