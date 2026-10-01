@@ -27,34 +27,40 @@ class TideDemoContentHooks {
       }
 
       /** @var \Drupal\Core\Entity\FieldableEntityInterface $entity */
-      $entity_sites = $site_helper->getEntitySites($entity);
       $sites = $site_helper->getAllSites();
       if (!empty($sites)) {
         // Attempt to find the very first Site with the smallest tid.
-        ksort($sites, SORT_ASC);
+        ksort($sites, SORT_NUMERIC);
         try {
+          $field_site_field_name = TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_SITE, $entity_type);
+          $field_primary_site_field_name = TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_PRIMARY_SITE, $entity_type);
+          $site_field = $entity->hasField($field_site_field_name) ? $entity->get($field_site_field_name) : NULL;
+          $primary_site_field = $entity->hasField($field_primary_site_field_name) ? $entity->get($field_primary_site_field_name) : NULL;
+          // Read the current field values rather than cached site assignments.
+          $assigned_sites = $site_field ? array_column($site_field->getValue(), 'target_id', 'target_id') : [];
+          $changed = FALSE;
           foreach ($sites as $site_id => $site) {
             $trail = $site_helper->getSiteTrail($site_id);
             // Site term only has 1 item in its trail - choose this Site.
             if (count($trail) == 1) {
-              $field_site_field_name = TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_SITE, $entity_type);
-              if ($entity->hasField($field_site_field_name)) {
-                // This Site hasn't been assigned to the entity.
-                if (!isset($entity_sites['ids'][$site_id])) {
-                  $entity->{$field_site_field_name}[] = ['target_id' => $site_id];
-                }
+              if ($site_field && !isset($assigned_sites[$site_id])) {
+                $site_field->appendItem(['target_id' => $site_id]);
+                $changed = TRUE;
               }
-              $field_primary_site_field_name = TideSiteFields::normaliseFieldName(TideSiteFields::FIELD_PRIMARY_SITE, $entity_type);
               // Update the Primary Site field if needed.
-              if ($entity->hasField($field_primary_site_field_name) && $entity->get($field_primary_site_field_name)->isEmpty()) {
-                $entity->$field_primary_site_field_name->target_id = $site_id;
+              if ($primary_site_field && $primary_site_field->isEmpty()) {
+                $primary_site_field->setValue([['target_id' => $site_id]]);
+                $changed = TRUE;
               }
-              // Should not create a new revision.
-              if ($entity->getEntityType()->isRevisionable()) {
-                $entity->setNewRevision(FALSE);
-              }
-              $entity->save();
             }
+          }
+          // Persist all site assignments once, and only if anything changed.
+          if ($changed) {
+            // Should not create a new revision.
+            if ($entity->getEntityType()->isRevisionable()) {
+              $entity->setNewRevision(FALSE);
+            }
+            $entity->save();
           }
         }
         catch (\Exception $exception) {
