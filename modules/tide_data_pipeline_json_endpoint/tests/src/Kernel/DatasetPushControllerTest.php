@@ -270,6 +270,38 @@ class DatasetPushControllerTest extends KernelTestBase {
   }
 
   /**
+   * Tests that a processed push invokes the dataset-processed hook.
+   */
+  public function testPushInvokesDatasetProcessedHook(): void {
+    $machine_name = 'push_hook_fires';
+    $dataset = $this->createPublishedDataset($machine_name);
+    $payload = [['suburb' => 'Carlton']];
+
+    $this->assertNull(\Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed'));
+
+    $this->controller()->push($this->jsonRequest($payload), $machine_name);
+
+    $fired = \Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed');
+    $this->assertNotNull($fired);
+    $this->assertSame((int) $dataset->id(), (int) $fired['dataset_id']);
+    $this->assertSame($machine_name, $fired['machine_name']);
+  }
+
+  /**
+   * Tests that a save_only push does not invoke the dataset-processed hook.
+   */
+  public function testSaveOnlyDoesNotInvokeDatasetProcessedHook(): void {
+    $machine_name = 'push_hook_save_only';
+    $this->createPublishedDataset($machine_name);
+
+    $request = $this->jsonRequest([['id' => 1]]);
+    $request->query->set('save_only', '1');
+    $this->controller()->push($request, $machine_name);
+
+    $this->assertNull(\Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed'));
+  }
+
+  /**
    * Tests that a successful push overwrites any previously stored payload.
    */
   public function testPushOverwritesPreviousPayload(): void {

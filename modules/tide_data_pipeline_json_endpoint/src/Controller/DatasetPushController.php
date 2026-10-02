@@ -117,6 +117,9 @@ class DatasetPushController extends ControllerBase {
       DatasetBatchOperations::operationProcess($dataset_id, $context);
     } while ($context['finished'] < 1);
 
+    // @see hook_data_pipeline_json_endpoint_dataset_processed()
+    $this->moduleHandler()->invokeAll('data_pipeline_json_endpoint_dataset_processed', [$dataset, $machine_name]);
+
     return new JsonResponse(['status' => 'processed', 'machine_name' => $machine_name]);
   }
 
