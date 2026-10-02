@@ -209,6 +209,22 @@ curl -s -X POST "https://your-site.com/api/datasets/suburbs/push?save_only=1" \
 
 ---
 
+## Reacting to a completed push
+
+After a dataset has finished being validated and written to its destination(s)
+(and `save_only` was not used), this module invokes
+`hook_data_pipeline_json_endpoint_dataset_processed(DatasetInterface $dataset,
+string $machine_name)`. See `tide_data_pipeline_json_endpoint.api.php` for the
+hook definition.
+
+This module intentionally contains no destination-specific logic (e.g.
+Elasticsearch index cleanup). Since this module is shared across multiple
+sites, implement this hook in a site-specific module if you need to react to
+a push - for example, deleting records from a destination index that no
+longer meet a site-specific business rule.
+
+---
+
 ## Payload storage
 
 Each push overwrites the previous payload. The file is stored at:

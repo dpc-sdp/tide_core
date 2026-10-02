@@ -117,6 +117,15 @@ class DatasetPushController extends ControllerBase {
       DatasetBatchOperations::operationProcess($dataset_id, $context);
     } while ($context['finished'] < 1);
 
+    // Allow other modules to react once a pushed dataset has finished being
+    // validated and written to its destination(s). This module intentionally
+    // has no knowledge of what, if anything, a destination-specific cleanup
+    // step should do (e.g. removing stale records from an index) - that is
+    // left entirely to implementations of this hook.
+    //
+    // @see hook_data_pipeline_json_endpoint_dataset_processed()
+    $this->moduleHandler()->invokeAll('data_pipeline_json_endpoint_dataset_processed', [$dataset, $machine_name]);
+
     return new JsonResponse(['status' => 'processed', 'machine_name' => $machine_name]);
   }
 
