@@ -247,16 +247,16 @@ class TideShareLinkHooks {
     /** @var \Drupal\tide_share_link\Entity\ShareLinkTokenInterface $entity */
     $node = $entity->getSharedNode();
 
-    if (\Drupal::moduleHandler()->moduleExists('admin_audit_trail_node')) {
+    if ($node && \Drupal::moduleHandler()->moduleExists('admin_audit_trail_node')) {
       $log = [
         'type' => 'node',
         'operation' => 'share',
         'description' => t('%type: %title', [
-          '%type' => $node ? $node->getType() : NULL,
-          '%title' => $node ? $node->getTitle() : NULL,
+          '%type' => $node?->getType() ?? '',
+          '%title' => $node?->getTitle() ?? '',
         ]),
         'ref_numeric' => $node->id(),
-        'ref_char' => $node->getTitle(),
+        'ref_char' => $node->getTitle() ?? '',
       ];
       admin_audit_trail_insert($log);
     }
@@ -265,9 +265,9 @@ class TideShareLinkHooks {
       'type' => 'share_link_token',
       'operation' => 'create',
       'description' => t('Node %type: %title (%nid - rev. %vid)', [
-        '%type' => $node ? $node->getType() : NULL,
-        '%title' => $node ? $node->getTitle() : NULL,
-        '%nid' => $entity->getSharedNodeId(),
+        '%type' => $node?->getType() ?? '',
+        '%title' => $node?->getTitle() ?? '',
+        '%nid' => (string) $entity->getSharedNodeId(),
         '%vid' => $entity->getSharedNodeRevisionId() ?: t('current'),
       ]),
       'ref_numeric' => $entity->id(),
@@ -319,9 +319,9 @@ class TideShareLinkHooks {
       'type' => 'share_link_token',
       'operation' => 'delete',
       'description' => t('Node %type: %title (%nid - rev. %vid) - Expiry: %expiry%expired - Status: %status', [
-        '%type' => $node ? $node->getType() : NULL,
-        '%title' => $node ? $node->getTitle() : NULL,
-        '%nid' => $entity->getSharedNodeId(),
+        '%type' => $node?->getType() ?? '',
+        '%title' => $node?->getTitle() ?? '',
+        '%nid' => (string) $entity->getSharedNodeId(),
         '%vid' => $entity->getSharedNodeRevisionId() ?: t('current'),
         '%expiry' => \Drupal::service('date.formatter')->format($entity->getExpiry(), 'short'),
         '%expired' => $entity->isExpired() ? t('(expired)') : '',
