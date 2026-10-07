@@ -7,7 +7,9 @@
 
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldPurger;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Utility\UpdateException;
 use Drupal\editor\EditorInterface;
 use Drupal\filter\FilterFormatInterface;
 
@@ -259,4 +261,58 @@ function _tide_core_post_update_merge_ckeditor_values(array $current, array $tar
   }
 
   return $current;
+}
+
+/**
+ * Refresh the OAuth2 token scopes storage after Simple OAuth's schema updates.
+ */
+function tide_core_post_update_refresh_oauth2_token_scopes(array &$sandbox = []): ?TranslatableMarkup {
+  $sandbox['#finished'] = 1;
+  if (!\Drupal::moduleHandler()->moduleExists('simple_oauth')) {
+    return NULL;
+  }
+
+  // Post-updates run after all hook_update_N() implementations, including the
+  // Simple OAuth 6 migration from role references to scope references.
+  $fields = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('oauth2_token');
+  $definition = $fields['scopes'] ?? NULL;
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $installed = $update_manager->getFieldStorageDefinition('scopes', 'oauth2_token');
+  if (!$definition || !$installed || $definition->getType() !== 'oauth2_scope_reference' || $installed->getType() !== 'oauth2_scope_reference') {
+    throw new UpdateException('The OAuth2 token scopes field must be migrated to Simple OAuth 6 before its storage definition can be refreshed.');
+  }
+
+  // The old and replacement base fields share a storage identifier. Purging
+  // the old role-reference field later would erase the new SQL schema record.
+  // Finish only that already-deleted field's purge before repairing the record.
+  $deleted_fields = \Drupal::service('entity_field.deleted_fields_repository');
+  $storage_id = $definition->getUniqueStorageIdentifier();
+  $deleted = $deleted_fields->getFieldStorageDefinitions()[$storage_id] ?? NULL;
+  if ($deleted) {
+    if (!$deleted->isDeleted() || $deleted->getType() !== 'entity_reference' || $deleted->getSetting('target_type') !== 'user_role') {
+      throw new UpdateException('Unexpected deleted OAuth2 token scopes storage. Inspect the field purge queue before retrying this update.');
+    }
+    if (\Drupal::hasService(FieldPurger::class)) {
+      \Drupal::service(FieldPurger::class)->purgeBatch(50, $storage_id);
+    }
+    else {
+      // Compatibility with Drupal versions before the FieldPurger service.
+      \Drupal::moduleHandler()->loadInclude('field', 'inc', 'field.purge');
+      field_purge_batch(50, $storage_id);
+    }
+    if (isset($deleted_fields->getFieldStorageDefinitions()[$storage_id])) {
+      $sandbox['#finished'] = 0;
+      return NULL;
+    }
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('oauth2_token');
+  if (!$storage->requiresFieldStorageSchemaChanges($definition, $installed)) {
+    return NULL;
+  }
+
+  // Use Drupal's update API and the current definition so token data is kept.
+  // The database update runner handles the subsequent cache rebuild.
+  $update_manager->updateFieldStorageDefinition($definition);
+  return new TranslatableMarkup('Updated the OAuth2 token scopes field storage definition.');
 }
