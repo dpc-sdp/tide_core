@@ -179,8 +179,11 @@ class TideEditProtectionHooks {
    */
   #[Hook('entity_predelete')]
   public function entityPredelete(EntityInterface $entity) {
-    \Drupal::service('content_lock')
-      ->release($entity);
+    $content_lock = \Drupal::service('content_lock');
+    // Configuration entities have string IDs and cannot have content locks.
+    if ($content_lock->isLockable($entity)) {
+      $content_lock->release($entity);
+    }
   }
 
 }

@@ -47,19 +47,12 @@ function _tide_oauth_update_consumer_long_description_field() {
       'bundle' => 'consumer',
       'label' => 'Long Description',
       'description' => '',
-      'settings' => [],
+      'settings' => ['allowed_formats' => ['rich_text', 'admin_text', 'plain_text']],
       'field_type' => 'text_long',
       'required' => FALSE,
       'dependencies' => [
         'config' => ['field.storage.consumer.field_long_description'],
         'module' => ['allowed_formats', 'text'],
-      ],
-      'third_party_settings' => [
-        'allowed_formats' => [
-          'rich_text' => 'rich_text',
-          'admin_text' => 'admin_text',
-          'plain_text' => 'plain_text',
-        ],
       ],
     ]);
     $uuid = _tide_retrieve_config_uuid('field.field.consumer.consumer.' . $field_name);

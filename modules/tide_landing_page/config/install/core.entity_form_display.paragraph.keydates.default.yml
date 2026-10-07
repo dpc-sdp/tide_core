@@ -35,7 +35,6 @@ content:
         maxlength_js: 200
         maxlength_js_label: 'A brief description of the public holiday or special date. Max @limit characters, remaining: <strong>@remaining</strong>'
         maxlength_js_enforce: false
-        maxlength_js_truncate_html: false
     region: content
   field_paragraph_title:
     weight: 2

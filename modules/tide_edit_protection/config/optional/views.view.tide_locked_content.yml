@@ -10,7 +10,6 @@ dependencies:
   module:
     - tide_site
     - content_lock
-    - content_lock_timeout
     - tide_edit_protection
     - node
     - user

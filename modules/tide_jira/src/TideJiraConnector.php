@@ -7,6 +7,7 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
+use JiraRestApi\Issue\IssueType;
 
 /**
  * Tide JIRA Connector class.
@@ -146,10 +147,13 @@ class TideJiraConnector {
    */
   public function createTicket($title, $bundle, $id, $email, $account_id, $description, $project, $site, $site_section, $page_department, $editor_department) {
     $request_type = strtolower($project) . '/' . $this->config->get('customer_request_type_id');
+    // An IssueType object is supported by both legacy and current clients.
+    $issue_type = new IssueType();
+    $issue_type->name = $this->config->get('issue_type');
     $issueField = new IssueField();
     $issueField->setProjectKey($project)
       ->setSummary($title)
-      ->setIssueType($this->config->get('issue_type'))
+      ->setIssueType($issue_type)
       ->addCustomField($this->config->get('customer_request_type_field_id'), $request_type)
       ->addCustomField($this->config->get('content_type'), $bundle)
       ->addCustomField($this->config->get('node_id'), $id)
@@ -160,6 +164,8 @@ class TideJiraConnector {
       ->setReporterName($email)
       ->setReporterAccountId($account_id)
       ->setDescription($description);
+    // Creating an issue only needs the project key, not its versions.
+    $issueField->project->versions = NULL;
     $link = $this->jiraRestWrapperService->getIssueService()->create($issueField);
     return $link->key;
   }

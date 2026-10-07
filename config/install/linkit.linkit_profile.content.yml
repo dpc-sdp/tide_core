@@ -12,7 +12,6 @@ matchers:
     id: 'entity:node'
     weight: 0
     settings:
-      result_description: ''
       bundles: {  }
       group_by_bundle: true
       include_unpublished: true

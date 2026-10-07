@@ -52,4 +52,4 @@ config_devel:
   optional:
     - field.field.node.news.field_show_content_rating
     - jsonapi_extras.jsonapi_resource_config.node--news
-    - simple_sitemap.bundle_settings.node.news
+    - simple_sitemap.bundle_settings.default.node.news

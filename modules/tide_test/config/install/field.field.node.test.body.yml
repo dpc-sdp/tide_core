@@ -7,11 +7,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text: '0'
-    admin_text: '0'
-    plain_text: '0'
 id: node.test.body
 field_name: body
 entity_type: node
@@ -24,4 +19,5 @@ default_value: {  }
 default_value_callback: ''
 settings:
   display_summary: true
+  allowed_formats: {  }
 field_type: text_with_summary

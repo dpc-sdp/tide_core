@@ -55,7 +55,7 @@ config_devel:
     - field.storage.paragraph.field_show_time
     - node.type.event
     - paragraphs.paragraphs_type.event_details
-    - simple_sitemap.bundle_settings.node.event
+    - simple_sitemap.bundle_settings.default.node.event
     - taxonomy.vocabulary.event
     - taxonomy.vocabulary.event_requirements
     - user.role.event_author

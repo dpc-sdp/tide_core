@@ -38,7 +38,7 @@ config_devel:
     - field.storage.node.field_profile_intro_text
     - field.storage.node.field_year
     - node.type.profile
-    - simple_sitemap.bundle_settings.node.profile
+    - simple_sitemap.bundle_settings.default.node.profile
     - taxonomy.vocabulary.expertise
     - taxonomy.vocabulary.profile_category
   optional:

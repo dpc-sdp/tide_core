@@ -1,0 +1,36 @@
+diff --git a/config/schema/jsonapi_extras.schema.yml b/config/schema/jsonapi_extras.schema.yml
+--- a/config/schema/jsonapi_extras.schema.yml
++++ b/config/schema/jsonapi_extras.schema.yml
+@@ -53,6 +53,9 @@ jsonapi_extras.enhancer_plugin.date_time:
+     dateTimeFormat:
+       type: string
+ 
++jsonapi_extras.enhancer_plugin.date_time_from_string:
++  type: jsonapi_extras.enhancer_plugin.date_time
++
+ jsonapi_extras.enhancer_plugin.nested:
+   type: mapping
+   mapping:
+diff --git a/config/schema/jsonapi_extras.schema.yml b/config/schema/jsonapi_extras.schema.yml
+--- a/config/schema/jsonapi_extras.schema.yml
++++ b/config/schema/jsonapi_extras.schema.yml
+@@ -61,6 +61,19 @@ jsonapi_extras.enhancer_plugin.nested:
+     path:
+       type: string
+ 
++jsonapi_extras.enhancer_plugin.uuid_link:
++  type: mapping
++  label: 'Internal link UUID enhancer settings'
++  mapping: { }
++
++jsonapi_extras.enhancer_plugin.url_link:
++  type: mapping
++  label: 'URL link enhancer settings'
++  mapping:
++    absolute_url:
++      type: integer
++      label: 'Generate absolute URLs'
++
+ jsonapi_extras.settings:
+   type: config_object
+   label: 'JSON:API Extras settings'
