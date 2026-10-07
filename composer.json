@@ -207,7 +207,8 @@
             },
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch",
-                "Use the current endpoint collection route for module configuration -  https://www.drupal.org/project/jira_rest/issues/3615985#comment-16726111": "https://www.drupal.org/files/issues/2026-08-11/jira-rest-configure-route_3615985_2.patch"
+                "Use the current endpoint collection route for module configuration -  https://www.drupal.org/project/jira_rest/issues/3615985#comment-16726111": "https://www.drupal.org/files/issues/2026-08-11/jira-rest-configure-route_3615985_2.patch",
+                "Display the saved username key and honor the configured Jira API version - https://git.drupalcode.org/project/jira_rest/-/work_items/3615986": "https://raw.githubusercontent.com/dpc-sdp/tide_core/feature/d11_upgrade/patches/drupal11/jira-rest-endpoint-settings-3615986.patch"
             },
             "drupal/webform": {
                 "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-16202432": "https://www.drupal.org/files/issues/2025-07-23/exporting-webform-submission-static-batch-process-3348336-9.patch"

@@ -86,16 +86,22 @@ class TideJiraConnector {
    * @throws \JiraRestApi\JiraException
    */
   public function getJiraAccountIdByEmail($email) {
-    if ($cache = $this->cache->get($this->getUserCid($email))) {
+    $cache = $this->cache->get($this->getUserCid($email));
+    if ($cache && !empty($cache->data['account_id'])) {
       return $cache->data['account_id'];
     }
     else {
       $us = $this->jiraRestWrapperService->getUserService();
 
       try {
-        $user = $us->findUsers(['query' => $email])[0];
+        $user = $us->findUsers(['query' => $email])[0] ?? NULL;
       }
       catch (\Exception $e) {
+        $this->logger->warning('Could not find JIRA account for ' . $email);
+        return NULL;
+      }
+
+      if (empty($user->accountId)) {
         $this->logger->warning('Could not find JIRA account for ' . $email);
         return NULL;
       }
@@ -126,8 +132,8 @@ class TideJiraConnector {
    *   User email.
    * @param string $account_id
    *   Account ID from JIRA.
-   * @param string $description
-   *   Ticket description.
+   * @param string|array $description
+   *   Ticket description as plain text or an Atlassian Document Format document.
    * @param string $project
    *   The Jira project.
    * @param string $site
@@ -162,8 +168,15 @@ class TideJiraConnector {
       ->addCustomField($this->config->get('page_department'), $page_department)
       ->addCustomField($this->config->get('editor_department'), $editor_department)
       ->setReporterName($email)
-      ->setReporterAccountId($account_id)
-      ->setDescription($description);
+      ->setReporterAccountId($account_id);
+    if (is_array($description)) {
+      // The SDK's text setter cannot accept ADF. Its additional-field serializer
+      // preserves the document as an object in the outgoing description field.
+      $issueField->addCustomField('description', $description);
+    }
+    else {
+      $issueField->setDescription($description);
+    }
     // Creating an issue only needs the project key, not its versions.
     $issueField->project->versions = NULL;
     $link = $this->jiraRestWrapperService->getIssueService()->create($issueField);
