@@ -34,7 +34,7 @@ use Drupal\data_pipelines\Entity\DatasetInterface;
  * @param string $machine_name
  *   The machine name of the dataset, as used in the push URL.
  */
-function hook_data_pipeline_json_endpoint_dataset_processed(DatasetInterface $dataset, string $machine_name) {
+function hook_tide_data_pipeline_json_endpoint_dataset_processed(DatasetInterface $dataset, string $machine_name) {
   // Example: react only to a specific dataset.
   if ($machine_name !== 'stolen_vehicles') {
     return;

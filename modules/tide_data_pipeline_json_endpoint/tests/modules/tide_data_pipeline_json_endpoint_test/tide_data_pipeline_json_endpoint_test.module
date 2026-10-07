@@ -8,13 +8,13 @@
 use Drupal\data_pipelines\Entity\DatasetInterface;
 
 /**
- * Implements hook_data_pipeline_json_endpoint_dataset_processed().
+ * Implements hook_tide_data_pipeline_json_endpoint_dataset_processed().
  *
  * Records that the hook fired so kernel tests can assert on it, without
  * this test module needing to know about any real destination cleanup
  * logic (that is exercised separately by site-specific modules).
  */
-function tide_data_pipeline_json_endpoint_test_data_pipeline_json_endpoint_dataset_processed(DatasetInterface $dataset, string $machine_name) {
+function tide_data_pipeline_json_endpoint_test_tide_data_pipeline_json_endpoint_dataset_processed(DatasetInterface $dataset, string $machine_name) {
   \Drupal::state()->set('tide_data_pipeline_json_endpoint_test.dataset_processed', [
     'dataset_id' => $dataset->id(),
     'machine_name' => $machine_name,

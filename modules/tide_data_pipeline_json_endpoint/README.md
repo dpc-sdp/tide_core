@@ -213,9 +213,9 @@ curl -s -X POST "https://your-site.com/api/datasets/suburbs/push?save_only=1" \
 
 After a dataset has finished being validated and written to its destination(s)
 (and `save_only` was not used), this module invokes
-`hook_data_pipeline_json_endpoint_dataset_processed(DatasetInterface $dataset,
-string $machine_name)`. See `tide_data_pipeline_json_endpoint.api.php` for the
-hook definition.
+`hook_tide_data_pipeline_json_endpoint_dataset_processed(DatasetInterface
+$dataset, string $machine_name)`. See
+`tide_data_pipeline_json_endpoint.api.php` for the hook definition.
 
 This module intentionally contains no destination-specific logic (e.g.
 Elasticsearch index cleanup). Since this module is shared across multiple
