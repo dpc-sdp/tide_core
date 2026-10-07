@@ -173,7 +173,7 @@ function tide_alert_update_10001() {
 /**
  * Update permissions.
  */
-function tide_alert_update_10002() {
+function tide_alert_update_10003() {
   $role_permissions_map = [
     'editor' => [
       'create alert content',

@@ -30,8 +30,7 @@ Feature: Media browser
 
     When I click on iFramed element ".views-field-entity-browser-select .form-checkbox" within "entity_browser_iframe_tide_media_browser_iframe"
     Then I click on iFramed element "#edit-submit" within "entity_browser_iframe_tide_media_browser_iframe"
-    And I wait for AJAX to finish
-    Then I should see the text "Embed media item"
+    And I wait for the dialog title "Embed media item" to appear
 
     When I check "Display last update date"
     Then I click on the element ".ui-dialog-buttonpane .button--primary"

@@ -78,14 +78,17 @@ class TideSiteMenuAutocreateTest extends TideSiteTest {
 
   /**
    * Data provider to test makeMenuName() method.
+   *
+   * Menu names are built from term ids (mocked sequentially from 1, ordered
+   * from the term to the "oldest" parent) and truncated to 32 characters.
    */
   public function providerMakeMenuName() {
     return [
       ['abc', [], 'site-abc'],
-      ['abc', ['t1'], 'site-abc-t1'],
-      ['abc', ['t1', 'p1'], 'site-abc-p1-t1'],
-      ['abc', ['t1', 'p1', 'p2'], 'site-abc-p2-p1-t1'],
-      ['abc', ['t1', 'p1 p11', 'p2 p21'], 'site-abc-p2-p21-p1-p11-t1'],
+      ['abc', ['t1'], 'site-abc-1'],
+      ['abc', ['t1', 'p1'], 'site-abc-2-1'],
+      ['abc', ['t1', 'p1', 'p2'], 'site-abc-3-2-1'],
+      ['a very long menu title indeed', ['t1', 'p1'], 'site-a-very-long-menu-title-inde'],
     ];
   }
 

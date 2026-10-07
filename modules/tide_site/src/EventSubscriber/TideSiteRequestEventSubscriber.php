@@ -222,7 +222,7 @@ class TideSiteRequestEventSubscriber implements EventSubscriberInterface {
       else {
         $site_filter = [
           'condition' => [
-            'path' => $field_site_name . '.tid',
+            'path' => $field_site_name,
             'operator' => 'IS NULL',
           ],
         ];

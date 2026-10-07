@@ -3,7 +3,6 @@
 namespace Drupal\tide_core;
 
 use Drupal\Core\Field\FieldItemList;
-use Drupal\Core\Render\RenderContext;
 use Drupal\Core\TypedData\ComputedItemListTrait;
 use Drupal\node\NodeInterface;
 use Drupal\schema_metatag\SchemaMetatagManager;
@@ -11,9 +10,12 @@ use Drupal\schema_metatag\SchemaMetatagManager;
 /**
  * Computed field exposing the assembled JSON-LD string for a node.
  *
- * Generic: works for any node bundle. The field is empty unless the bundle
- * has schema_metatag tags configured (via metatag defaults), so it is safe to
- * register on every bundle.
+ * Generic: works for any node bundle. The JSON-LD is assembled from the
+ * 'metatag' computed field provided by the Metatag module, which runs the
+ * metatag pipeline once per entity object and is memoised on it. Sharing that
+ * single pass keeps this field cheap: JSON:API serializes both fields on
+ * every node response, and running the pipeline a second time here doubled
+ * the cost of every node serialization.
  */
 class JsonLdComputedField extends FieldItemList {
 
@@ -24,59 +26,48 @@ class JsonLdComputedField extends FieldItemList {
    */
   protected function computeValue() {
     $entity = $this->getEntity();
-    if (!$entity instanceof NodeInterface || $entity->isNew()) {
+    if (!$entity instanceof NodeInterface || $entity->isNew() || !$entity->hasField('metatag')) {
       return;
     }
 
-    $renderer = \Drupal::service('renderer');
-    $metatag_manager = \Drupal::service('metatag.manager');
-    $module_handler = \Drupal::service('module_handler');
-
-    // Make the node resolvable by the schema BreadcrumbList property type,
-    // which runs deep inside the metatag pipeline without access to the entity.
-    \Drupal::service('tide_core.breadcrumb')->setContextNode($entity);
-
-    // The metatag pipeline generates URLs which leak BubbleableMetadata into
-    // the active render context. Wrap in a context so we don't trigger
-    // LeakedMetadata exceptions when this field is computed outside HTML
-    // rendering (e.g. via JSON:API).
-    $jsonld = $renderer->executeInRenderContext(new RenderContext(), function () use ($entity, $metatag_manager, $module_handler) {
-      $metatags = [];
-      foreach ($metatag_manager->tagsFromEntityWithDefaults($entity) as $tag => $data) {
-        $metatags[$tag] = $data;
+    // Reuse the raw elements computed by the 'metatag' field instead of
+    // re-running the metatag pipeline. The breadcrumb context node is scoped
+    // inside that single pipeline run by tide_core_metatags_alter(), and the
+    // pipeline itself executes in the metatag field's own render context.
+    $elements = [];
+    foreach ($entity->get('metatag') as $item) {
+      $value = $item->getValue();
+      if (!empty($value['attributes']['schema_metatag'])) {
+        // parseJsonld() expects html_head-style entries: [element, key].
+        $elements[] = [['#attributes' => $value['attributes']]];
       }
-      $context = ['entity' => $entity];
-      $module_handler->alter('metatags', $metatags, $context);
-      $elements = $metatag_manager->generateElements($metatags, $entity);
-      $elements = $elements['#attached']['html_head'] ?? $elements;
+    }
 
-      $items = SchemaMetatagManager::parseJsonld($elements);
-      if (empty($items)) {
-        return '';
-      }
+    $items = SchemaMetatagManager::parseJsonld($elements);
+    if (empty($items)) {
+      return;
+    }
 
-      // parseJsonld() only skips groups whose sole key is @type, so a group
-      // with an empty value (e.g. a WebPage whose breadcrumb is empty because
-      // the site has breadcrumbs disabled) still renders as "breadcrumb": [].
-      // Trim empty values from each @graph entry and drop entries that end up
-      // empty or @type-only.
-      if (!empty($items['@graph'])) {
-        $graph = [];
-        foreach ($items['@graph'] as $entry) {
-          $trimmed = SchemaMetatagManager::arrayTrim($entry);
-          if (!empty($trimmed)) {
-            $graph[] = $trimmed;
-          }
+    // parseJsonld() only skips groups whose sole key is @type, so a group
+    // with an empty value (e.g. a WebPage whose breadcrumb is empty because
+    // the site has breadcrumbs disabled) still renders as "breadcrumb": [].
+    // Trim empty values from each @graph entry and drop entries that end up
+    // empty or @type-only.
+    if (!empty($items['@graph'])) {
+      $graph = [];
+      foreach ($items['@graph'] as $entry) {
+        $trimmed = SchemaMetatagManager::arrayTrim($entry);
+        if (!empty($trimmed)) {
+          $graph[] = $trimmed;
         }
-        if (empty($graph)) {
-          return '';
-        }
-        $items['@graph'] = $graph;
       }
+      if (empty($graph)) {
+        return;
+      }
+      $items['@graph'] = $graph;
+    }
 
-      return SchemaMetatagManager::encodeJsonld($items) ?: '';
-    });
-
+    $jsonld = SchemaMetatagManager::encodeJsonld($items) ?: '';
     if ($jsonld !== '') {
       $this->list[0] = $this->createItem(0, $this->rewriteUrls($jsonld, $this->getFrontEndBaseUrl($entity)));
     }

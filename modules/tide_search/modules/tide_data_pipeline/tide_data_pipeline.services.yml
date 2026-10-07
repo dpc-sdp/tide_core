@@ -3,3 +3,7 @@ services:
     class: Drupal\tide_data_pipeline\Source\FileResource\PrivateFile
     tags:
       - { name: data_pipelines_source_resource }
+  tide_data_pipeline.jsonapi_resource_type_subscriber:
+    class: Drupal\tide_data_pipeline\EventSubscriber\JsonApiResourceTypeSubscriber
+    tags:
+      - { name: event_subscriber }

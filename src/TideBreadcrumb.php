@@ -5,8 +5,7 @@ namespace Drupal\tide_core;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
-use Drupal\Core\Menu\MenuLinkTreeInterface;
-use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\Core\Menu\MenuLinkManagerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -34,11 +33,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class TideBreadcrumb {
 
   /**
-   * The menu link tree service.
+   * The menu link manager.
    *
-   * @var \Drupal\Core\Menu\MenuLinkTreeInterface
+   * @var \Drupal\Core\Menu\MenuLinkManagerInterface
    */
-  protected $menuTree;
+  protected $menuLinkManager;
 
   /**
    * The module handler.
@@ -55,14 +54,17 @@ class TideBreadcrumb {
   protected $requestStack;
 
   /**
-   * Per-request static cache of computed trails, keyed by node id.
+   * Per-request cache of computed trails.
+   *
+   * Keys include revision, language, and effective site so previews,
+   * translations, and multisite responses cannot share a trail accidentally.
    *
    * @var array
    */
   protected $trails = [];
 
   /**
-   * Cache tags discovered while building the current trail.
+   * Cache tags discovered for each cached trail.
    *
    * @var array
    */
@@ -78,15 +80,15 @@ class TideBreadcrumb {
   /**
    * Constructs a new TideBreadcrumb service.
    *
-   * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
-   *   The menu link tree service.
+   * @param \Drupal\Core\Menu\MenuLinkManagerInterface $menu_link_manager
+   *   The menu link manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack, used to resolve the site currently being viewed.
    */
-  public function __construct(MenuLinkTreeInterface $menu_tree, ModuleHandlerInterface $module_handler, RequestStack $request_stack) {
-    $this->menuTree = $menu_tree;
+  public function __construct(MenuLinkManagerInterface $menu_link_manager, ModuleHandlerInterface $module_handler, RequestStack $request_stack) {
+    $this->menuLinkManager = $menu_link_manager;
     $this->moduleHandler = $module_handler;
     $this->requestStack = $request_stack;
   }
@@ -103,21 +105,20 @@ class TideBreadcrumb {
    *   node itself is not included). Empty when there is no resolvable trail.
    */
   public function build(NodeInterface $node): array {
-    $nid = $node->id() ?: 'new';
     // Resolve the site being viewed first: the trail (and the per-site toggle)
-    // vary per site on a multisite CMS, so the static cache is keyed by both.
+    // vary per site on a multisite CMS.
     $site_term = $this->getViewingSite($node);
-    $cache_key = $nid . ':' . ($site_term ? $site_term->id() : 'none');
+    $cache_key = $this->getCacheKey($node, $site_term);
     if (isset($this->trails[$cache_key])) {
       return $this->trails[$cache_key];
     }
 
-    $this->cacheTags = $node->getCacheTags();
+    $this->cacheTags[$cache_key] = $node->getCacheTags();
     $menu_name = NULL;
     $trail = [];
 
     if ($site_term instanceof TermInterface) {
-      $this->cacheTags = Cache::mergeTags($this->cacheTags, $site_term->getCacheTags());
+      $this->cacheTags[$cache_key] = Cache::mergeTags($this->cacheTags[$cache_key], $site_term->getCacheTags());
 
       // Per-site switch (default off): only build a breadcrumb when the site
       // being viewed has it explicitly enabled. When disabled, emit nothing and
@@ -133,7 +134,7 @@ class TideBreadcrumb {
       // Find the node's ancestors within the site's main menu.
       $menu_name = $this->getSiteMainMenu($site_term);
       if ($menu_name && !$node->isNew()) {
-        $this->cacheTags[] = 'config:system.menu.' . $menu_name;
+        $this->cacheTags[$cache_key][] = 'config:system.menu.' . $menu_name;
         $ancestors = $this->getMenuAncestors($menu_name, (string) $node->id());
         if ($ancestors) {
           $trail = array_merge($trail, $ancestors);
@@ -315,88 +316,68 @@ class TideBreadcrumb {
    *   in the menu or sits at the top level.
    */
   protected function getMenuAncestors(string $menu_name, string $target_nid): array {
-    $parameters = (new MenuTreeParameters())->onlyEnabledLinks();
-    $tree = $this->menuTree->load($menu_name, $parameters);
-    if (empty($tree)) {
+    // The previous implementation loaded and recursively scanned the complete
+    // menu tree. Worse, it generated a URL (including path-alias processing)
+    // for every visited link before checking whether that link targeted the
+    // node. A JSON:API collection repeated that O(menu size) work per node.
+    // The menu tree storage has an index for route name and parameters, so find
+    // matching links directly and generate URLs only for their ancestors.
+    $targets = $this->menuLinkManager->loadLinksByRoute(
+      'entity.node.canonical',
+      ['node' => $target_nid],
+      $menu_name,
+    );
+    if (empty($targets)) {
       return [];
     }
 
-    $path = $this->searchTree($tree, $target_nid);
-    if (!$path) {
-      return [];
-    }
-
-    // Drop the node's own link; keep only its ancestors.
-    array_pop($path);
-    return $path;
-  }
-
-  /**
-   * Recursively searches a menu tree for the path to a node.
-   *
-   * @param \Drupal\Core\Menu\MenuLinkTreeElement[] $tree
-   *   The (sub)tree to search.
-   * @param string $target_nid
-   *   The node id to locate.
-   * @param array $path
-   *   The accumulated path of crumbs to the current branch.
-   *
-   * @return array|null
-   *   The full path of crumbs from the menu root to the matched node
-   *   (inclusive), or NULL when the node is not found in this branch.
-   */
-  protected function searchTree(array $tree, string $target_nid, array $path = []): ?array {
-    foreach ($tree as $element) {
-      $link = $element->link;
-      if (!$link->isEnabled()) {
+    // More than one link in the same menu may target a node. Select the first
+    // candidate whose complete branch is enabled. If a disabled candidate is
+    // encountered, continue looking for another valid occurrence.
+    foreach ($targets as $target) {
+      if (!$target->isEnabled()) {
         continue;
       }
 
-      try {
-        $url_object = $link->getUrlObject();
-        $crumb = [
-          'title' => $link->getTitle(),
-          'url' => $url_object->toString(),
-        ];
-      }
-      catch (\Exception $e) {
-        continue;
-      }
+      $ancestors = [];
+      $parent_id = $target->getParent();
+      $visited = [];
+      $valid = TRUE;
 
-      $current_path = $path;
-      $current_path[] = $crumb;
+      while ($parent_id !== '') {
+        // A corrupt menu definition must not create an infinite parent loop.
+        if (isset($visited[$parent_id])) {
+          $valid = FALSE;
+          break;
+        }
+        $visited[$parent_id] = TRUE;
 
-      if ($this->linkPointsToNode($url_object, $target_nid)) {
-        return $current_path;
-      }
-
-      if (!empty($element->subtree)) {
-        $result = $this->searchTree($element->subtree, $target_nid, $current_path);
-        if ($result) {
-          return $result;
+        try {
+          $parent = $this->menuLinkManager->createInstance($parent_id);
+          if (!$parent->isEnabled() || $parent->getMenuName() !== $menu_name) {
+            $valid = FALSE;
+            break;
+          }
+          $ancestors[] = [
+            'title' => $parent->getTitle(),
+            'url' => $parent->getUrlObject()->toString(),
+          ];
+          $parent_id = $parent->getParent();
+        }
+        catch (\Exception $e) {
+          $valid = FALSE;
+          break;
         }
       }
-    }
-    return NULL;
-  }
 
-  /**
-   * Checks whether a menu link URL points to a given node.
-   *
-   * @param \Drupal\Core\Url $url_object
-   *   The menu link URL object.
-   * @param string $target_nid
-   *   The node id to compare against.
-   *
-   * @return bool
-   *   TRUE when the URL is the canonical route of the target node.
-   */
-  protected function linkPointsToNode($url_object, string $target_nid): bool {
-    if (!$url_object->isRouted() || $url_object->getRouteName() !== 'entity.node.canonical') {
-      return FALSE;
+      if ($valid) {
+        // Parents were collected from the target upwards; breadcrumbs render
+        // from the menu root down to the target's immediate parent.
+        return array_reverse($ancestors);
+      }
     }
-    $params = $url_object->getRouteParameters();
-    return isset($params['node']) && (string) $params['node'] === $target_nid;
+
+    return [];
   }
 
   /**
@@ -409,11 +390,32 @@ class TideBreadcrumb {
    *   Cache tags that invalidate the breadcrumb when its inputs change.
    */
   public function getCacheTags(NodeInterface $node): array {
-    $nid = $node->id() ?: 'new';
-    if (!isset($this->trails[$nid])) {
+    $site_term = $this->getViewingSite($node);
+    $cache_key = $this->getCacheKey($node, $site_term);
+    if (!isset($this->trails[$cache_key])) {
       $this->build($node);
     }
-    return array_unique($this->cacheTags);
+    return array_unique($this->cacheTags[$cache_key] ?? $node->getCacheTags());
+  }
+
+  /**
+   * Builds a request-cache key for a node breadcrumb.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node whose breadcrumb is being built.
+   * @param \Drupal\taxonomy\TermInterface|null $site_term
+   *   The effective site, if one was resolved.
+   *
+   * @return string
+   *   A key varying by entity, revision, language, and effective site.
+   */
+  protected function getCacheKey(NodeInterface $node, ?TermInterface $site_term): string {
+    return implode(':', [
+      $node->uuid() ?: ($node->id() ?: 'new'),
+      $node->getRevisionId() ?: 'none',
+      $node->language()->getId(),
+      $site_term ? $site_term->id() : 'none',
+    ]);
   }
 
   /**

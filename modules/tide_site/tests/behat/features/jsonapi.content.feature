@@ -19,6 +19,31 @@ Feature: Page
     And the JSON node "meta.count" should exist
     And the JSON node "data" should exist
 
+  @api @nosuggest
+  Scenario: Request collection endpoint without a Site returns content without a Site
+    Given test content:
+      | title                    | path                    | moderation_state | uuid                                |
+      | [TEST] Page without Site | /test-page-without-site | published        | 99999999-aaaa-bbbb-fff-000000000000 |
+
+    Given I am an anonymous user
+
+    When I request "api/v1/node/test?sort=-created" using HTTP GET
+    Then the response code is 200
+    And the response body contains JSON:
+      """
+      {
+        "data": [
+          {
+            "type": "node--test",
+            "id": "99999999-aaaa-bbbb-fff-000000000000",
+            "attributes": {
+              "title": "[TEST] Page without Site"
+            }
+          }
+        ]
+      }
+      """
+
   @api @suggest
   Scenario: Request to "test" individual/collection endpoint with results
     Given vocabulary "sites" with name "Sites" exists

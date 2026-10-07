@@ -8,7 +8,7 @@ id: node.landing_page.field_show_hero_image_caption
 field_name: field_show_hero_image_caption
 entity_type: node
 bundle: landing_page
-label: 'Show Full-with background image caption.'
+label: 'Show Full-width background image caption.'
 description: ''
 required: false
 translatable: false

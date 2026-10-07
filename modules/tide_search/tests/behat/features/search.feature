@@ -1,24 +1,24 @@
-Feature: Ensure Search API on Bay Elasticsearch work.
+Feature: Ensure Search API on Bay OpenSearch works.
 
   @api
-  Scenario: Assert that Elasticsearch configuration exists in Drupal
+  Scenario: Assert that OpenSearch configuration exists in Drupal
     Given I am logged in as a user with the "administrator" role
     When I go to "admin/config/search/elasticsearch-connector"
     Then I save screenshot
-    And I should see the text "ElasticSearch on Bay"
+    And I should see the text "OpenSearch on Bay"
 
     When I go to "admin/config/search/search-api"
     Then I save screenshot
 
-    When I visit "http://elasticsearch:9200/_cat/indices?v"
+    When I visit "http://opensearch:9200/_cat/indices?v"
     Then the response status code should be 200
     And the response should contain "elasticsearch_index_drupal_node"
 
-    When I visit "http://elasticsearch:9200/_cat/aliases?v"
+    When I visit "http://opensearch:9200/_cat/aliases?v"
     Then the response status code should be 200
     And the response should contain "search--elasticsearch-index-drupal-node-alias"
 
-    When I send a GET request to "http://elasticsearch:9200/elasticsearch_index_drupal_node/_mapping"
+    When I send a GET request to "http://opensearch:9200/elasticsearch_index_drupal_node/_mapping"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "elasticsearch_index_drupal_node" should exist
@@ -33,7 +33,7 @@ Feature: Ensure Search API on Bay Elasticsearch work.
     And the JSON node "elasticsearch_index_drupal_node.mappings.properties.title.fields.prefix.analyzer" should be equal to "i_prefix"
 
   @api
-  Scenario: Assert that Elasticsearch can index content.
+  Scenario: Assert that OpenSearch can index content.
     Given topic terms:
       | name       | parent |
       | Test Topic | 0      |
@@ -53,11 +53,11 @@ Feature: Ensure Search API on Bay Elasticsearch work.
     And I wait for 5 seconds
 
     # Published Test content should be in search results.
-    When I visit "http://elasticsearch:9200/elasticsearch_index_drupal_node/_search?q=title:testtitlepublished"
+    When I visit "http://opensearch:9200/elasticsearch_index_drupal_node/_search?q=title:testtitlepublished"
     Then the response status code should be 200
     And I save screenshot
 
-    When I send a GET request to "http://elasticsearch:9200/elasticsearch_index_drupal_node/_search?q=title:testtitlepublished"
+    When I send a GET request to "http://opensearch:9200/elasticsearch_index_drupal_node/_search?q=title:testtitlepublished"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "hits" should exist
@@ -77,7 +77,7 @@ Feature: Ensure Search API on Bay Elasticsearch work.
     And I wait for 5 seconds
 
     # Unpublished Test content should not be in search results.
-    When I send a GET request to "http://elasticsearch:9200/elasticsearch_index_drupal_node/_search?q=title:testtitlepublished"
+    When I send a GET request to "http://opensearch:9200/elasticsearch_index_drupal_node/_search?q=title:testtitlepublished"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "hits" should exist
