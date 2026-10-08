@@ -133,7 +133,8 @@ class TideJiraConnector {
    * @param string $account_id
    *   Account ID from JIRA.
    * @param string|array $description
-   *   Ticket description as plain text or an Atlassian Document Format document.
+   *   Ticket description as plain text or an Atlassian Document Format
+   *   document.
    * @param string $project
    *   The Jira project.
    * @param string $site
@@ -170,8 +171,9 @@ class TideJiraConnector {
       ->setReporterName($email)
       ->setReporterAccountId($account_id);
     if (is_array($description)) {
-      // The SDK's text setter cannot accept ADF. Its additional-field serializer
-      // preserves the document as an object in the outgoing description field.
+      // The SDK's text setter cannot accept ADF. Its additional-field
+      // serializer preserves the document as an object in the outgoing
+      // description field.
       $issueField->addCustomField('description', $description);
     }
     else {
