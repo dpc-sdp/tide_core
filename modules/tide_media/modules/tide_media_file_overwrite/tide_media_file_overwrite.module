@@ -5,6 +5,7 @@
  * Contains tide_media_file_overwrite.module.
  */
 
+use Drupal\tide_media_file_overwrite\Hook\TideMediaFileOverwriteHooks;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\file\Entity\File;
@@ -12,52 +13,25 @@ use Drupal\file\Entity\File;
 /**
  * Implements hook_help().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_media_file_overwrite_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
-    // Main module help for the tide_media_file_overwrite module.
-    case 'help.page.tide_media_file_overwrite':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Gives the author option to a overwrite file, and keeping the same filename when upload. This is an override of the default Drupal behaviour where a file is uploaded as a new file with a number appended to the file name, eg my-file-title_1.pdf. This module can be set to Override or not Override the file by default. Each file upload has an option to change the default.') . '</p>';
-      return $output;
-
-    default:
-  }
+  return \Drupal::service(TideMediaFileOverwriteHooks::class)->help($route_name, $route_match);
 }
 
 /**
  * Implements hook_theme().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_media_file_overwrite_theme() {
-  return [
-    'tide_media_file_overwrite' => [
-      'render element' => 'children',
-    ],
-  ];
+  return \Drupal::service(TideMediaFileOverwriteHooks::class)->theme();
 }
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
+#[\Drupal\Core\Hook\Attribute\LegacyHook]
 function tide_media_file_overwrite_form_media_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  // Only show overwrite option on edit,
-  // and this media bundle is actually in the configured list.
-  if ($form_state->getFormObject()->getOperation() == 'edit' && _tide_media_file_overwrite_get_field($form_id) != FALSE) {
-    $upload_overwrite = \Drupal::config('tide_media_file_overwrite.settings')->get('needs_overwritten');
-
-    $form['needs_overwritten'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Overwrite upload file if the same file name exists?'),
-      '#default_value' => $upload_overwrite,
-      '#weight' => '0',
-    ];
-
-    foreach (array_keys($form['actions']) as $action) {
-      if (isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
-        $form['actions'][$action]['#submit'][] = 'tide_media_file_overwrite_form_submit';
-      }
-    }
-  }
+  return \Drupal::service(TideMediaFileOverwriteHooks::class)->formMediaFormAlter($form, $form_state, $form_id);
 }
 
 /**

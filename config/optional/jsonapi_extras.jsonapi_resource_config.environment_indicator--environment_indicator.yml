@@ -7,4 +7,4 @@ id: environment_indicator--environment_indicator
 disabled: true
 path: environment_indicator/environment_indicator
 resourceType: environment_indicator--environment_indicator
-resourceFields: ''
+resourceFields: {  }

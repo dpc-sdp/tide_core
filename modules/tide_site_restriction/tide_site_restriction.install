@@ -21,16 +21,9 @@ function tide_site_restriction_install() {
 }
 
 /**
- * Update the help text on all field_node_site instances.
- */
-function tide_site_restriction_update_10001() {
-  TideSiteRestrictionOperation::updateHelpText();
-}
-
-/**
  * Update site fields widget for search_listing.
  */
-function tide_site_restriction_update_10002() {
+function tide_site_restriction_update__11001() {
   if (!\Drupal::moduleHandler()->moduleExists('tide_search')) {
     return t('tide_search module is not enabled. Skipping update.');
   }

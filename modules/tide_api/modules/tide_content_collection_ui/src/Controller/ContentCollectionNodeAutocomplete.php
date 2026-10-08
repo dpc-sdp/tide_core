@@ -90,7 +90,7 @@ class ContentCollectionNodeAutocomplete extends ControllerBase {
         }
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_content_collection_ui', $exception);
+        tide_core_log_exception('tide_content_collection_ui', $exception);
       }
 
       $ids = $query_builder->execute();

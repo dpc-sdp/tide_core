@@ -1,0 +1,43 @@
+diff --git a/src/Plugin/views/display/DataExport.php b/src/Plugin/views/display/DataExport.php
+--- a/src/Plugin/views/display/DataExport.php
++++ b/src/Plugin/views/display/DataExport.php
+@@ -20,6 +20,5 @@ use Drupal\facets\FacetSource\FacetSourcePluginManager;
+ use Drupal\file\FileInterface;
+ use Drupal\rest\Plugin\views\display\RestExport;
+-use Drupal\search_api\Plugin\views\query\SearchApiQuery;
+ use Drupal\views\ViewExecutable;
+ use Drupal\views\Views;
+ use Drupal\views_data_export\BatchProcessingAdapterDrupal;
+@@ -108,15 +108,26 @@ protected static function buildBatch(ViewExecutable $view, BatchProcessingAdapte
+     // Get total number of items.
+     $view->get_total_rows = TRUE;
+     $export_limit = $view->getDisplay()->getOption('export_limit');
++
++    // Swap out the pager, so we can get our count.
++    $defaults = $view->display_handler->options['defaults'];
++    $pager = $view->display_handler->options['pager'] ?? NULL;
++    $view->display_handler->options['defaults']['pager'] = FALSE;
++    $view->display_handler->options['pager'] = [
++      'type' => 'full',
++      'options' => ['items_per_page' => 1],
++    ];
++
++    // Execute the view and get the total rows from it.
+     $view->preExecute($args);
+     $view->build();
++    $view->execute();
++    $total_rows = (int) $view->total_rows;
+ 
+-    if ($view->getQuery() instanceof SearchApiQuery) {
+-      $total_rows = $view->query->getSearchApiQuery()->range(NULL, 1)->execute()->getResultCount();
+-    }
+-    else {
+-      $count_query_results = $view->query->query()->countQuery()->execute();
+-      $total_rows = (int) $count_query_results->fetchField();
++    // Restore original defaults and pager.
++    $view->display_handler->options['defaults'] = $defaults;
++    if (!is_null($pager)) {
++      $view->display_handler->options['pager'] = $pager;
+     }
+ 
+     // If export limit is set and the number of rows is greater than the

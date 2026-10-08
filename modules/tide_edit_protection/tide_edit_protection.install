@@ -23,14 +23,10 @@ function tide_edit_protection_install() {
     ->getEditable('content_lock.settings');
   $types = $contentLockSettings->get('types');
   $types['node'] = ['*' => '*'];
-  $contentLockSettings->set('types', $types)->save();
-
-  // Sets content_lock_timeout module.
-  $contentTimeOutSettings = \Drupal::configFactory()
-    ->getEditable('content_lock_timeout.settings');
-  $contentTimeOutSettings->set('content_lock_timeout_minutes', '240');
-  $contentTimeOutSettings->set('content_lock_timeout_on_edit', 1);
-  $contentTimeOutSettings->save();
+  // Content Lock 3 manages expiration itself, using seconds.
+  $contentLockSettings->set('types', $types)
+    ->set('timeout', 240 * 60)
+    ->save();
   // Changes content_lock weight.
   module_set_weight('content_lock', 1000);
 
@@ -40,4 +36,19 @@ function tide_edit_protection_install() {
     $approver->grantPermission('admin lock content view');
     $approver->save();
   }
+}
+
+/**
+ * Preserve Tide views when Content Lock 3 uninstalls Content Lock Timeout.
+ */
+function tide_edit_protection_update_11001() {
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('views.view.') as $name) {
+    $view = $config_factory->getEditable($name);
+    $modules = $view->get('dependencies.module') ?? [];
+    if (in_array('tide_edit_protection', $modules, TRUE) && in_array('content_lock_timeout', $modules, TRUE)) {
+      $view->set('dependencies.module', array_values(array_diff($modules, ['content_lock_timeout'])))->save(TRUE);
+    }
+  }
+  // Content Lock's post-update migrates the site's existing timeout value.
 }

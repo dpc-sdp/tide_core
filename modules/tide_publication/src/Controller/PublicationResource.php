@@ -8,16 +8,14 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Url;
-use Drupal\entity_hierarchy\Storage\EntityTreeNodeMapperInterface;
-use Drupal\entity_hierarchy\Storage\NestedSetNodeKeyFactory;
-use Drupal\entity_hierarchy\Storage\NestedSetStorage;
-use Drupal\entity_hierarchy\Storage\NestedSetStorageFactory;
+use Drupal\entity_hierarchy\Storage\QueryBuilder;
+use Drupal\entity_hierarchy\Storage\QueryBuilderFactory;
 use Drupal\jsonapi\Controller\EntityResource;
 use Drupal\jsonapi\JsonApiResource\Link;
 use Drupal\jsonapi\JsonApiResource\LinkCollection;
 use Drupal\jsonapi\Routing\Routes;
 use Drupal\taxonomy\TermInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Drupal\tide_core\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,25 +28,11 @@ class PublicationResource extends EntityResource {
   use ContainerAwareTrait;
 
   /**
-   * The NestedSetStorageFactory service.
+   * The hierarchy query builder factory.
    *
-   * @var \Drupal\entity_hierarchy\Storage\NestedSetStorageFactory
+   * @var \Drupal\entity_hierarchy\Storage\QueryBuilderFactory
    */
-  protected $nestedSetStorageFactory;
-
-  /**
-   * The NestedSetNodeKeyFactory service.
-   *
-   * @var \Drupal\entity_hierarchy\Storage\NestedSetNodeKeyFactory
-   */
-  protected $nestedSetNodeKeyFactory;
-
-  /**
-   * The EntityTreeNodeMapperInterface service.
-   *
-   * @var \Drupal\entity_hierarchy\Storage\EntityTreeNodeMapperInterface
-   */
-  protected $entityTreeNodeMapper;
+  protected $queryBuilderFactory;
 
   /**
    * The module handler.
@@ -67,21 +51,15 @@ class PublicationResource extends EntityResource {
   /**
    * Injects dependencies.
    *
-   * @param \Drupal\entity_hierarchy\Storage\NestedSetStorageFactory $nested_set_storage_factory
-   *   NestedSetStorageFactory service.
-   * @param \Drupal\entity_hierarchy\Storage\NestedSetNodeKeyFactory $nested_set_nodekey_factory
-   *   NestedSetNodeKeyFactory service.
-   * @param \Drupal\entity_hierarchy\Storage\EntityTreeNodeMapperInterface $entity_tree_node_mapper
-   *   EntityTreeNodeMapperInterface service.
+   * @param \Drupal\entity_hierarchy\Storage\QueryBuilderFactory $query_builder_factory
+   *   The hierarchy query builder factory.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   Module handler service.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_data
    *   Data cache bin.
    */
-  public function setDependencies(NestedSetStorageFactory $nested_set_storage_factory, NestedSetNodeKeyFactory $nested_set_nodekey_factory, EntityTreeNodeMapperInterface $entity_tree_node_mapper, ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_data) {
-    $this->nestedSetStorageFactory = $nested_set_storage_factory;
-    $this->nestedSetNodeKeyFactory = $nested_set_nodekey_factory;
-    $this->entityTreeNodeMapper = $entity_tree_node_mapper;
+  public function setDependencies(QueryBuilderFactory $query_builder_factory, ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_data) {
+    $this->queryBuilderFactory = $query_builder_factory;
     $this->moduleHandler = $module_handler;
     $this->cacheData = $cache_data;
   }
@@ -108,7 +86,7 @@ class PublicationResource extends EntityResource {
       return $response;
     }
 
-    if (!$this->nestedSetStorageFactory || !$this->nestedSetNodeKeyFactory || !$this->entityTreeNodeMapper) {
+    if (!$this->queryBuilderFactory) {
       throw new \Exception('The method setDependencies() must be called when instantiating a PublicationResource object.');
     }
 
@@ -140,8 +118,7 @@ class PublicationResource extends EntityResource {
     }
 
     $publication_field_name = 'field_publication';
-    /** @var \PNX\NestedSet\NestedSetInterface $storage */
-    $storage = $this->nestedSetStorageFactory->get($publication_field_name, $entity->getEntityTypeId());
+    $storage = $this->queryBuilderFactory->get($publication_field_name, $entity->getEntityTypeId());
     $flatten_hierarchy = [];
     $hierarchy = $this->buildHierarchy($entity, $storage, $cache, NULL, $flatten_hierarchy, $site);
     $response_data['meta']['hierarchy'] = $hierarchy;
@@ -167,7 +144,7 @@ class PublicationResource extends EntityResource {
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity.
-   * @param \Drupal\entity_hierarchy\Storage\NestedSetStorage $storage
+   * @param \Drupal\entity_hierarchy\Storage\QueryBuilder $storage
    *   The storage.
    * @param \Drupal\Core\Cache\CacheableMetadata $cache
    *   The cache object.
@@ -181,7 +158,7 @@ class PublicationResource extends EntityResource {
    * @return array
    *   The hierarchy.
    */
-  protected function buildHierarchy(ContentEntityInterface $entity, NestedSetStorage $storage, CacheableMetadata $cache, $weight, array &$flatten_hierarchy, $site = NULL) {
+  protected function buildHierarchy(ContentEntityInterface $entity, QueryBuilder $storage, CacheableMetadata $cache, $weight, array &$flatten_hierarchy, $site = NULL) {
     // Try cache first.
     $cid = "tide_publication:hierarchy:{$entity->uuid()}:{$weight}:" . ($site ? $site->id() : 'null');
     if ($cached = $this->cacheData->get($cid)) {
@@ -201,12 +178,12 @@ class PublicationResource extends EntityResource {
     $children = $this->loadChildren($storage, $entity, $cache);
     if (!empty($children)) {
       $hierarchy['children'] = [];
-      foreach ($children as $child_weight => $child_entity) {
+      foreach ($children as $child) {
         $child_hierarchy = $this->buildHierarchy(
-          $child_entity,
+          $child['entity'],
           $storage,
           $cache,
-          $child_weight,
+          $child['weight'],
           $flatten_hierarchy,
           $site
         );
@@ -263,18 +240,21 @@ class PublicationResource extends EntityResource {
   /**
    * Load children of a node.
    */
-  protected function loadChildren(NestedSetStorage $storage, ContentEntityInterface $entity, CacheableMetadata $cache) {
-    $children = $storage->findChildren($this->nestedSetNodeKeyFactory->fromEntity($entity));
-    $child_entities = $this->entityTreeNodeMapper->loadAndAccessCheckEntitysForTreeNodes('node', $children, $cache);
-
+  protected function loadChildren(QueryBuilder $storage, ContentEntityInterface $entity, CacheableMetadata $cache) {
     $valid_children = [];
-    foreach ($children as $child_weight => $nested_node) {
-      if (!$child_entities->contains($nested_node)) {
+    foreach ($storage->findChildren($entity) as $record) {
+      $child_entity = $record->getEntity();
+      if (!$child_entity) {
         continue;
       }
-      $child_entity = $child_entities->offsetGet($nested_node);
-      if ($child_entity->isDefaultRevision()) {
-        $valid_children[$child_weight] = $child_entity;
+      $access = $child_entity->access('view', NULL, TRUE);
+      $cache->addCacheableDependency($access);
+      if ($access->isAllowed() && $child_entity->isDefaultRevision()) {
+        $cache->addCacheableDependency($child_entity);
+        $valid_children[] = [
+          'entity' => $child_entity,
+          'weight' => $record->getWeight(),
+        ];
       }
     }
 

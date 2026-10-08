@@ -4,14 +4,11 @@ dependencies:
   config:
     - field.storage.node.body
     - node.type.event
+    - filter.format.rich_text
+    - filter.format.admin_text
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    rich_text: rich_text
-    admin_text: admin_text
-    plain_text: '0'
 id: node.event.body
 field_name: body
 entity_type: node
@@ -24,4 +21,7 @@ default_value: {  }
 default_value_callback: ''
 settings:
   display_summary: false
+  allowed_formats:
+    - rich_text
+    - admin_text
 field_type: text_with_summary

@@ -1,0 +1,235 @@
+<?php
+
+namespace Drupal\tide_grant\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+
+/**
+ * Hook implementations for the tide grant module.
+ */
+class TideGrantHooks {
+
+  /**
+   * Implements hook_form_BASE_FORM_ID_alter().
+   */
+  #[Hook('form_node_form_alter')]
+  public function formNodeFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $field_config = 'node.grant.field_custom_filters';
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    if ($storage->load($field_config) !== NULL && $form_id === 'node_grant_form') {
+      $field_config_storage = $storage->load($field_config);
+      $settings = $field_config_storage->getSettings();
+      if (
+        (
+          is_array($settings['handler_settings'])
+          && isset($settings['handler_settings']['target_bundles'])
+          && !is_array($settings['handler_settings']['target_bundles'])
+        )
+        || empty($settings['handler_settings'])
+      ) {
+        $form['field_custom_filters']['#access'] = FALSE;
+      }
+    }
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $form_state->getFormObject()->getEntity();
+
+    if (in_array($form_id, ['node_grant_form', 'node_grant_edit_form'])) {
+      $form["#validate"][] = '_tide_grant_validate_grant_dates';
+      // Manipulate Guidelines fields on node add and edit.
+      $form['#attached']['library'][] = 'tide_grant/drupal.paragraphs.actions';
+
+      if (isset($form['title']['widget'][0]['value']['#description'])) {
+        $form['title']['widget'][0]['value']['#description'] = t('Include a short unique title for your page and keywords.');
+      }
+
+      $form['field_node_dates']['widget'][0]['value']['#title'] = t('Start date and time');
+      $form['field_node_dates']['widget'][0]['end_value']['#title'] = t('End date and time');
+
+      $form['field_node_guidelines']['widget'][0]['subform']['field_paragraph_title']['widget'][0]['value']['#default_value'] = t('Guidelines');
+      $form['field_node_guidelines']['widget'][0]['subform']['field_paragraph_title']['widget'][0]['value']['#required'] = TRUE;
+      // Lookup our preset values from config.
+      if ($config = \Drupal::config('tide_grant.settings')->get('guidelines')) {
+        // Preset values should only be pre-filled from creating a new node.
+        if ($form_id === 'node_grant_form') {
+          foreach ($config as $key => $value) {
+            if ($element = &$form['field_node_guidelines']['widget'][0]['subform']['field_paragraph_accordion']['widget'][$key]) {
+              $element['subform']['field_paragraph_accordion_name']['widget'][0]['value']['#default_value'] = $value;
+            }
+          }
+        }
+      }
+
+      // Restrict access to Grant Author fields for existing Grant node.
+      if (!$node->isNew()) {
+        if (!\Drupal::currentUser()->hasPermission('update grant author details')) {
+          $author_fields = [
+            'field_node_author',
+            'field_node_email',
+            'field_node_phone',
+            'field_node_department',
+          ];
+          foreach ($author_fields as $author_field) {
+            $form[$author_field]['#access'] = FALSE;
+          }
+        }
+      }
+
+      // Change form layout.
+      $form['#attached']['library'][] = 'tide_grant/grant_form';
+      $form['#attributes']['class'][] = 'node-form-grant';
+      $form['#process'][] = '_tide_grant_form_node_form_process';
+    }
+  }
+
+  /**
+   * Implements hook_config_ignore_settings_alter().
+   */
+  #[Hook('config_ignore_settings_alter')]
+  public function configIgnoreSettingsAlter(array &$settings) {
+    // Ignore the Content Rating webform so that it won't be reverted
+    // during config sync.
+    $settings[] = 'webform.webform.tide_grant_submission';
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_presave().
+   */
+  #[Hook('webform_submission_presave')]
+  public function webformSubmissionPresave($submission) {
+    if ($submission->getWebform()->get('id') === 'tide_grant_submission') {
+      $submission_data = $submission->getData();
+      // Create node object with values from webform submission.
+      $node = Node::create([
+        'type' => 'grant',
+        'title' => $submission_data['name_of_grant_or_program'],
+        'field_description' => [
+          'value' => $submission_data['describe_the_grant_or_program'],
+        ],
+        'field_landing_page_summary' => [
+          'value' => $submission_data['describe_the_grant_or_program'],
+        ],
+        'field_node_dates' => [
+          [
+            'value' => $submission_data['open_date'] && $submission_data['close_date'] ? date('Y-m-d\TH:i:00', strtotime($submission_data['open_date'])) : NULL,
+            'end_value' => $submission_data['open_date'] && $submission_data['close_date'] ? date('Y-m-d\TH:i:00', strtotime($submission_data['close_date'])) : NULL,
+          ],
+        ],
+        'field_node_on_going' => $submission_data['this_grant_program_is_ongoing_and_does_have_an_open_close_dates_'],
+        'field_topic' => [
+          ['target_id' => $submission_data['topic']],
+        ],
+        'field_audience' => [],
+        'field_node_funding_level' => [
+          [
+            'from' => $submission_data['funding_level_from'],
+            'to' => $submission_data['funding_level_to'],
+          ],
+        ],
+        'field_node_link' => [
+          'uri' => $submission_data['website_url_for_grant_or_program_information'],
+        ],
+        'field_call_to_action' => [
+          'uri' => $submission_data['website_url_to_apply_for_grant_or_program'],
+          'title' => t('Apply now'),
+        ],
+        'field_node_author' => [
+          'value' => $submission_data['contact_person'],
+        ],
+        'field_node_department' => [
+          ['target_id' => $submission_data['department_agency_or_provider_organisation']],
+        ],
+        'field_node_email' => $submission_data['contact_email_address'],
+        'field_node_phone' => $submission_data['contact_telephone_number'],
+      ]);
+
+      if (\Drupal::moduleHandler()->moduleExists('tide_site')) {
+        if ($site = (int) \Drupal::request()->query->get('site')) {
+          /** @var \Drupal\tide_site\TideSiteHelper $helper */
+          $helper = \Drupal::service('tide_site.helper');
+          $site_trail = $helper->getSiteTrail($site);
+          if (count($site_trail) == 1) {
+            $node_sites = [$site];
+            $node_primary_site = $site;
+          }
+          else {
+            $node_sites = $site_trail;
+            $node_primary_site = $site_trail[0];
+          }
+          $node->field_node_primary_site->target_id = $node_primary_site;
+          foreach ($node_sites as $site_id) {
+            $node->field_node_site->appendItem($site_id);
+          }
+        }
+      }
+
+      // Loop through multiple value fields.
+      foreach ($submission_data['who_is_the_grant_or_program_for_'] as $topic) {
+        $node->field_audience->appendItem($topic);
+      }
+
+      // Set the node to Needs Review state.
+      $node->set('moderation_state', "needs_review");
+
+      // Set Grant Author user as node author.
+      if ($user = user_load_by_name('Grant Author')) {
+        $node->setOwnerId($user->id());
+        // It needs to set this mandatory field to create Jira ticket.
+        if ($node->hasField('field_department_agency') && $user->get('field_department_agency')->first()) {
+          $user_dept = $user->get('field_department_agency')->first()->getValue()['target_id'];
+          if ($user_dept) {
+            $node->set('field_department_agency', ['target_id' => $user_dept]);
+          }
+        }
+      }
+
+      $node->save();
+    }
+  }
+
+  /**
+   * Implements hook_migration_plugins_alter().
+   */
+  #[Hook('migration_plugins_alter')]
+  public function migrationPluginsAlter(array &$migrations) {
+    // If different URL has been provided via config then inject it.
+    $url = \Drupal::config('tide_grant.settings')->get('feed_url');
+    if ($url && UrlHelper::isValid($url, TRUE)) {
+      $migrations['grants_feed_importer']['source']['urls'] = $url;
+    }
+  }
+
+  /**
+   * Implements hook_node_insert().
+   */
+  #[Hook('node_insert')]
+  public function nodeInsert(NodeInterface $node) {
+    if ($node->bundle() !== 'grant') {
+      return;
+    }
+    // Everytime the feed will import contents, this will trigger.
+    // Only update the grant nodes created by anonymous user.
+    if ($node->getOwnerId() == 0) {
+      if ($node->hasField('field_metatags') && \Drupal::moduleHandler()->moduleExists('metatag')) {
+        $node->set('field_metatags', serialize([
+          'robots' => 'noindex',
+        ]));
+        $node->save();
+      }
+      if (\Drupal::moduleHandler()->moduleExists('simple_sitemap')) {
+        $generator = \Drupal::service('simple_sitemap.entity_manager');
+        $settings = [
+          'index' => FALSE,
+          'priority' => 0.5,
+          'changefreq' => 'never',
+          'include_images' => FALSE,
+        ];
+        $generator->setEntityInstanceSettings($node->getEntityTypeId(), $node->id(), $settings);
+      }
+    }
+  }
+
+}

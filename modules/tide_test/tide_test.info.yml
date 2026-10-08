@@ -2,7 +2,7 @@ name: Tide Test
 description: 'Provides Test content type and related configuration. '
 type: module
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:field
   - drupal:media
@@ -30,7 +30,7 @@ config_devel:
     - field.field.node.test.field_test_reference
     - field.storage.node.field_test_link
     - field.storage.node.field_test_reference
-    - simple_sitemap.bundle_settings.node.test
+    - simple_sitemap.bundle_settings.default.node.test
   optional:
     - media.type.testmedia
     - field.field.media.testmedia.field_media_file_test

@@ -2,7 +2,7 @@ name: Tide Profile
 type: module
 description: 'Provides Profile content type and related configuration. '
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - tide_core:tide_core
   - tide_landing_page:tide_landing_page
@@ -38,7 +38,7 @@ config_devel:
     - field.storage.node.field_profile_intro_text
     - field.storage.node.field_year
     - node.type.profile
-    - simple_sitemap.bundle_settings.node.profile
+    - simple_sitemap.bundle_settings.default.node.profile
     - taxonomy.vocabulary.expertise
     - taxonomy.vocabulary.profile_category
   optional:

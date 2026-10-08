@@ -3,19 +3,18 @@
 namespace Drupal\Tests\tide_site\Unit;
 
 use Drupal\tide_site\TideSiteFields;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests for TideSiteFieldsTest class.
- *
- * @coversDefaultClass Drupal\tide_site\TideSiteFields
- * @group tide
  */
-class TideSiteFieldsTest extends TideSiteTest {
+#[CoversClass(TideSiteFields::class)]
+#[Group('tide')]
+class TideSiteFieldsTest extends TideSiteTestBase {
 
-  /**
-   * @covers ::normaliseFieldName
-   * @dataProvider providerNormaliseFieldName
-   */
+  #[DataProvider('providerNormaliseFieldName')]
   public function testToMachineName($field_name, $entity_type_id, $bundle, $expected) {
     $actual = TideSiteFields::normaliseFieldName($field_name, $entity_type_id, $bundle);
     $this->assertEquals($expected, $actual);
@@ -24,7 +23,7 @@ class TideSiteFieldsTest extends TideSiteTest {
   /**
    * Data provider to test normaliseFieldName() method.
    */
-  public function providerNormaliseFieldName() {
+  public static function providerNormaliseFieldName() {
     return [
       ['field_ENTITY_TYPE_site', 'node', 'page', 'field_node_site'],
       ['field_ENTITY_TYPE_site', 'entity_with_underscores', 'page', 'field_entity_with_underscores_site'],
@@ -40,10 +39,7 @@ class TideSiteFieldsTest extends TideSiteTest {
     ];
   }
 
-  /**
-   * @covers ::isSiteField
-   * @dataProvider providerIsSiteField
-   */
+  #[DataProvider('providerIsSiteField')]
   public function testIsSiteField($field_name, $field_name_generic, $expected) {
     $actual = TideSiteFields::isSiteField($field_name, $field_name_generic);
     $this->assertEquals($expected, $actual);
@@ -52,7 +48,7 @@ class TideSiteFieldsTest extends TideSiteTest {
   /**
    * Data provider to test normaliseFieldName() method.
    */
-  public function providerIsSiteField() {
+  public static function providerIsSiteField() {
     return [
       // No filtering by generic field.
       ['', NULL, FALSE],

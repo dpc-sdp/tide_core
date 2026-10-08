@@ -174,7 +174,7 @@ class TideSiteFields extends TideCoreFields {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_site', $exception);
+      tide_core_log_exception('tide_site', $exception);
     }
   }
 

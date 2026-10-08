@@ -1,12 +1,11 @@
 name: Tide edit protection
 type: module
 description: Extends Node Edit Protection module to provide custom functions
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 package: tide
 dependencies:
   - tide_site:tide_site
   - content_lock:content_lock
-  - content_lock_timeout:content_lock_timeout
 config_devel:
   install:
     - tide_edit_protection_form.yml

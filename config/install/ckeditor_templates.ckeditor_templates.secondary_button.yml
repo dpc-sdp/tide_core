@@ -9,8 +9,8 @@ code:
   value: '<p><a class="button button--secondary" href="Secondary-button-link">Secondary button text</a></p>'
   format: rich_text
 formats:
-  rich_text: rich_text
-  summary_text: summary_text
-  admin_text: admin_text
+  - rich_text
+  - summary_text
+  - admin_text
 weight: 2
 thumb_alternative: ''

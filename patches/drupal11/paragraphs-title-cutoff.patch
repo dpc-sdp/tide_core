@@ -1,0 +1,86 @@
+diff --git a/css/paragraphs.widget.css b/css/paragraphs.widget.css
+--- a/css/paragraphs.widget.css
++++ b/css/paragraphs.widget.css
+@@ -251,6 +251,9 @@
+     grid-template-columns: 150px auto 1fr auto;
+   }
+ }
++.js .paragraph-top.paragraph-expanded {
++  grid-template-columns: auto auto 1fr auto;
++}
+ .js .paragraphs-subform {
+   margin-top: 5px;
+ }
+@@ -274,6 +277,6 @@ tr:hover .paragraphs-description::after {
+ .js .paragraph-type-title {
+   display: flex;
+-  flex-basis: 100px;
++  flex-basis: auto;
+   min-width: 100px;
+ }
+ .js .paragraph-type-icon {
+diff --git a/css/paragraphs.widget.scss b/css/paragraphs.widget.scss
+--- a/css/paragraphs.widget.scss
++++ b/css/paragraphs.widget.scss
+@@ -226,6 +226,10 @@
+       }
+     }
+
++    &.paragraph-expanded {
++      grid-template-columns: auto auto 1fr auto;
++    }
++
+     @media (min-width: map.get($grid-breakpoints, 'lg')) {
+       grid-template-columns: 150px auto 1fr auto;
+     }
+@@ -261,6 +265,6 @@
+     text-overflow: ellipsis;
+     &-title {
+       display: flex;
+-      flex-basis: 100px;
++      flex-basis: auto;
+       min-width: 100px;
+     }
+
+diff --git a/src/Plugin/Field/FieldWidget/ParagraphsWidget.php b/src/Plugin/Field/FieldWidget/ParagraphsWidget.php
+--- a/src/Plugin/Field/FieldWidget/ParagraphsWidget.php
++++ b/src/Plugin/Field/FieldWidget/ParagraphsWidget.php
+@@ -566,6 +566,7 @@ class ParagraphsWidget extends WidgetBase implements ContainerFactoryPluginInter
+         '#attributes' => [
+           'class' => [
+             'paragraph-top',
++            'paragraph-' . ($item_mode === 'edit' ? 'expanded' : 'collapsed'),
+             // Add a flag to indicate if the add_above feature is enabled and
+             // should be injected client-side.
+             $this->isFeatureEnabled('add_above') ? 'add-above-on' : 'add-above-off',
+diff --git a/tests/src/Functional/WidgetStable/ParagraphsWidgetButtonsTest.php b/tests/src/Functional/WidgetStable/ParagraphsWidgetButtonsTest.php
+--- a/tests/src/Functional/WidgetStable/ParagraphsWidgetButtonsTest.php
++++ b/tests/src/Functional/WidgetStable/ParagraphsWidgetButtonsTest.php
+@@ -66,6 +66,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
+ 
+     // Test the 'Open' edit mode.
+     $this->drupalGet('node/' . $node->id() . '/edit');
++    $this->assertSession()->elementExists('css', '.paragraph-top.paragraph-expanded');
+     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', $text);
+     $this->submitForm([], 'Save');
+     $this->assertSession()->pageTextContains($text);
+@@ -73,9 +74,11 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
+     // Test the 'Closed' edit mode.
+     $this->setParagraphsWidgetMode('paragraphed_test', 'field_paragraphs', 'closed');
+     $this->drupalGet('node/' . $node->id() . '/edit');
++    $this->assertSession()->elementExists('css', '.paragraph-top.paragraph-collapsed');
+     // Click "Edit" button.
+     $this->submitForm([], 'field_paragraphs_0_edit');
+     $this->submitForm([], 'field_paragraphs_1_edit');
++    $this->assertSession()->elementExists('css', '.paragraph-top.paragraph-expanded');
+     $this->assertSession()->fieldValueEquals('field_paragraphs[0][subform][field_text][0][value]', $text);
+     $closed_mode_text = 'closed_mode_text';
+     // Click "Collapse" button on both paragraphs.
+@@ -83,6 +86,7 @@ class ParagraphsWidgetButtonsTest extends ParagraphsTestBase {
+     $this->submitForm($edit, 'field_paragraphs_0_collapse');
+     $edit = ['field_paragraphs[1][subform][field_text][0][value]' => $closed_mode_text];
+     $this->submitForm($edit, 'field_paragraphs_1_collapse');
++    $this->assertSession()->elementExists('css', '.paragraph-top.paragraph-collapsed');
+     // Verify that we have warning message for each paragraph.
+     $this->assertEquals(2, count($this->xpath("//*[contains(@class, 'paragraphs-icon-changed')]")));
+     $this->assertSession()->responseContains('<span class="summary-content">' . $closed_mode_text);
