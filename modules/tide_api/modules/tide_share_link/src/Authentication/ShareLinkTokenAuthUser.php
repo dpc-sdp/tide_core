@@ -153,6 +153,19 @@ class ShareLinkTokenAuthUser implements ShareLinkTokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
+  public function hasRole(string $rid) {
+    if ($this->tokenRole && $this->tokenRole->id() === $rid) {
+      return TRUE;
+    }
+    if ($this->authenticatedRole && $this->authenticatedRole->id() === $rid) {
+      return TRUE;
+    }
+    return $this->getAccount()->hasRole($rid);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function hasPermission($permission) {
     if ($this->tokenRole && $this->tokenRole->hasPermission($permission)) {
       return TRUE;

@@ -8,7 +8,7 @@ template: false
 id: tide_webform_content_rating
 title: 'Content Rating'
 description: '&#39;Was this page helpful&#39; rating/survey on content pages.'
-category: ''
+categories: []
 elements: "url:\n  '#type': hidden\n  '#title': URL\nwas_this_page_helpful:\n  '#type': radios\n  '#title': 'Was this page helpful?'\n  '#options': yes_no\n  '#required': true\ncomments:\n  '#type': textarea\n  '#title': 'Any comments? (optional)'\n  '#rows': '2'\n  '#counter_type': word\n  '#counter_maximum': '500'\n  '#states':\n    visible:\n      ':input[name=\"was_this_page_helpful\"]':\n        checked: true\n  '#format_items': comma\nreset:\n  '#type': processed_text\n  '#wrapper_attributes':\n    class:\n      - webform-content-rating-cancel\n  '#states':\n    visible:\n      ':input[name=\"was_this_page_helpful\"]':\n        checked: true\n  '#text': '<p><a id=\"webform-content-rating-cancel\" href=\"#\">Cancel</a></p>'\n  '#format': admin_text\nactions:\n  '#type': webform_actions\n  '#title': 'Submit button(s)'\n  '#states':\n    visible:\n      ':input[name=\"was_this_page_helpful\"]':\n        checked: true\n"
 css: ''
 javascript: ''
@@ -39,13 +39,9 @@ settings:
   form_submit_back: false
   form_autofocus: false
   form_details_toggle: false
-  form_login: false
-  form_login_message: ''
   submission_label: ''
   submission_log: false
   submission_user_columns: {  }
-  submission_login: false
-  submission_login_message: ''
   submission_exception_message: ''
   submission_locked_message: ''
   autofill: false

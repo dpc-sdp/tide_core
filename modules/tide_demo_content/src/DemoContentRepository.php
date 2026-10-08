@@ -83,7 +83,7 @@ class DemoContentRepository {
         ->execute();
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_demo_content', $exception);
+      tide_core_log_exception('tide_demo_content', $exception);
     }
 
     return $this;
@@ -104,7 +104,7 @@ class DemoContentRepository {
    * @return \Drupal\tide_demo_content\DemoContentRepository
    *   The current repository instance.
    */
-  public function addDemoEntity(EntityInterface $entity, string $entity_type_id = NULL, string $bundle = NULL, bool $tracking = TRUE) : DemoContentRepository {
+  public function addDemoEntity(EntityInterface $entity, ?string $entity_type_id = NULL, ?string $bundle = NULL, bool $tracking = TRUE) : DemoContentRepository {
     $entity_type_id = $entity_type_id ?: $entity->getEntityTypeId();
     $bundle = $bundle ?: $entity->bundle();
 
@@ -147,7 +147,7 @@ class DemoContentRepository {
    * @return \Drupal\Core\Entity\EntityInterface[]|\Drupal\Core\Entity\EntityInterface
    *   The list of entities.
    */
-  public function getDemoEntities(string $entity_type_id = NULL, string $bundle = NULL) {
+  public function getDemoEntities(?string $entity_type_id = NULL, ?string $bundle = NULL) {
     if ($entity_type_id) {
       if (isset($this->entities[$entity_type_id])) {
         if ($bundle) {
@@ -215,12 +215,12 @@ class DemoContentRepository {
           }
         }
         catch (\Exception $exception) {
-          watchdog_exception('tide_demo_content', $exception);
+          tide_core_log_exception('tide_demo_content', $exception);
         }
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_demo_content', $exception);
+      tide_core_log_exception('tide_demo_content', $exception);
     }
 
     return $this;
@@ -248,7 +248,7 @@ class DemoContentRepository {
         ->execute();
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_demo_content', $exception);
+      tide_core_log_exception('tide_demo_content', $exception);
     }
 
     return $this;

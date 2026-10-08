@@ -7,9 +7,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    allowed_formats: {  }
 id: paragraph.accordion.field_paragraph_body
 field_name: field_paragraph_body
 entity_type: paragraph

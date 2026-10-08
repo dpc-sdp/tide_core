@@ -38,8 +38,7 @@ content:
     region: content
   field_paragraph_location:
     weight: 5
-    settings:
-      default_country: null
+    settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
@@ -65,8 +64,7 @@ content:
     region: content
   field_paragraph_postal_address:
     weight: 6
-    settings:
-      default_country: null
+    settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content

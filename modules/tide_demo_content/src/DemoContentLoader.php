@@ -235,6 +235,7 @@ class DemoContentLoader {
     foreach ($this->getCollectionGraph() as $collection_name => $graph_item) {
       $collection = $this->collections[$collection_name];
       foreach ($collection['content'] as $content_item) {
+        $current_item = $content_item;
         try {
           $demo_dir = $this->moduleHandler->getModule($collection['module'])->getPath() . DIRECTORY_SEPARATOR . static::DIRECTORY;
           $yaml_content_dir = $demo_dir . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR;
@@ -245,6 +246,7 @@ class DemoContentLoader {
               $this->contentLoader->setContentPath($demo_dir);
               foreach ($files as $file) {
                 $filename = str_replace($yaml_content_dir, '', $file->uri);
+                $current_item = $filename;
                 $this->contentLoader->loadContent($filename);
               }
             }
@@ -255,8 +257,15 @@ class DemoContentLoader {
           }
         }
         catch (\Exception $exception) {
-          $this->messenger->addError($exception->getMessage());
-          watchdog_exception('tide_demo_content', $exception);
+          $this->messenger->addError($this->t('Unable to load demo content %item: @message', [
+            '%item' => $current_item,
+            '@message' => $exception->getMessage(),
+          ]));
+          \Drupal::logger('tide_demo_content')->error('Unable to load demo content %item: @message', [
+            '%item' => $current_item,
+            '@message' => $exception->getMessage(),
+            'exception' => $exception,
+          ]);
           return;
         }
       }

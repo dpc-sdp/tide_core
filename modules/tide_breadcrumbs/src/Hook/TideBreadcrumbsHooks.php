@@ -1,0 +1,216 @@
+<?php
+
+namespace Drupal\tide_breadcrumbs\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Url;
+use Drupal\node\Entity\NodeType;
+use Drupal\node\NodeInterface;
+
+/**
+ * Hook implementations for the tide breadcrumbs module.
+ */
+class TideBreadcrumbsHooks {
+
+  /**
+   * Implements hook_entity_bundle_field_info().
+   *
+   * Registers a computed field 'tide_breadcrumb' for node entities. This field
+   * is handled by the BreadcrumbComputedField class and provides a structured
+   * data representation of the breadcrumb trail, typically for use in
+   * decoupled applications or Search API indexing.
+   */
+  #[Hook('entity_bundle_field_info')]
+  public function entityBundleFieldInfo(EntityTypeInterface $entity_type, $bundle, array $base_field_definitions) {
+    $fields = [];
+
+    if ($entity_type->id() === 'node') {
+      $fields['tide_breadcrumb'] = BaseFieldDefinition::create('map')
+        ->setLabel(t('Tide Breadcrumb'))
+        ->setComputed(TRUE)
+        ->setClass('\Drupal\tide_breadcrumbs\BreadcrumbComputedField')
+        ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+        ->setReadOnly(TRUE);
+    }
+
+    return $fields;
+  }
+
+  /**
+   * Implements hook_entity_extra_field_info().
+   *
+   * Defines a pseudo-field (extra field) for the 'display' context of all node
+   * bundles. This allows the computed breadcrumb trail to be toggled and
+   * positioned via the "Manage Display" UI.
+   */
+  #[Hook('entity_extra_field_info')]
+  public function entityExtraFieldInfo() {
+    $extra = [];
+    // Add this to specific node types, or all of them.
+    foreach (NodeType::loadMultiple() as $bundle) {
+      $extra['node'][$bundle->id()]['display']['computed_breadcrumb_trail'] = [
+        'label' => t('Computed Breadcrumb Trail'),
+        'description' => t('Displays the full chained breadcrumb trail.'),
+        'weight' => -10,
+        'visible' => TRUE,
+      ];
+    }
+    return $extra;
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_view().
+   *
+   * Responsible for rendering the visual representation of the breadcrumb trail
+   * when a node is viewed. It consumes the TideBreadcrumbBuilder service to
+   * generate the trail and formats it as a series of links separated by arrows.
+   */
+  #[Hook('node_view')]
+  public function nodeView(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
+    // Check if our custom extra field is enabled for this view mode.
+    if ($display->getComponent('computed_breadcrumb_trail')) {
+      /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $builder */
+      $builder = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+      $trail = $builder->buildFullTrail($node);
+
+      if (!empty($trail)) {
+        $breadcrumb_items = [];
+        foreach ($trail as $item) {
+          if (!empty($item['title'] && !empty($item['url']))) {
+            if (UrlHelper::isExternal($item['url'])) {
+              $url = Url::fromUri($item['url']);
+            }
+            else {
+              $url = Url::fromUserInput($item['url']);
+            }
+            $breadcrumb_items[] = [
+              '#type' => 'link',
+              '#title' => $item['title'],
+              '#url' => $url,
+            ];
+          }
+        }
+
+        // Build the render array with a heading and horizontal layout.
+        $build['computed_breadcrumb_trail'] = [
+          '#prefix' => '<div class="custom-breadcrumb-container"><strong>Breadcrumb:</strong> <nav class="custom-breadcrumb">',
+          '#suffix' => '</nav></div>',
+          '#attached' => [
+            'library' => ['tide_breadcrumbs/breadcrumb_styles'],
+          ],
+        ];
+
+        // Insert separators between links.
+        foreach ($breadcrumb_items as $index => $link_render) {
+          $build['computed_breadcrumb_trail'][] = $link_render;
+
+          // Don't add an arrow after the very last item.
+          if ($index < count($breadcrumb_items) - 1) {
+            $build['computed_breadcrumb_trail'][] = ['#markup' => ' <span class="divider">→</span> '];
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_entity_storage_load().
+   *
+   * This hook is used to inject breadcrumb cache metadata (tags and contexts)
+   * directly into node entities as they are loaded from storage.
+   *
+   * This is critical for:
+   * - JSON:API: Ensures parent node tags appear in
+   * X-Drupal-Cache-Tags headers.
+   *
+   * PERFORMANCE:
+   * - Includes a CLI guard to prevent heavy breadcrumb calculation during
+   * bulk Drush operations or Cron jobs unless necessary.
+   *
+   * @see \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder
+   * @see \Drupal\tide_breadcrumbs\BreadcrumbComputedField
+   */
+  #[Hook('node_storage_load')]
+  public function nodeStorageLoad(array $entities) {
+    if (PHP_SAPI === 'cli') {
+      return;
+    }
+
+    // Ignore the admin paths.
+    if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+      return;
+    }
+
+    $request = \Drupal::request();
+    if (strpos($request->getRequestUri(), '/admin/') !== FALSE) {
+      return;
+    }
+
+    $is_processing = &drupal_static(__FUNCTION__ . '_running', FALSE);
+    if ($is_processing) {
+      return;
+    }
+
+    $is_processing = TRUE;
+
+    try {
+      $service = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+      $processed = &drupal_static(__FUNCTION__, []);
+
+      foreach ($entities as $node) {
+        if ($node instanceof NodeInterface) {
+          $nid = $node->id();
+          if (!isset($processed[$nid])) {
+            $service->buildFullTrail($node);
+            $node->addCacheTags($service->getCacheTags($node));
+            $node->addCacheContexts($service->getCacheContexts());
+            $processed[$nid] = TRUE;
+          }
+        }
+      }
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('tide_breadcrumbs')->error($e->getMessage());
+    }
+    finally {
+      // This ensures the lock is ALWAYS released.
+      // Even if an error occurs.
+      $is_processing = FALSE;
+    }
+  }
+
+  /**
+   * Implements hook_tide_breadcrumb_alter().
+   *
+   * Overrides tide_core's baseline menu breadcrumb with the chained
+   * Primary/Section-site trail computed by tide_breadcrumbs, so the JSON-LD
+   * BreadcrumbList reflects the richer taxonomy-aware hierarchy whenever this
+   * module is enabled. URL normalisation (front-end host, https, /site-XXXX
+   * stripping) is still applied downstream by tide_core.
+   *
+   * @see \Drupal\tide_core\TideBreadcrumb::build()
+   * @see \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder::buildFullTrail()
+   */
+  #[Hook('tide_breadcrumb_alter')]
+  public function tideBreadcrumbAlter(array &$trail, NodeInterface $node, array $context) {
+    /** @var \Drupal\tide_breadcrumbs\TideBreadcrumbBuilder $builder */
+    $builder = \Drupal::service('tide_breadcrumbs.breadcrumb_builder');
+    $custom = $builder->buildFullTrail($node);
+    if (empty($custom)) {
+      return;
+    }
+
+    // Keep "Home" pointing at the site root, consistent with tide_core.
+    if (($custom[0]['title'] ?? '') === 'Home') {
+      $custom[0]['url'] = '/';
+    }
+
+    $trail = $custom;
+  }
+
+}

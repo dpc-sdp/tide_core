@@ -2,7 +2,7 @@
 
 namespace Drupal\tide_webform\Plugin\WebformHandler;
 
-use Drupal\Core\Serialization\Yaml;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Url;
 use Drupal\webform\Plugin\WebformHandler\RemotePostWebformHandler;
 use Drupal\webform\WebformSubmissionInterface;

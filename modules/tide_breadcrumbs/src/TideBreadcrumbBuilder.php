@@ -74,7 +74,7 @@ class TideBreadcrumbBuilder {
   public function __construct(
     MenuLinkTreeInterface $menu_tree,
     EntityTypeManagerInterface $entity_type_manager,
-    Connection $database
+    Connection $database,
   ) {
     $this->menuTree = $menu_tree;
     $this->entityTypeManager = $entity_type_manager;

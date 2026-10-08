@@ -3,6 +3,7 @@
 namespace Drupal\tide_event;
 
 use Drupal\search_api\Item\Field;
+use Drupal\search_api\IndexInterface;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
 
@@ -23,6 +24,9 @@ class TideEventOperation {
     $index_storage = \Drupal::entityTypeManager()
       ->getStorage('search_api_index');
     $index = $index_storage->load('node');
+    if (!$index) {
+      return;
+    }
 
     // Index start date of event date field.
     $field_start_date = new Field($index, 'field_event_date_start_value');
@@ -30,7 +34,7 @@ class TideEventOperation {
     $field_start_date->setPropertyPath('field_event_details:entity:field_paragraph_date_range');
     $field_start_date->setDatasourceId('entity:node');
     $field_start_date->setLabel('Event Details » Date Range » Start date value');
-    $index->addField($field_start_date);
+    self::addFieldIfMissing($index, $field_start_date);
 
     // Index end date of the event date field.
     $field_end_date = new Field($index, 'field_event_date_end_value');
@@ -38,7 +42,7 @@ class TideEventOperation {
     $field_end_date->setPropertyPath('field_event_details:entity:field_paragraph_date_range:end_value');
     $field_end_date->setDatasourceId('entity:node');
     $field_end_date->setLabel('Event Details » Date Range » End date value');
-    $index->addField($field_end_date);
+    self::addFieldIfMissing($index, $field_end_date);
 
     // Index event category tid field.
     $field_event_category_tid = new Field($index, 'field_event_category_tid');
@@ -46,7 +50,7 @@ class TideEventOperation {
     $field_event_category_tid->setPropertyPath('field_event_category');
     $field_event_category_tid->setDatasourceId('entity:node');
     $field_event_category_tid->setLabel('Event Category');
-    $index->addField($field_event_category_tid);
+    self::addFieldIfMissing($index, $field_event_category_tid);
 
     // Index event category:name field.
     $field_event_category_name = new Field($index, 'field_event_category_name');
@@ -54,7 +58,7 @@ class TideEventOperation {
     $field_event_category_name->setPropertyPath('field_event_category:entity:name');
     $field_event_category_name->setDatasourceId('entity:node');
     $field_event_category_name->setLabel('Event Category » Taxonomy term » Name');
-    $index->addField($field_event_category_name);
+    self::addFieldIfMissing($index, $field_event_category_name);
 
     // Index event category:uuid field.
     $field_event_category_uuid = new Field($index, 'field_event_category_uuid');
@@ -62,7 +66,7 @@ class TideEventOperation {
     $field_event_category_uuid->setPropertyPath('field_event_category:entity:uuid');
     $field_event_category_uuid->setDatasourceId('entity:node');
     $field_event_category_uuid->setLabel('Event Category » Taxonomy term » UUID');
-    $index->addField($field_event_category_uuid);
+    self::addFieldIfMissing($index, $field_event_category_uuid);
 
     // Index field_news_intro_text field.
     $field_event_intro_text = new Field($index, 'field_event_intro_text');
@@ -70,7 +74,7 @@ class TideEventOperation {
     $field_event_intro_text->setPropertyPath('field_news_intro_text');
     $field_event_intro_text->setDatasourceId('entity:node');
     $field_event_intro_text->setLabel('Event Introduction Text');
-    $index->addField($field_event_intro_text);
+    self::addFieldIfMissing($index, $field_event_intro_text);
 
     // Index field_event_description field.
     $field_event_description = new Field($index, 'field_event_description');
@@ -78,7 +82,7 @@ class TideEventOperation {
     $field_event_description->setPropertyPath('field_event_description');
     $field_event_description->setDatasourceId('entity:node');
     $field_event_description->setLabel('Event Description');
-    $index->addField($field_event_description);
+    self::addFieldIfMissing($index, $field_event_description);
 
     // Index field_event_details_event_address_1 field.
     $field_event_details_event_address_1 = new Field($index, 'field_event_details_event_address_1');
@@ -86,7 +90,7 @@ class TideEventOperation {
     $field_event_details_event_address_1->setPropertyPath('field_event_details:entity:field_paragraph_location:address_line1');
     $field_event_details_event_address_1->setDatasourceId('entity:node');
     $field_event_details_event_address_1->setLabel('Event Details » Location »  The first line of the address block');
-    $index->addField($field_event_details_event_address_1);
+    self::addFieldIfMissing($index, $field_event_details_event_address_1);
 
     // Index field_event_details_event_address_line2 field.
     $field_event_details_event_address_2 = new Field($index, 'field_event_details_event_address_line2');
@@ -94,7 +98,7 @@ class TideEventOperation {
     $field_event_details_event_address_2->setPropertyPath('field_event_details:entity:field_paragraph_location:address_line2');
     $field_event_details_event_address_2->setDatasourceId('entity:node');
     $field_event_details_event_address_2->setLabel('Event Details » Location »  The second line of the address block');
-    $index->addField($field_event_details_event_address_2);
+    self::addFieldIfMissing($index, $field_event_details_event_address_2);
 
     // Index field_event_details_event_administrative_area field.
     $field_event_details_event_administrative_area = new Field($index, 'field_event_details_event_administrative_area');
@@ -102,7 +106,7 @@ class TideEventOperation {
     $field_event_details_event_administrative_area->setPropertyPath('field_event_details:entity:field_paragraph_location:administrative_area');
     $field_event_details_event_administrative_area->setDatasourceId('entity:node');
     $field_event_details_event_administrative_area->setLabel('Event Details » Location » The top-level administrative subdivision of the country');
-    $index->addField($field_event_details_event_administrative_area);
+    self::addFieldIfMissing($index, $field_event_details_event_administrative_area);
 
     // Index field_event_details_event_locality field.
     $field_event_details_event_locality = new Field($index, 'field_event_details_event_locality');
@@ -110,7 +114,7 @@ class TideEventOperation {
     $field_event_details_event_locality->setPropertyPath('field_event_details:entity:field_paragraph_location:locality');
     $field_event_details_event_locality->setDatasourceId('entity:node');
     $field_event_details_event_locality->setLabel('Event Details » Location » The locality');
-    $index->addField($field_event_details_event_locality);
+    self::addFieldIfMissing($index, $field_event_details_event_locality);
 
     // Index field_event_details_event_postal_code field.
     $field_event_details_event_postal_code = new Field($index, 'field_event_details_event_postal_code');
@@ -118,7 +122,7 @@ class TideEventOperation {
     $field_event_details_event_postal_code->setPropertyPath('field_event_details:entity:field_paragraph_location:postal_code');
     $field_event_details_event_postal_code->setDatasourceId('entity:node');
     $field_event_details_event_postal_code->setLabel('Event Details » Location » The postal code');
-    $index->addField($field_event_details_event_postal_code);
+    self::addFieldIfMissing($index, $field_event_details_event_postal_code);
 
     // Index field_event_details_event_price_from field.
     $field_event_details_event_price_from = new Field($index, 'field_event_details_event_price_from');
@@ -126,7 +130,7 @@ class TideEventOperation {
     $field_event_details_event_price_from->setPropertyPath('field_event_details:entity:field_paragraph_event_price_from');
     $field_event_details_event_price_from->setDatasourceId('entity:node');
     $field_event_details_event_price_from->setLabel('Event Details » Price');
-    $index->addField($field_event_details_event_price_from);
+    self::addFieldIfMissing($index, $field_event_details_event_price_from);
 
     // Index field_event_details_event_price_to field.
     $field_event_details_event_price_to = new Field($index, 'field_event_details_event_price_to');
@@ -134,7 +138,7 @@ class TideEventOperation {
     $field_event_details_event_price_to->setPropertyPath('field_event_details:entity:field_paragraph_event_price_to');
     $field_event_details_event_price_to->setDatasourceId('entity:node');
     $field_event_details_event_price_to->setLabel('Event Details » Price to');
-    $index->addField($field_event_details_event_price_to);
+    self::addFieldIfMissing($index, $field_event_details_event_price_to);
 
     // Index field_event_details_event_requirements_name field.
     $field_event_details_event_requirements_name = new Field($index, 'field_event_details_event_requirements_name');
@@ -142,7 +146,7 @@ class TideEventOperation {
     $field_event_details_event_requirements_name->setPropertyPath('field_event_details:entity:field_event_requirements:entity:name');
     $field_event_details_event_requirements_name->setDatasourceId('entity:node');
     $field_event_details_event_requirements_name->setLabel('Event Details » Event Requirements » Name');
-    $index->addField($field_event_details_event_requirements_name);
+    self::addFieldIfMissing($index, $field_event_details_event_requirements_name);
 
     // Index field_event_details_event_requirements_uuid field.
     $field_event_details_event_requirements_uuid = new Field($index, 'field_event_details_event_requirements_uuid');
@@ -150,7 +154,7 @@ class TideEventOperation {
     $field_event_details_event_requirements_uuid->setPropertyPath('field_event_details:entity:field_event_requirements:entity:uuid');
     $field_event_details_event_requirements_uuid->setDatasourceId('entity:node');
     $field_event_details_event_requirements_uuid->setLabel('Event Details » Event Requirements » UUID');
-    $index->addField($field_event_details_event_requirements_uuid);
+    self::addFieldIfMissing($index, $field_event_details_event_requirements_uuid);
 
     // Index field_event_details_event_requirements_tid field.
     $field_event_details_event_requirements_tid = new Field($index, 'field_event_details_event_requirements_tid');
@@ -158,9 +162,23 @@ class TideEventOperation {
     $field_event_details_event_requirements_tid->setPropertyPath('field_event_details:entity:field_event_requirements');
     $field_event_details_event_requirements_tid->setDatasourceId('entity:node');
     $field_event_details_event_requirements_tid->setLabel('Event Details » Event Requirements');
-    $index->addField($field_event_details_event_requirements_tid);
+    self::addFieldIfMissing($index, $field_event_details_event_requirements_tid);
 
     $index->save();
+  }
+
+  /**
+   * Adds a field unless it already exists on the index.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index.
+   * @param \Drupal\search_api\Item\Field $field
+   *   The field to add.
+   */
+  private static function addFieldIfMissing(IndexInterface $index, Field $field): void {
+    if (!$index->getField($field->getFieldIdentifier())) {
+      $index->addField($field);
+    }
   }
 
   /**

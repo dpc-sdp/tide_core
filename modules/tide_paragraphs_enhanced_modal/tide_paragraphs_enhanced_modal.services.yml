@@ -1,0 +1,3 @@
+services:
+  Drupal\tide_paragraphs_enhanced_modal\Hook\TideParagraphsEnhancedModalHooks:
+    autowire: true

@@ -7,9 +7,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    allowed_formats: {  }
 id: taxonomy_term.sites.field_additional_comment
 field_name: field_additional_comment
 entity_type: taxonomy_term

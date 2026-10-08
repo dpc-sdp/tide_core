@@ -65,7 +65,6 @@ content:
         maxlength_js: 200
         maxlength_js_label: 'Content limited to @limit characters, remaining: <strong>@remaining</strong>'
         maxlength_js_enforce: false
-        maxlength_js_truncate_html: false
     type: string_textarea
     region: content
   field_paragraph_title:

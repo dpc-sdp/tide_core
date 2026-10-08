@@ -3,6 +3,7 @@
 namespace Drupal\tide_landing_page;
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
@@ -142,6 +143,9 @@ class TideLandingPageOperation {
     $index_storage = \Drupal::entityTypeManager()
       ->getStorage('search_api_index');
     $index = $index_storage->load('node');
+    if (!$index) {
+      return;
+    }
 
     // Index the Intro field.
     $field_landing_page_intro = new Field($index, 'field_landing_page_intro_text');
@@ -149,7 +153,7 @@ class TideLandingPageOperation {
     $field_landing_page_intro->setPropertyPath('field_landing_page_intro_text');
     $field_landing_page_intro->setDatasourceId('entity:node');
     $field_landing_page_intro->setLabel('Introduction text');
-    $index->addField($field_landing_page_intro);
+    self::addFieldIfMissing($index, $field_landing_page_intro);
 
     // Index the summary field.
     $field_landing_page_summary = new Field($index, 'field_landing_page_summary');
@@ -158,7 +162,7 @@ class TideLandingPageOperation {
     $field_landing_page_summary->setDatasourceId('entity:node');
     $field_landing_page_summary->setBoost(1);
     $field_landing_page_summary->setLabel('Summary');
-    $index->addField($field_landing_page_summary);
+    self::addFieldIfMissing($index, $field_landing_page_summary);
 
     // Index the field field_paragraph_body.
     $field_paragraph_body = new Field($index, 'field_paragraph_body');
@@ -166,7 +170,7 @@ class TideLandingPageOperation {
     $field_paragraph_body->setPropertyPath('field_landing_page_component:entity:field_paragraph_body');
     $field_paragraph_body->setDatasourceId('entity:node');
     $field_paragraph_body->setLabel('Content components » Paragraph » Body');
-    $index->addField($field_paragraph_body);
+    self::addFieldIfMissing($index, $field_paragraph_body);
 
     // Index the field field_paragraph_topic.
     $field_paragraph_topic = new Field($index, 'field_paragraph_topic');
@@ -174,7 +178,7 @@ class TideLandingPageOperation {
     $field_paragraph_topic->setPropertyPath('field_landing_page_component:entity:field_paragraph_topic');
     $field_paragraph_topic->setDatasourceId('entity:node');
     $field_paragraph_topic->setLabel('Content components » Paragraph » Topic');
-    $index->addField($field_paragraph_topic);
+    self::addFieldIfMissing($index, $field_paragraph_topic);
 
     // Index the field field_paragraph_topic_name.
     $field_paragraph_topic_name = new Field($index, 'field_paragraph_topic_name');
@@ -183,7 +187,7 @@ class TideLandingPageOperation {
     $field_paragraph_topic_name->setDatasourceId('entity:node');
     $field_paragraph_topic_name->setBoost(5);
     $field_paragraph_topic_name->setLabel('Content components » Paragraph » Topic » Taxonomy term » Name');
-    $index->addField($field_paragraph_topic_name);
+    self::addFieldIfMissing($index, $field_paragraph_topic_name);
 
     // Index the field field_paragraph_title.
     $field_paragraph_title = new Field($index, 'field_paragraph_title');
@@ -192,7 +196,7 @@ class TideLandingPageOperation {
     $field_paragraph_title->setDatasourceId('entity:node');
     $field_paragraph_title->setLabel('Content components » Paragraph » Title');
     $field_paragraph_title->setBoost(13);
-    $index->addField($field_paragraph_title);
+    self::addFieldIfMissing($index, $field_paragraph_title);
 
     // Index the summary field field_paragraph_summary.
     $field_paragraph_summary = new Field($index, 'field_paragraph_summary');
@@ -200,7 +204,7 @@ class TideLandingPageOperation {
     $field_paragraph_summary->setPropertyPath('field_landing_page_component:entity:field_paragraph_summary');
     $field_paragraph_summary->setDatasourceId('entity:node');
     $field_paragraph_summary->setLabel('Content components » Paragraph » Summary');
-    $index->addField($field_paragraph_summary);
+    self::addFieldIfMissing($index, $field_paragraph_summary);
 
     // Index the summary field field_paragraph_accordion_name.
     $field_paragraph_accordion_name = new Field($index, 'field_paragraph_accordion_name');
@@ -209,7 +213,7 @@ class TideLandingPageOperation {
     $field_paragraph_accordion_name->setDatasourceId('entity:node');
     $field_paragraph_accordion_name->setBoost(5);
     $field_paragraph_accordion_name->setLabel('Content components » Paragraph » Accordion Content » Paragraph » Item Name');
-    $index->addField($field_paragraph_accordion_name);
+    self::addFieldIfMissing($index, $field_paragraph_accordion_name);
 
     // Index the summary field field_paragraph_accordion_body.
     $field_paragraph_accordion_body = new Field($index, 'field_paragraph_accordion_body');
@@ -217,7 +221,7 @@ class TideLandingPageOperation {
     $field_paragraph_accordion_body->setPropertyPath('field_landing_page_component:entity:field_paragraph_accordion_body');
     $field_paragraph_accordion_body->setDatasourceId('entity:node');
     $field_paragraph_accordion_body->setLabel('Content components » Paragraph » Accordion Content » Paragraph » Body');
-    $index->addField($field_paragraph_accordion_body);
+    self::addFieldIfMissing($index, $field_paragraph_accordion_body);
 
     // Index the summary field field_landing_page_contact_name.
     $field_landing_page_contact_name = new Field($index, 'field_landing_page_contact_name');
@@ -226,7 +230,7 @@ class TideLandingPageOperation {
     $field_landing_page_contact_name->setDatasourceId('entity:node');
     $field_landing_page_contact_name->setBoost(1);
     $field_landing_page_contact_name->setLabel('Content components » Paragraph » Name');
-    $index->addField($field_landing_page_contact_name);
+    self::addFieldIfMissing($index, $field_landing_page_contact_name);
 
     // Index the summary field field_landing_page_contact_body.
     $field_landing_page_contact_body = new Field($index, 'field_landing_page_contact_body');
@@ -234,7 +238,7 @@ class TideLandingPageOperation {
     $field_landing_page_contact_body->setPropertyPath('field_landing_page_contact:entity:field_paragraph_body');
     $field_landing_page_contact_body->setDatasourceId('entity:node');
     $field_landing_page_contact_body->setLabel('Content components » Paragraph » Body');
-    $index->addField($field_landing_page_contact_body);
+    self::addFieldIfMissing($index, $field_landing_page_contact_body);
 
     // Index the summary field field_paragraph_topic_uuid.
     $field_paragraph_topic_uuid = new Field($index, 'field_paragraph_topic_uuid');
@@ -242,9 +246,23 @@ class TideLandingPageOperation {
     $field_paragraph_topic_uuid->setPropertyPath('field_landing_page_component:entity:field_paragraph_topic:entity:uuid');
     $field_paragraph_topic_uuid->setDatasourceId('entity:node');
     $field_paragraph_topic_uuid->setLabel('Content components » Paragraph » Topic » Taxonomy term » UUID');
-    $index->addField($field_paragraph_topic_uuid);
+    self::addFieldIfMissing($index, $field_paragraph_topic_uuid);
 
     $index->save();
+  }
+
+  /**
+   * Adds a field unless it already exists on the index.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index.
+   * @param \Drupal\search_api\Item\Field $field
+   *   The field to add.
+   */
+  private static function addFieldIfMissing(IndexInterface $index, Field $field): void {
+    if (!$index->getField($field->getFieldIdentifier())) {
+      $index->addField($field);
+    }
   }
 
 }

@@ -205,7 +205,8 @@ datasource_settings:
   'entity:node':
     bundles:
       default: true
-      selected: {  }
+      selected:
+        - alert
     languages:
       default: true
       selected: {  }

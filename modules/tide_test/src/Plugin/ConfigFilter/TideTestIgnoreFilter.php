@@ -2,9 +2,8 @@
 
 namespace Drupal\tide_test\Plugin\ConfigFilter;
 
-use Drupal\config_ignore\Plugin\ConfigFilter\IgnoreFilter;
-use Drupal\Core\Config\StorageInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\config_filter\Plugin\ConfigFilterBase;
+use Symfony\Component\Finder\Glob;
 
 /**
  * Ignore all test config.
@@ -15,28 +14,38 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
  *   weight = 100
  * )
  */
-class TideTestIgnoreFilter extends IgnoreFilter implements ContainerFactoryPluginInterface {
+class TideTestIgnoreFilter extends ConfigFilterBase {
+
+  /**
+   * Configuration-name patterns excluded from exported configuration.
+   *
+   * @var string[]
+   */
+  protected $ignored = [
+    '*.test',
+    '*.test*',
+    '*.test.*',
+    '*_test*',
+    '*.field_test*',
+    '*.node--test',
+  ];
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, StorageInterface $active) {
-    $configuration['ignored'] = [
-      '*.test',
-      '*.test*',
-      '*.test.*',
-      '*_test*',
-      '*.field_test*',
-      '*.node--test',
-    ];
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $active);
+  protected function matchConfigName($name) {
+    foreach ($this->ignored as $pattern) {
+      if (preg_match(Glob::toRegex($pattern, FALSE, FALSE), $name)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
    * {@inheritdoc}
    */
   public function filterWrite($name, array $data) {
-    // @codingStandardsIgnoreStart Drupal.Functions.DiscouragedFunctions.Discouraged
     $excluded_modules = ['tide_test' => 'tide_test'];
     $excluded_permissions = [
       'create test content',
@@ -56,17 +65,17 @@ class TideTestIgnoreFilter extends IgnoreFilter implements ContainerFactoryPlugi
     elseif ($this->matchConfigName($name)) {
       return NULL;
     }
-    elseif (fnmatch('user.role.*', $name)) {
+    elseif (preg_match(Glob::toRegex('user.role.*', FALSE, FALSE), $name)) {
       if (isset($data['permissions'])) {
         $data['permissions'] = array_values(array_diff($data['permissions'], $excluded_permissions));
       }
     }
-    elseif (fnmatch('workflows.workflow.*', $name)) {
+    elseif (preg_match(Glob::toRegex('workflows.workflow.*', FALSE, FALSE), $name)) {
       if (isset($data['type_settings']['entity_types']['node'])) {
         $data['type_settings']['entity_types']['node'] = array_values(array_diff($data['type_settings']['entity_types']['node'], $excluded_node_types));
       }
     }
-    elseif (fnmatch('field.field.*', $name)) {
+    elseif (preg_match(Glob::toRegex('field.field.*', FALSE, FALSE), $name)) {
       if (isset($data['field_type']) && $data['field_type'] === 'entity_reference') {
         if (isset($data['settings']['handler_settings']['target_bundles'])) {
           $data['settings']['handler_settings']['target_bundles'] = array_diff_key($data['settings']['handler_settings']['target_bundles'], $excluded_node_types);
@@ -93,7 +102,6 @@ class TideTestIgnoreFilter extends IgnoreFilter implements ContainerFactoryPlugi
     }
 
     return $data;
-    // @codingStandardsIgnoreEnd Drupal.Functions.DiscouragedFunctions.Discouraged
   }
 
 }

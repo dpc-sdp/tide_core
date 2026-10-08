@@ -1,0 +1,3 @@
+services:
+  Drupal\tide_news\Hook\TideNewsHooks:
+    autowire: true

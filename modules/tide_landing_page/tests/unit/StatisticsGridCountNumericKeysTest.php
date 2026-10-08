@@ -4,12 +4,12 @@ namespace Drupal\Tests\tide_landing_page\Unit;
 
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_landing_page\Validate\StatisticsGrid;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests CountNumericKeys from StatisticsGrid class.
- *
- * @group tide_landing_page
  */
+#[Group('tide_landing_page')]
 class StatisticsGridCountNumericKeysTest extends UnitTestCase {
 
   /**

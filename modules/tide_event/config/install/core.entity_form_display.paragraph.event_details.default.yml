@@ -68,8 +68,7 @@ content:
     region: content
   field_paragraph_location:
     weight: 1
-    settings:
-      default_country: AU
+    settings: {  }
     third_party_settings: {  }
     type: address_default
     region: content
