@@ -177,10 +177,10 @@
                 "Support Diff 2 array return types and the Drupal 11 rendering API; upstream issue 3460590": "https://www.drupal.org/files/issues/2026-10-07/address-diff-2.patch"
             },
             "drupal/clamav": {
-                "Restore Drush 13 command service construction and module namespace": "https://raw.githubusercontent.com/dpc-sdp/tide_core/feature/d11_upgrade/patches/drupal11/clamav-drush-13-factory.patch"
+                "Restore Drush 13 command service construction and module namespace": "https://raw.githubusercontent.com/dpc-sdp/tide_core/master/patches/drupal11/clamav-drush-13-factory.patch"
             },
             "drupal/ckeditor5_embedded_content": {
-                "Uninstall legacy module after numbered updates record schema versions": "https://raw.githubusercontent.com/dpc-sdp/tide_core/feature/d11_upgrade/patches/drupal11/ckeditor5-embedded-content-uninstall-post-update.patch"
+                "Uninstall legacy module after numbered updates record schema versions": "https://raw.githubusercontent.com/dpc-sdp/tide_core/master/patches/drupal11/ckeditor5-embedded-content-uninstall-post-update.patch"
             },
             "drupal/core": {
                 "Refactor Xss::attributes() to allow filtering of style attribute values - https://www.drupal.org/project/drupal/issues/3109650": "https://www.drupal.org/files/issues/2026-07-16/xss-refactor-filter-attributes-11.3.x-3109650-93.patch",
@@ -208,7 +208,7 @@
             "drupal/jira_rest": {
                 "Automated Drupal 10 compatibility fixes - https://www.drupal.org/project/jira_rest/issues/3288088#comment-14567776": "https://www.drupal.org/files/issues/2022-06-16/jira_rest.4.x-dev.rector.patch",
                 "Use the current endpoint collection route for module configuration -  https://www.drupal.org/project/jira_rest/issues/3615985#comment-16726111": "https://www.drupal.org/files/issues/2026-08-11/jira-rest-configure-route_3615985_2.patch",
-                "Display the saved username key and honor the configured Jira API version - https://git.drupalcode.org/project/jira_rest/-/work_items/3615986": "https://raw.githubusercontent.com/dpc-sdp/tide_core/feature/d11_upgrade/patches/drupal11/jira-rest-endpoint-settings-3615986.patch"
+                "Display the saved username key and honor the configured Jira API version - https://git.drupalcode.org/project/jira_rest/-/work_items/3615986": "https://raw.githubusercontent.com/dpc-sdp/tide_core/master/patches/drupal11/jira-rest-endpoint-settings-3615986.patch"
             },
             "drupal/webform": {
                 "Exporting webform submission as batch does not allowed for extended field due to static method - https://www.drupal.org/project/webform/issues/3348336#comment-16202432": "https://www.drupal.org/files/issues/2025-07-23/exporting-webform-submission-static-batch-process-3348336-9.patch"
@@ -219,7 +219,7 @@
             },
             "drupal/tablefield": {
                 "[UX] Add the ability to hide or disable the import CSV option - https://www.drupal.org/project/tablefield/issues/2337743": "https://www.drupal.org/files/issues/2026-08-11/tablefield-allowed-data-sources_2337743_20.patch",
-                "Describe actual default table values without discarding rows or captions": "https://raw.githubusercontent.com/dpc-sdp/tide_core/feature/d11_upgrade/patches/drupal11/tablefield-default-value-schema.patch"
+                "Describe actual default table values without discarding rows or captions": "https://raw.githubusercontent.com/dpc-sdp/tide_core/master/patches/drupal11/tablefield-default-value-schema.patch"
             },
             "drupal/search_api": {
                 "Provide drush support to index a specific entity - https://www.drupal.org/project/search_api/issues/3016809": "https://www.drupal.org/files/issues/2024-11-25/search_api-index-specific-items-3016809-10.patch"
@@ -250,7 +250,7 @@
             },
             "drupal/jsonapi_extras": {
                 "Make max value of page[limit] configurable per entity/bundle - https://www.drupal.org/project/jsonapi_extras/issues/2884292#comment-14794882": "https://www.drupal.org/files/issues/2022-11-21/max_page_limit_configuration-2884292-33.patch",
-                "Provide schemas for the string date, UUID link and URL link enhancers": "https://raw.githubusercontent.com/dpc-sdp/tide_core/feature/d11_upgrade/patches/drupal11/jsonapi-extras-enhancer-schema.patch"
+                "Provide schemas for the string date, UUID link and URL link enhancers": "https://raw.githubusercontent.com/dpc-sdp/tide_core/master/patches/drupal11/jsonapi-extras-enhancer-schema.patch"
             },
             "drupal/jsonapi_menu_items": {
                 "Allow filtering of response payload - https://www.drupal.org/project/jsonapi_menu_items/issues/3350524#comment-16132264": "https://www.drupal.org/files/issues/2025-06-03/3350524-filter_fields-8.patch"
