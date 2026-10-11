@@ -1,0 +1,19 @@
+--- a/src/JiraClient.php
++++ b/src/JiraClient.php
+@@ -4,6 +4,7 @@
+ 
+ use JiraRestApi\Configuration\ConfigurationInterface;
+ use JiraRestApi\Configuration\DotEnvConfiguration;
++use Monolog\Handler\NullHandler;
+ use Monolog\Handler\StreamHandler;
+ use Monolog\Logger;
+ use Psr\Log\LoggerInterface;
+@@ -92,7 +93,7 @@
+             }
+         } else {
+             $this->log = new Logger('JiraClient');
+-            $this->log->pushHandler(new NoOperationMonologHandler());
++            $this->log->pushHandler(new NullHandler());
+         }
+ 
+         $this->http_response = 200;
