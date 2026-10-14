@@ -70,8 +70,7 @@ final class TideLandingPagePostUpdateTest extends KernelTestBase {
   }
 
   /**
-   * Tests that the malformed display is repaired and remains an existing
-   * entity.
+   * Tests that a malformed display is repaired and its entity preserved.
    */
   public function testRepairsMalformedDisplay(): void {
     $uuid = 'f1953b79-1fb7-48d5-a173-c7fa6d141bc3';
