@@ -17,7 +17,7 @@ use Drupal\Core\TypedData\TypedDataInterface;
  *   id = "content_collection_configuration",
  *   label = @Translation("Content Collection Configuration"),
  *   description = @Translation("A field containing JSON configuration for automated content collection."),
- *   category = @Translation("Content Collection"),
+ *   category = "content_collection",
  *   default_widget = "content_collection_configuration_raw",
  *   default_formatter = "content_collection_configuration_raw",
  * )
