@@ -5,6 +5,7 @@
  * Tide Media Secure Files.
  */
 
+use Drupal\tide_core\TideCoreOperation;
 use Drupal\user\Entity\Role;
 
 /**
@@ -105,4 +106,7 @@ function tide_media_secure_files_install() {
   }
 
   _create_secure_file_widget();
+
+  // Enable "Basic tags" metatag group for the secure file media bundle.
+  (new TideCoreOperation())->enableMediaMetatagBasicGroup(['secure_file']);
 }

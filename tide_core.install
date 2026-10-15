@@ -66,6 +66,9 @@ function tide_core_install() {
   // Enable the JSON-LD engine schema defaults (WebPage + BreadcrumbList) on the
   // node metatag default.
   $tideCoreOperation->enableJsonLdSchemaDefaults();
+
+  // Enable "Basic tags" metatag group for media bundles.
+  $tideCoreOperation->enableMediaMetatagBasicGroup();
 }
 
 /**
@@ -191,4 +194,11 @@ function tide_core_update_11006() {
       }
     }
   }
+}
+
+/**
+ * Enable "Basic tags" metatag group for media bundles.
+ */
+function tide_core_update_11007() {
+  (new TideCoreOperation())->enableMediaMetatagBasicGroup();
 }

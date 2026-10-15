@@ -318,4 +318,39 @@ class TideCoreOperation {
     $defaults->save();
   }
 
+  /**
+   * Enables the "Basic tags" metatag group for selected media bundles.
+   *
+   * Updates entity_type_groups in metatag.settings (as configured on
+   * admin/config/search/metatag/settings) for each media bundle that exists.
+   * metatag.settings is owned by the metatag module, so it cannot be shipped
+   * in tide_core's config/install. Existing groups are preserved.
+   *
+   * @param string[]|null $bundles
+   *   Media bundle IDs. Defaults to all existing media bundles.
+   */
+  public function enableMediaMetatagBasicGroup(?array $bundles = NULL) {
+    if (!\Drupal::moduleHandler()->moduleExists('metatag')) {
+      return;
+    }
+
+    $existing_bundles = array_keys(\Drupal::service('entity_type.bundle.info')->getBundleInfo('media'));
+    $bundles = $bundles === NULL ? $existing_bundles : array_intersect($bundles, $existing_bundles);
+
+    $config = \Drupal::configFactory()->getEditable('metatag.settings');
+    $groups = $config->get('entity_type_groups') ?: [];
+
+    $changed = FALSE;
+    foreach ($bundles as $bundle) {
+      if (($groups['media'][$bundle]['basic'] ?? NULL) !== 'basic') {
+        $groups['media'][$bundle]['basic'] = 'basic';
+        $changed = TRUE;
+      }
+    }
+
+    if ($changed) {
+      $config->set('entity_type_groups', $groups)->save();
+    }
+  }
+
 }
