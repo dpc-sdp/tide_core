@@ -198,6 +198,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     $response = $this->controller()->push($request, $machine_name);
 
     $this->assertSame(415, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertArrayHasKey('error', $body);
   }
@@ -215,6 +216,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     );
 
     $this->assertSame(400, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertStringContainsString('Invalid JSON', $body['error']);
   }
@@ -229,6 +231,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     );
 
     $this->assertSame(404, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertArrayHasKey('error', $body);
   }
@@ -250,6 +253,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     $response = $this->controller()->push($this->jsonRequest(['data' => 'value']), $machine_name);
 
     $this->assertSame(422, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertArrayHasKey('error', $body);
   }
@@ -274,6 +278,62 @@ class DatasetPushControllerTest extends KernelTestBase {
     $response = $this->controller()->push($this->jsonRequest(['data' => 'value']), $name);
 
     $this->assertSame(404, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
+  }
+
+  /**
+   * Tests procedural and Drupal 11 hooks run once after records are written.
+   */
+  public function testPushInvokesDatasetProcessedHook(): void {
+    $machine_name = 'push_hook_fires';
+    $dataset = $this->createPublishedDataset($machine_name);
+    $this->assertDatasetProcessedHooksNotInvoked();
+
+    $payloads = [
+      [['suburb' => 'Carlton'], ['suburb' => 'Fitzroy']],
+      [['suburb' => 'Richmond']],
+    ];
+    foreach ($payloads as $index => $payload) {
+      $response = $this->controller()->push($this->jsonRequest($payload), $machine_name);
+      $this->assertSame(200, $response->getStatusCode());
+
+      $fired = \Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed');
+      $this->assertNotNull($fired);
+      $this->assertSame((int) $dataset->id(), (int) $fired['dataset_id']);
+      $this->assertSame($machine_name, $fired['machine_name']);
+      $this->assertSame($payload, $fired['records']);
+      $this->assertSame($index + 1, $fired['invocations']);
+
+      $oop_fired = \Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed_oop');
+      $this->assertNotNull($oop_fired);
+      $this->assertSame((int) $dataset->id(), (int) $oop_fired['dataset_id']);
+      $this->assertSame($machine_name, $oop_fired['machine_name']);
+      $this->assertSame($index + 1, $oop_fired['invocations']);
+    }
+  }
+
+  /**
+   * Tests that a save_only push does not invoke either hook implementation.
+   */
+  public function testSaveOnlyDoesNotInvokeDatasetProcessedHook(): void {
+    $machine_name = 'push_hook_save_only';
+    $this->createPublishedDataset($machine_name);
+
+    $request = $this->jsonRequest([['id' => 1]]);
+    $request->query->set('save_only', '1');
+    $response = $this->controller()->push($request, $machine_name);
+
+    $this->assertSame(200, $response->getStatusCode());
+    $this->assertSame('saved', json_decode($response->getContent(), TRUE)['status']);
+    $this->assertDatasetProcessedHooksNotInvoked();
+  }
+
+  /**
+   * Asserts that neither procedural nor object-oriented hooks were invoked.
+   */
+  private function assertDatasetProcessedHooksNotInvoked(): void {
+    $this->assertNull(\Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed'));
+    $this->assertNull(\Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed_oop'));
   }
 
   /**
