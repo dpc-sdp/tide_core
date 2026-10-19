@@ -29,6 +29,11 @@ use Drupal\data_pipelines\Entity\DatasetInterface;
  * (not in this shared module, which may be used by other sites with
  * different requirements) to perform that kind of cleanup.
  *
+ * Throw if required post-processing fails; do not log and suppress the error.
+ * The controller logs the exception and returns HTTP 500 instead of reporting
+ * the push as processed. Payload storage and destination changes are not rolled
+ * back, and remaining hook implementations may not run after a failure.
+ *
  * @param \Drupal\data_pipelines\Entity\DatasetInterface $dataset
  *   The dataset entity that was just processed.
  * @param string $machine_name

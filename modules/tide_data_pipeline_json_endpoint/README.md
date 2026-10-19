@@ -150,6 +150,7 @@ POST /api/datasets/{machine_name}/push
 | `404` | No published `json_endpoint` dataset with that machine name exists. |
 | `415` | `Content-Type` is not `application/json`. |
 | `422` | The dataset exists but is not published. |
+| `500` | A post-processing hook failed. Body is `{"status":"failed","machine_name":"...","error":"Dataset post-processing failed."}`. |
 
 ---
 
@@ -222,6 +223,18 @@ Elasticsearch index cleanup). Since this module is shared across multiple
 sites, implement this hook in a site-specific module if you need to react to
 a push - for example, deleting records from a destination index that no
 longer meet a site-specific business rule.
+
+A `processed` response is returned only after all completion hooks return
+successfully. Hook implementations must throw when required post-processing
+fails, including partial failures reported by a destination. The controller
+logs the exception and returns HTTP `500` with the error body above; internal
+exception details are not returned to the caller.
+
+This is not a transaction: the saved payload and some or all destination
+writes/deletions may already exist when a hook fails, and later hooks may not
+have run. Check the logs, resolve the failure, and account for the destination's
+retry behavior before resending the payload. `save_only=1` still skips these
+hooks and returns `saved`; it does not confirm destination processing.
 
 ---
 

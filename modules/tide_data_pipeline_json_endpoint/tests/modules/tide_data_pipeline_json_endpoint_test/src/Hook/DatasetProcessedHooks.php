@@ -20,6 +20,9 @@ class DatasetProcessedHooks {
    */
   #[Hook('tide_data_pipeline_json_endpoint_dataset_processed')]
   public function datasetProcessed(DatasetInterface $dataset, string $machine_name): void {
+    if ($this->state->get('tide_data_pipeline_json_endpoint_test.failure') === 'oop') {
+      throw new \Error('Internal destination error: private connection details');
+    }
     $previous = $this->state->get('tide_data_pipeline_json_endpoint_test.dataset_processed_oop', []);
     $this->state->set('tide_data_pipeline_json_endpoint_test.dataset_processed_oop', [
       'dataset_id' => $dataset->id(),
