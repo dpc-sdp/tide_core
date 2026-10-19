@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\tide_data_pipeline_json_endpoint\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\data_pipelines\Form\DatasetBatchOperations;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
@@ -99,7 +100,7 @@ class DatasetPushController extends ControllerBase {
 
     $directory_uri = sprintf('%s://%s', JsonEndpointSource::STORAGE_SCHEME, JsonEndpointSource::STORAGE_DIR);
     $this->fileSystem->prepareDirectory($directory_uri, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
-    $this->fileSystem->saveData($body, JsonEndpointSource::buildStorageUri($machine_name), FileSystemInterface::EXISTS_REPLACE);
+    $this->fileSystem->saveData($body, JsonEndpointSource::buildStorageUri($machine_name), FileExists::Replace);
 
     if ($request->query->getBoolean('save_only')) {
       return new JsonResponse(['status' => 'saved', 'machine_name' => $machine_name]);
