@@ -1,0 +1,66 @@
+diff --git a/config/install/tablefield.settings.yml b/config/install/tablefield.settings.yml
+--- a/config/install/tablefield.settings.yml
++++ b/config/install/tablefield.settings.yml
+@@ -1,3 +1,5 @@
++data_sources:
++  upload: upload
+ csv_separator: ','
+ rows: 5
+ cols: 5
+diff --git a/config/schema/tablefield.schema.yml b/config/schema/tablefield.schema.yml
+--- a/config/schema/tablefield.schema.yml
++++ b/config/schema/tablefield.schema.yml
+@@ -4,6 +4,11 @@ tablefield.settings:
+   type: config_object
+   label: 'Tablefield display format settings'
+   mapping:
++    data_sources:
++      type: sequence
++      label: 'Data sources'
++      sequence:
++        type: string
+     csv_separator:
+       type: string
+       label: "separator"
+diff --git a/src/Element/Tablefield.php b/src/Element/Tablefield.php
+--- a/src/Element/Tablefield.php
++++ b/src/Element/Tablefield.php
+@@ -284,8 +284,9 @@ class Tablefield extends FormElement {
+       ];
+     }
+ 
++    $data_sources = \Drupal::config('tablefield.settings')->get('data_sources');
+     // Allow import of a csv file.
+-    if (!empty($element['#import'])) {
++    if (!empty($data_sources['upload']) && !empty($element['#import'])) {
+       $element['tablefield']['import'] = [
+         '#type' => 'details',
+         '#title' => t('Import from CSV'),
+diff --git a/src/Form/TablefieldConfigForm.php b/src/Form/TablefieldConfigForm.php
+--- a/src/Form/TablefieldConfigForm.php
++++ b/src/Form/TablefieldConfigForm.php
+@@ -28,6 +28,16 @@ class TablefieldConfigForm extends ConfigFormBase {
+    * {@inheritdoc}
+    */
+   public function buildForm(array $form, FormStateInterface $form_state) {
++    $form['data_sources'] = [
++      '#type' => 'checkboxes',
++      '#title' => $this->t('Additional data sources'),
++      '#description' => $this->t('Choose the data sources that editors can use.'),
++      '#options' => [
++        'upload' => $this->t('Upload CSV file'),
++      ],
++      '#default_value' => $this->config('tablefield.settings')->get('data_sources'),
++    ];
++
+     $form['csv_separator'] = [
+       '#type' => 'textfield',
+       '#title' => $this->t('CSV separator'),
+@@ -75,6 +85,7 @@ class TablefieldConfigForm extends ConfigFormBase {
+    */
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->config('tablefield.settings')
++      ->set('data_sources', $form_state->getValue('data_sources'))
+       ->set('csv_separator', $form_state->getValue('csv_separator'))
+       ->set('rows', $form_state->getValue('rows'))
+       ->set('cols', $form_state->getValue('cols'))

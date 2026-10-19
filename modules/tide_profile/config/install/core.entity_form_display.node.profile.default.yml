@@ -290,24 +290,6 @@ content:
     type: boolean_checkbox
     region: content
   field_tags:
-    weight: 15
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
-  field_topic:
-    weight: 16
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
-  field_tags:
     weight: 16
     settings:
       match_operator: CONTAINS

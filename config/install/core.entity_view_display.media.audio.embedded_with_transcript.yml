@@ -13,7 +13,7 @@ dependencies:
     - field.field.media.audio.field_media_transcript
     - media.type.audio
   module:
-    - media_entity_audio
+    - file
 id: media.audio.embedded_with_transcript
 targetEntityType: media
 bundle: audio
@@ -23,10 +23,12 @@ content:
     weight: 0
     label: hidden
     settings:
-      provide_download_link: '1'
-      audio_attributes: controls
+      controls: true
+      autoplay: false
+      loop: false
+      multiple_file_display_type: tags
     third_party_settings: {  }
-    type: audio_stream_html5
+    type: file_audio
     region: content
   field_media_transcript:
     weight: 1

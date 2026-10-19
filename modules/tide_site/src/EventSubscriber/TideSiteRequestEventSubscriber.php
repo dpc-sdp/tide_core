@@ -12,7 +12,7 @@ use Drupal\jsonapi\Routing\Routes;
 use Drupal\jsonapi_extras\ResourceType\ConfigurableResourceType;
 use Drupal\tide_site\TideSiteFields;
 use Drupal\tide_site\TideSiteHelper;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Drupal\tide_core\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

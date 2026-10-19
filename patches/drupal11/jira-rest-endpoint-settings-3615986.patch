@@ -1,0 +1,39 @@
+diff --git a/src/Form/JiraEndpointFormBase.php b/src/Form/JiraEndpointFormBase.php
+--- a/src/Form/JiraEndpointFormBase.php
++++ b/src/Form/JiraEndpointFormBase.php
+@@ -158,7 +158,7 @@ abstract class JiraEndpointFormBase extends EntityForm {
+         '#type' => 'key_select',
+         '#title' => $this->t('Username'),
+         '#description' => $this->t('A username required by the Jira host.'),
+-        '#default_value' => $jira_endpoint->get('credentials.key.username'),
++        '#default_value' => $credentials[$credential_provider]['username'] ?? NULL,
+         '#empty_option' => $this->t('- Please select -'),
+         '#key_filters' => ['type' => 'authentication'],
+         '#required' => TRUE,
+diff --git a/src/JiraRestWrapperService.php b/src/JiraRestWrapperService.php
+--- a/src/JiraRestWrapperService.php
++++ b/src/JiraRestWrapperService.php
+@@ -188,6 +188,7 @@
+     // Initialize the JIRA Issue Service
+     try {
+       $issueService = new IssueService($this->getArrayConfiguration($endpoint));
++      $issueService->setAPIUri('/rest/api/' . $endpoint->getApiVersion());
+     } catch (JiraException $e) {
+       $this->loggerRestJira->error($e->getMessage());
+     }
+@@ -219,6 +220,7 @@
+     // Initialize the JIRA Project Service
+     try {
+       $projectService = new ProjectService($this->getArrayConfiguration($endpoint));
++      $projectService->setAPIUri('/rest/api/' . $endpoint->getApiVersion());
+     } catch (JiraException $e) {
+       $this->loggerRestJira->error($e->getMessage());
+     }
+@@ -250,6 +252,7 @@
+     // Initialize the JIRA User Service
+     try {
+       $userService = new UserService($this->getArrayConfiguration($endpoint));
++      $userService->setAPIUri('/rest/api/' . $endpoint->getApiVersion());
+     } catch (JiraException $e) {
+       $this->loggerRestJira->error($e->getMessage());
+     }

@@ -70,7 +70,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       return $indices;
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
     }
     return [];
   }
@@ -113,7 +113,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       return $index;
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
     }
     return NULL;
   }
@@ -149,7 +149,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       return $node_types;
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
     }
     return [];
   }
@@ -166,7 +166,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
       return NULL;
     }
 
@@ -192,7 +192,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
       return NULL;
     }
 
@@ -222,7 +222,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
         }
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_content_collection', $exception);
+        tide_core_log_exception('tide_content_collection', $exception);
       }
     }
 
@@ -287,7 +287,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       return $this->buildEntityReferenceSelector($field['target_type'], $field['target_bundles'] ?? [], $default_values);
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
     }
     return NULL;
   }
@@ -439,7 +439,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
         ];
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_content_collection', $exception);
+        tide_core_log_exception('tide_content_collection', $exception);
         continue;
       }
     }
@@ -524,7 +524,7 @@ class SearchApiIndexHelper implements SearchApiIndexHelperInterface {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_content_collection', $exception);
+      tide_core_log_exception('tide_content_collection', $exception);
     }
 
     return $index->id();

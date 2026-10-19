@@ -1,0 +1,424 @@
+<?php
+
+namespace Drupal\tide_landing_page\Hook;
+
+use Drupal\Core\Hook\Attribute\Hook;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\node\NodeInterface;
+use Drupal\workflows\Entity\Workflow;
+
+/**
+ * Hook implementations for the tide landing page module.
+ */
+class TideLandingPageHooks {
+
+  /**
+   * Implements hook_entity_bundle_create().
+   */
+  #[Hook('entity_bundle_create')]
+  public function entityBundleCreate($entity_type_id, $bundle) {
+    /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
+    $moduleHandler = \Drupal::service('module_handler');
+
+    if ($entity_type_id == 'node') {
+      // Support the new content type in the Referenced Content field
+      // of the Card automated paragraphs.
+      $supported_paragraph_types = [
+        'card_navigation_featured_auto',
+        'card_navigation_auto',
+        'card_promotion_auto',
+      ];
+      foreach ($supported_paragraph_types as $supported_paragraph_type) {
+        $field_config = FieldConfig::loadByName("paragraph", $supported_paragraph_type, "field_paragraph_reference");
+        if ($field_config) {
+          $handler_settings = $field_config->getSetting('handler_settings');
+          $handler_settings['target_bundles'][$bundle] = $bundle;
+          $field_config->setSetting('handler_settings', $handler_settings);
+          $field_config->save();
+        }
+      }
+
+      // Enable Editorial workflow for landing page if the workflow module is
+      // enabled.
+      if ($bundle == 'landing_page') {
+        if ($moduleHandler->moduleExists('workflows')) {
+          $editorial_workflow = Workflow::load('editorial');
+          if ($editorial_workflow) {
+            $editorial_workflow->getTypePlugin()
+              ->addEntityTypeAndBundle('node', 'landing_page');
+            $editorial_workflow->save();
+          }
+        }
+      }
+    }
+
+    // Add the Embeded webform paragraph to Landing Page component if exists.
+    if ($entity_type_id == 'paragraph') {
+      $field_config = FieldConfig::loadByName('node', 'landing_page', 'field_landing_page_component');
+      if ($field_config) {
+        $handler_settings = $field_config->getSetting('handler_settings');
+
+        $is_embedded_webform = ($bundle == 'embedded_webform' && $moduleHandler->moduleExists('tide_webform'));
+        if ($is_embedded_webform) {
+          $handler_settings['target_bundles'][$bundle] = $bundle;
+          $field_config->setSetting('handler_settings', $handler_settings);
+          $field_config->save();
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_form_BASE_FORM_ID_alter().
+   */
+  #[Hook('form_node_form_alter')]
+  public function formNodeFormAlter(&$form, FormStateInterface $form_state, $form_id) {
+    $field_config = 'node.landing_page.field_custom_filters';
+    $storage = \Drupal::entityTypeManager()->getStorage('field_config');
+    if ($storage->load($field_config) !== NULL && $form_id === 'node_landing_page_form') {
+      $field_config_storage = $storage->load($field_config);
+      $settings = $field_config_storage->getSettings();
+      if (
+        (
+          is_array($settings['handler_settings'])
+          && isset($settings['handler_settings']['target_bundles'])
+          && !is_array($settings['handler_settings']['target_bundles'])
+        )
+        || empty($settings['handler_settings'])
+      ) {
+        $form['field_custom_filters']['#access'] = FALSE;
+      }
+    }
+
+    if (in_array($form_id, [
+      'node_landing_page_form',
+      'node_landing_page_edit_form',
+      'node_landing_page_quick_node_clone_form',
+    ])) {
+      if (isset($form['title']['widget'][0]['value']['#title'])) {
+        $form['title']['widget'][0]['value']['#title'] = t('Page title');
+      }
+      if (isset($form['title']['widget'][0]['value']['#description'])) {
+        $form['title']['widget'][0]['value']['#description'] = t('Include a short unique title for your page and keywords.');
+      }
+      if (isset($form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_title']['widget'][0])) {
+        $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_title']['widget'][0]['value']['#placeholder'] = t("Want to know more about...");
+
+        $url = Url::fromUri('tel:(123456)', [
+          'attributes' => [
+            'target' => '_blank',
+          ],
+        ]);
+        $paragraph_links = $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_links']['widget'];
+        $phone_link = Link::fromTextAndUrl(t('tel:(123456)'), $url)->toString();
+        $description = t("To add an internal link, start typing the title of a piece of content to select it. You can also enter an internal path such as /node/1234. To add an external link, paste in a URL including the https://. To add a hyperlinked phone number, use the code @phone-link-url in the URL field, using brackets around the phone number and no spaces.", [
+          '@phone-link-url' => $phone_link,
+        ]);
+        foreach (Element::children($paragraph_links) as $delta) {
+          $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_links']['widget'][$delta]['uri']['#description'] = $description;
+        }
+
+        $form['field_landing_page_key_journeys']['widget'][0]['subform']['field_paragraph_cta']['widget'][0]['uri']['#description'] = $description;
+      }
+      // Change form layout.
+      $form['#attached']['library'][] = 'tide_landing_page/landing_page_form';
+      $form['#attributes']['class'][] = 'node-form-landing-page';
+
+      $form['#process'][] = '_tide_landing_page_form_node_form_process';
+
+      // Change the styling of paragraph widgets.
+      $paragraph_fields = [
+        'field_landing_page_header' => t('Header extra is currently blank.'),
+        'field_landing_page_component' => t('Page content is currently blank.'),
+      ];
+      foreach ($paragraph_fields as $paragraph_field => $component_name) {
+        $form[$paragraph_field]['widget']['#attributes']['class'][] = 'node-landing-page-alternative-paragraph';
+        if (isset($form[$paragraph_field]['widget']['#max_delta'])) {
+          $max_delta = $form[$paragraph_field]['widget']['#max_delta'];
+          if ($max_delta < 0 || !isset($form[$paragraph_field]['widget'][$max_delta])) {
+            $form[$paragraph_field]['widget']['#description'] = t('<h4><strong>@empty_component</strong></h4>',
+                ['@empty_component' => $component_name]) . $form[$paragraph_field]['widget']['#description'];
+          }
+        }
+      }
+
+      // Hide the field Show Acknowledgement to Country if tide_site is missing.
+      if (!\Drupal::moduleHandler()->moduleExists('tide_site')) {
+        $form['field_show_ack_of_country']['#attributes']['class'][] = 'hidden';
+      }
+
+      // Move Show Hero Image caption checkbox to Hero Image field group.
+      if (isset($form['field_show_hero_image_caption']) && isset($form['field_landing_page_hero_image']['widget'])) {
+        $form['field_landing_page_hero_image']['widget']['field_show_hero_image_caption'] = $form['field_show_hero_image_caption'];
+        unset($form['field_show_hero_image_caption']);
+      }
+
+      // @todo the below block needs to be in a proper widget alter.
+      if (isset($form['field_landing_page_component']['widget'][0])) {
+        foreach (Element::children($form['field_landing_page_component']['widget']) as $key) {
+          if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'])) {
+            foreach (Element::children($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget']) as $delta) {
+              $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['uri']['#title'] = t("CTA link");
+              $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['title']['#title'] = t("CTA text");
+              $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_cta']['widget'][$delta]['title']['#description'] = t("Type a strong call to action that describes the content of the link destination (eg Find all public holidays).");
+            }
+          }
+
+          if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_keydates']['widget']['add_more'])) {
+            $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_keydates']['widget']['add_more']['add_more_button_keydates']['#value'] = t("Add another date");
+          }
+
+          if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_accordion']['widget']['add_more'])) {
+            $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_accordion']['widget']['add_more']['add_more_button_accordion_content']['#value'] = t("Add another accordion item");
+          }
+
+          if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_accordion']['widget'])) {
+            foreach (Element::children($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_accordion']['widget']) as $delta) {
+              $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_accordion']['widget'][$delta]['top']['type']['label']['#markup'] = '<span class="paragraph-type-label"></span>';
+            }
+          }
+
+          if (isset($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_keydates']['widget'])) {
+            foreach (Element::children($form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_keydates']['widget']) as $delta) {
+              $form['field_landing_page_component']['widget'][$key]['subform']['field_paragraph_keydates']['widget'][$delta]['top']['type']['label']['#markup'] = '<span class="paragraph-type-label"></span>';
+            }
+          }
+        }
+      }
+      $form['#validate'][] = 'tide_landing_page_header_style_node_form_validate';
+    }
+
+    // Add conditional field for show table of content.
+    if (isset($form['field_node_display_headings']) && isset($form['field_show_table_of_content'])) {
+      $form['field_node_display_headings']['#states'] = [
+        'visible' => [
+          ':input[name="field_show_table_of_content[value]"]' => [
+            'checked' => TRUE,
+          ],
+        ],
+      ];
+      if (!isset($form['field_node_display_headings']['widget']['#default_value']) || empty($form['field_node_display_headings']['widget']['#default_value'])) {
+        $form['field_node_display_headings']['widget']['#default_value'] = 'showH2';
+      }
+    }
+  }
+
+  /**
+   * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
+   */
+  #[Hook('field_widget_single_element_paragraphs_form_alter')]
+  public function fieldWidgetSingleElementParagraphsFormAlter(&$element, FormStateInterface $form_state, $context) {
+    /** @var \Drupal\Core\Field\FieldItemListInterface $items */
+    $items = $context['items'];
+    $field_definition = $items->getFieldDefinition();
+    $paragraph_field_name = $field_definition->getName();
+    $widget_state = WidgetBase::getWidgetState($element['#field_parents'], $paragraph_field_name, $form_state);
+    $paragraph = $widget_state['paragraphs'][$element['#delta']]['entity'];
+    $paragraph_type = $paragraph ? $paragraph->bundle() : '';
+
+    switch ($paragraph_type) {
+      case 'embedded_search_form':
+        $parent_field = $items->getName();
+        $condition = [
+          ':input[name="' . $parent_field . '[' . $context['delta'] . '][subform][field_paragraph_search_block]"]' => ['value' => 'custom'],
+        ];
+        if (!empty($element['subform']['field_paragraph_search_url']['widget'][0]['value'])) {
+          $element['subform']['field_paragraph_search_url']['#states']['visible'] = $condition;
+          $element['subform']['field_paragraph_search_url']['widget'][0]['value']['#states']['required'] = $condition;
+        }
+        if (!empty($element['subform']['field_paragraph_search_ph'])) {
+          $element['subform']['field_paragraph_search_ph']['#states']['visible'] = $condition;
+        }
+        if (!empty($element['subform']['field_paragraph_search_target'])) {
+          $element['subform']['field_paragraph_search_target']['#states']['visible'] = $condition;
+        }
+        break;
+
+      // Displaying field_call_to_action_title depends on banner display type.
+      case 'introduction_banner':
+        if ($paragraph_field_name === 'field_landing_page_header') {
+          $selector = sprintf('input[name="%s[%d][subform][%s]"]', $paragraph_field_name, $element['#delta'], 'field_banner_display_type');
+          if (isset($element['subform']['field_call_to_action_title'])) {
+            $element['subform']['field_call_to_action_title']['#states'] = [
+              'visible' => [
+                $selector => ['value' => 'buttons'],
+              ],
+            ];
+          }
+          if (isset($element['subform']['field_paragraph_links']['widget'])) {
+            foreach ($element['subform']['field_paragraph_links']['widget'] as $key => $links) {
+              if (is_numeric($key)) {
+                $element['subform']['field_paragraph_links']['widget'][$key]['title']['#title'] = t('Link text / Button label');
+              }
+            }
+          }
+        }
+        break;
+    }
+    if ($paragraph_field_name === 'field_landing_page_component') {
+      $widget_state = WidgetBase::getWidgetState($element['#field_parents'], $paragraph_field_name, $form_state);
+      $paragraph = $widget_state['paragraphs'][$element['#delta']]['entity'];
+      $paragraph_type = $paragraph ? $paragraph->bundle() : '';
+      // Hide table caption field in Data table component.
+      if ($paragraph_type == 'data_table') {
+        unset($element['subform']['field_data_table_content']['widget'][0]['caption']);
+        $element['subform']['field_data_table_content']['widget'][0]['caption'] = [
+          '#type' => 'textfield',
+          '#default_value' => NULL,
+          '#size' => 60,
+          '#attributes' => ['style' => 'display: none;'],
+        ];
+      }
+      // Add custom validation for statistics grid.
+      if ($paragraph_type == 'statistics_grid') {
+        if (isset($element['subform']['field_statistic_block']['widget']['#max_delta'])) {
+          $element['#element_validate'][] = [
+            'Drupal\tide_landing_page\Validate\StatisticsGrid',
+            'validate',
+          ];
+        }
+      }
+      // Add states for navigation and promotion card paragraph type fields.
+      if ($paragraph_type === 'navigation_card' || $paragraph_type === 'promotion_card') {
+        if (isset($element['subform']['field_paragraph_link'])) {
+          // Custom description for link field.
+          $element['subform']['field_paragraph_link']['widget'][0]['uri']['#description'] = t("Start typing the title of a piece of content to select it. You can also enter an internal path such as /node/add or an external URL such as http://example.com.");
+          // Custom validation based on the link field description.
+          $element['subform']['field_paragraph_link']['widget'][0]['uri']['#element_validate'][] = [
+            'Drupal\tide_landing_page\Validate\CardLink',
+            'validate',
+          ];
+        }
+        $dependee_field_name = 'field_paragraph_link';
+        $selector = sprintf(':input[name^="%s[%d][subform][%s][0][uri]"]', $paragraph_field_name, $element['#delta'], $dependee_field_name);
+        // Dependent fields.
+        if (isset($element['subform']['field_paragraph_title'])) {
+          $element['subform']['field_paragraph_title']['widget'][0]['value']['#states'] = [
+            'visible' => [
+              $selector => [
+                ['value' => ['pattern' => '^http']],
+                ['value' => ''],
+              ],
+            ],
+            'required' => [
+              $selector => [
+                ['value' => ['pattern' => '^http']],
+                ['value' => ''],
+              ],
+            ],
+          ];
+        }
+        if (isset($element['subform']['field_paragraph_summary'])) {
+          $element['subform']['field_paragraph_summary']['widget'][0]['value']['#states'] = [
+            'visible' => [
+              $selector => [
+                ['value' => ['pattern' => '^http']],
+                ['value' => ''],
+              ],
+            ],
+          ];
+          $element['subform']['summary_message_group'] = [
+            '#type' => 'fieldset',
+            '#title' => 'Page title & summary will be automatically drawn from the content you have linked to.',
+            '#group_name' => 'Page summary message',
+            '#attributes' => [
+              'class' => [
+                'summary-message-group',
+              ],
+            ],
+            '#states' => [
+              'invisible' => [
+                $selector => [
+                  ['value' => ['pattern' => '^http']],
+                  ['value' => ''],
+                ],
+              ],
+            ],
+          ];
+        }
+        if (isset($element['subform']['field_customise'])) {
+          $element['subform']['customise_field_group'] = [
+            '#type' => 'fieldset',
+            '#title' => 'Customise',
+            '#group_name' => 'Page summary message',
+            '#attributes' => [
+              'class' => [
+                'customise-field-group',
+              ],
+            ],
+            '#weight' => '20',
+            '#states' => [
+              'invisible' => [
+                $selector => [
+                  ['value' => ['pattern' => '^http']],
+                  ['value' => ''],
+                ],
+              ],
+            ],
+          ];
+          $element['subform']['field_customise']['#states'] = [
+            'invisible' => [
+              $selector => [
+                ['value' => ['pattern' => '^http']],
+                ['value' => ''],
+              ],
+            ],
+          ];
+          $element['subform']['customise_field_group']['field_customise'] = $element['subform']['field_customise'];
+          unset($element['subform']['field_customise']);
+        }
+        // Add state for media field.
+        $media_dependee_field_name = '';
+        $options = '';
+        if (isset($element['subform']['field_promo_card_display_style'])) {
+          $media_dependee_field_name = 'field_promo_card_display_style';
+          $options = [
+            ['value' => 'thumbnail'],
+            ['value' => 'profile'],
+          ];
+        }
+        if (isset($element['subform']['field_nav_card_display_style'])) {
+          $media_dependee_field_name = 'field_nav_card_display_style';
+          $options = [
+            ['value' => 'thumbnail'],
+            ['value' => 'featured'],
+          ];
+        }
+        if (!empty($media_dependee_field_name) && !empty($options)) {
+          $media_selector = sprintf(':input[name^="%s[%d][subform][%s]"]', $paragraph_field_name, $element['#delta'], $media_dependee_field_name);
+          // Dependent field.
+          if (isset($element['subform']['field_paragraph_media'])) {
+            $element['subform']['field_paragraph_media']['#states'] = [
+              'visible' => [
+                $media_selector => $options,
+                $selector => [
+                  ['value' => ['pattern' => '^http']],
+                ],
+              ],
+            ];
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Implements hook_ENTITY_TYPE_presave().
+   */
+  #[Hook('node_presave')]
+  public function nodePresave(NodeInterface $node) {
+    if (!$node->isNew()) {
+      $cids = _tide_landing_page_get_all_ref_nodes($node);
+      if (!empty($cids)) {
+        Cache::invalidateTags($cids);
+      }
+    }
+  }
+
+}

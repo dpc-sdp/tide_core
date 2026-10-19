@@ -9,8 +9,8 @@ code:
   value: '<blockquote class="quotation"><p>Berios sim destrum facientota nis ex eost aut prae vendis explam aliquis dolorpo rrorem reptaep elenis net.</p><footer><cite><span class="quotation__author">Her Excellency the Honourable Linda Dessau AC</span><br /><span class="quotation__author-title">Governor of Victoria</span></cite></footer></blockquote>'
   format: rich_text
 formats:
-  rich_text: rich_text
-  summary_text: summary_text
-  admin_text: admin_text
+  - rich_text
+  - summary_text
+  - admin_text
 weight: 0
 thumb_alternative: ''

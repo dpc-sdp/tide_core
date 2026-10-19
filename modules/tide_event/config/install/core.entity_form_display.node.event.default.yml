@@ -228,8 +228,6 @@ content:
         view_mode: media_browser_preview
       selection_mode: selection_append
     third_party_settings: {  }
-    visible: true
-    group: group_customised_header
   field_event_category:
     weight: 10
     settings:
@@ -320,8 +318,6 @@ content:
         view_mode: media_browser_preview
       selection_mode: selection_append
     third_party_settings: {  }
-    visible: true
-    group: group_customised_header
   field_landing_page_contact:
     weight: 8
     settings:
@@ -351,7 +347,6 @@ content:
         maxlength_js: 200
         maxlength_js_label: 'Content limited to @limit characters, remaining: <strong>@remaining</strong>'
         maxlength_js_enforce: false
-        maxlength_js_truncate_html: false
     type: string_textarea
     region: content
   field_news_intro_text:

@@ -1,0 +1,12 @@
+diff --git a/jira_rest.info.yml b/jira_rest.info.yml
+--- a/jira_rest.info.yml
++++ b/jira_rest.info.yml
+@@ -2,7 +2,7 @@ name: Jira REST
+ type: module
+ description: Providing methods to modify JIRA issues out of Drupal via REST API.
+ package: Web services
+-configure: jira_rest.config
++configure: entity.jira_endpoint.collection
+ core_version_requirement: ">=8.8"
+ dependencies:
+   - key:key

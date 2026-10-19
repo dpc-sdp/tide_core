@@ -3,13 +3,13 @@
 namespace Drupal\tide_demo_content\Form;
 
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
-use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Url;
 use Drupal\yaml_content\ContentLoader\ContentLoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -135,7 +135,7 @@ class ImportForm extends FormBase {
         }
         catch (\Exception $exception) {
           $this->messenger()->addError($exception->getMessage());
-          watchdog_exception('tide_demo_content', $exception);
+          tide_core_log_exception('tide_demo_content', $exception);
         }
         finally {
           @unlink($temp_file);

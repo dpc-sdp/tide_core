@@ -60,7 +60,7 @@ class TideSiteCommands extends DrushCommands {
         }
       }
     }
-    catch (ConsoleException $exception) {
+    catch (\Exception $exception) {
       throw new \Exception($exception->getMessage());
     }
   }

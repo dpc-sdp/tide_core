@@ -16,3 +16,5 @@ services:
     arguments: [ '@tide_demo_content.repository', '@module_handler', '@entity_field.manager' ]
     tags:
       - { name: event_subscriber }
+  Drupal\tide_demo_content\Hook\TideDemoContentHooks:
+    autowire: true

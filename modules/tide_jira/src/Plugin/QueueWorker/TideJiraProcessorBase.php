@@ -9,6 +9,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\State\StateInterface;
 use Drupal\tide_jira\TideJiraConnector;
+use Drupal\tide_jira\TideJiraException;
 use Drupal\tide_jira\TideJiraTicketModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -111,13 +112,17 @@ abstract class TideJiraProcessorBase extends QueueWorkerBase implements Containe
   protected function lookupAccount(TideJiraTicketModel $ticket) {
     if (!$ticket->getAccountId()) {
       $account_id = $this->tideJiraConnector->getJiraAccountIdByEmail($ticket->getEmail());
+      $fallback_email = $this->config->get('no_account_email');
+      if (!$account_id && !empty($fallback_email)) {
+        $account_id = $this->tideJiraConnector->getJiraAccountIdByEmail($fallback_email);
+        if ($account_id) {
+          $ticket->setEmail($fallback_email);
+        }
+      }
       if (!$account_id) {
-        $ticket->setEmail($this->config->get('no_account_email'));
-        $ticket->setAccountId($this->tideJiraConnector->getJiraAccountIdByEmail($ticket->getEmail()));
+        throw new TideJiraException('Could not resolve a JIRA account for the editor or configured fallback email.');
       }
-      else {
-        $ticket->setAccountId($account_id);
-      }
+      $ticket->setAccountId($account_id);
     }
   }
 

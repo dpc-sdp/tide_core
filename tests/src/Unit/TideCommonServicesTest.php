@@ -4,16 +4,16 @@ namespace Drupal\Tests\tide_core\Unit;
 
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_core\TideCommonServices;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Main test class for common functions.
  */
+#[CoversMethod(TideCommonServices::class, 'sanitiseFileName')]
 class TideCommonServicesTest extends UnitTestCase {
 
-  /**
-   * @covers ::sanitiseFileName
-   * @dataProvider fileNameProvider
-   */
+  #[DataProvider('fileNameProvider')]
   public function testSanitiseFileName($value, $replacement, $include_in_pattern, $expected) {
     $tideCommonServices = new TideCommonServices();
     $filename = $tideCommonServices->sanitiseFileName($value, $replacement, $include_in_pattern);
@@ -26,7 +26,7 @@ class TideCommonServicesTest extends UnitTestCase {
    * @return array
    *   Array of values.
    */
-  public function fileNameProvider() {
+  public static function fileNameProvider() {
     return [
       [
         'value' => 'file with spaces only.pdf',

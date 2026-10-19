@@ -78,7 +78,7 @@ class Helper extends TideSiteHelper {
    * @return bool
    *   Whether the account can bypass site restriction.
    */
-  public function canBypassRestriction(AccountInterface $account = NULL) {
+  public function canBypassRestriction(?AccountInterface $account = NULL) {
     if (!$account) {
       $account = $this->currentUser;
     }

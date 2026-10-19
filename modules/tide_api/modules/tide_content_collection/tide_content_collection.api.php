@@ -23,7 +23,7 @@ use Drupal\search_api\IndexInterface;
  * @return string[]
  *   The list of field ID to exclude.
  */
-function hook_tide_content_collection_entity_reference_fields_exclude(IndexInterface $index, array $reference_fields = [], FieldItemListInterface $items = NULL, $delta = NULL) {
+function hook_tide_content_collection_entity_reference_fields_exclude(IndexInterface $index, array $reference_fields = [], ?FieldItemListInterface $items = NULL, $delta = NULL) {
   $excludes = [];
   if ($index->id() == 'node') {
     $excludes = ['field_node_site', 'field_primary_site', 'uid'];
@@ -49,7 +49,7 @@ function hook_tide_content_collection_entity_reference_fields_exclude(IndexInter
  *   To disable the filter operator select for an internal extra filter, set the
  *   special key #disable_filter_operator to TRUE.
  */
-function hook_tide_content_collection_internal_extra_filters_build(IndexInterface $index, FieldItemListInterface $items = NULL, $delta = NULL, array $filters = []) {
+function hook_tide_content_collection_internal_extra_filters_build(IndexInterface $index, ?FieldItemListInterface $items = NULL, $delta = NULL, array $filters = []) {
   $elements = [
     'field_project_status' => [
       '#type' => 'checkboxes',

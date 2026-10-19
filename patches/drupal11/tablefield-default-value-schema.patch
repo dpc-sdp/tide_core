@@ -1,0 +1,45 @@
+diff --git a/config/schema/tablefield.schema.yml b/config/schema/tablefield.schema.yml
+--- a/config/schema/tablefield.schema.yml
++++ b/config/schema/tablefield.schema.yml
+@@ -1,5 +1,41 @@
+ # Schema for the tablefield module display settings.
+ 
++field.value.tablefield:
++  type: mapping
++  label: 'Default table value'
++  mapping:
++    rebuild:
++      type: mapping
++      label: 'Table dimensions'
++      mapping:
++        rows:
++          type: integer
++        cols:
++          type: integer
++    value:
++      type: sequence
++      label: 'Table rows and caption'
++      sequence:
++        type: tablefield.default_row.[%key]
++    format:
++      type: string
++      nullable: true
++      label: 'Text format'
++    caption:
++      type: text
++      label: 'Table caption'
++
++tablefield.default_row.*:
++  type: sequence
++  label: 'Default table row'
++  sequence:
++    type: string
++    label: 'Cell text'
++
++tablefield.default_row.caption:
++  type: text
++  label: 'Table caption'
++
+ tablefield.settings:
+   type: config_object
+   label: 'Tablefield display format settings'

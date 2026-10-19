@@ -690,7 +690,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $json_object
    *   The json_object of the listing.
    */
-  protected function buildContentTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL) {
+  protected function buildContentTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL) {
     $settings = $this->getSettings();
     $element['tabs']['content'] = [
       '#type' => 'details',
@@ -789,7 +789,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $settings
    *   The settings of the listing.
    */
-  protected function buildContentTabAdvancedFilters(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL, array $settings = []) {
+  protected function buildContentTabAdvancedFilters(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL, array $settings = []) {
     $element['tabs']['content']['advanced_filters'] = [
       '#type' => 'details',
       '#title' => $this->t('Advanced filters'),
@@ -864,7 +864,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $settings
    *   The settings of the listing.
    */
-  protected function buildContentTabAdvancedExtraFilters(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL, array $settings = []) {
+  protected function buildContentTabAdvancedExtraFilters(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL, array $settings = []) {
     // Build internal extra filters.
     $internal_extra_filters = $this->moduleHandler->invokeAll('tide_content_collection_internal_extra_filters_build', [
       $this->index,
@@ -927,7 +927,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $settings
    *   The settings of the listing.
    */
-  protected function buildContentTabDateFilters(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL, array $settings = []) {
+  protected function buildContentTabDateFilters(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL, array $settings = []) {
     $date_fields = $this->indexHelper->getIndexDateFields($this->index);
     if (!empty($date_fields)) {
       $element['tabs']['content']['show_dateFilter'] = [
@@ -1044,10 +1044,14 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @return array
    *   The reference fields.
    */
-  protected function getEntityReferenceFields(FieldItemListInterface $items = NULL, $delta = NULL, array $exclude_fields = [
-    'field_topic',
-    'field_tags',
-  ]) {
+  protected function getEntityReferenceFields(
+    ?FieldItemListInterface $items = NULL,
+    $delta = NULL,
+    array $exclude_fields = [
+      'field_topic',
+      'field_tags',
+    ],
+  ) {
     $entity_reference_fields = $this->indexHelper->getIndexEntityReferenceFields($this->index, ['nid']);
     // Allow other modules to remove entity reference filters.
     $excludes = $this->moduleHandler->invokeAll('tide_content_collection_entity_reference_fields_exclude', [
@@ -1083,7 +1087,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $json_object
    *   The json_object of the listing.
    */
-  protected function buildLayoutTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL) {
+  protected function buildLayoutTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL) {
     $element['tabs']['layout'] = [
       '#type' => 'details',
       '#open' => TRUE,
@@ -1182,7 +1186,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $settings
    *   The settings of the listing.
    */
-  protected function buildFiltersTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL, array $settings = []) {
+  protected function buildFiltersTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL, array $settings = []) {
     $settings = $this->getSettings();
     $element['tabs']['filters'] = [
       '#type' => 'details',
@@ -1428,7 +1432,7 @@ class ContentCollectionConfigurationWidget extends StringTextareaWidget implemen
    * @param array $json_object
    *   The json_object of the listing.
    */
-  protected function buildAdvancedTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, array $configuration = NULL, array $json_object = NULL) {
+  protected function buildAdvancedTab(FieldItemListInterface $items, $delta, array &$element, array &$form, FormStateInterface $form_state, ?array $configuration = NULL, ?array $json_object = NULL) {
     $element['tabs']['advanced'] = [
       '#type' => 'details',
       '#open' => TRUE,

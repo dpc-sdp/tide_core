@@ -5,3 +5,5 @@ services:
   tide_jira.jira_connector:
     class: Drupal\tide_jira\TideJiraConnector
     arguments: ['@jira_rest_wrapper_service', '@cache.data', '@logger.factory', '@config.factory']
+  Drupal\tide_jira\Hook\TideJiraHooks:
+    autowire: true

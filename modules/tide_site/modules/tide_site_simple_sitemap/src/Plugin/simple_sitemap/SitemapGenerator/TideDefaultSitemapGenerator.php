@@ -49,7 +49,7 @@ class TideDefaultSitemapGenerator extends DefaultSitemapGenerator {
     $settings,
     $module_list,
     TideSiteHelper $siteHelper,
-    AliasStorageHelper $aliasStorageHelper
+    AliasStorageHelper $aliasStorageHelper,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $module_handler, $sitemap_writer, $settings, $module_list);
     $this->siteHelper = $siteHelper;

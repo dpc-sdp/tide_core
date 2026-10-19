@@ -1,0 +1,7 @@
+data_pipelines.dataset_destination.destinationSettings.state:
+  type: mapping
+  label: 'State destination settings'
+  mapping:
+    state_key:
+      type: string
+      label: 'State key'

@@ -4,7 +4,6 @@ namespace Drupal\tide_block_inactive_users\Commands;
 
 use Drupal\block_inactive_users\InactiveUsersHandler;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\user\Entity\User;
 use Drush\Commands\DrushCommands;
@@ -52,13 +51,6 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
   protected $excludeUserRoles;
 
   /**
-   * Logger service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannel|\Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
    * Config service.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -75,11 +67,10 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $configFactory, InactiveUsersHandler $handler, LoggerChannelFactory $logger, QueueFactory $queueFactory) {
+  public function __construct(ConfigFactoryInterface $configFactory, InactiveUsersHandler $handler, QueueFactory $queueFactory) {
     parent::__construct();
     $this->config = $configFactory;
     $this->blockUserhandler = $handler;
-    $this->logger = $logger->get(InactiveUsersHandler::LOGGER_CHANNEL);
     $this->blockInactiveUsers = $this->config->get(InactiveUsersHandler::FORM_SETTINGS_CONFIG_OBJ_NAME);
     $this->idleTime = $this->blockInactiveUsers->get('block_inactive_users_idle_time');
     $this->includeNeverAccessed = $this->blockInactiveUsers->get('block_inactive_users_include_never_accessed');
@@ -149,7 +140,9 @@ class TideInactiveUsersManagementCommands extends DrushCommands {
    * Gets users.
    */
   public function getUsers() {
-    $query = \Drupal::entityQuery('user')->condition('status', 1);
+    $query = \Drupal::entityQuery('user')
+      ->accessCheck(FALSE)
+      ->condition('status', 1);
     if (!empty($this->excludeUserRoles)) {
       $query->condition('roles.target_id', $this->excludeUserRoles, 'NOT IN');
     }

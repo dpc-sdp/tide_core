@@ -7,11 +7,6 @@ dependencies:
   module:
     - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    plain_text: '0'
-    rich_text: '0'
-    admin_text: '0'
 id: paragraph.call_to_action.field_paragraph_body
 field_name: field_paragraph_body
 entity_type: paragraph
@@ -22,5 +17,6 @@ required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats: {  }
 field_type: text_long

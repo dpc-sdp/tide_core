@@ -62,8 +62,8 @@ class AuditLogCleanupCommand extends DrushCommands {
     define('DEFAULT_LOG_RETENTION_DAYS', 30);
     $log_retention_days = $config->get('log_retention_days') ?: DEFAULT_LOG_RETENTION_DAYS;
     // Get current date and time.
-    $current_time = new DateTime();
-    $current_time->sub(new DateInterval("P{$log_retention_days}D"));
+    $current_time = new \DateTime();
+    $current_time->sub(new \DateInterval("P{$log_retention_days}D"));
     $threshold_timestamp = $current_time->getTimestamp();
     // Connect to the database.
     $database = Database::getConnection();

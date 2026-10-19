@@ -137,6 +137,7 @@ Feature: Route lookup
       """
       {
         "data": {
+          "id": "00000000-1111-2222-3333-0123456789ab",
           "attributes": {
             "entity_type": "node",
             "bundle": "test",

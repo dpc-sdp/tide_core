@@ -9,7 +9,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\TermInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Drupal\tide_core\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Provides helper functions for tide_site.
@@ -114,7 +114,7 @@ class TideSiteHelper {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_site', $exception);
+      tide_core_log_exception('tide_site', $exception);
     }
 
     return $sites;
@@ -230,7 +230,7 @@ class TideSiteHelper {
    * @return string[]
    *   The list of domains.
    */
-  public function getSiteDomains(TermInterface $site = NULL) {
+  public function getSiteDomains(?TermInterface $site = NULL) {
     $domains = [];
     if ($site && $site->hasField('field_site_domains')) {
       $domains = $site->get('field_site_domains')->getString();
@@ -251,7 +251,7 @@ class TideSiteHelper {
    * @return string
    *   The domain.
    */
-  public function getSiteProductionDomain(TermInterface $site = NULL) {
+  public function getSiteProductionDomain(?TermInterface $site = NULL) {
     $domain = '';
     $domains = $this->getSiteDomains($site);
     if ($domains) {
@@ -270,7 +270,7 @@ class TideSiteHelper {
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The homepage entity.
    */
-  public function getSiteHomepageEntity(TermInterface $site = NULL) {
+  public function getSiteHomepageEntity(?TermInterface $site = NULL) {
     $homepage = NULL;
     if ($site && $site->hasField('field_site_homepage') && !$site->get('field_site_homepage')->isEmpty()) {
       try {
@@ -281,7 +281,7 @@ class TideSiteHelper {
         }
       }
       catch (\Exception $exception) {
-        watchdog_exception('tide_site', $exception);
+        tide_core_log_exception('tide_site', $exception);
       }
     }
     return $homepage;
@@ -470,7 +470,7 @@ class TideSiteHelper {
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('tide_site', $exception);
+      tide_core_log_exception('tide_site', $exception);
     }
 
     return $primary_site;

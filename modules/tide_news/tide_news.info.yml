@@ -2,7 +2,7 @@ name: Tide News
 description: 'Provides News content type and related configuration. '
 type: module
 package: Tide
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:field
   - drupal:menu_ui
@@ -52,4 +52,4 @@ config_devel:
   optional:
     - field.field.node.news.field_show_content_rating
     - jsonapi_extras.jsonapi_resource_config.node--news
-    - simple_sitemap.bundle_settings.node.news
+    - simple_sitemap.bundle_settings.default.node.news

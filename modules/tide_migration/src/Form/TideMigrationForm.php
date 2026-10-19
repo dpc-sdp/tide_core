@@ -2,10 +2,13 @@
 
 namespace Drupal\tide_migration\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\File\FileExists;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManager;
 use Drupal\migrate_plus\Entity\MigrationGroup;
@@ -40,16 +43,46 @@ class TideMigrationForm extends FormBase {
   protected $definitions;
 
   /**
+   * The key-value storage factory.
+   *
+   * @var \Drupal\Core\KeyValueStore\KeyValueFactoryInterface
+   */
+  protected $keyValueFactory;
+
+  /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * The string translation service.
+   *
+   * @var \Drupal\Core\StringTranslation\TranslationInterface
+   */
+  protected $translation;
+
+  /**
    * TideMigrationUiForm constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The migration plugin manager.
+   *   The entity type manager.
    * @param \Drupal\migrate\Plugin\MigrationPluginManager $plugin_manager_migration
-   *   *   The migration plugin manager.
+   *   The migration plugin manager.
+   * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $key_value_factory
+   *   The key-value storage factory.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
+   *   The string translation service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, MigrationPluginManager $plugin_manager_migration) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, MigrationPluginManager $plugin_manager_migration, KeyValueFactoryInterface $key_value_factory, TimeInterface $time, TranslationInterface $translation) {
     $this->entityTypeManager = $entity_type_manager;
     $this->pluginManagerMigration = $plugin_manager_migration;
+    $this->keyValueFactory = $key_value_factory;
+    $this->time = $time;
+    $this->translation = $translation;
     $this->definitions = $this->pluginManagerMigration->getDefinitions();
   }
 
@@ -59,7 +92,10 @@ class TideMigrationForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('plugin.manager.migration')
+      $container->get('plugin.manager.migration'),
+      $container->get('keyvalue'),
+      $container->get('datetime.time'),
+      $container->get('string_translation')
     );
   }
 
@@ -120,10 +156,10 @@ class TideMigrationForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
     // Support the data files.
-    $validators = ['file_validate_extensions' => ['csv json xml']];
+    $validators = ['FileExtension' => ['extensions' => 'csv json xml']];
     // Save file to private file system to protect data file.
     $file_destination = 'private://';
-    $file = file_save_upload('source_file', $validators, $file_destination, 0, FileSystemInterface::EXISTS_REPLACE);
+    $file = file_save_upload('source_file', $validators, $file_destination, 0, FileExists::Replace);
     if (isset($file)) {
       if ($file) {
         $form_state->setValue('file_path', $file->getFileUri());
@@ -170,7 +206,15 @@ class TideMigrationForm extends FormBase {
       if ($form_state->getValue('update_existing_records')) {
         $options['update'] = 1;
       }
-      $executable = new MigrateBatchExecutable($migration, new StubMigrationMessage(), $options);
+      $executable = new MigrateBatchExecutable(
+        $migration,
+        new StubMigrationMessage(),
+        $this->keyValueFactory,
+        $this->time,
+        $this->translation,
+        $this->pluginManagerMigration,
+        $options,
+      );
       $executable->batchImport();
     }
 

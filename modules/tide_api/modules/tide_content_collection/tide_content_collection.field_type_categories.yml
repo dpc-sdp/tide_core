@@ -1,0 +1,4 @@
+content_collection:
+  label: 'Content Collection'
+  description: 'A field containing JSON configuration for automated content collection.'
+  weight: 0

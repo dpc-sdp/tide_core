@@ -1,0 +1,207 @@
+tide_media.settings:
+  type: config_object
+  label: 'Tide media settings'
+  mapping:
+    file_absolute_url:
+      type: boolean
+      label: 'Use absolute file URLs'
+    force_https:
+      type: boolean
+      label: 'Use HTTPS for file URLs'
+
+tide_edit_protection.form:
+  type: config_object
+  label: 'Tide edit protection settings'
+  mapping:
+    entity_method:
+      type: string
+      label: 'Entity matching method'
+    entity_types:
+      type: sequence
+      label: 'Protected entity types'
+      sequence:
+        type: string
+    entity_bundles:
+      type: sequence
+      label: 'Protected entity bundles'
+      sequence:
+        type: string
+    alert_form_ids:
+      type: text
+      label: 'Additional protected form IDs'
+
+tide_grant.settings:
+  type: config_object
+  label: 'Tide grant settings'
+  mapping:
+    guidelines:
+      type: sequence
+      label: 'Guideline headings'
+      sequence:
+        type: label
+    feed_url:
+      type: string
+      label: 'Grant feed URL'
+
+tide_jira.settings:
+  type: config_object
+  label: 'Tide Jira field mappings'
+  mapping:
+    customer_request_type_id:
+      type: string
+      label: 'Customer request type ID'
+    customer_request_type_field_id:
+      type: string
+      label: 'Customer request type field ID'
+    no_account_email:
+      type: string
+      label: 'Fallback Jira email address'
+    issue_type:
+      type: string
+      label: 'Issue type'
+    content_type:
+      type: string
+      label: 'Content type field ID'
+    node_id:
+      type: string
+      label: 'Node ID field ID'
+    site:
+      type: string
+      label: 'Site field ID'
+    site_section:
+      type: string
+      label: 'Site section field ID'
+    page_department:
+      type: string
+      label: 'Page department field ID'
+    editor_department:
+      type: string
+      label: 'Editor department field ID'
+    fallback_department:
+      type: integer
+      label: 'Fallback department term ID'
+
+tide_share_link.settings:
+  type: config_object
+  label: 'Tide share link settings'
+  mapping:
+    token_role:
+      type: string
+      label: 'Token user role'
+    default_expiry:
+      type: integer
+      label: 'Default token lifetime in seconds'
+    cleanup_in_cron:
+      type: integer
+      label: 'Clean up expired tokens in cron'
+
+tide_webform.defaults:
+  type: config_object
+  label: 'Tide webform defaults'
+  mapping:
+    privacy_statement:
+      type: mapping
+      label: 'Default privacy statement'
+      mapping:
+        add_to_new_form:
+          type: boolean
+          label: 'Add to new forms'
+        heading:
+          type: label
+          label: 'Heading'
+        content:
+          type: text
+          label: 'Statement content'
+        agreement:
+          type: label
+          label: 'Agreement label'
+
+monitoring.settings.tide_times_sensor:
+  type: monitoring.settings_base
+  label: 'Tide package version sensor settings'
+
+monitoring.settings.tide_smtp_sensor:
+  type: monitoring.settings_base
+  label: 'Tide SMTP sensor settings'
+
+action.configuration.tide_core_publish_action:
+  type: mapping
+  label: 'Publish Tide content action settings'
+  mapping: { }
+
+action.configuration.tide_core_archive_action:
+  type: mapping
+  label: 'Archive Tide content action settings'
+  mapping: { }
+
+views.field.sorted_roles_views_field:
+  type: views.field.user_roles
+  label: 'Sorted user roles field'
+
+views.filter.tide_enhanced_mime_type_filter:
+  type: views.filter.in_operator
+  label: 'Enhanced file MIME type filter'
+
+action.configuration.webform_submission_make_process_action:
+  type: action_configuration_default
+  label: 'Mark webform submission as processed'
+
+action.configuration.webform_submission_make_unprocess_action:
+  type: action_configuration_default
+  label: 'Mark webform submission as unprocessed'
+
+jsonapi_extras.enhancer_plugin.link_enhancer:
+  type: mapping
+  label: 'link enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.path_enhancer:
+  type: mapping
+  label: 'path enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.embed_video_enhancer:
+  type: mapping
+  label: 'embed video enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.yaml:
+  type: mapping
+  label: 'yaml settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.basic_text_enhancer:
+  type: mapping
+  label: 'basic text enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.card_link_enhancer:
+  type: mapping
+  label: 'card link enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.default_maxlength_enhancer:
+  type: mapping
+  label: 'default maxlength enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.webform_elements_enhancer:
+  type: mapping
+  label: 'webform elements enhancer settings'
+  mapping: { }
+
+jsonapi_extras.enhancer_plugin.webform_confirmation_enhancer:
+  type: mapping
+  label: 'Webform confirmation enhancer settings'
+  mapping:
+    remove_submission:
+      type: boolean
+      label: 'Delete submission after processing'
+
+jsonapi_extras.enhancer_plugin.content_collection_configuration:
+  type: mapping
+  label: 'Content collection enhancer settings'
+  mapping:
+    apply_link_enhancer:
+      type: boolean
+      label: 'Apply the Tide link enhancer'

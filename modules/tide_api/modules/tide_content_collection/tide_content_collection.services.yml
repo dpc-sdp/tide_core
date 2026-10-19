@@ -6,3 +6,5 @@ services:
       - '@entity_type.bundle.info'
       - '@string_translation'
       - '@search_api.fields_helper'
+  Drupal\tide_content_collection\Hook\TideContentCollectionHooks:
+    autowire: true

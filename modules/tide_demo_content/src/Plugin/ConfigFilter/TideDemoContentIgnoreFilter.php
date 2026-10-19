@@ -2,9 +2,8 @@
 
 namespace Drupal\tide_demo_content\Plugin\ConfigFilter;
 
-use Drupal\config_ignore\Plugin\ConfigFilter\IgnoreFilter;
-use Drupal\Core\Config\StorageInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\config_filter\Plugin\ConfigFilterBase;
+use Symfony\Component\Finder\Glob;
 
 /**
  * Ignore all demo config.
@@ -15,19 +14,30 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
  *   weight = 100
  * )
  */
-class TideDemoContentIgnoreFilter extends IgnoreFilter implements ContainerFactoryPluginInterface {
+class TideDemoContentIgnoreFilter extends ConfigFilterBase {
+
+  /**
+   * Configuration-name patterns excluded from exported configuration.
+   *
+   * @var string[]
+   */
+  protected $ignored = [
+    '*tide_demo_content*',
+    '*tide-demo-content*',
+    '*tide_demo*',
+    '*tide-demo*',
+  ];
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, StorageInterface $active) {
-    $configuration['ignored'] = [
-      '*tide_demo_content*',
-      '*tide-demo-content*',
-      '*tide_demo*',
-      '*tide-demo*',
-    ];
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $active);
+  protected function matchConfigName($name) {
+    foreach ($this->ignored as $pattern) {
+      if (preg_match(Glob::toRegex($pattern, FALSE, FALSE), $name)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**

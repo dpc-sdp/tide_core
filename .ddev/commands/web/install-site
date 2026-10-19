@@ -1,15 +1,23 @@
 #!/usr/bin/env bash
 
-## Description: Install a fresh Drupal site (testing profile) and enable tide_core + tide_test.
+## Description: Install a fresh Drupal site (minimal profile) and enable tide_core + tide_test.
 ## Usage: install-site
 ## Example: "ddev install-site"
 ## ExecRaw: true
 
 set -eu -o pipefail
 
-DRUPAL_PROFILE=${DRUPAL_PROFILE:-testing}
+DRUPAL_PROFILE=${DRUPAL_PROFILE:-minimal}
 DRUPAL_ADMIN_NAME=${DRUPAL_ADMIN_NAME:-admin}
 DRUPAL_ADMIN_PASSWORD=${DRUPAL_ADMIN_PASSWORD:-admin}
+TIDE_PRIVATE_FILES_PATH="${DDEV_APPROOT:-/var/www/html}/private"
+TIDE_DDEV_SETTINGS_PATH="${DDEV_DOCROOT:-/var/www/html/web}/sites/default/settings.ddev.php"
+
+mkdir -p "${TIDE_PRIVATE_FILES_PATH}"
+if ! grep -Fq 'Tide Core DDEV private file system' "${TIDE_DDEV_SETTINGS_PATH}"; then
+  printf '\n// Tide Core DDEV private file system.\n' >> "${TIDE_DDEV_SETTINGS_PATH}"
+  printf "\$settings['file_private_path'] = '%s';\n" "${TIDE_PRIVATE_FILES_PATH}" >> "${TIDE_DDEV_SETTINGS_PATH}"
+fi
 
 drush site:install "${DRUPAL_PROFILE}" -y \
   --account-name="${DRUPAL_ADMIN_NAME}" \

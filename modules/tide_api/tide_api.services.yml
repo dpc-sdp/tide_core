@@ -39,3 +39,5 @@ services:
       - '@tide_api.include_resolver.inner'
       - '@entity_type.manager'
       - '@jsonapi.entity_access_checker'
+  Drupal\tide_api\Hook\TideApiHooks:
+    autowire: true

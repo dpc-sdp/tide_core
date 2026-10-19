@@ -17,8 +17,8 @@ translatable: false
 default_value:
   -
     rebuild:
-      cols: '2'
-      rows: '2'
+      cols: 2
+      rows: 2
     value:
       0:
         - ''

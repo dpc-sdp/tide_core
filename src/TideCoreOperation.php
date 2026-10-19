@@ -203,7 +203,7 @@ class TideCoreOperation {
    * Updates files view.
    */
   public function useCustomFilesView() {
-    module_load_include('inc', 'tide_core', 'includes/helpers');
+    \Drupal::moduleHandler()->loadInclude('tide_core', 'inc', 'includes/helpers');
     $config_location = [\Drupal::service('extension.list.module')->getPath('tide_core') . '/config/optional'];
     $config_read = _tide_read_config('views.view.enhanced_files', $config_location, TRUE);
     $storage = \Drupal::entityTypeManager()->getStorage('view');
@@ -255,33 +255,6 @@ class TideCoreOperation {
     // Enable Tide TFA.
     if (!$moduleHandler->moduleExists('tide_tfa')) {
       $moduleInstaller->install(['tide_tfa']);
-    }
-  }
-
-  /**
-   * Enables paragraphs_library.
-   */
-  public function alterParagraphsLibrary() {
-    // Enabled paragraphs_library module.
-    if (!\Drupal::moduleHandler()->moduleExists('paragraphs_library')) {
-      /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
-      $module_installer = \Drupal::service('module_installer');
-      $module_installer->install(['paragraphs_library']);
-    }
-
-    // Overwrites paragraphs_library.
-    $entity_update_items = [
-      'from_library' => 'paragraphs_type',
-      'paragraphs_library' => 'view',
-      'paragraphs_library_browser' => 'view',
-      'paragraphs_library_item.paragraphs_library_item.default' => 'entity_form_display',
-    ];
-    $update_service = \Drupal::service('tide_core.entity_update_helper');
-    foreach ($entity_update_items as $name => $type) {
-      $result = $update_service->updateFromOptional($type, $name);
-      if (!$result) {
-        $update_service->import($type, $name);
-      }
     }
   }
 
@@ -343,6 +316,41 @@ class TideCoreOperation {
     ];
     $defaults->set('tags', $tags);
     $defaults->save();
+  }
+
+  /**
+   * Enables the "Basic tags" metatag group for selected media bundles.
+   *
+   * Updates entity_type_groups in metatag.settings (as configured on
+   * admin/config/search/metatag/settings) for each media bundle that exists.
+   * metatag.settings is owned by the metatag module, so it cannot be shipped
+   * in tide_core's config/install. Existing groups are preserved.
+   *
+   * @param string[]|null $bundles
+   *   Media bundle IDs. Defaults to all existing media bundles.
+   */
+  public function enableMediaMetatagBasicGroup(?array $bundles = NULL) {
+    if (!\Drupal::moduleHandler()->moduleExists('metatag')) {
+      return;
+    }
+
+    $existing_bundles = array_keys(\Drupal::service('entity_type.bundle.info')->getBundleInfo('media'));
+    $bundles = $bundles === NULL ? $existing_bundles : array_intersect($bundles, $existing_bundles);
+
+    $config = \Drupal::configFactory()->getEditable('metatag.settings');
+    $groups = $config->get('entity_type_groups') ?: [];
+
+    $changed = FALSE;
+    foreach ($bundles as $bundle) {
+      if (($groups['media'][$bundle]['basic'] ?? NULL) !== 'basic') {
+        $groups['media'][$bundle]['basic'] = 'basic';
+        $changed = TRUE;
+      }
+    }
+
+    if ($changed) {
+      $config->set('entity_type_groups', $groups)->save();
+    }
   }
 
 }

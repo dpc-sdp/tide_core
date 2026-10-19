@@ -4,19 +4,7 @@
  or your current system user. See core/tests/README.md and
  https://www.drupal.org/node/2116263 for details.
 -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="web/core/tests/bootstrap.php" colors="true" beStrictAboutTestsThatDoNotTestAnything="true" beStrictAboutOutputDuringTests="true" beStrictAboutChangesToGlobalState="true" printerClass="\Drupal\Tests\Listeners\HtmlOutputPrinter" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage>
-    <include>
-      <directory>./src</directory>
-      <directory>./modules/*/src</directory>
-    </include>
-    <exclude>
-      <directory>./modules/*/src/Tests</directory>
-      <directory>./modules/*/tests</directory>
-      <directory>./modules/*/*/src/Tests</directory>
-      <directory>./modules/*/*/tests</directory>
-    </exclude>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="web/core/tests/bootstrap.php" colors="true" beStrictAboutTestsThatDoNotTestAnything="true" beStrictAboutOutputDuringTests="true" beStrictAboutChangesToGlobalState="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
   <php>
     <!-- Set error reporting to E_ALL. -->
     <ini name="error_reporting" value="32767"/>
@@ -70,4 +58,16 @@
 <!--    </listener>-->
 <!--  </listeners>-->
   <!-- Filter for coverage reports. -->
+  <source>
+    <include>
+      <directory>./src</directory>
+      <directory>./modules/*/src</directory>
+    </include>
+    <exclude>
+      <directory>./modules/*/src/Tests</directory>
+      <directory>./modules/*/tests</directory>
+      <directory>./modules/*/*/src/Tests</directory>
+      <directory>./modules/*/*/tests</directory>
+    </exclude>
+  </source>
 </phpunit>

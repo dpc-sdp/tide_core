@@ -1,0 +1,34 @@
+diff --git a/src/Drush/Commands/ClamavCommand.php b/src/Drush/Commands/ClamavCommand.php
+--- a/src/Drush/Commands/ClamavCommand.php
++++ b/src/Drush/Commands/ClamavCommand.php
+@@ -2,7 +2,7 @@
+ 
+ declare(strict_types=1);
+ 
+-namespace Drupal\Clamav\Drush\Commands;
++namespace Drupal\clamav\Drush\Commands;
+ 
+ use Drupal\clamav\Scanner;
+ use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+@@ -12,6 +12,7 @@
+ use Drush\Attributes as CLI;
+ use Drush\Commands\DrushCommands;
+ use Drush\Drush;
++use Psr\Container\ContainerInterface;
+ 
+ /**
+  * Drush commands for ClamAV file scanning.
+@@ -44,6 +45,13 @@
+   ) {
+     parent::__construct();
+     $this->fileStorage = $entity_type_manager->getStorage('file');
++  }
++
++  /**
++   * Instantiates the command with the Drupal services in Drush 13.
++   */
++  public static function create(ContainerInterface $container): static {
++    return new static($container->get('entity_type.manager'), $container->get('clamav'), $container->get('file_system'));
+   }
+ 
+   /**

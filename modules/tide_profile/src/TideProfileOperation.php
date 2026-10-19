@@ -2,6 +2,7 @@
 
 namespace Drupal\tide_profile;
 
+use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field;
 use Drupal\user\Entity\Role;
 use Drupal\workflows\Entity\Workflow;
@@ -122,6 +123,9 @@ class TideProfileOperation {
     $index_storage = \Drupal::entityTypeManager()
       ->getStorage('search_api_index');
     $index = $index_storage->load('node');
+    if (!$index) {
+      return;
+    }
 
     // Index the Introduction field.
     $field_profile_intro = new Field($index, 'field_profile_intro_text');
@@ -129,7 +133,7 @@ class TideProfileOperation {
     $field_profile_intro->setPropertyPath('field_profile_intro_text');
     $field_profile_intro->setDatasourceId('entity:node');
     $field_profile_intro->setLabel('Profile Introduction Text');
-    $index->addField($field_profile_intro);
+    self::addFieldIfMissing($index, $field_profile_intro);
 
     // Index field_life_span field.
     $field_life_span = new Field($index, 'field_life_span');
@@ -137,7 +141,7 @@ class TideProfileOperation {
     $field_life_span->setPropertyPath('field_life_span');
     $field_life_span->setDatasourceId('entity:node');
     $field_life_span->setLabel('Profile Lifespan');
-    $index->addField($field_life_span);
+    self::addFieldIfMissing($index, $field_life_span);
 
     // Index profile category tid field.
     $field_profile_category = new Field($index, 'field_profile_category');
@@ -145,7 +149,7 @@ class TideProfileOperation {
     $field_profile_category->setPropertyPath('field_profile_category');
     $field_profile_category->setDatasourceId('entity:node');
     $field_profile_category->setLabel('Profile Category');
-    $index->addField($field_profile_category);
+    self::addFieldIfMissing($index, $field_profile_category);
 
     // Index profile category:name field.
     $field_profile_category_name = new Field($index, 'field_profile_category_name');
@@ -153,7 +157,7 @@ class TideProfileOperation {
     $field_profile_category_name->setPropertyPath('field_profile_category:entity:name');
     $field_profile_category_name->setDatasourceId('entity:node');
     $field_profile_category_name->setLabel('Profile Category » Taxonomy term » Name');
-    $index->addField($field_profile_category_name);
+    self::addFieldIfMissing($index, $field_profile_category_name);
 
     // Index profile category:uuid field.
     $field_profile_category_uuid = new Field($index, 'field_profile_category_uuid');
@@ -161,7 +165,7 @@ class TideProfileOperation {
     $field_profile_category_uuid->setPropertyPath('field_profile_category:entity:uuid');
     $field_profile_category_uuid->setDatasourceId('entity:node');
     $field_profile_category_uuid->setLabel('Profile Category » Taxonomy term » UUID');
-    $index->addField($field_profile_category_uuid);
+    self::addFieldIfMissing($index, $field_profile_category_uuid);
 
     // Index profile expertise tid field.
     $field_profile_expertise = new Field($index, 'field_profile_expertise');
@@ -169,7 +173,7 @@ class TideProfileOperation {
     $field_profile_expertise->setPropertyPath('field_expertise');
     $field_profile_expertise->setDatasourceId('entity:node');
     $field_profile_expertise->setLabel('Profile Expertise');
-    $index->addField($field_profile_expertise);
+    self::addFieldIfMissing($index, $field_profile_expertise);
 
     // Index profile expertise:name field.
     $field_profile_expertise_name = new Field($index, 'field_profile_expertise_name');
@@ -177,7 +181,7 @@ class TideProfileOperation {
     $field_profile_expertise_name->setPropertyPath('field_expertise:entity:name');
     $field_profile_expertise_name->setDatasourceId('entity:node');
     $field_profile_expertise_name->setLabel('Profile Expertise » Taxonomy term » Name');
-    $index->addField($field_profile_expertise_name);
+    self::addFieldIfMissing($index, $field_profile_expertise_name);
 
     // Index profile expertise:uuid field.
     $field_profile_expertise_uuid = new Field($index, 'field_profile_expertise_uuid');
@@ -185,7 +189,7 @@ class TideProfileOperation {
     $field_profile_expertise_uuid->setPropertyPath('field_expertise:entity:uuid');
     $field_profile_expertise_uuid->setDatasourceId('entity:node');
     $field_profile_expertise_uuid->setLabel('Profile Expertise » Taxonomy term » UUID');
-    $index->addField($field_profile_expertise_uuid);
+    self::addFieldIfMissing($index, $field_profile_expertise_uuid);
 
     // Index profile location tid field.
     $field_location = new Field($index, 'field_location');
@@ -193,7 +197,7 @@ class TideProfileOperation {
     $field_location->setPropertyPath('field_location');
     $field_location->setDatasourceId('entity:node');
     $field_location->setLabel('Profile Location');
-    $index->addField($field_location);
+    self::addFieldIfMissing($index, $field_location);
 
     // Index profile location:name field.
     $field_location_name = new Field($index, 'field_location_name');
@@ -201,7 +205,7 @@ class TideProfileOperation {
     $field_location_name->setPropertyPath('field_location:entity:name');
     $field_location_name->setDatasourceId('entity:node');
     $field_location_name->setLabel('Profile Location » Taxonomy term » Name');
-    $index->addField($field_location_name);
+    self::addFieldIfMissing($index, $field_location_name);
 
     // Index profile location:uuid field.
     $field_location_uuid = new Field($index, 'field_location_uuid');
@@ -209,7 +213,7 @@ class TideProfileOperation {
     $field_location_uuid->setPropertyPath('field_location:entity:uuid');
     $field_location_uuid->setDatasourceId('entity:node');
     $field_location_uuid->setLabel('Profile Location » Taxonomy term » UUID');
-    $index->addField($field_location_uuid);
+    self::addFieldIfMissing($index, $field_location_uuid);
 
     // Index Induction Year field.
     $field_year = new Field($index, 'field_year');
@@ -217,9 +221,23 @@ class TideProfileOperation {
     $field_year->setPropertyPath('field_year');
     $field_year->setDatasourceId('entity:node');
     $field_year->setLabel('Induction Year');
-    $index->addField($field_year);
+    self::addFieldIfMissing($index, $field_year);
 
     $index->save();
+  }
+
+  /**
+   * Adds a field unless it already exists on the index.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The Search API index.
+   * @param \Drupal\search_api\Item\Field $field
+   *   The field to add.
+   */
+  private static function addFieldIfMissing(IndexInterface $index, Field $field): void {
+    if (!$index->getField($field->getFieldIdentifier())) {
+      $index->addField($field);
+    }
   }
 
 }

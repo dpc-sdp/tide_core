@@ -7,4 +7,4 @@ id: wysiwyg_template--wysiwyg_template
 disabled: true
 path: wysiwyg_template/wysiwyg_template
 resourceType: wysiwyg_template--wysiwyg_template
-resourceFields: ''
+resourceFields: {  }

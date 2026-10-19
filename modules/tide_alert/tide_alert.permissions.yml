@@ -1,6 +1,9 @@
 'add scheduled transitions node alert':
   title: 'Add scheduled transitions for node alert'
   description: 'Allows user to add scheduled transitions for alert content type.'
+'reschedule scheduled transitions node alert':
+  title: 'Reschedule scheduled transitions for node alert'
+  description: 'Allows user to reschedule scheduled transitions for alert content type.'
 'create alert content':
   title: 'Create alert content'
   description: 'Allows user to create alert content.'

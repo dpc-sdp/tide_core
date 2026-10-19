@@ -7,6 +7,7 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\jira_rest\JiraRestWrapperService;
 use JiraRestApi\Issue\IssueField;
+use JiraRestApi\Issue\IssueType;
 
 /**
  * Tide JIRA Connector class.
@@ -85,16 +86,22 @@ class TideJiraConnector {
    * @throws \JiraRestApi\JiraException
    */
   public function getJiraAccountIdByEmail($email) {
-    if ($cache = $this->cache->get($this->getUserCid($email))) {
+    $cache = $this->cache->get($this->getUserCid($email));
+    if ($cache && !empty($cache->data['account_id'])) {
       return $cache->data['account_id'];
     }
     else {
       $us = $this->jiraRestWrapperService->getUserService();
 
       try {
-        $user = $us->findUsers(['query' => $email])[0];
+        $user = $us->findUsers(['query' => $email])[0] ?? NULL;
       }
       catch (\Exception $e) {
+        $this->logger->warning('Could not find JIRA account for ' . $email);
+        return NULL;
+      }
+
+      if (empty($user->accountId)) {
         $this->logger->warning('Could not find JIRA account for ' . $email);
         return NULL;
       }
@@ -125,8 +132,9 @@ class TideJiraConnector {
    *   User email.
    * @param string $account_id
    *   Account ID from JIRA.
-   * @param string $description
-   *   Ticket description.
+   * @param string|array $description
+   *   Ticket description as plain text or an Atlassian Document Format
+   *   document.
    * @param string $project
    *   The Jira project.
    * @param string $site
@@ -146,10 +154,13 @@ class TideJiraConnector {
    */
   public function createTicket($title, $bundle, $id, $email, $account_id, $description, $project, $site, $site_section, $page_department, $editor_department) {
     $request_type = strtolower($project) . '/' . $this->config->get('customer_request_type_id');
+    // An IssueType object is supported by both legacy and current clients.
+    $issue_type = new IssueType();
+    $issue_type->name = $this->config->get('issue_type');
     $issueField = new IssueField();
     $issueField->setProjectKey($project)
       ->setSummary($title)
-      ->setIssueType($this->config->get('issue_type'))
+      ->setIssueType($issue_type)
       ->addCustomField($this->config->get('customer_request_type_field_id'), $request_type)
       ->addCustomField($this->config->get('content_type'), $bundle)
       ->addCustomField($this->config->get('node_id'), $id)
@@ -158,8 +169,18 @@ class TideJiraConnector {
       ->addCustomField($this->config->get('page_department'), $page_department)
       ->addCustomField($this->config->get('editor_department'), $editor_department)
       ->setReporterName($email)
-      ->setReporterAccountId($account_id)
-      ->setDescription($description);
+      ->setReporterAccountId($account_id);
+    if (is_array($description)) {
+      // The SDK's text setter cannot accept ADF. Its additional-field
+      // serializer preserves the document as an object in the outgoing
+      // description field.
+      $issueField->addCustomField('description', $description);
+    }
+    else {
+      $issueField->setDescription($description);
+    }
+    // Creating an issue only needs the project key, not its versions.
+    $issueField->project->versions = NULL;
     $link = $this->jiraRestWrapperService->getIssueService()->create($issueField);
     return $link->key;
   }

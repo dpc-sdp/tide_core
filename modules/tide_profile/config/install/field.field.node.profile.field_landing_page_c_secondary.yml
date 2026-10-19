@@ -20,7 +20,6 @@ settings:
   handler_settings:
     target_bundles:
       campaign: campaign
-      campaign_with_video: campaign_with_video
     sort:
       field: _none
     auto_create: false

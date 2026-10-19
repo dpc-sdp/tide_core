@@ -77,7 +77,6 @@ third_party_settings:
       format_settings:
         id: ''
         classes: ''
-        formatter: closed
         description: 'Related pages can be linked from this sidebar.'
         required_fields: true
         open: false
@@ -92,7 +91,6 @@ third_party_settings:
       format_type: details
       format_settings:
         description: ''
-        formatter: closed
         required_fields: true
         id: ''
         classes: ''
@@ -109,7 +107,6 @@ third_party_settings:
       format_settings:
         id: ''
         classes: ''
-        formatter: closed
         description: 'Specific contact details - name, address, phone, email can be added in a block to the sidebar.'
         required_fields: false
         open: false
@@ -404,7 +401,6 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
-    description: 'Primary campaigns display at the top of the page between the header section and the body content section. They span the full width of the content area. Start typing the name of your custom block component to display your campaign.'
   field_landing_page_c_secondary:
     weight: -75
     settings:
@@ -556,7 +552,6 @@ content:
         maxlength_js: 200
         maxlength_js_label: 'Content limited to @limit characters, remaining: <strong>@remaining</strong>'
         maxlength_js_enforce: false
-        maxlength_js_truncate_html: false
     type: string_textarea
     region: content
   field_metatags:
@@ -598,11 +593,9 @@ content:
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
-    description: 'Secondary campaign displays after the content area, just above the page footer. They span the full width of the content area. Start typing the name of your custom block component to display your campaign'
   field_show_content_rating:
     type: boolean_checkbox
     region: content
-    field_name: field_show_content_rating
     weight: 2
     settings:
       display_label: true
@@ -685,7 +678,7 @@ content:
       select_parents: false
       cascading_selection: 0
       max_depth: 0
-    third_party_settings: { }
+    third_party_settings: {  }
   field_whats_next:
     type: entity_reference_paragraphs
     weight: 4

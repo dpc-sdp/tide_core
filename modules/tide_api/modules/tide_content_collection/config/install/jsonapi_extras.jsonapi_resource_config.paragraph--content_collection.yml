@@ -98,5 +98,5 @@ resourceFields:
     enhancer:
       id: content_collection_configuration
       settings:
-        apply_link_enhancer: '1'
+        apply_link_enhancer: true
     disabled: false

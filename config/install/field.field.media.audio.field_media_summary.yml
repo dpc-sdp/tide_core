@@ -4,14 +4,6 @@ dependencies:
   config:
     - field.storage.media.field_media_summary
     - media.type.audio
-  module:
-    - allowed_formats
-    - text
-third_party_settings:
-  allowed_formats:
-    plain_text: plain_text
-    rich_text: '0'
-    admin_text: '0'
 id: media.audio.field_media_summary
 field_name: field_media_summary
 entity_type: media
@@ -23,4 +15,4 @@ translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: text_long
+field_type: string_long

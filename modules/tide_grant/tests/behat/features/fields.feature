@@ -69,11 +69,11 @@ Feature: Fields for Grant content type
     And I should see the button "Add Timeline" in the "content" region
 
     And I click on the horizontal tab "Grant guidelines"
-    Then I should see 4 "#edit-field-node-guidelines-0-subform-field-paragraph-accordion-wrapper .field-multiple-table tr.draggable" elements
+    Then I should see 4 "#edit-field-node-guidelines-0-subform-field-paragraph-accordion-wrapper .field-multiple-table tr.draggable div[id*='-item-wrapper']" elements
     And I should see the button "Add Accordion Content" in the "content" region
     When I press "Add Accordion Content"
     And I wait for AJAX to finish
-    Then I should see 5 "#edit-field-node-guidelines-0-subform-field-paragraph-accordion-wrapper .field-multiple-table tr.draggable" elements
+    Then I should see 5 "#edit-field-node-guidelines-0-subform-field-paragraph-accordion-wrapper .field-multiple-table tr.draggable div[id*='-item-wrapper']" elements
 
     And I scroll selector "#edit-group-sidebar" into view
     And I click on the horizontal tab "Sidebar"

@@ -10,7 +10,7 @@ archive: false
 id: tide_event_submission
 title: 'Event Submission'
 description: 'This webform is being used by the general public for requests to submit their own events.'
-category: ''
+categories: []
 elements: |
   name_of_event:
     '#type': textfield
@@ -162,14 +162,10 @@ settings:
   form_submit_back: false
   form_autofocus: false
   form_details_toggle: false
-  form_login: false
-  form_login_message: ''
   submission_label: ''
   submission_log: false
   submission_user_columns: {  }
   submission_user_duplicate: false
-  submission_login: false
-  submission_login_message: ''
   submission_exception_message: ''
   submission_locked_message: ''
   previous_submission_message: ''

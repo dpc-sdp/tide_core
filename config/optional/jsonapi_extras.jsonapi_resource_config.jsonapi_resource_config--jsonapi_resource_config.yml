@@ -5,4 +5,4 @@ id: jsonapi_resource_config--jsonapi_resource_config
 disabled: true
 path: jsonapi_resource_config/jsonapi_resource_config
 resourceType: jsonapi_resource_config--jsonapi_resource_config
-resourceFields: ''
+resourceFields: {  }

@@ -1,7 +1,7 @@
 name: 'Tide Data Pipeline JSON Endpoint'
 type: module
 description: 'Provides a JSON endpoint source for data pipelines, allowing external systems to push JSON data via an authenticated POST request.'
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 package: Tide
 dependencies:
   - drupal:data_pipelines

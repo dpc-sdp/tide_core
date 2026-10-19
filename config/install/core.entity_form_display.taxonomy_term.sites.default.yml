@@ -78,7 +78,6 @@ third_party_settings:
         id: tide-site-theming-fileds
         open: false
         required_fields: true
-        effect: none
     group_site_feature_flag_values:
       children:
         - field_site_feature_flags
@@ -93,7 +92,6 @@ third_party_settings:
         id: tide-feature-flag-fields
         open: false
         required_fields: true
-        effect: none
     group_site_favicon_value:
       children:
         - field_site_favicon
@@ -108,7 +106,6 @@ third_party_settings:
         id: tide-site-favicon-field
         open: false
         required_fields: true
-        effect: none
     group_site_header_corner_graphic:
       children:
         - field_top_corner_graphic
@@ -124,7 +121,6 @@ third_party_settings:
         id: tide-site-header-corner-graphics
         open: false
         required_fields: true
-        effect: none
     group_site_app_icon:
       children:
         - field_site_app_icon
@@ -241,7 +237,6 @@ content:
         maxlength_js: null
         maxlength_js_label: 'Content limited to @limit characters, remaining: <strong>@remaining</strong>'
         maxlength_js_enforce: false
-        maxlength_js_truncate_html: false
   field_site_favicon:
     type: image_image
     weight: 0

@@ -4,12 +4,12 @@ namespace Drupal\Tests\tide_landing_page\Unit;
 
 use Drupal\Tests\UnitTestCase;
 use Drupal\tide_landing_page\Plugin\jsonapi\FieldEnhancer\BasicTextEnhancer;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Tests the unicode replacepemt process from basic text enhancer.
- *
- * @group tide_landing_page
  */
+#[Group('tide_landing_page')]
 class UnicodeWhitespaceTest extends UnitTestCase {
 
   /**

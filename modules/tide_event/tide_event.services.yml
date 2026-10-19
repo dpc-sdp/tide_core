@@ -1,0 +1,3 @@
+services:
+  Drupal\tide_event\Hook\TideEventHooks:
+    autowire: true

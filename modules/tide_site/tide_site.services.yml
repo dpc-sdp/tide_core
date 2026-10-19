@@ -15,3 +15,5 @@ services:
     arguments: ['@entity_type.manager', '@entity.repository']
     calls:
       - [setContainer, ['@service_container']]
+  Drupal\tide_site\Hook\TideSiteHooks:
+    autowire: true
