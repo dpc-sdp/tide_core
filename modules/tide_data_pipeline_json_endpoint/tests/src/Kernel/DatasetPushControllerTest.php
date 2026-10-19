@@ -13,6 +13,7 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\tide_data_pipeline_json_endpoint\Controller\DatasetPushController;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -313,9 +314,45 @@ class DatasetPushControllerTest extends KernelTestBase {
   }
 
   /**
+   * A failed completion hook returns an error even after destination writes.
+   */
+  #[DataProvider('failingHookProvider')]
+  public function testFailedHookReturns500AndCanBeRetried(string $hook): void {
+    $machine_name = 'push_failed_hook';
+    $this->createPublishedDataset($machine_name);
+    $payload = [['suburb' => 'Carlton']];
+    \Drupal::state()->set('tide_data_pipeline_json_endpoint_test.failure', $hook);
+
+    $response = $this->controller()->push($this->jsonRequest($payload), $machine_name);
+
+    $this->assertSame(500, $response->getStatusCode());
+    $this->assertSame([
+      'status' => 'failed',
+      'machine_name' => $machine_name,
+      'error' => 'Dataset post-processing failed.',
+    ], json_decode($response->getContent(), TRUE));
+    $this->assertNotEmpty(\Drupal::state()->get('test_push_result'));
+    $this->assertSame($payload, json_decode(file_get_contents(JsonEndpointSource::buildStorageUri($machine_name)), TRUE));
+
+    // A later push can complete once the destination-specific problem is fixed.
+    \Drupal::state()->delete('tide_data_pipeline_json_endpoint_test.failure');
+    $retry = $this->controller()->push($this->jsonRequest($payload), $machine_name);
+    $this->assertSame(200, $retry->getStatusCode());
+    $this->assertSame('processed', json_decode($retry->getContent(), TRUE)['status']);
+  }
+
+  /**
+   * Exercises both procedural exceptions and errors from Drupal 11 hooks.
+   */
+  public static function failingHookProvider(): array {
+    return ['procedural exception' => ['procedural'], 'object-oriented error' => ['oop']];
+  }
+
+  /**
    * Tests that a save_only push does not invoke either hook implementation.
    */
   public function testSaveOnlyDoesNotInvokeDatasetProcessedHook(): void {
+    \Drupal::state()->set('tide_data_pipeline_json_endpoint_test.failure', 'procedural');
     $machine_name = 'push_hook_save_only';
     $this->createPublishedDataset($machine_name);
 

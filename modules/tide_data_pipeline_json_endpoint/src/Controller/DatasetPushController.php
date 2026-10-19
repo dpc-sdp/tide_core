@@ -7,6 +7,7 @@ namespace Drupal\tide_data_pipeline_json_endpoint\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\File\FileExists;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Utility\Error;
 use Drupal\data_pipelines\Form\DatasetBatchOperations;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -118,8 +119,22 @@ class DatasetPushController extends ControllerBase {
       DatasetBatchOperations::operationProcess($dataset_id, $context);
     } while ($context['finished'] < 1);
 
-    // @see hook_tide_data_pipeline_json_endpoint_dataset_processed()
-    $this->moduleHandler()->invokeAll('tide_data_pipeline_json_endpoint_dataset_processed', [$dataset, $machine_name]);
+    try {
+      // @see hook_tide_data_pipeline_json_endpoint_dataset_processed()
+      $this->moduleHandler()->invokeAll('tide_data_pipeline_json_endpoint_dataset_processed', [$dataset, $machine_name]);
+    }
+    catch (\Throwable $e) {
+      Error::logException($this->getLogger(static::LOGGER_CHANNEL), $e, 'Post-processing failed for dataset @machine_name: @message', [
+        '@machine_name' => $machine_name,
+      ]);
+      // The payload and destination writes may already exist. Do not report a
+      // completed push, or expose destination details from the exception.
+      return new JsonResponse([
+        'status' => 'failed',
+        'machine_name' => $machine_name,
+        'error' => 'Dataset post-processing failed.',
+      ], 500);
+    }
 
     return new JsonResponse(['status' => 'processed', 'machine_name' => $machine_name]);
   }
