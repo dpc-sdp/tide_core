@@ -34,7 +34,12 @@ class TideApiHooks {
    */
   #[Hook('jsonapi_entity_filter_access')]
   public function jsonapiEntityFilterAccess(EntityTypeInterface $entity_type, AccountInterface $account) {
-    if (in_array($entity_type->id(), ['node', 'paragraph'])) {
+    // Entity API 1.8 requires explicit filter access for library items too.
+    if (in_array($entity_type->id(), [
+      'node',
+      'paragraph',
+      'paragraphs_library_item',
+    ])) {
       return [
         JSONAPI_FILTER_AMONG_PUBLISHED => AccessResult::allowedIfHasPermission($account, 'access content')->cachePerPermissions(),
       ];
