@@ -13,6 +13,7 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
 use Drupal\tide_data_pipeline_json_endpoint\Controller\DatasetPushController;
 use Drupal\tide_data_pipeline_json_endpoint\Plugin\DatasetSource\JsonEndpointSource;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -198,6 +199,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     $response = $this->controller()->push($request, $machine_name);
 
     $this->assertSame(415, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertArrayHasKey('error', $body);
   }
@@ -215,6 +217,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     );
 
     $this->assertSame(400, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertStringContainsString('Invalid JSON', $body['error']);
   }
@@ -229,6 +232,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     );
 
     $this->assertSame(404, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertArrayHasKey('error', $body);
   }
@@ -250,6 +254,7 @@ class DatasetPushControllerTest extends KernelTestBase {
     $response = $this->controller()->push($this->jsonRequest(['data' => 'value']), $machine_name);
 
     $this->assertSame(422, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
     $body = json_decode($response->getContent(), TRUE);
     $this->assertArrayHasKey('error', $body);
   }
@@ -274,6 +279,98 @@ class DatasetPushControllerTest extends KernelTestBase {
     $response = $this->controller()->push($this->jsonRequest(['data' => 'value']), $name);
 
     $this->assertSame(404, $response->getStatusCode());
+    $this->assertDatasetProcessedHooksNotInvoked();
+  }
+
+  /**
+   * Tests procedural and Drupal 11 hooks run once after records are written.
+   */
+  public function testPushInvokesDatasetProcessedHook(): void {
+    $machine_name = 'push_hook_fires';
+    $dataset = $this->createPublishedDataset($machine_name);
+    $this->assertDatasetProcessedHooksNotInvoked();
+
+    $payloads = [
+      [['suburb' => 'Carlton'], ['suburb' => 'Fitzroy']],
+      [['suburb' => 'Richmond']],
+    ];
+    foreach ($payloads as $index => $payload) {
+      $response = $this->controller()->push($this->jsonRequest($payload), $machine_name);
+      $this->assertSame(200, $response->getStatusCode());
+
+      $fired = \Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed');
+      $this->assertNotNull($fired);
+      $this->assertSame((int) $dataset->id(), (int) $fired['dataset_id']);
+      $this->assertSame($machine_name, $fired['machine_name']);
+      $this->assertSame($payload, $fired['records']);
+      $this->assertSame($index + 1, $fired['invocations']);
+
+      $oop_fired = \Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed_oop');
+      $this->assertNotNull($oop_fired);
+      $this->assertSame((int) $dataset->id(), (int) $oop_fired['dataset_id']);
+      $this->assertSame($machine_name, $oop_fired['machine_name']);
+      $this->assertSame($index + 1, $oop_fired['invocations']);
+    }
+  }
+
+  /**
+   * A failed completion hook returns an error even after destination writes.
+   */
+  #[DataProvider('failingHookProvider')]
+  public function testFailedHookReturns500AndCanBeRetried(string $hook): void {
+    $machine_name = 'push_failed_hook';
+    $this->createPublishedDataset($machine_name);
+    $payload = [['suburb' => 'Carlton']];
+    \Drupal::state()->set('tide_data_pipeline_json_endpoint_test.failure', $hook);
+
+    $response = $this->controller()->push($this->jsonRequest($payload), $machine_name);
+
+    $this->assertSame(500, $response->getStatusCode());
+    $this->assertSame([
+      'status' => 'failed',
+      'machine_name' => $machine_name,
+      'error' => 'Dataset post-processing failed.',
+    ], json_decode($response->getContent(), TRUE));
+    $this->assertNotEmpty(\Drupal::state()->get('test_push_result'));
+    $this->assertSame($payload, json_decode(file_get_contents(JsonEndpointSource::buildStorageUri($machine_name)), TRUE));
+
+    // A later push can complete once the destination-specific problem is fixed.
+    \Drupal::state()->delete('tide_data_pipeline_json_endpoint_test.failure');
+    $retry = $this->controller()->push($this->jsonRequest($payload), $machine_name);
+    $this->assertSame(200, $retry->getStatusCode());
+    $this->assertSame('processed', json_decode($retry->getContent(), TRUE)['status']);
+  }
+
+  /**
+   * Exercises both procedural exceptions and errors from Drupal 11 hooks.
+   */
+  public static function failingHookProvider(): array {
+    return ['procedural exception' => ['procedural'], 'object-oriented error' => ['oop']];
+  }
+
+  /**
+   * Tests that a save_only push does not invoke either hook implementation.
+   */
+  public function testSaveOnlyDoesNotInvokeDatasetProcessedHook(): void {
+    \Drupal::state()->set('tide_data_pipeline_json_endpoint_test.failure', 'procedural');
+    $machine_name = 'push_hook_save_only';
+    $this->createPublishedDataset($machine_name);
+
+    $request = $this->jsonRequest([['id' => 1]]);
+    $request->query->set('save_only', '1');
+    $response = $this->controller()->push($request, $machine_name);
+
+    $this->assertSame(200, $response->getStatusCode());
+    $this->assertSame('saved', json_decode($response->getContent(), TRUE)['status']);
+    $this->assertDatasetProcessedHooksNotInvoked();
+  }
+
+  /**
+   * Asserts that neither procedural nor object-oriented hooks were invoked.
+   */
+  private function assertDatasetProcessedHooksNotInvoked(): void {
+    $this->assertNull(\Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed'));
+    $this->assertNull(\Drupal::state()->get('tide_data_pipeline_json_endpoint_test.dataset_processed_oop'));
   }
 
   /**
