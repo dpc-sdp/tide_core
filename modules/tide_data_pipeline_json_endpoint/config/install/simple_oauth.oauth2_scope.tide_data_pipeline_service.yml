@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies: {  }
+id: tide_data_pipeline_service
+name: tide_data_pipeline_service
+description: 'Used for Data Pipeline Pusher'
+grant_types:
+  refresh_token:
+    status: false
+    description: ''
+  authorization_code:
+    status: false
+    description: ''
+  client_credentials:
+    status: true
+    description: ''
+umbrella: false
+parent: _none
+granularity_id: role
+granularity_configuration:
+  role: editor

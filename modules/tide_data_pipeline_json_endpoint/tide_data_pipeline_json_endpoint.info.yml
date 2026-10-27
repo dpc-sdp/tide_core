@@ -6,3 +6,4 @@ package: Tide
 dependencies:
   - drupal:data_pipelines
   - consumers:consumers
+  - simple_oauth:simple_oauth
