@@ -14,8 +14,8 @@ use Drupal\user\Entity\User;
 function tide_data_pipeline_json_endpoint_install(): void {
   // Create a dedicated service user for the push consumer.
   $user = User::create([
-    'name' => 'leap_user',
-    'mail' => 'leap_user@example.com',
+    'name' => 'tide_pipeline_service_user',
+    'mail' => 'tide_pipeline_service_user@example.com',
     'status' => 1,
   ]);
   $user->addRole('editor');
@@ -27,13 +27,18 @@ function tide_data_pipeline_json_endpoint_install(): void {
   Consumer::create([
     'label' => 'Data Pipeline Pusher',
     'client_id' => 'data_pipeline_pusher',
-    'machine_name' => 'leap_access',
+    'machine_name' => 'tide_data_pipeline_consumer',
     'confidential' => 1,
     'is_default' => FALSE,
     'third_party' => 0,
     'status' => 1,
+    'grant_types' => [
+      'client_credentials',
+    ],
+    'scopes' => [
+      'tide_data_pipeline_service',
+    ],
     'user_id' => $user->id(),
-    'roles' => [['target_id' => 'data_pipeline_pusher']],
   ])->save();
 }
 
