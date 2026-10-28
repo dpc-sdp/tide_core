@@ -320,7 +320,40 @@ class TideApiController extends ControllerBase {
    *   TRUE if the redirect can be resolved.
    */
   protected function resolveRedirect(Request $request, $path, array &$json_response, &$code) {
-    if ($path != '/') {
+    $should_process = ($path != '/');
+    $site_term = NULL;
+
+    // If it's the homepage, check if the site's feature flag allows homepage redirects.
+    if (!$should_process) {
+      $site_id = $request->query->get('site');
+      if ($site_id) {
+        try {
+          $term_storage = $this->entityTypeManager->getStorage('taxonomy_term');
+          $site_term = $term_storage->load($site_id);
+
+          if ($site_term) {
+            $this->cacheMetadata->addCacheableDependency($site_term);
+
+            if ($site_term->hasField('field_site_feature_flags')) {
+              foreach ($site_term->get('field_site_feature_flags') as $item) {
+                if ($item->key === 'allow_homepage_redirect' && in_array(strtolower($item->value), ['1', 'true', 'yes'], TRUE)) {
+                  $should_process = TRUE;
+                  break;
+                }
+              }
+            }
+          }
+        }
+        catch (\Exception $e) {
+          \Drupal::logger('tide_api')->error('Failed to load site term for ID @site_id: @message', [
+            '@site_id' => $site_id,
+            '@message' => $e->getMessage(),
+          ]);
+        }
+      }
+    }
+    
+    if ($should_process) {
       $base_url = $request->getSchemeAndHttpHost() . $request->getBaseUrl();
       $query = [];
       $url = parse_url($base_url . $path);
@@ -330,6 +363,14 @@ class TideApiController extends ControllerBase {
         }
         if (!empty($url['query'])) {
           parse_str($url['query'], $query);
+        }
+      }
+
+      // If we are processing the homepage, map it to the field_site_homepage entity path (e.g. /node/41).
+      if ($path === '/' && $site_term && $site_term->hasField('field_site_homepage') && !$site_term->get('field_site_homepage')->isEmpty()) {
+        $homepage_entity = $site_term->get('field_site_homepage')->entity;
+        if ($homepage_entity) {
+          $path = '/' . $homepage_entity->getEntityTypeId() . '/' . $homepage_entity->id();
         }
       }
 
