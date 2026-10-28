@@ -323,7 +323,8 @@ class TideApiController extends ControllerBase {
     $should_process = ($path != '/');
     $site_term = NULL;
 
-    // If it's the homepage, check if the site's feature flag allows homepage redirects.
+    // If it's the homepage.
+    // Check if the site's feature flag allows homepage redirects.
     if (!$should_process) {
       $site_id = $request->query->get('site');
       if ($site_id) {
@@ -352,7 +353,7 @@ class TideApiController extends ControllerBase {
         }
       }
     }
-    
+
     if ($should_process) {
       $base_url = $request->getSchemeAndHttpHost() . $request->getBaseUrl();
       $query = [];
@@ -366,7 +367,8 @@ class TideApiController extends ControllerBase {
         }
       }
 
-      // If we are processing the homepage, map it to the field_site_homepage entity path (e.g. /node/41).
+      // If we are processing the homepage.
+      // Map it to the field_site_homepage entity path.
       if ($path === '/' && $site_term && $site_term->hasField('field_site_homepage') && !$site_term->get('field_site_homepage')->isEmpty()) {
         $homepage_entity = $site_term->get('field_site_homepage')->entity;
         if ($homepage_entity) {
