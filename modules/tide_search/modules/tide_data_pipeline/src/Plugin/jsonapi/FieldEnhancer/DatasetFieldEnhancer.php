@@ -26,6 +26,9 @@ class DatasetFieldEnhancer extends ResourceFieldEnhancerBase {
     }
     $target_id = $data['meta']['drupal_internal__target_id'];
     $entity = Dataset::load($target_id);
+    if (!$entity) {
+      return $data;
+    }
     $data['meta'] = $data['meta'] + [
       'index_name' => $entity->machine_name->value,
       'pipeline' => $entity->pipeline->value,
