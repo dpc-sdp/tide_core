@@ -49,13 +49,13 @@ class DatasetPushController extends ControllerBase {
 
     // Record every incoming push, including ones that fail validation, so a
     // full audit trail is kept in watchdog (dblog and Sumo Logic via syslog).
-    $logger->info('Dataset push received for "@machine_name" from @ip by @user (uid @uid), @bytes bytes. Payload: @payload', [
+    $logger->info('Dataset push received for "@machine_name" from @ip by @user (uid @uid), @bytes bytes. Payload hash: @payload_hash', [
       '@machine_name' => $machine_name,
       '@ip' => $request->getClientIp() ?? 'unknown',
       '@user' => $account->getAccountName() ?: 'anonymous',
       '@uid' => $account->id(),
       '@bytes' => strlen($body),
-      '@payload' => $body,
+      '@payload_hash' => hash('sha256', $body),
     ]);
 
     $response = $this->doPush($request, $machine_name, $body);
