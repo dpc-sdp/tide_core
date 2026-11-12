@@ -6,8 +6,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.3",
-        "drupal/address": "^2.0",
+        "php": "~8.3.0",
+        "drupal/address": "^2.0.6",
         "drupal/allowed_formats": "^3.0",
         "drupal/better_exposed_filters": "^7.1",
         "drupal/clamav": "^2.1",
@@ -173,9 +173,6 @@
             }
         },
         "patches": {
-            "drupal/address": {
-                "Support Diff 2 array return types and the Drupal 11 rendering API; upstream issue 3460590": "https://www.drupal.org/files/issues/2026-10-07/address-diff-2.patch"
-            },
             "drupal/clamav": {
                 "Restore Drush 13 command service construction and module namespace": "https://raw.githubusercontent.com/dpc-sdp/tide_core/master/patches/drupal11/clamav-drush-13-factory.patch"
             },
