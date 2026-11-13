@@ -28,3 +28,33 @@ function _tide_data_pipeline_install_csv_template_file() {
   \Drupal::service('file_system')
     ->copy($csv_source, $file_directory . '/Generic_dataset_template.csv', FileExists::Replace);
 }
+
+/**
+ * Applies the dataset field enhancer to field_select_dataset in JSON:API.
+ */
+function tide_data_pipeline_update_11001() {
+  if (!\Drupal::moduleHandler()->moduleExists('jsonapi_extras')) {
+    return t('JSON:API Extras is not enabled, skipped.');
+  }
+
+  /** @var \Drupal\jsonapi_extras\Entity\JsonapiResourceConfig|null $resource_config */
+  $resource_config = \Drupal::entityTypeManager()
+    ->getStorage('jsonapi_resource_config')
+    ->load('paragraph--self_service_map');
+  if (!$resource_config) {
+    return t('The paragraph--self_service_map JSON:API resource config does not exist, skipped.');
+  }
+
+  $resource_fields = $resource_config->get('resourceFields') ?: [];
+  $resource_fields['field_select_dataset'] = [
+    'disabled' => FALSE,
+    'fieldName' => 'field_select_dataset',
+    'publicName' => $resource_fields['field_select_dataset']['publicName'] ?? 'field_select_dataset',
+    'enhancer' => [
+      'id' => 'dataset_field_enhancer',
+    ],
+  ];
+  $resource_config->set('resourceFields', $resource_fields)->save();
+
+  return t('Applied the dataset field enhancer to field_select_dataset.');
+}
