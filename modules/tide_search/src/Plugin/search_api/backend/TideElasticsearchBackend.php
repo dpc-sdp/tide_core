@@ -5,6 +5,7 @@ namespace Drupal\tide_search\Plugin\search_api\backend;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\elasticsearch_connector\Plugin\search_api\backend\SearchApiElasticsearchBackend;
 use Drupal\search_api\IndexInterface;
+use Drupal\search_api\SearchApiException;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 
 /**
@@ -63,6 +64,27 @@ class TideElasticsearchBackend extends SearchApiElasticsearchBackend {
    */
   public function getNumberOfShards() {
     return (int) $this->configuration['number_of_shards'];
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * The parent implementation relies on _cluster/health, which is not
+   * implemented by Amazon OpenSearch Serverless. Probe with _cat/indices
+   * instead, as it is supported by OpenSearch Serverless, OpenSearch and
+   * Elasticsearch alike.
+   */
+  public function isAvailable() {
+    try {
+      $this->getElasticClient()->cat()->indices([
+        'format' => 'json',
+        'h' => 'index',
+      ]);
+      return TRUE;
+    }
+    catch (SearchApiException | ElasticsearchException $e) {
+      return FALSE;
+    }
   }
 
   /**
